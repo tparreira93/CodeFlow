@@ -223,7 +223,7 @@ namespace CodeFlow
                             man.Parameter = reader.GetString(5);
                             man.ManualFile = reader.GetString(6);
                             man.Lang = reader.GetString(7);
-                            man.Order = reader.GetFloat(8);
+                            man.Order = (float)reader.GetDouble(8);
                             foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
                             {
                                 man.Code.Replace((char)entry.Key, (char)entry.Value);
