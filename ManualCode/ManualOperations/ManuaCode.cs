@@ -159,11 +159,9 @@ namespace CodeFlow
                 {
                     try
                     {
-                        SqlCommand cmd = new SqlCommand
-                        {
-                            CommandText = String.Format("INSERT INTO GENMANUA (CODMANUA, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, CORPO, LANG, ORDEM, CODCARAC, CODMODUL, ISSISTEM, NEGCARAC, CARAC, DATACRIA, OPERCRIA, ZZSTATE) "
-                        + "VALUES (@CODMANUA, @PLATAFOR, @TIPO, @MODULO, @PARAMETR, @FICHEIRO, @CORPO, @LANG, @ORDEM, @CODCARAC, @CODMODUL, @ISSISTEM, @NEGCARAC, @CARAC, @DATACRIA, @OPERCRIA, 0)")
-                        };
+                        SqlCommand cmd = new SqlCommand();
+                        cmd.CommandText = String.Format("INSERT INTO GENMANUA (CODMANUA, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, CORPO, LANG, ORDEM, CODCARAC, CODMODUL, ISSISTEM, NEGCARAC, CARAC, DATACRIA, OPERCRIA, ZZSTATE) "
+                            + "VALUES (@CODMANUA, @PLATAFOR, @TIPO, @MODULO, @PARAMETR, @FICHEIRO, @CORPO, @LANG, @ORDEM, @CODCARAC, @CODMODUL, @ISSISTEM, @NEGCARAC, @CARAC, @DATACRIA, @OPERCRIA, 0)");
 
                         cmd.Parameters.AddWithValue("@CODMANUA", this.CodeId);
                     cmd.Parameters.AddWithValue("@PLATAFOR", this.Plataform);
@@ -207,13 +205,10 @@ namespace CodeFlow
                 {
                     try
                     {
-                        SqlCommand cmd = new SqlCommand
-                        {
-                            CommandText = 
-                            String.Format("SELECT CODMANUA, CORPO, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, LANG, ORDEM FROM GENMANUA WHERE CODMANUA = '{0}'", codmanua),
-                            CommandType = global::System.Data.CommandType.Text,
-                            Connection = profile.GenioConfiguration.SqlConnection
-                        };
+                        SqlCommand cmd = new SqlCommand();
+                        cmd.CommandText = String.Format("SELECT CODMANUA, CORPO, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, LANG, ORDEM FROM GENMANUA WHERE CODMANUA = '{0}'", codmanua);
+                        cmd.CommandType = global::System.Data.CommandType.Text;
+                        cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
                         reader = cmd.ExecuteReader();
                         man = new ManuaCode("");
