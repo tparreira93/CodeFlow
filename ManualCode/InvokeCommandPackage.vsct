@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!--  This is the file that defines the actual layout and type of the commands.
+        It is divided in different sections (e.g. command definition, command
+        placement, ...), with each defining a specific set of properties.
+        See the comment before each section for more details about how to
+        use it. -->
+
+  <!--  The VSCT compiler (the tool that translates this file into the binary
+        format that VisualStudio will consume) has the ability to run a preprocessor
+        on the vsct file; this preprocessor is (usually) the C++ preprocessor, so
+        it is possible to define includes and macros with the same syntax used
+        in C++ files. Using this ability of the compiler here, we include some files
+        defining some of the constants that we will use inside the file. -->
+
+  <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
+  <Extern href="stdidcmd.h" />
+
+  <!--This header contains the command ids for the menus provided by the shell. -->
+  <Extern href="vsshlids.h" />
+
+  <!--The Commands section is where commands, menus, and menu groups are defined.
+      This section uses a Guid to identify the package that provides the command defined inside it. -->
+  <Commands package="CodeFlowPackage">
+    <!-- Inside this section we have different sub-sections: one for the menus, another
+    for the menu groups, one for the buttons (the actual commands), one for the combos
+    and the last one for the bitmaps used. Each element is identified by a command id that
+    is a unique pair of guid and numeric identifier; the guid part of the identifier is usually
+    called "command set" and is used to group different command inside a logically related
+    group; your package should define its own command set in order to avoid collisions
+    with command ids defined by other packages. -->
+
+    <!-- In this section you can define new menu groups. A menu group is a container for
+         other menus or buttons (commands); from a visual point of view you can see the
+         group as the part of a menu contained between two lines. The parent of a group
+         must be a menu. -->
+    <Groups>
+      <Group guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" priority="0x000">
+        <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbar" />
+      </Group>
+      <Group guid="guidCodeFlowPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
+      </Group>
+    </Groups>
+    
+    
+    <Menus>
+      <Menu guid="CodeFlowCommandSet" id="CodeFlowToolbar" type="Toolbar">
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>CodeFlow</ButtonText>
+          <CommandName>Code Flow</CommandName>
+        </Strings>
+      </Menu>
+    </Menus>
+
+    <Combos>
+      <Combo guid="CodeFlowCommandSet" id="cmdGenioProfilesCombo" priority="0x0010" type="DropDownCombo" defaultWidth="130" idCommandList="cmdGenioProfilesComboGetList">
+        <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" />
+        <CommandFlag>IconAndText</CommandFlag>
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <MenuText>Profile: </MenuText>
+          <ButtonText>Profile</ButtonText>
+          <ToolTipText>Genio profile</ToolTipText>
+          <CanonicalName>Profile</CanonicalName>
+          <CommandName>Profile</CommandName>
+        </Strings>
+      </Combo>
+    </Combos>
+    
+    <!--Buttons section. -->
+    <!--This section defines the elements the user can interact with, like a menu command or a button
+        or combo box in a toolbar. -->
+    <Buttons>
+      <!--To define a menu group you have to specify its ID, the parent menu and its display priority.
+          The command is visible and enabled by default. If you need to change the visibility, status, etc, you can use
+          the CommandFlag node.
+          You can add more than one CommandFlag node e.g.:
+              <CommandFlag>DefaultInvisible</CommandFlag>
+              <CommandFlag>DynamicVisibility</CommandFlag>
+          If you do not want an image next to your command, remove the Icon node /> -->
+      
+        <!-- TOOLBAR BUTTONS-->
+      <Button guid="CodeFlowCommandSet" id="InvokeCommandId" priority="0x0100" type="Button">
+        <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" /> 
+        <Icon guid="exportGenioImage" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Export to Genio</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="CodeFlowCommandSet" id="cmdExportSolution" priority="0x0100" type="Button">
+         <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" /> 
+        <Icon guid="exportSolutionImage" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Export Solution</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="CodeFlowCommandSet" id="cmdImportFromGenio" priority="0x0100" type="Button">
+        <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" />
+        <Icon guid="importGenioImage" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Import from genio</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="CodeFlowCommandSet" id="cmdCreateInGenio" priority="0x0100" type="Button">
+        <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" /> 
+        <Icon guid="createGenioImage" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Create in Genio</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="CodeFlowCommandSet" id="cmdManageProfiles" priority="0x0100" type="Button">
+        <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" /> 
+        <Icon guid="manageGenioProfilesImage" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Manage Genio profiles</ButtonText>
+        </Strings>
+      </Button>
+      
+    <!--TOOL WINDOW-->
+      <Button guid="CodeFlowCommandSet" id="cmdFindManwinCommand" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
+        <Icon guid="searchGenioImage" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Search in Manual Code</ButtonText>
+        </Strings>
+      </Button>
+        
+      <Button guid="guidCodeFlowPackageCmdSet" id="cmdidFixVS2008Solution" priority="0x0100" type="Button">
+        <Parent guid="guidCodeFlowPackageCmdSet" id="MyMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Change to VS2008 Plataform Toolset</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidCodeFlowPackageCmdSet" id="cmdidRefreshSolution" priority="0x0100" type="Button">
+        <Parent guid="guidCodeFlowPackageCmdSet" id="MyMenuGroup" />
+        <Icon guid="guidImages1" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Refresh solution</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
+    
+    <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
+    <Bitmaps>
+      <!--  The bitmap id is defined in a way that is a little bit different from the others:
+            the declaration starts with a guid for the bitmap strip, then there is the resource id of the
+            bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
+            inside a button definition. An important aspect of this declaration is that the element id
+            must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
+      <Bitmap guid="exportGenioImage" href="Resources\document_up.ico" usedList="bmpPic1" />
+      <Bitmap guid="importGenioImage" href="Resources\document_down.ico" usedList="bmpPic1" />
+      <Bitmap guid="createGenioImage" href="Resources\code_add.ico" usedList="bmpPic1" />
+      <Bitmap guid="searchGenioImage" href="Resources\document_view.ico" usedList="bmpPic1" />
+      <Bitmap guid="manageGenioProfilesImage" href="Resources\businessman_add.ico" usedList="bmpPic1" />
+      <Bitmap guid="exportSolutionImage" href="Resources\export2.ico" usedList="bmpPic1" />
+      <Bitmap guid="guidImages" href="Resources\flash_red.ico" usedList="bmpPic1" />
+      <Bitmap guid="guidImages1" href="Resources\refresh.ico" usedList="bmpPic1" />
+    </Bitmaps>
+  </Commands>
+
+  <!--
+  <CommandPlacements>
+    <CommandPlacement guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" priority="0x0100">
+      <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbar"/>
+    </CommandPlacement>
+  </CommandPlacements>-->
+    
+  <Symbols>
+    <!-- This is the package guid. -->
+    <GuidSymbol name="CodeFlowPackage" value="{23ac2f2d-5778-45dd-b5b2-5186260c958c}" />
+
+    <!-- This is the guid used to group the toolbar commands together -->
+    <GuidSymbol name="CodeFlowCommandSet" value="{657c211f-0665-4969-81bc-d3a266b0aac4}">
+      <IDSymbol name="CodeFlowToolbar" value="0x1000" />
+      <IDSymbol name="CodeFlowToolbarGroup" value="0x1030" />
+      <IDSymbol name="cmdGenioProfilesCombo" value="0x101" />
+      <IDSymbol name="cmdGenioProfilesComboGetList" value="0x102" />
+      <IDSymbol name="InvokeCommandId" value="0x0100" />
+      <IDSymbol name="cmdImportFromGenio" value="4129" />
+      <IDSymbol name="cmdCreateInGenio" value="4130" />
+      <IDSymbol name="cmdFindManwinCommand" value="4131" />
+      <IDSymbol name="cmdManageProfiles" value="4132" />
+      <IDSymbol name="cmdExportSolution" value="4133" />
+    </GuidSymbol>
+
+    <GuidSymbol name="exportGenioImage" value="{fb7e123d-6799-411e-ac2f-0cc621636931}">
+      <IDSymbol name="bmpPic1" value="1" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{ce2d19a6-a945-4d58-8035-305733537cfd}" name="importGenioImage">
+      <IDSymbol name="bmpPic1" value="1" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{42f45831-d70d-4cda-b845-1134ab1ab214}" name="createGenioImage">
+      <IDSymbol name="bmpPic1" value="1" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{d57ee91b-404d-455c-b1de-ff7aa68ae241}" name="searchGenioImage">
+      <IDSymbol name="bmpPic1" value="1" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{e09d2bc5-8ace-4025-8036-771c612b52b5}" name="manageGenioProfilesImage">
+      <IDSymbol name="bmpPic1" value="1" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{c1c018c1-ba6f-485e-8b83-0fb7d8f00b4f}" name="exportSolutionImage">
+      <IDSymbol name="bmpPic1" value="1" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{ea4285de-6536-470f-b0a6-26800470cbe1}" name="guidCodeFlowPackageCmdSet">
+      <IDSymbol value="4128" name="MyMenuGroup" />
+      <IDSymbol value="256" name="cmdidFixVS2008Solution" />
+      <IDSymbol value="4129" name="cmdidRefreshSolution" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{272aac2a-f7f3-4350-bfad-56dea775d795}" name="guidImages">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{27919957-86f0-4001-a55d-77ded2ef214b}" name="guidImages1">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>

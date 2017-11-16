@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="CodeFlow.FindManwinControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="530" d:DesignWidth="300"
+             Name="MyToolWindow">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ListViewStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <TextBox x:Name="txtSearch" TextWrapping="Wrap" Grid.Row="0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,0,0"/>
+        <Button Content="Search" Click="btnSearch_Click" Grid.Row="0" x:Name="btnSearch" Height="23" VerticalAlignment="Top" HorizontalAlignment="Right" Width="55"/>
+        <ListView x:Name="lstFindMan" MouseDoubleClick="lstFindMan_MouseDoubleClick" Initialized="lstFindMan_Initialized" Margin="0,23,0,0" SelectionMode="Single">
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn Header="Plat."      Width="50"  DisplayMemberBinding="{Binding Plataform}"/>
+                        <GridViewColumn Header="Lang"       Width="50"  DisplayMemberBinding="{Binding Lang}"/>
+                        <GridViewColumn Header="Tag"        Width="50"  DisplayMemberBinding="{Binding Tag}"/>
+                        <GridViewColumn Header="Code"       Width="150" DisplayMemberBinding="{Binding ShortCode}"/>
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>
