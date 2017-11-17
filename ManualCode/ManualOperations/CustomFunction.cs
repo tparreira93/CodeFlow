@@ -13,7 +13,6 @@ namespace CodeFlow
 
         private string nome = "";
         private string lang = "";
-        private string tipo = "";
         private Guid codfuncs = Guid.Empty;
 
         [DBName("CODIMPLS")]
@@ -25,7 +24,9 @@ namespace CodeFlow
         [DBName("NOME")]
         public string Nome { get => nome; set => nome = value; }
         public override string Lang { get => lang; set => lang = value; }
-        public override string Tag { get => tipo; set => tipo = value; }
+        public override string Tag { get => Nome; }
+        public override string TipoCodigo { get => "Custom"; }
+        public override string Tipo { get => ""; }
 
         public CustomFunction()
         {
@@ -150,6 +151,62 @@ namespace CodeFlow
                 throw e;
             }
 
+        }
+
+        public static List<CustomFunction> Search(Profile profile, string texto, int limitBodySize = 80, bool caseSensitive = false)
+        {
+            List<CustomFunction> results = new List<CustomFunction>();
+            SqlCommand cmd = new SqlCommand();
+            SqlDataReader reader = null;
+
+            lock (PackageOperations.lockObject)
+            {
+                if (!profile.GenioConfiguration.ConnectionIsOpen())
+                    profile.GenioConfiguration.OpenConnection();
+
+                if (profile.GenioConfiguration.ConnectionIsOpen())
+                {
+                    string tmp = String.Format("LEFT(CORPO, {0})", limitBodySize);
+                    if (limitBodySize == 0)
+                        tmp = "CORPO";
+                    string customFuncQuery = String.Format("SELECT IMPLS.CODIMPLS, {0}, PLATAFOR, FUNCS.NOME GENFUNCS FUNCS INNER JOIN GENIMPLS IMPLS ON IMPLS.CODFUNCS = FUNCS.CODFUNCS " +
+                                                                    "WHERE CORPO LIKE @TERM OR NOME LIKE @TERM", tmp);
+                    if (caseSensitive)
+                        customFuncQuery += " COLLATE Latin1_General_BIN;";
+                    cmd.CommandText = customFuncQuery;
+                    cmd.CommandType = global::System.Data.CommandType.Text;
+                    cmd.Parameters.AddWithValue("@TERM", "%" + texto + "%");
+                    cmd.Connection = profile.GenioConfiguration.SqlConnection;
+
+                    try
+                    {
+                        reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            Guid codmanua = reader.GetGuid(0);
+                            string corpo = reader.GetString(1);
+
+                            CustomFunction man = new CustomFunction(codmanua, corpo);
+
+                            man.Plataform = reader.GetString(2);
+                            man.Nome = reader.GetString(3);
+                            man.CodeTransformKeyValue();
+                            results.Add(man);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    finally
+                    {
+                        if (reader != null && !reader.IsClosed)
+                            reader.Close();
+                    }
+                }
+            }
+
+            return results;
         }
 
         public override string ToString()

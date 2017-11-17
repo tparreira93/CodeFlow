@@ -136,7 +136,7 @@ namespace CodeFlow
             man.Codmodul = codmodul;
             man.Modulo = module != null ? (system ? "GIP" : module ) : "";
             man.Plataform = plataform ?? "";
-            man.Tag = type ?? "";
+            man.TipoRotina = type ?? "";
             man.Parameter = param;
             man.ManualFile = file;
             man.Order = (float)Math.Round(f_order, 1);

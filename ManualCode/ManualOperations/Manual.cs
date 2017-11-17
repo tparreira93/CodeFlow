@@ -47,7 +47,6 @@ namespace CodeFlow
             [0x0178] = (byte)'\x9F'
         };
         
-
         public abstract Guid CodeId { get; set; }
 
         [DBName("Corpo")]
@@ -65,7 +64,7 @@ namespace CodeFlow
         [DBName("DATACRIA")]
         public DateTime CreationDate { get => creationDate; set => creationDate = value; }
         public abstract string Lang { get; set; }
-        public abstract string Tag { get; set; }
+        public abstract string Tag { get; }
 
         public string GetCodeExtension(Profile p)
         {
@@ -86,76 +85,15 @@ namespace CodeFlow
             }
         }
 
+        public abstract string TipoCodigo { get; }
+        public abstract string Tipo{ get; }
+
         public string OpenManual(EnvDTE80.DTE2 dte, Profile p)
         {
             string tmp = Path.GetTempPath() + Guid.NewGuid().ToString() + "." + GetCodeExtension(p);
             File.WriteAllText(tmp, ToString());
             dte.ItemOperations.OpenFile(tmp);
             return tmp;
-        }
-
-        public static List<IManual> SearchManual(Profile profile, string texto, int limitBodySize = 80)
-        {
-            List<IManual> results = new List<IManual>();
-            SqlCommand cmd = new SqlCommand();
-            SqlDataReader reader = null;
-
-            lock (PackageOperations.lockObject)
-            {
-                if (!profile.GenioConfiguration.ConnectionIsOpen())
-                    profile.GenioConfiguration.OpenConnection();
-
-                if (profile.GenioConfiguration.ConnectionIsOpen())
-                {
-                    string tmp = String.Format("LEFT(CORPO, {0})", limitBodySize);
-                    if (limitBodySize == 0)
-                        tmp = "CORPO";
-                    string manuaQuery = String.Format("SELECT CODMANUA, {0}, PLATAFOR, '' NOME, 'MANUAL' TIPO FROM GENMANUA WHERE CORPO LIKE @TERM", tmp); ;
-                    string customFuncQuery = String.Format("SELECT IMPLS.CODIMPLS, {0}, PLATAFOR, FUNCS.NOME, 'CUSTOM' TIPO "+
-                        "FROM GENFUNCS FUNCS INNER JOIN GENIMPLS IMPLS ON IMPLS.CODFUNCS = FUNCS.CODFUNCS " + 
-                        "WHERE CORPO LIKE @TERM OR NOME LIKE @TERM", tmp);
-                    cmd.CommandText = String.Format("{0} UNION ALL {1}", manuaQuery, customFuncQuery);
-                    cmd.CommandType = global::System.Data.CommandType.Text;
-                    cmd.Parameters.AddWithValue("@TERM", "%" + texto + "%");
-                    cmd.Connection = profile.GenioConfiguration.SqlConnection;
-
-                    try
-                    {
-                        reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            Guid codmanua = reader.GetGuid(0);
-                            string corpo = reader.GetString(1);
-                            string plataforma = reader.GetString(2);
-                            string nome = reader.GetString(3);
-                            string tipo = reader.GetString(4);
-
-                            IManual man;
-                            if (tipo.Equals("CUSTOM"))
-                                man = new CustomFunction(corpo, nome);
-                            else
-                                man = new ManuaCode(corpo);
-
-                            man.CodeTransformKeyValue();
-                            man.CodeId = codmanua;
-                            man.Code = corpo;
-                            man.Plataform = plataforma;
-                            results.Add(man);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
-                    finally
-                    {
-                        if (reader != null && !reader.IsClosed)
-                            reader.Close();
-                    }
-                }
-            }
-
-            return results;
         }
 
         public static IManual Merge(IManual local, IManual bd)

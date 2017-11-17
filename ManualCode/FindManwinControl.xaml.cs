@@ -39,7 +39,9 @@
 
             System.Threading.Tasks.Task.Factory.StartNew(() =>
             {
-                List<IManual> res = Manual.SearchManual(PackageOperations.ActiveProfile, currentSearch);
+                List<IManual> res = new List<IManual>();
+                res.AddRange(ManuaCode.Search(PackageOperations.ActiveProfile, currentSearch));
+                res.AddRange(CustomFunction.Search(PackageOperations.ActiveProfile, currentSearch));
 
 
                 Dispatcher.BeginInvoke(new Action(() =>

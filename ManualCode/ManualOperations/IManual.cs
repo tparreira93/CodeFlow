@@ -10,9 +10,11 @@ namespace CodeFlow
         string Plataform { get; set; }
         string GenioUser { get; set; }
         string Lang { get; set; }
-        string Tag { get; set; }
+        string Tag { get; }
         DateTime LastChangeDate { get; set; }
         DateTime CreationDate { get; set; }
+        string TipoCodigo { get; }
+        string Tipo { get; }
 
         string ShortCode { get; }
 
@@ -25,5 +27,6 @@ namespace CodeFlow
         void CodeTransformValueKey();
 
         void ShowSVNLog(Profile profile, string systemName);
+
     }
 }

@@ -55,7 +55,6 @@ namespace CodeFlow
             this.Codmodul = Guid.Empty;
             this.Modulo = "";
             this.Plataform = "";
-            this.Tag = "";
             this.Parameter = "";
             this.ManualFile = "";
             this.Order = .0f;
@@ -85,7 +84,6 @@ namespace CodeFlow
         public override Guid CodeId { get => codeID; set => codeID = value; }
         [DBName("CORPO")]
         public override string Code { get => corpo; set => corpo = FixSetCurrentIndex(value); }
-        public override string Tag { get => Tipo; set => Tipo = value; }
         public string Modulo { get => modulo; set => modulo = value; }
         public string Parameter { get => parameter; set => parameter = value; }
         public override string Lang { get => lang; set => lang = value; }
@@ -96,7 +94,10 @@ namespace CodeFlow
         public int Inhib { get => inhib; set => inhib = value; }
         public Guid Codfeature { get => codfeature; set => codfeature = value; }
         public Guid Codmodul { get => codmodul; set => codmodul = value; }
-        public string Tipo { get => tipo; set => tipo = value; }
+        public string TipoRotina { get => tipo; set => tipo = value; }
+        public override string TipoCodigo { get => "Manual"; }
+        public override string Tag { get => Parameter; }
+        public override string Tipo { get => TipoRotina; }
 
         private string FixSetCurrentIndex(string code)
         {
@@ -215,7 +216,7 @@ namespace CodeFlow
                             man.CodeId = reader.GetGuid(0);
                             man.Code = reader.GetString(1);
                             man.Plataform = reader.GetString(2);
-                            man.Tipo = reader.GetString(3);
+                            man.TipoRotina = reader.GetString(3);
                             man.Modulo = reader.GetString(4);
                             man.Parameter = reader.GetString(5);
                             man.ManualFile = reader.GetString(6);
@@ -267,6 +268,68 @@ namespace CodeFlow
             str += END_MANUAL;
 
             return str;
+        }
+        
+        public static List<ManuaCode> Search(Profile profile, string texto, int limitBodySize = 80, bool caseSensitive = false)
+        {
+            List<ManuaCode> results = new List<ManuaCode>();
+            SqlCommand cmd = new SqlCommand();
+            SqlDataReader reader = null;
+
+            lock (PackageOperations.lockObject)
+            {
+                if (!profile.GenioConfiguration.ConnectionIsOpen())
+                    profile.GenioConfiguration.OpenConnection();
+
+                if (profile.GenioConfiguration.ConnectionIsOpen())
+                {
+                    string tmp = String.Format("LEFT(CORPO, {0})", limitBodySize);
+                    if (limitBodySize == 0)
+                        tmp = "CORPO";
+                    string manuaQuery = String.Format("SELECT CODMANUA, {0}, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, LANG, ORDEM FROM GENMANUA WHERE CORPO LIKE @TERM", tmp);
+                    if (caseSensitive)
+                        manuaQuery += " COLLATE Latin1_General_BIN;";
+
+                    cmd.CommandText = manuaQuery;
+                    cmd.CommandType = global::System.Data.CommandType.Text;
+                    cmd.Parameters.AddWithValue("@TERM", "%" + texto + "%");
+                    cmd.Connection = profile.GenioConfiguration.SqlConnection;
+
+                    try
+                    {
+                        reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            Guid codmanua = reader.GetGuid(0);
+                            string corpo = reader.GetString(1);
+
+                            ManuaCode man = new ManuaCode(codmanua, corpo)
+                            {
+                                Plataform = reader.GetString(2),
+                                TipoRotina = reader.GetString(3),
+                                Modulo = reader.GetString(4),
+                                Parameter = reader.GetString(5),
+                                ManualFile = reader.GetString(6),
+                                Lang = reader.GetString(7),
+                                Order = reader.GetDouble(8)
+                            };
+                            man.CodeTransformKeyValue();
+                            results.Add(man);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    finally
+                    {
+                        if (reader != null && !reader.IsClosed)
+                            reader.Close();
+                    }
+                }
+            }
+
+            return results;
         }
     }
 }

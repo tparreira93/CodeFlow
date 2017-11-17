@@ -21,10 +21,11 @@
             <ListView.View>
                 <GridView>
                     <GridView.Columns>
-                        <GridViewColumn Header="Plat."      Width="50"  DisplayMemberBinding="{Binding Plataform}"/>
-                        <GridViewColumn Header="Lang"       Width="50"  DisplayMemberBinding="{Binding Lang}"/>
-                        <GridViewColumn Header="Tag"        Width="50"  DisplayMemberBinding="{Binding Tag}"/>
-                        <GridViewColumn Header="Code"       Width="150" DisplayMemberBinding="{Binding ShortCode}"/>
+                        <GridViewColumn Header="Type"           Width="50"  DisplayMemberBinding="{Binding TipoCodigo}"/>
+                        <GridViewColumn Header="Tag"            Width="50"  DisplayMemberBinding="{Binding Tag}"/>
+                        <GridViewColumn Header="Type Rot."      Width="50"  DisplayMemberBinding="{Binding Tipo}"/>
+                        <GridViewColumn Header="Plat."          Width="50"  DisplayMemberBinding="{Binding Plataform}"/>
+                        <GridViewColumn Header="Code"           Width="150" DisplayMemberBinding="{Binding ShortCode}"/>
                     </GridView.Columns>
                 </GridView>
             </ListView.View>
