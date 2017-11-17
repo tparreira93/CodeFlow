@@ -86,7 +86,7 @@ namespace CodeFlow
             }
         }
 
-        public string OpenManual(EnvDTE.DTE dte, Profile p)
+        public string OpenManual(EnvDTE80.DTE2 dte, Profile p)
         {
             string tmp = Path.GetTempPath() + Guid.NewGuid().ToString() + "." + GetCodeExtension(p);
             File.WriteAllText(tmp, ToString());

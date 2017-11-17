@@ -182,13 +182,16 @@
     <value>Conflict</value>
   </data>
   <data name="ErrorComparing" xml:space="preserve">
-    <value>An error occurred while comparing code!\n{0}</value>
+    <value>An error occurred while comparing code!
+{0}</value>
   </data>
   <data name="ErrorResolvingConflict" xml:space="preserve">
-    <value>An error occurred while resolving conflict!\n{0}</value>
+    <value>An error occurred while resolving conflict!
+{0}</value>
   </data>
   <data name="ErrorUpdating" xml:space="preserve">
-    <value>An error occurred while updating manual code!\n{0}</value>
+    <value>An error occurred while updating manual code!
+{0}</value>
   </data>
   <data name="Export" xml:space="preserve">
     <value>Export</value>
@@ -197,7 +200,8 @@
     <value>Export merged code?</value>
   </data>
   <data name="VerifyProfile" xml:space="preserve">
-    <value>Manual code not found in database!\nVerify your profile</value>
+    <value>Manual code not found in database!
+Verify your profile</value>
   </data>
   <data name="ConfirmAdd" xml:space="preserve">
     <value>Do you wish to add this profile?</value>
@@ -215,21 +219,31 @@
     <value>Create in genio</value>
   </data>
   <data name="ErrorAddProfile" xml:space="preserve">
-    <value>Unable to add profile!</value>
+    <value>Profile name must be unique!</value>
   </data>
   <data name="ErrorConnect" xml:space="preserve">
-    <value>Unable to connect to server {0}!\n{1}</value>
+    <value>Unable to connect to server {0}!
+{1}</value>
   </data>
   <data name="ErrorCreate" xml:space="preserve">
-    <value>Unable to create code in Genio!\n{0}</value>
+    <value>Unable to create code in Genio!
+{0}</value>
   </data>
   <data name="ErrorSelectDB" xml:space="preserve">
     <value>A server and database must be selected!</value>
   </data>
   <data name="ErrorSearch" xml:space="preserve">
-    <value>Unable to search for given terms!\n{0}</value>
+    <value>Unable to search for given terms!
+{0}</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>
+  </data>
+  <data name="Configuration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="ErrorRequest" xml:space="preserve">
+    <value>Unable to complete your request!
+{0}</value>
   </data>
 </root>

@@ -22,35 +22,24 @@ namespace CodeFlow
             LoadProfiles();
         }
 
-        private void btnSet_Click(object sender, EventArgs e)
-        {
-            if (lstProfiles.SelectedItems.Count > 0)
-            {
-                var item = lstProfiles.SelectedItems[0];
-                Profile profile = (Profile)item.Tag;
-
-                try
-                {
-                    PackageOperations.ActiveProfile = profile;
-                    LoadProfiles();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-        }
-
         private void btnAddProf_Click(object sender, EventArgs e)
         {
-            ConnectionForm connection = new ConnectionForm();
+            Profile p = new Profile();
+            ConnectionForm connection = new ConnectionForm(ConnectionForm.Mode.NEW, p);
             connection.ShowDialog();
-            LoadProfiles();
+            if (connection.DialogResult == DialogResult.OK)
+            {
+                if (PackageOperations.AddProfile(p.GenioConfiguration, p.ProfileName))
+                    LoadProfiles();
+            }
+            else
+                MessageBox.Show(Properties.Resources.ErrorAddProfile, 
+                    Properties.Resources.Configuration, 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void btnExit_Click(object sender, EventArgs e)
         {
-            PackageOperations.SaveProfiles();
             this.Close();
         }
 
@@ -79,18 +68,29 @@ namespace CodeFlow
             }
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            PackageOperations.SaveProfiles();
-        }
-
         private void lstProfiles_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if(lstProfiles.SelectedItems.Count == 1)
             {
-                ConnectionForm connectionForm = new ConnectionForm(ConnectionForm.Mode.EDIT, (Profile)lstProfiles.Items[lstProfiles.SelectedIndices[0]].Tag);
+                Profile p = lstProfiles.Items[lstProfiles.SelectedIndices[0]].Tag as Profile;
+                Profile tmp = new Profile(p);//Copy
+                ConnectionForm connectionForm = new ConnectionForm(ConnectionForm.Mode.EDIT, tmp);
                 connectionForm.ShowDialog();
+                if (connectionForm.DialogResult == DialogResult.OK)
+                {
+                    if(PackageOperations.UpdateProfile(p.ProfileName, tmp))
+                        LoadProfiles();
+                    else
+                        MessageBox.Show(Properties.Resources.ErrorAddProfile,
+                            Properties.Resources.Configuration,
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
+        }
+
+        private void ProfilesForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            PackageOperations.SaveProfiles();
         }
     }
 }

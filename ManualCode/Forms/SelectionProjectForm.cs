@@ -13,16 +13,17 @@ namespace CodeFlow.Forms
 {
     public partial class ProjectSelectionForm : Form
     {
-        private GenioSolutionProperties solutionProperties;
+        private List<GenioProjectProperties> savedFiles;
+        private GenioSolutionProperties solution;
         public bool Result { get; set; }
         public List<IManual> ExportCode { get; set; }
         public Dictionary<Guid, List<ManuaCode>> ConflictCode { get; set; }
 
-        public ProjectSelectionForm(GenioSolutionProperties solution)
+        public ProjectSelectionForm(List<GenioProjectProperties> saved)
         {
             InitializeComponent();
-
-            solutionProperties = solution;
+            solution = GenioSolutionProperties.ParseSolution(PackageOperations.DTE, false);
+            savedFiles = saved;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -32,7 +33,7 @@ namespace CodeFlow.Forms
 
         private void RefreshSavedFiles()
         {
-            foreach (GenioProjectProperties genioProject in solutionProperties.GenioProjects)
+            foreach (GenioProjectProperties genioProject in savedFiles)
             {
                 TreeNode node = new TreeNode(genioProject.ProjectName);
                 node.Tag = genioProject;
@@ -45,18 +46,15 @@ namespace CodeFlow.Forms
                 }
                 treeProjects.Nodes.Add(node);
             }
-            chkSavedFiles.Checked = true;
         }
         private void RefreshFullSolution()
         {
-            foreach (GenioProjectProperties genioProject in solutionProperties.GenioProjects)
+            foreach (GenioProjectProperties genioProject in solution.GenioProjects)
             {
                 TreeNode node = new TreeNode(genioProject.ProjectName);
                 node.Tag = genioProject;
                 treeProjects.Nodes.Add(node);
             }
-
-            chkSavedFiles.Checked = false;
         }
 
         private void SelectionProjectForm_Load(object sender, EventArgs e)
@@ -65,13 +63,11 @@ namespace CodeFlow.Forms
             {
                 RefreshFullSolution();
                 chkSavedFiles.Checked = false;
-                chkSavedFiles.Enabled = false;
             }
             else
             {
                 RefreshSavedFiles();
                 chkSavedFiles.Checked = true;
-                chkSavedFiles.Enabled = true;
             }
         }
 

@@ -91,8 +91,7 @@ namespace CodeFlow
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            DTE dte = PackageOperations.GetCurrentDTE();
-            GenioSolutionProperties.ChangeToolset2008(dte);
+            GenioSolutionProperties.ChangeToolset2008(PackageOperations.DTE);
         }
     }
 }

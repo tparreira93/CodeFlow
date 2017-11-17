@@ -92,10 +92,7 @@ namespace CodeFlow
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            List<ProjectItem> projectItems = new List<ProjectItem>();
-            PackageOperations.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.GetCurrentDTE());
-
-            ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(PackageOperations.SolutionProps);
+            ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(GenioSolutionProperties.SavedFiles);
             selectionProjectForm.ShowDialog();
 
             if(selectionProjectForm.Result)

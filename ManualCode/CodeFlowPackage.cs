@@ -53,6 +53,7 @@ namespace CodeFlow
 
         private DocumentEvents documentEnvents;
         private Events dteEvents;
+        private DteInitializer dteInitializer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportToGenio"/> class.
@@ -83,8 +84,7 @@ namespace CodeFlow
             FindInManualCodeCommand.Initialize(this);
             ManageProfiles.Initialize(this);
             ExportSolution.Initialize(this);
-
-            SetupEvents();
+            InitializeDTE();
 
             if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
             {
@@ -111,13 +111,31 @@ namespace CodeFlow
                 LoadConfig();
         }
 
-        #endregion
 
-        #region CustomEvents
+        private void InitializeDTE()
+        {
+            IVsShell shellService;
+
+            PackageOperations.DTE = this.GetService(typeof(Microsoft.VisualStudio.Shell.Interop.SDTE)) as EnvDTE80.DTE2;
+
+            if (PackageOperations.DTE == null) // The IDE is not yet fully initialized
+            {
+                shellService = this.GetService(typeof(SVsShell)) as IVsShell;
+                this.dteInitializer = new DteInitializer(shellService, this.InitializeDTE);
+            }
+            else
+            {
+                this.dteInitializer = null;
+                SetupEvents();
+            }
+        }
+
+    #endregion
+
+    #region CustomEvents
         private void SetupEvents()
         {
-            DTE dte = PackageOperations.GetCurrentDTE();
-            dteEvents = dte.Events;
+            dteEvents = PackageOperations.DTE.Events;
             documentEnvents = dteEvents.DocumentEvents;
             documentEnvents.DocumentSaved += OnDocumentSave;
         }
@@ -154,11 +172,11 @@ namespace CodeFlow
         {
             if (PackageOperations.ParseSolution)
             {
-                PackageOperations.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.GetCurrentDTE());
+                PackageOperations.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.DTE);
             }
             if(PackageOperations.AutoVCCTO2008Fix)
             {
-                GenioSolutionProperties.ChangeToolset2008(PackageOperations.GetCurrentDTE());
+                GenioSolutionProperties.ChangeToolset2008(PackageOperations.DTE);
             }
             return VSConstants.S_OK;
         }
@@ -216,7 +234,7 @@ namespace CodeFlow
                         if (PackageOperations.AllProfiles.Count == 0)
                             LoadConfig();
                         if(PackageOperations.ParseSolution)
-                            PackageOperations.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.GetCurrentDTE());
+                            PackageOperations.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.DTE);
                     }
                 );
         }*/
@@ -316,5 +334,49 @@ namespace CodeFlow
         }
 
         #endregion
+    }
+
+    internal class DteInitializer : IVsShellPropertyEvents
+    {
+        private IVsShell shellService;
+        private uint cookie;
+        private Action callback;
+
+        internal DteInitializer(IVsShell shellService, Action callback)
+        {
+            int hr;
+
+            this.shellService = shellService;
+            this.callback = callback;
+
+            // Set an event handler to detect when the IDE is fully initialized
+            hr = this.shellService.AdviseShellPropertyChanges(this, out this.cookie);
+
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+        }
+
+        int IVsShellPropertyEvents.OnShellPropertyChange(int propid, object var)
+        {
+            int hr;
+            bool isZombie;
+
+            if (propid == (int)__VSSPROPID.VSSPROPID_Zombie)
+            {
+                isZombie = (bool)var;
+
+                if (!isZombie)
+                {
+                    // Release the event handler to detect when the IDE is fully initialized
+                    hr = this.shellService.UnadviseShellPropertyChanges(this.cookie);
+
+                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+
+                    this.cookie = 0;
+
+                    this.callback();
+                }
+            }
+            return VSConstants.S_OK;
+        }
     }
 }

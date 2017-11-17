@@ -17,20 +17,21 @@ namespace CodeFlow
     public partial class ConnectionForm : Form
     {
         private bool servers = false;
-        private bool databases = false;
         private Mode openMode;
-        private Profile current;
+        private Profile current = new Profile();
+
         public enum Mode
         {
             NEW,
             EDIT
         }
 
-        public ConnectionForm(Mode mode = Mode.NEW, Profile profile = null)
+        public ConnectionForm(Mode mode, Profile profile)
         {
             InitializeComponent();
             openMode = mode;
             current = profile;
+            DialogResult = DialogResult.Cancel;
         }
 
         private void LoadServers()
@@ -51,29 +52,23 @@ namespace CodeFlow
 
         private void LoadDatabases()
         {
-            string server = cmbServers.Text;
-            string user = "QUIDGEST";
-            string pass = "ZPH2LAB";
-            if (server == null || server.Length == 0)
+            current.GenioConfiguration.Server = cmbServers.Text ?? "";
+            if (current.GenioConfiguration.Server.Length == 0
+                || current.GenioConfiguration.Username.Length == 0
+                || current.GenioConfiguration.Password.Length == 0)
                 return;
-
-            if (txtUsername.Text.Length > 0)
-                user = txtUsername.Text;
-            if (txtPassword.Text.Length > 0)
-                pass = txtPassword.Text;
-
-            string connectionStr = @"Data Source=" + server + ";Initial Catalog=master;User Id=" + user + ";Password=" + pass + ";";
-            string query = "SELECT name FROM sys.databases";
-
-            SqlConnection sqlConnection = new SqlConnection(connectionStr);
+            
+            SqlConnection sqlConnection = new SqlConnection(@"Data Source=" + current.GenioConfiguration.Server
+                + ";Initial Catalog=master;User Id=" + current.GenioConfiguration.Username
+                + ";Password=" + current.GenioConfiguration.Password + ";");
             try
             {
-                SqlCommand cmd = new SqlCommand
-                {
-                    CommandText = query,
-                    CommandType = CommandType.Text,
-                    Connection = sqlConnection
-                };
+                SqlCommand cmd = new SqlCommand();
+
+                cmd.CommandText = "SELECT name FROM sys.databases";
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection;
+                
                 sqlConnection.Open();
 
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -88,8 +83,8 @@ namespace CodeFlow
             }
             catch (Exception ex)
             {
-                MessageBox.Show(String.Format(Properties.Resources.ErrorConnect, server, ex.Message), Properties.Resources.ConnectDB, 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(String.Format(Properties.Resources.ErrorConnect, current.GenioConfiguration.Server, ex.Message), 
+                    Properties.Resources.ConnectDB, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -100,6 +95,13 @@ namespace CodeFlow
 
         private void ConnectionForm_Load(object sender, EventArgs e)
         {
+            txtConfigName.DataBindings.Add("Text", current, "ProfileName");
+            txtUsername.DataBindings.Add("Text", current.GenioConfiguration, "Username");
+            txtPassword.DataBindings.Add("Text", current.GenioConfiguration, "Password");
+            txtGenioUser.DataBindings.Add("Text", current.GenioConfiguration, "GenioUser");
+            txtGenioPath.DataBindings.Add("Text", current.GenioConfiguration, "GenioPath");
+            txtCheckoutPath.DataBindings.Add("Text", current.GenioConfiguration, "CheckoutPath");
+
             if (current.GenioConfiguration.Server.Length != 0 && current.GenioConfiguration.Database.Length != 0)
             {
                 cmbServers.Items.Add(current.GenioConfiguration.Server);
@@ -107,144 +109,54 @@ namespace CodeFlow
                 cmbDb.Items.Add(current.GenioConfiguration.Database);
                 cmbDb.SelectedIndex = 0;
             }
-            txtUsername.Text = current.GenioConfiguration.Username;
-            txtPassword.Text = current.GenioConfiguration.Password;
-            txtGenioUser.Text = current.GenioConfiguration.GenioUser;
-            txtGenioPath.Text = current.GenioConfiguration.GenioPath;
-            txtCheckoutPath.Text = current.GenioConfiguration.CheckoutPath;
 
-            if (txtUsername.Text.Length == 0)
-            {
-                txtUsername.Text = "QUIDGEST";
-                txtPassword.Text = "ZPH2LAB";
-            }
-            if(txtGenioUser.Text.Length == 0)
+            if (txtGenioUser.Text.Length == 0)
                 txtGenioUser.Text = Environment.UserName;
         }
 
         private void cmbServers_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            LoadDatabases();
-        }
+        { }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            string sv = (string)cmbServers.Text;
-            string db = (string)cmbDb.Text;
-            string us = "QUIDGEST";
-            string pw = "ZPH2LAB";
-            string genioPath = txtGenioPath.Text;
-            string checkoutPath = txtCheckoutPath.Text;
+            current.GenioConfiguration.Server = cmbServers.Text ?? "";
+            current.GenioConfiguration.Database = cmbDb.Text ?? "";
 
-            if (txtUsername.Text.Length != 0)
-            {
-                us = txtUsername.Text;
-                if (txtPassword.Text.Length != 0)
-                    pw = txtPassword.Text;
-            }
-
-            if(us.Length == 0)
-                pw = "";
-
-            if (openMode == Mode.NEW && !PackageOperations.AddProfile(sv, db, us, pw, txtGenioUser.Text, txtConfigName.Text))
-            {
-                MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.ConnectDB, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            else if (openMode == Mode.EDIT && current != null)
-            {
-                Genio genio = new Genio
-                {
-                    Server = sv,
-                    Database = db,
-                    Username = us,
-                    Password = pw,
-                    GenioUser = txtGenioUser.Text
-                };
-                genio.GenioPath = genioPath;
-                genio.CheckoutPath = checkoutPath;
-                PackageOperations.UpdateProfile(current.ProfileName, new Profile(txtConfigName.Text, genio));
-            }
-
+            DialogResult = DialogResult.OK;
             this.Close();
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
+            servers = false;
             LoadServers();
         }
 
         private void btnTry_Click(object sender, EventArgs e)
         {
-            string server = cmbServers.Text;
-            string db = cmbDb.Text;
-            string username = "QUIDGEST";
-            string password = "ZPH2LAB";
-            string genioPath = txtGenioPath.Text;
-            string checkoutPath = txtCheckoutPath.Text;
-
-            if (txtUsername.Text.Length != 0)
-            {
-                username = txtUsername.Text;
-                if (txtPassword.Text.Length != 0)
-                    password = txtPassword.Text;
-            }
-
-            if (username.Length == 0)
-                password = "";
-
-            if (server == null || db == null || server.Length == 0 || db.Length == 0)
-            {
-                MessageBox.Show(Properties.Resources.ErrorSelectDB, Properties.Resources.ConnectDB, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            Genio genio = new Genio
-            {
-                Server = server,
-                Database = db,
-                Username = username,
-                Password = password,
-                GenioUser = txtGenioUser.Text
-            };
-            genio.GenioPath = genioPath;
-            genio.CheckoutPath = checkoutPath;
-
-            if (genio.OpenConnection())
+            current.GenioConfiguration.Server = cmbServers.Text ?? "";
+            current.GenioConfiguration.Database = cmbDb.Text ?? "";
+            if (current.GenioConfiguration.OpenConnection())
             {
                 MessageBox.Show(Properties.Resources.ConnectionOpen, Properties.Resources.ConnectDB, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                genio.CloseConnection();
+                current.GenioConfiguration.CloseConnection();
 
                 if (openMode == Mode.NEW)
                 {
                     if (MessageBox.Show(Properties.Resources.ConfirmAdd, Properties.Resources.ConnectDB, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
-                        if (!PackageOperations.AddProfile(genio, txtConfigName.Text))
-                            MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.ConnectDB, MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                        else
-                            this.Close();
+                        DialogResult = DialogResult.OK;
+                        this.Close();
                     }
                 }
                 else
                 {
                     if (MessageBox.Show(Properties.Resources.ConfirmUpdate, Properties.Resources.ConnectDB, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     {
-                        UpdateProfile(current.ProfileName, new Profile(txtConfigName.Text, genio));
+                        DialogResult = DialogResult.OK;
                         this.Close();
                     }
                 }
-            }
-        }
-
-        private void UpdateProfile(string profileName, Profile profile)
-        {
-            Profile p = PackageOperations.AllProfiles.Find(x => x.ProfileName.Equals(profileName) == true);
-            if(p != null)
-            {
-                p.GenioConfiguration.CloseConnection();
-                p.ProfileName = profile.ProfileName;
-                p.GenioConfiguration = profile.GenioConfiguration;
             }
         }
 
@@ -265,12 +177,8 @@ namespace CodeFlow
 
         private void cmbDb_MouseClick(object sender, MouseEventArgs e)
         {
-            if (cmbServers.DroppedDown)
-            {
-                if(!databases)
-                    LoadDatabases();
-                databases = true;
-            }
+            if (cmbDb.DroppedDown)
+                LoadDatabases();
         }
     }
 }

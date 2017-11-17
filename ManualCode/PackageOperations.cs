@@ -8,6 +8,7 @@ using CodeFlow.SolutionOperations;
 using System.Windows.Forms;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
+using System.Xml.Serialization;
 
 namespace CodeFlow
 {
@@ -27,6 +28,7 @@ namespace CodeFlow
         private static Boolean parseSolution = false;
         private static ClientInfo client = new ClientInfo();
         private static List<Form> openForms = new List<Form>();
+        private static DTE2 dte;
 
 
         internal static Profile ActiveProfile { get => activeProfile; set => activeProfile = value; }
@@ -40,43 +42,39 @@ namespace CodeFlow
         internal static ClientInfo Client { get => client; set => client = value; }
         public static List<Form> OpenForms { get => openForms; set => openForms = value; }
         public static bool AutoVCCTO2008Fix { get; internal set; }
+        public static DTE2 DTE { get => dte; set => dte = value; }
 
         public static bool AddProfile(Genio connection, string profileName)
         {
             if (AllProfiles.Find(x => x.ProfileName.Equals(profileName) == true) == null)
             {
                 Profile profile = new Profile(profileName, connection);
+                profile.GenioConfiguration.ParseGenioFiles();
                 AllProfiles.Add(profile);
                 return true;
             }
             return false;
         }
 
-        public static bool AddProfile(string server, string database, string dbuser, string password, string username, string profileName)
+        public static bool UpdateProfile(string profileName, Profile newProfile)
         {
-            Genio connection = new Genio(server, database, dbuser, password, username);
-            return AddProfile(connection, profileName);
-        }
-
-        public static void UpdateProfile(string profileName, Profile newProfile)
-        {
-            Profile p = AllProfiles.Find(x => x.ProfileName.Equals(profileName) == true);
-            if (p != null)
+            Profile p = AllProfiles.Find(x => x.ProfileName.Equals(newProfile.ProfileName) 
+                                                    && !x.ProfileID.Equals(newProfile.ProfileID));
+            if(p == null)
             {
-                p.GenioConfiguration.CloseConnection();
-                p.ProfileName = newProfile.ProfileName;
-                p.GenioConfiguration = newProfile.GenioConfiguration;
+                RemoveProfile(profileName);
+                AllProfiles.Add(newProfile);
+                newProfile.GenioConfiguration.ParseGenioFiles();
+                return true;
             }
+            return false;
         }
 
         public static void RemoveProfile(string profileName)
         {
             Profile p = AllProfiles.Find(x => x.ProfileName.Equals(profileName));
             if (p != null)
-            {
-                p.GenioConfiguration.CloseConnection();
                 AllProfiles.Remove(p);
-            }
         }
 
         public static void SetProfile(string profileName)
@@ -94,115 +92,29 @@ namespace CodeFlow
 
         public static string SaveProfiles(List<Profile> configs)
         {
-            XmlDocument doc = new XmlDocument();
-            XmlDeclaration xmlDeclaration = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
-            XmlElement root = doc.DocumentElement;
-            doc.InsertBefore(xmlDeclaration, root);
-
-            foreach (Profile p in configs)
+            var stringwriter = new StringWriter();
+            try
             {
-                XmlElement element1 = doc.CreateElement(string.Empty, "ManualConfig", string.Empty);
-                doc.AppendChild(element1);
-
-                XmlElement server = doc.CreateElement(string.Empty, "SqlServer", string.Empty);
-                XmlText text1 = doc.CreateTextNode(p.GenioConfiguration.Server);
-                server.AppendChild(text1);
-                element1.AppendChild(server);
-
-                XmlElement database = doc.CreateElement(string.Empty, "Database", string.Empty);
-                XmlText text2 = doc.CreateTextNode(p.GenioConfiguration.Database);
-                database.AppendChild(text2);
-                element1.AppendChild(database);
-
-                XmlElement username = doc.CreateElement(string.Empty, "User", string.Empty);
-                XmlText text3 = doc.CreateTextNode(p.GenioConfiguration.Username);
-                username.AppendChild(text3);
-                element1.AppendChild(username);
-
-                XmlElement password = doc.CreateElement(string.Empty, "Password", string.Empty);
-                XmlText text4 = doc.CreateTextNode(p.GenioConfiguration.Password);
-                password.AppendChild(text4);
-                element1.AppendChild(password);
-
-                XmlElement geniouser = doc.CreateElement(string.Empty, "GenioUser", string.Empty);
-                XmlText text5 = doc.CreateTextNode(p.GenioConfiguration.GenioUser);
-                geniouser.AppendChild(text5);
-                element1.AppendChild(geniouser);
-
-                XmlElement profilename = doc.CreateElement(string.Empty, "ProfileName", string.Empty);
-                XmlText text6 = doc.CreateTextNode(p.ProfileName);
-                profilename.AppendChild(text6);
-                element1.AppendChild(profilename);
-
-                XmlElement geniocheckout = doc.CreateElement(string.Empty, "CheckoutPath", string.Empty);
-                XmlText text7 = doc.CreateTextNode(p.GenioConfiguration.CheckoutPath);
-                geniocheckout.AppendChild(text7);
-                element1.AppendChild(geniocheckout);
-
-                XmlElement geniopath = doc.CreateElement(string.Empty, "GenioPath", string.Empty);
-                XmlText text8 = doc.CreateTextNode(p.GenioConfiguration.GenioPath);
-                geniopath.AppendChild(text8);
-                element1.AppendChild(geniopath);
+                var serializer = new XmlSerializer(configs.GetType());
+                serializer.Serialize(stringwriter, configs);
             }
-
-            return doc.OuterXml;
+            catch(Exception)
+            { }
+            return stringwriter.ToString();
         }
 
         public static List<Profile> LoadProfiles(string conn)
         {
-            List<Profile> profiles = new List<Profile>();
-            if (conn.Length != 0)
+            List<Profile> profiles = null;
+            try
             {
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml(conn);
-
-                XmlNodeList nodes = doc.SelectNodes("/ManualConfig");
-                foreach (XmlNode item in nodes)
-                {
-                    Profile p = new Profile();
-                    Genio connection = new Genio();
-                    XmlNode node = item.SelectSingleNode("/ManualConfig/SqlServer");
-                    if (node != null)
-                        connection.Server = node.InnerText;
-
-                    node = item.SelectSingleNode("/ManualConfig/Database");
-                    if (node != null)
-                        connection.Database = node.InnerText;
-
-                    node = item.SelectSingleNode("/ManualConfig/User");
-                    if (node != null)
-                        connection.Username = node.InnerText;
-
-                    node = item.SelectSingleNode("/ManualConfig/Password");
-                    if (node != null)
-                        connection.Password = node.InnerText;
-
-                    node = item.SelectSingleNode("/ManualConfig/GenioUser");
-                    if (node != null)
-                        connection.GenioUser = node.InnerText;
-
-                    node = item.SelectSingleNode("/ManualConfig/GenioUser");
-                    if (node != null)
-                        connection.GenioUser = node.InnerText;
-
-                    node = item.SelectSingleNode("/ManualConfig/ProfileName");
-                    if (node != null)
-                        p.ProfileName = node.InnerText;
-
-                    node = item.SelectSingleNode("/ManualConfig/CheckoutPath");
-                    if (node != null)
-                        connection.CheckoutPath = node.InnerText;
-
-                    node = item.SelectSingleNode("/ManualConfig/GenioPath");
-                    if (node != null)
-                        connection.GenioPath = node.InnerText;
-                    connection.GenioPath = node.InnerText;
-
-                    p.GenioConfiguration = connection;
-                    profiles.Add(p);
-                }
+                var stringReader = new System.IO.StringReader(conn);
+                var serializer = new XmlSerializer(typeof(List<Profile>));
+                profiles = serializer.Deserialize(stringReader) as List<Profile>;
             }
-            return profiles;
+            catch(Exception)
+            { }
+            return profiles ?? new List<Profile>(); ;
         }
 
         public static void AddTempFile(string file)

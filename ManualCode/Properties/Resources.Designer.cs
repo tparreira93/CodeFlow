@@ -90,6 +90,15 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configuration.
+        /// </summary>
+        internal static string Configuration {
+            get {
+                return ResourceManager.GetString("Configuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you wish to add this profile?.
         /// </summary>
         internal static string ConfirmAdd {
@@ -223,7 +232,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to add profile!.
+        ///   Looks up a localized string similar to Profile name must be unique!.
         /// </summary>
         internal static string ErrorAddProfile {
             get {
@@ -232,7 +241,8 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error occurred while comparing code!\n{0}.
+        ///   Looks up a localized string similar to An error occurred while comparing code!
+        ///{0}.
         /// </summary>
         internal static string ErrorComparing {
             get {
@@ -241,7 +251,8 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to connect to server {0}!\n{1}.
+        ///   Looks up a localized string similar to Unable to connect to server {0}!
+        ///{1}.
         /// </summary>
         internal static string ErrorConnect {
             get {
@@ -250,7 +261,8 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to create code in Genio!\n{0}.
+        ///   Looks up a localized string similar to Unable to create code in Genio!
+        ///{0}.
         /// </summary>
         internal static string ErrorCreate {
             get {
@@ -259,7 +271,18 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error occurred while resolving conflict!\n{0}.
+        ///   Looks up a localized string similar to Unable to complete your request!
+        ///{0}.
+        /// </summary>
+        internal static string ErrorRequest {
+            get {
+                return ResourceManager.GetString("ErrorRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while resolving conflict!
+        ///{0}.
         /// </summary>
         internal static string ErrorResolvingConflict {
             get {
@@ -268,7 +291,8 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to search for given terms!\n{0}.
+        ///   Looks up a localized string similar to Unable to search for given terms!
+        ///{0}.
         /// </summary>
         internal static string ErrorSearch {
             get {
@@ -286,7 +310,8 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error occurred while updating manual code!\n{0}.
+        ///   Looks up a localized string similar to An error occurred while updating manual code!
+        ///{0}.
         /// </summary>
         internal static string ErrorUpdating {
             get {
@@ -420,7 +445,8 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manual code not found in database!\nVerify your profile.
+        ///   Looks up a localized string similar to Manual code not found in database!
+        ///Verify your profile.
         /// </summary>
         internal static string VerifyProfile {
             get {
