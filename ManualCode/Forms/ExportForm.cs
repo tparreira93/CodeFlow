@@ -89,19 +89,20 @@ namespace CodeFlow
                     continue;
                 IManual man = (IManual)items[i].Tag;
 
-                if (CompareCode(man))
+                DialogResult result = CompareCode(man);
+                if (result == DialogResult.Yes)
                     exportCode.Remove(man);
-                else
+                else if(result == DialogResult.Cancel)
                     break;
             }
 
             RefreshForm();
         }
 
-        private bool CompareCode(IManual man)
+        private DialogResult CompareCode(IManual man)
         {
             IManual bd;
-            bool funcResult = true;
+            DialogResult funcResult = DialogResult.Yes;
             try
             {
                 if (man is ManuaCode)
@@ -112,7 +113,7 @@ namespace CodeFlow
                 if (bd == null)
                 {
                     MessageBox.Show(String.Format(Properties.Resources.VerifyProfile), Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    funcResult = false;
+                    funcResult = DialogResult.Cancel;
                 }
                 else
                     man = Manual.Merge(man, bd);
@@ -121,27 +122,27 @@ namespace CodeFlow
             {
                 MessageBox.Show(String.Format(Properties.Resources.ErrorComparing, ex.Message),
                     Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                funcResult = false;
+                funcResult = DialogResult.Cancel;
             }
 
-            if (!funcResult)
+            if (funcResult != DialogResult.Yes)
                 return funcResult;
 
-            DialogResult result = MessageBox.Show(Properties.Resources.ExportedMerged,
+            funcResult = MessageBox.Show(Properties.Resources.ExportedMerged,
                 Properties.Resources.Export, MessageBoxButtons.YesNoCancel);
 
             try
             {
-                if (result == DialogResult.Yes)
-                    return man.Update(PackageOperations.ActiveProfile);
-                else if (result == DialogResult.Cancel)
-                    funcResult = false;
+                if (funcResult == DialogResult.Yes)
+                {
+                    man.Update(PackageOperations.ActiveProfile);
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(String.Format(Properties.Resources.ErrorUpdating, ex.Message),
                     Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                funcResult = false;
+                funcResult = DialogResult.Cancel;
             }
 
             return funcResult;
@@ -198,7 +199,8 @@ namespace CodeFlow
                 }
                 else if (item.Tag is Manual)
                 {
-                    if (CompareCode((Manual)item.Tag))
+                    DialogResult result = CompareCode((Manual)item.Tag);
+                    if(result == DialogResult.Yes)
                         exportCode.Remove((Manual)item.Tag);
                 }
             }

@@ -37,8 +37,10 @@ namespace CodeFlow.SolutionOperations
 
         public GenioProjectProperties(Project genioProject, List<GenioProjectItem> projectFiles)
         {
+            ProjectName = genioProject.Name;
             GenioProject = genioProject;
             ProjectFiles = projectFiles;
+            ProjectLang = GetProjectLanguage(GenioProject);
         }
 
         public static ProjectLanguage GetProjectLanguage(Project proj)

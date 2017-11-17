@@ -44,6 +44,40 @@ namespace CodeFlow
         public static bool AutoVCCTO2008Fix { get; internal set; }
         public static DTE2 DTE { get => dte; set => dte = value; }
 
+        public static String SearchLastActiveProfile(string folder)
+        {
+            string file = $"{folder}\\LastActiveProfile.xml";
+            String p = null;
+            try
+            {
+                if (File.Exists(file))
+                {
+                    var stringReader = new System.IO.StringReader(File.ReadAllText(file));
+                    var serializer = new XmlSerializer(typeof(String));
+                    p = serializer.Deserialize(stringReader) as String;
+                }
+            }
+            catch (Exception)
+            { }
+
+            return p;
+        }
+
+        public static void StoreLastProfile(string folder)
+        {
+            string file = $"{folder}\\LastActiveProfile.xml";
+            try
+            {
+                var stringwriter = new StringWriter();
+                var serializer = new XmlSerializer(ActiveProfile.ProfileName.GetType());
+                serializer.Serialize(stringwriter, ActiveProfile.ProfileName);
+
+                File.WriteAllText(file, stringwriter.ToString());                
+            }
+            catch (Exception)
+            { }
+        }
+
         public static bool AddProfile(Genio connection, string profileName)
         {
             if (AllProfiles.Find(x => x.ProfileName.Equals(profileName) == true) == null)

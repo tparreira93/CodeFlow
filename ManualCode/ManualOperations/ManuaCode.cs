@@ -124,11 +124,8 @@ namespace CodeFlow
                 {
                     try
                     {
-                        SqlCommand cmd = new SqlCommand
-                        {
-                            CommandText = String.Format("UPDATE GENMANUA SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODMANUA = @CODMANUA")
-                        };
-
+                        SqlCommand cmd = new SqlCommand();
+                        cmd.CommandText = String.Format("UPDATE GENMANUA SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODMANUA = @CODMANUA");
                         cmd.Parameters.AddWithValue("@CORPO", this.Code);
                         cmd.Parameters.AddWithValue("@CODMANUA", this.CodeId);
                         cmd.Parameters.AddWithValue("@OPERMUDA", PackageOperations.ActiveProfile.GenioConfiguration.Username);
@@ -159,29 +156,27 @@ namespace CodeFlow
                 {
                     try
                     {
-                        SqlCommand cmd = new SqlCommand
-                        {
-                            CommandText = String.Format("INSERT INTO GENMANUA (CODMANUA, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, CORPO, LANG, ORDEM, CODCARAC, CODMODUL, ISSISTEM, NEGCARAC, CARAC, DATACRIA, OPERCRIA, ZZSTATE) "
-                        + "VALUES (@CODMANUA, @PLATAFOR, @TIPO, @MODULO, @PARAMETR, @FICHEIRO, @CORPO, @LANG, @ORDEM, @CODCARAC, @CODMODUL, @ISSISTEM, @NEGCARAC, @CARAC, @DATACRIA, @OPERCRIA, 0)")
-                        };
+                        SqlCommand cmd = new SqlCommand();
+                        cmd.CommandText = String.Format("INSERT INTO GENMANUA (CODMANUA, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, CORPO, LANG, ORDEM, CODCARAC, CODMODUL, ISSISTEM, NEGCARAC, CARAC, DATACRIA, OPERCRIA, ZZSTATE) "
+                        + "VALUES (@CODMANUA, @PLATAFOR, @TIPO, @MODULO, @PARAMETR, @FICHEIRO, @CORPO, @LANG, @ORDEM, @CODCARAC, @CODMODUL, @ISSISTEM, @NEGCARAC, @CARAC, @DATACRIA, @OPERCRIA, 0)");
 
                         cmd.Parameters.AddWithValue("@CODMANUA", this.CodeId);
-                    cmd.Parameters.AddWithValue("@PLATAFOR", this.Plataform);
-                    cmd.Parameters.AddWithValue("@TIPO", this.Tag);
-                    cmd.Parameters.AddWithValue("@MODULO", this.Modulo);
-                    cmd.Parameters.AddWithValue("@PARAMETR", this.Parameter);
-                    cmd.Parameters.AddWithValue("@FICHEIRO", this.ManualFile);
-                    cmd.Parameters.AddWithValue("@CORPO", this.Code);
-                    cmd.Parameters.AddWithValue("@LANG", this.Lang);
-                    cmd.Parameters.AddWithValue("@ORDEM", this.Order);
-                    cmd.Parameters.AddWithValue("@CODCARAC", this.Codfeature);
-                    cmd.Parameters.AddWithValue("@CODMODUL", this.Codmodul);
-                    cmd.Parameters.AddWithValue("@ISSISTEM", this.System);
-                    cmd.Parameters.AddWithValue("@NEGCARAC", this.Inhib);
-                    cmd.Parameters.AddWithValue("@CARAC", this.Feature);
-                    cmd.Parameters.AddWithValue("@DATACRIA", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@OPERCRIA", this.GenioUser);
-                    cmd.Connection = profile.GenioConfiguration.SqlConnection;
+                        cmd.Parameters.AddWithValue("@PLATAFOR", this.Plataform);
+                        cmd.Parameters.AddWithValue("@TIPO", this.Tag);
+                        cmd.Parameters.AddWithValue("@MODULO", this.Modulo);
+                        cmd.Parameters.AddWithValue("@PARAMETR", this.Parameter);
+                        cmd.Parameters.AddWithValue("@FICHEIRO", this.ManualFile);
+                        cmd.Parameters.AddWithValue("@CORPO", this.Code);
+                        cmd.Parameters.AddWithValue("@LANG", this.Lang);
+                        cmd.Parameters.AddWithValue("@ORDEM", this.Order);
+                        cmd.Parameters.AddWithValue("@CODCARAC", this.Codfeature);
+                        cmd.Parameters.AddWithValue("@CODMODUL", this.Codmodul);
+                        cmd.Parameters.AddWithValue("@ISSISTEM", this.System);
+                        cmd.Parameters.AddWithValue("@NEGCARAC", this.Inhib);
+                        cmd.Parameters.AddWithValue("@CARAC", this.Feature);
+                        cmd.Parameters.AddWithValue("@DATACRIA", DateTime.Now);
+                        cmd.Parameters.AddWithValue("@OPERCRIA", this.GenioUser);
+                        cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
                     return cmd.ExecuteNonQuery() != 0;
                     }
@@ -207,13 +202,10 @@ namespace CodeFlow
                 {
                     try
                     {
-                        SqlCommand cmd = new SqlCommand
-                        {
-                            CommandText = 
-                            String.Format("SELECT CODMANUA, CORPO, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, LANG, ORDEM FROM GENMANUA WHERE CODMANUA = '{0}'", codmanua),
-                            CommandType = global::System.Data.CommandType.Text,
-                            Connection = profile.GenioConfiguration.SqlConnection
-                        };
+                        SqlCommand cmd = new SqlCommand();
+                        cmd.CommandText = String.Format("SELECT CODMANUA, CORPO, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, LANG, ORDEM FROM GENMANUA WHERE CODMANUA = '{0}'", codmanua);
+                        cmd.CommandType = global::System.Data.CommandType.Text;
+                        cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
                         reader = cmd.ExecuteReader();
                         man = new ManuaCode("");
@@ -229,10 +221,7 @@ namespace CodeFlow
                             man.ManualFile = reader.GetString(6);
                             man.Lang = reader.GetString(7);
                             man.Order = reader.GetDouble(8);
-                            foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
-                            {
-                                man.Code.Replace((char)entry.Key, (char)entry.Value);
-                            }
+                            man.CodeTransformKeyValue();
                         }
 
                     }
@@ -258,22 +247,16 @@ namespace CodeFlow
             Compare(this, bd);
         }
 
-        public void ShowSVNLog(Profile profile, string systemName)
+        public override void ShowSVNLog(Profile profile, string systemName)
         {
             try
             {
-                string path = String.Format($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "MANUAL" + this.ManualFile + "." + systemName}");
-                Process merge = new Process();
-                merge.StartInfo.FileName = "TortoiseProc.exe ";
-                merge.StartInfo.Arguments = $"/command:log /path:{path}";
-                merge.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
-                merge.Start();
+                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "MAN" + this.ManualFile + "." + systemName}");
             }
             catch(Exception e)
             {
                 throw e;
             }
-
         }
 
         public override string ToString()

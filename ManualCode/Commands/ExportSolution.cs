@@ -103,7 +103,6 @@ namespace CodeFlow
                 ExportForm export = new ExportForm(toExport, conflict);
                 export.Show();
             }
-
         }
     }
 }

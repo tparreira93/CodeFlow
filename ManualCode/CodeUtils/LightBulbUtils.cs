@@ -73,6 +73,8 @@ namespace CodeFlow.CodeUtils
             begin = -1;
             length = -1;
             int end = 0;
+            int platBegin = -1;
+            int platEnd = -1;
 
             if (code != null && !code.Equals("") && code.Length >= ManuaCode.BEGIN_MANUAL.Length)
             {
@@ -82,6 +84,8 @@ namespace CodeFlow.CodeUtils
 
             if (begin != -1 && begin <= pos && end > begin)
             {
+                platBegin = code.LastIndexOf(Utils.Util.NewLine, begin);
+                platEnd = code.LastIndexOf(Utils.Util.NewLine, platBegin);
                 length = end - begin;
                 subCode = code.Substring(begin, length);
             }

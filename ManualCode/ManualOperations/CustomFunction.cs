@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 
 namespace CodeFlow
 {
@@ -118,10 +119,7 @@ namespace CodeFlow
                             custom.Nome = reader.GetString(2);
                             custom.Code = reader.GetString(3);
                             custom.Plataform = reader.GetString(4);
-                            foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
-                            {
-                                custom.Code.Replace((char)entry.Key, (char)entry.Value);
-                            }
+                            custom.CodeTransformKeyValue();
                         }
                     }
                     catch (Exception ex)
@@ -134,6 +132,25 @@ namespace CodeFlow
             return custom;
         }
 
+        public void CompareDB(Profile profile)
+        {
+            CustomFunction bd = GetManual(CodeId, profile);
+
+            Compare(this, bd);
+        }
+
+        public override void ShowSVNLog(Profile profile, string systemName)
+        {
+            try
+            {
+                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "Functions." + systemName}");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+        }
 
         public override string ToString()
         {

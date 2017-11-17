@@ -19,5 +19,11 @@ namespace CodeFlow
         bool Update(Profile profile);
 
         string OpenManual(EnvDTE80.DTE2 dte, Profile p);
+
+        void CodeTransformKeyValue();
+
+        void CodeTransformValueKey();
+
+        void ShowSVNLog(Profile profile, string systemName);
     }
 }

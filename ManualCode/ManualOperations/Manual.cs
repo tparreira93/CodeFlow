@@ -129,7 +129,6 @@ namespace CodeFlow
                             string plataforma = reader.GetString(2);
                             string nome = reader.GetString(3);
                             string tipo = reader.GetString(4);
-                            tmp = corpo;
 
                             IManual man;
                             if (tipo.Equals("CUSTOM"))
@@ -137,10 +136,7 @@ namespace CodeFlow
                             else
                                 man = new ManuaCode(corpo);
 
-                            foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
-                            {
-                                corpo.Replace((char)entry.Key, (char)entry.Value);
-                            }
+                            man.CodeTransformKeyValue();
                             man.CodeId = codmanua;
                             man.Code = corpo;
                             man.Plataform = plataforma;
@@ -175,7 +171,6 @@ namespace CodeFlow
         {
             try
             {
-
                 if (m1 == null 
                     || m2 == null)
                 {
@@ -205,17 +200,15 @@ namespace CodeFlow
 
                 finalCode = File.ReadAllText(tmpFinal);
 
-                foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
-                {
-                    finalCode.Replace((char)entry.Value, (char)entry.Key);
-                }
-
                 File.Delete(tmpBD);
                 File.Delete(tmpOld);
                 File.Delete(tmpCode);
                 File.Delete(tmpFinal);
 
-                return new ManuaCode(m1.CodeId, finalCode);
+                IManual m = new ManuaCode(m1.CodeId, finalCode);
+                m.CodeTransformValueKey();
+
+                return m;
             }
             catch(Exception e)
             {
@@ -284,10 +277,7 @@ namespace CodeFlow
                 }
 
                 IManual m = (IManual)ctor.Invoke(new object[] { Guid.Parse(guid), code });
-                foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
-                {
-                    code.Replace((char)entry.Value, (char)entry.Key);
-                }
+                m.CodeTransformValueKey();
                 man.Add(m);
 
                 b = vscode.IndexOf(begin);
@@ -297,5 +287,38 @@ namespace CodeFlow
         }
 
         public abstract bool Update(Profile profile);
+
+        protected void OpenSVNLog(string filePath)
+        {
+            try
+            {
+                Process merge = new Process();
+                merge.StartInfo.FileName = "TortoiseProc.exe ";
+                merge.StartInfo.Arguments = $"/command:log /path:{filePath}";
+                merge.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
+                merge.Start();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public void CodeTransformKeyValue()
+        {
+            foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
+            {
+                Code.Replace((char)entry.Key, (char)entry.Value);
+            }
+        }
+        public void CodeTransformValueKey()
+        {
+            foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
+            {
+                Code.Replace((char)entry.Value, (char)entry.Key);
+            }
+        }
+
+        public abstract void ShowSVNLog(Profile profile, string systemName);
     }
 }

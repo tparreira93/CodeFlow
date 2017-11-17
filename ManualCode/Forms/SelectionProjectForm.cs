@@ -22,7 +22,7 @@ namespace CodeFlow.Forms
         public ProjectSelectionForm(List<GenioProjectProperties> saved)
         {
             InitializeComponent();
-            solution = GenioSolutionProperties.ParseSolution(PackageOperations.DTE, false);
+            solution = GenioSolutionProperties.ParseSolution(PackageOperations.DTE, true);
             savedFiles = saved;
         }
 
@@ -33,10 +33,12 @@ namespace CodeFlow.Forms
 
         private void RefreshSavedFiles()
         {
+            treeProjects.Nodes.Clear();
             foreach (GenioProjectProperties genioProject in savedFiles)
             {
                 TreeNode node = new TreeNode(genioProject.ProjectName);
                 node.Tag = genioProject;
+                treeProjects.Nodes.Add(node);
 
                 foreach (GenioProjectItem item in genioProject.ProjectFiles)
                 {
@@ -44,11 +46,11 @@ namespace CodeFlow.Forms
                     itemNode.Tag = item;
                     node.Nodes.Add(itemNode);
                 }
-                treeProjects.Nodes.Add(node);
             }
         }
         private void RefreshFullSolution()
         {
+            treeProjects.Nodes.Clear();
             foreach (GenioProjectProperties genioProject in solution.GenioProjects)
             {
                 TreeNode node = new TreeNode(genioProject.ProjectName);
@@ -61,13 +63,13 @@ namespace CodeFlow.Forms
         {
             if (GenioSolutionProperties.SavedFiles.Count == 0)
             {
-                RefreshFullSolution();
                 chkSavedFiles.Checked = false;
+                chkSavedFiles.Enabled = false;
             }
             else
             {
-                RefreshSavedFiles();
                 chkSavedFiles.Checked = true;
+                chkSavedFiles.Enabled = true;
             }
         }
 
@@ -76,15 +78,24 @@ namespace CodeFlow.Forms
             List<GenioProjectProperties> projects = new List<GenioProjectProperties>();
             foreach (TreeNode node in treeProjects.Nodes)
             {
-                if(node.Tag is GenioProjectProperties)
+                if(node.Tag is GenioProjectProperties && !node.Checked)
+                {
+                    GenioProjectProperties proj = node.Tag as GenioProjectProperties;
+                    List<GenioProjectItem> items = new List<GenioProjectItem>();
+
+                    foreach (TreeNode level2 in node.Nodes)
+                        if (level2.Tag is GenioProjectItem && level2.Checked)
+                            items.Add(level2.Tag as GenioProjectItem);
+
+                    if (items.Count > 0)
+                        projects.Add(new GenioProjectProperties(proj.GenioProject, items));
+                }
+                else if (node.Tag is GenioProjectProperties && node.Checked)
                 {
                     GenioProjectProperties project = (GenioProjectProperties)node.Tag;
                     projects.Add(project);
                 }
             }
-
-            if (projects.Count == 0)
-                return;
 
             ProjectsAnalyzer analyzer = new ProjectsAnalyzer(projects);
             analyzer.Analyze();
@@ -100,6 +111,24 @@ namespace CodeFlow.Forms
                 RefreshSavedFiles();
             else
                 RefreshFullSolution();
+        }
+
+        private void treeProjects_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            CheckTreeViewNode(e.Node, e.Node.Checked);
+        }
+
+        private void CheckTreeViewNode(TreeNode node, Boolean isChecked)
+        {
+            foreach (TreeNode item in node.Nodes)
+            {
+                item.Checked = isChecked;
+
+                if (item.Nodes.Count > 0)
+                {
+                    this.CheckTreeViewNode(item, isChecked);
+                }
+            }
         }
     }
 }

@@ -78,13 +78,14 @@ namespace CodeFlow
             base.Initialize();
             ImportFromGenio.Initialize(this);
             CreateInGenio.Initialize(this);
-            IVsSolution solution = GetService(typeof(SVsSolution)) as IVsSolution;
-            uint cookie = 0;
-            solution.AdviseSolutionEvents(this, out cookie);
             FindInManualCodeCommand.Initialize(this);
             ManageProfiles.Initialize(this);
             ExportSolution.Initialize(this);
+
             InitializeDTE();
+            IVsSolution solution = GetService(typeof(SVsSolution)) as IVsSolution;
+            uint cookie = 0;
+            solution.AdviseSolutionEvents(this, out cookie);
 
             if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
             {
@@ -111,7 +112,6 @@ namespace CodeFlow
                 LoadConfig();
         }
 
-
         private void InitializeDTE()
         {
             IVsShell shellService;
@@ -132,7 +132,7 @@ namespace CodeFlow
 
     #endregion
 
-    #region CustomEvents
+        #region CustomEvents
         private void SetupEvents()
         {
             dteEvents = PackageOperations.DTE.Events;
@@ -147,18 +147,21 @@ namespace CodeFlow
             if (docProject == null)
                 return;
 
-            List<GenioProjectProperties> savedFiles = GenioSolutionProperties.SavedFiles;
-
-            GenioProjectProperties proj = savedFiles.Find(x => x.ProjectName == docProject.Name);
-            GenioProjectItem item = new GenioProjectItem(Document.ProjectItem);
-            if (proj == null)
-                proj = new GenioProjectProperties(docProject, new List<GenioProjectItem>() { item });
-            else
+            try
             {
-                GenioProjectItem tmp = proj.ProjectFiles.Find(x => x.ItemName == item.ItemName);
-                if (tmp == null)
-                    proj.ProjectFiles.Add(item);
+                GenioProjectProperties proj = GenioSolutionProperties.SavedFiles.Find(x => x.ProjectName == docProject.Name);
+                GenioProjectItem item = new GenioProjectItem(Document.ProjectItem);
+                if (proj == null)
+                    GenioSolutionProperties.SavedFiles.Add(new GenioProjectProperties(docProject, new List<GenioProjectItem>() { item }));
+                else
+                {
+                    GenioProjectItem tmp = proj.ProjectFiles.Find(x => x.ItemName == item.ItemName);
+                    if (tmp == null)
+                        proj.ProjectFiles.Add(item);
+                }
             }
+            catch (Exception)
+            { }
         }
         #endregion
 
@@ -170,6 +173,12 @@ namespace CodeFlow
 
         public int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
         {
+            String lastActive = PackageOperations.SearchLastActiveProfile(System.IO.Path.GetDirectoryName(PackageOperations.DTE.Solution.FullName));
+
+            //Updates combo box
+            if (lastActive != null)
+                OnMenuGenioProfilesCombo(this, new OleMenuCmdEventArgs(lastActive, IntPtr.Zero));
+
             if (PackageOperations.ParseSolution)
             {
                 PackageOperations.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.DTE);
@@ -213,6 +222,7 @@ namespace CodeFlow
 
         public int OnBeforeCloseSolution(object pUnkReserved)
         {
+            PackageOperations.StoreLastProfile(System.IO.Path.GetDirectoryName(PackageOperations.DTE.Solution.FullName));
             PackageOperations.ActiveProfile.GenioConfiguration.CloseConnection();
             PackageOperations.RemoveTempFiles();
             SaveConfig();
@@ -223,21 +233,6 @@ namespace CodeFlow
         {
             return VSConstants.S_OK;
         }
-
-        /*private async System.Threading.Tasks.Task doInitializeAsync()
-        {
-            await VsTaskLibraryHelper.CreateAndStartTask(
-            VsTaskLibraryHelper.ServiceInstance,
-            VsTaskRunContext.UIThreadIdlePriority,
-                    () =>
-                    {
-                        if (PackageOperations.AllProfiles.Count == 0)
-                            LoadConfig();
-                        if(PackageOperations.ParseSolution)
-                            PackageOperations.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.DTE);
-                    }
-                );
-        }*/
         #endregion
 
         #region ComboBox options
