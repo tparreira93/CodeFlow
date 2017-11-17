@@ -88,7 +88,7 @@ namespace CodeFlow
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            PackageOperations.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.GetCurrentDTE());
+            PackageOperations.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.DTE);
         }
     }
 }

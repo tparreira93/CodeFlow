@@ -36,7 +36,7 @@ namespace CodeFlow
         private string file;
 
         [DBName("order")]
-        private float order;
+        private double order;
 
         [DBName("system")]
         private int system;
@@ -91,7 +91,7 @@ namespace CodeFlow
         public override string Lang { get => lang; set => lang = value; }
         public string Feature { get => feature; set => feature = value; }
         public string ManualFile { get => file; set => file = value; }
-        public float Order { get => order; set => order = value; }
+        public double Order { get => order; set => order = value; }
         public int System { get => system; set => system = value; }
         public int Inhib { get => inhib; set => inhib = value; }
         public Guid Codfeature { get => codfeature; set => codfeature = value; }
@@ -228,7 +228,7 @@ namespace CodeFlow
                             man.Parameter = reader.GetString(5);
                             man.ManualFile = reader.GetString(6);
                             man.Lang = reader.GetString(7);
-                            man.Order = reader.GetFloat(8);
+                            man.Order = reader.GetDouble(8);
                             foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
                             {
                                 man.Code.Replace((char)entry.Key, (char)entry.Value);

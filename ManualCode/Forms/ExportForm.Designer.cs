@@ -44,10 +44,12 @@
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Image = ((System.Drawing.Image)(resources.GetObject("btnCancel.Image")));
-            this.btnCancel.Location = new System.Drawing.Point(653, 526);
+            this.btnCancel.Location = new System.Drawing.Point(871, 647);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 25);
+            this.btnCancel.Size = new System.Drawing.Size(100, 31);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -58,9 +60,10 @@
             // 
             this.btnCompare.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCompare.Image = ((System.Drawing.Image)(resources.GetObject("btnCompare.Image")));
-            this.btnCompare.Location = new System.Drawing.Point(519, 526);
+            this.btnCompare.Location = new System.Drawing.Point(692, 647);
+            this.btnCompare.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnCompare.Name = "btnCompare";
-            this.btnCompare.Size = new System.Drawing.Size(128, 25);
+            this.btnCompare.Size = new System.Drawing.Size(171, 31);
             this.btnCompare.TabIndex = 1;
             this.btnCompare.Text = "Compare and export";
             this.btnCompare.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -71,9 +74,10 @@
             // 
             this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExport.Image = ((System.Drawing.Image)(resources.GetObject("btnExport.Image")));
-            this.btnExport.Location = new System.Drawing.Point(438, 526);
+            this.btnExport.Location = new System.Drawing.Point(584, 647);
+            this.btnExport.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(75, 25);
+            this.btnExport.Size = new System.Drawing.Size(100, 31);
             this.btnExport.TabIndex = 2;
             this.btnExport.Text = "Export";
             this.btnExport.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -84,9 +88,10 @@
             // 
             this.btnConfigure.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnConfigure.Image = ((System.Drawing.Image)(resources.GetObject("btnConfigure.Image")));
-            this.btnConfigure.Location = new System.Drawing.Point(12, 526);
+            this.btnConfigure.Location = new System.Drawing.Point(16, 647);
+            this.btnConfigure.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnConfigure.Name = "btnConfigure";
-            this.btnConfigure.Size = new System.Drawing.Size(115, 25);
+            this.btnConfigure.Size = new System.Drawing.Size(153, 31);
             this.btnConfigure.TabIndex = 3;
             this.btnConfigure.Text = "Configure profile";
             this.btnConfigure.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -101,9 +106,10 @@
             this.lstCode.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.clCode});
             this.lstCode.FullRowSelect = true;
-            this.lstCode.Location = new System.Drawing.Point(12, 12);
+            this.lstCode.Location = new System.Drawing.Point(16, 15);
+            this.lstCode.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lstCode.Name = "lstCode";
-            this.lstCode.Size = new System.Drawing.Size(716, 508);
+            this.lstCode.Size = new System.Drawing.Size(953, 624);
             this.lstCode.TabIndex = 7;
             this.lstCode.UseCompatibleStateImageBehavior = false;
             this.lstCode.View = System.Windows.Forms.View.Details;
@@ -118,9 +124,11 @@
             // 
             // statusStrip
             // 
-            this.statusStrip.Location = new System.Drawing.Point(0, 554);
+            this.statusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.statusStrip.Location = new System.Drawing.Point(0, 687);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(740, 22);
+            this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
+            this.statusStrip.Size = new System.Drawing.Size(987, 22);
             this.statusStrip.TabIndex = 8;
             this.statusStrip.Text = "status";
             // 
@@ -140,9 +148,10 @@
             // 
             this.btnConflict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnConflict.Image = ((System.Drawing.Image)(resources.GetObject("btnConflict.Image")));
-            this.btnConflict.Location = new System.Drawing.Point(341, 526);
+            this.btnConflict.Location = new System.Drawing.Point(455, 647);
+            this.btnConflict.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnConflict.Name = "btnConflict";
-            this.btnConflict.Size = new System.Drawing.Size(91, 25);
+            this.btnConflict.Size = new System.Drawing.Size(121, 31);
             this.btnConflict.TabIndex = 9;
             this.btnConflict.Text = "View conflict";
             this.btnConflict.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -151,9 +160,10 @@
             // 
             // ExportForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(740, 576);
+            this.CancelButton = this.btnCancel;
+            this.ClientSize = new System.Drawing.Size(987, 709);
             this.Controls.Add(this.btnConflict);
             this.Controls.Add(this.lstCode);
             this.Controls.Add(this.statusStrip);
@@ -162,6 +172,7 @@
             this.Controls.Add(this.btnCompare);
             this.Controls.Add(this.btnCancel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "ExportForm";
             this.Text = "Export to Genio";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExportForm_FormClosing);

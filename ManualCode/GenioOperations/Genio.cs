@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace CodeFlow
 {
     [Serializable]
     public class Genio
     {
-
         private string server = "";
         private string database = "";
         private string username = "QUIDGEST";
@@ -28,8 +28,7 @@ namespace CodeFlow
 
         public Genio()
         {
-            Plataforms = GetPlataforms();
-            Tipos = GetTipos();
+            GenioUser = Environment.UserName;
         }
 
         public Genio(string server, string database, string username, string password, string genioUser)
@@ -39,6 +38,10 @@ namespace CodeFlow
             Username = username;
             Password = password;
             GenioUser = genioUser;
+        }
+
+        public void ParseGenioFiles()
+        {
             Plataforms = GetPlataforms();
             Tipos = GetTipos();
         }
@@ -47,12 +50,18 @@ namespace CodeFlow
         public string Database { get => database; set => database = value; }
         public string Username { get => username; set => username = value; }
         public string Password { get => password; set => password = value; }
+
+        [XmlIgnore]
         public SqlConnection SqlConnection { get => sqlConnection; set => sqlConnection = value; }
         public string GenioUser { get => geniouser; set => geniouser = value; }
         public string GenioPath { get => genioPath; set => genioPath = value; }
         public string CheckoutPath { get => checkoutPath; set => checkoutPath = value; }
         public string GenioVersion { get => genioVersion; set => genioVersion = value; }
+
+        [XmlIgnore]
         public List<string> Plataforms { get => plataforms; set => plataforms = value; }
+
+        [XmlIgnore]
         public Dictionary<string, string> Tipos { get => tipos; set => tipos = value; }
 
         public string GetConnectionString()

@@ -18,6 +18,6 @@ namespace CodeFlow
 
         bool Update(Profile profile);
 
-        string OpenManual(EnvDTE.DTE dte, Profile p);
+        string OpenManual(EnvDTE80.DTE2 dte, Profile p);
     }
 }

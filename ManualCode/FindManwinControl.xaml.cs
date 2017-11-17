@@ -71,23 +71,25 @@
                             Properties.Resources.Search, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
+                    PackageOperations.AddTempFile(m.OpenManual(PackageOperations.DTE, PackageOperations.ActiveProfile));
 
-                    m.OpenManual(PackageOperations.GetCurrentDTE(), PackageOperations.ActiveProfile);
-
-                    TextDocument objTextDoc = (TextDocument)PackageOperations.GetCurrentDTE().ActiveDocument.Object("TextDocument");
-                    Find find = PackageOperations.GetCurrentDTE().Find;
+                    Find find = PackageOperations.DTE.Find;
                     find.Action = vsFindAction.vsFindActionFind;
                     find.Backwards = false;
                     find.MatchCase = false;
                     find.FindWhat = currentSearch;
+                    find.ResultsLocation = vsFindResultsLocation.vsFindResults2;
+                    find.Target = vsFindTarget.vsFindTargetCurrentDocument;
                     find.PatternSyntax = vsFindPatternSyntax.vsFindPatternSyntaxLiteral;
                     find.Target = vsFindTarget.vsFindTargetCurrentDocument;
                     find.KeepModifiedDocumentsOpen = true;
-                    find.ResultsLocation = vsFindResultsLocation.vsFindResults1;
                     find.Execute();
                 }
-                catch (Exception)
-                {}
+                catch (Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show(String.Format(Properties.Resources.ErrorRequest, ex.Message),
+                        Properties.Resources.Search, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

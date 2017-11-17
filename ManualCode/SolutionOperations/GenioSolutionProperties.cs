@@ -1,5 +1,6 @@
 ﻿using CodeFlow.Utils;
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.VCProjectEngine;
 using System.Collections.Generic;
 using System.IO;
@@ -26,7 +27,7 @@ namespace CodeFlow.SolutionOperations
         public List<GenioProjectProperties> GenioProjects { get => genioProjects; set => genioProjects = value; }
         internal ClientInfo ClientInfo { get => clientInfo; set => clientInfo = value; }
 
-        public static GenioSolutionProperties ParseSolution(DTE dte, bool loadFiles = false)
+        public static GenioSolutionProperties ParseSolution(DTE2 dte, bool loadFiles = false)
         {
             GenioSolutionProperties properties = new GenioSolutionProperties();
 
@@ -36,7 +37,7 @@ namespace CodeFlow.SolutionOperations
             return properties;
         }
 
-        public static void ChangeToolset2008(DTE dte)
+        public static void ChangeToolset2008(DTE2 dte)
         {
             foreach (Project project in dte.Solution.Projects)
             {
@@ -74,7 +75,7 @@ namespace CodeFlow.SolutionOperations
             return client;
         }
 
-        private static List<GenioProjectProperties> GetProjects(DTE dte, bool loadFiles)
+        private static List<GenioProjectProperties> GetProjects(DTE2 dte, bool loadFiles)
         {
             List<GenioProjectProperties> projects = new List<GenioProjectProperties>();
             var project = dte.Solution.Projects.GetEnumerator();
@@ -92,7 +93,7 @@ namespace CodeFlow.SolutionOperations
 
             return projects;
         }
-        private static List<GenioProjectProperties> GetProjects(DTE dte, Project solution, bool loadFiles)
+        private static List<GenioProjectProperties> GetProjects(DTE2 dte, Project solution, bool loadFiles)
         {
             List<GenioProjectProperties> projs = new List<GenioProjectProperties>();
 
