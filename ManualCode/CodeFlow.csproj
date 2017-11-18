@@ -62,7 +62,7 @@
     <Compile Include="PersistedWindowWPFControl.xaml.cs">
       <DependentUpon>PersistedWindowWPFControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RefreshSolution.cs" />
+    <Compile Include="Commands\RefreshSolution.cs" />
     <Compile Include="SolutionOperations\ClientInfo.cs" />
     <Compile Include="PackageOperations.cs" />
     <Compile Include="Forms\SelectionProjectForm.cs">
