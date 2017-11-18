@@ -10,7 +10,7 @@
     using System.IO;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Forms;
+    using System.Windows.Media;
     using System.Windows.Threading;
 
     /// <summary>
@@ -36,14 +36,24 @@
         {
             btnSearch.IsEnabled = false;
             currentSearch = txtSearch.Text;
+            ItemCollection items = toolBar.Items;
 
             System.Threading.Tasks.Task.Factory.StartNew(() =>
             {
+                string error = "";
                 List<IManual> res = new List<IManual>();
-                res.AddRange(ManuaCode.Search(PackageOperations.ActiveProfile, currentSearch));
-                res.AddRange(CustomFunction.Search(PackageOperations.ActiveProfile, currentSearch));
+                try
+                {
+                    res.AddRange(ManuaCode.Search(PackageOperations.ActiveProfile, currentSearch));
+                    res.AddRange(CustomFunction.Search(PackageOperations.ActiveProfile, currentSearch));
+                }
+                catch(Exception ex)
+                {
+                    error = ex.Message;
+                }
 
 
+                // Update UI 
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     results.Clear();
@@ -51,6 +61,12 @@
                         results.Add(m);
 
                     btnSearch.IsEnabled = true;
+
+                    if(error.Length != 0)
+                    {
+                        System.Windows.MessageBox.Show(Properties.Resources.ErrorSearch, Properties.Resources.Search,
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }), DispatcherPriority.Background);
             });
         }
@@ -70,7 +86,7 @@
                     if (m == null)
                     {
                         System.Windows.Forms.MessageBox.Show(Properties.Resources.VerifyProfile, 
-                            Properties.Resources.Search, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Properties.Resources.Search, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                         return;
                     }
                     PackageOperations.AddTempFile(m.OpenManual(PackageOperations.DTE, PackageOperations.ActiveProfile));
@@ -90,9 +106,15 @@
                 catch (Exception ex)
                 {
                     System.Windows.Forms.MessageBox.Show(String.Format(Properties.Resources.ErrorRequest, ex.Message),
-                        Properties.Resources.Search, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Properties.Resources.Search, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 }
             }
+        }
+
+        void ChangeColor(object sender, RoutedEventArgs e)
+        {
+            CheckBox b = e.Source as CheckBox;
+            b.Background = new SolidColorBrush(Colors.Black);
         }
 
         private void lstFindMan_Initialized(object sender, EventArgs e)

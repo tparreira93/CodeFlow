@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text;
 using System.Windows.Forms;
+using CodeFlow.ManualOperations;
 
 namespace CodeFlow
 {
@@ -114,36 +115,21 @@ namespace CodeFlow
 
                 SnapshotPoint caretPosition = view.Caret.Position.BufferPosition;
                 int pos = caretPosition.Position;
-                int begin = -1, length = -1;
-                int end = 0;
 
                 code = view.TextViewModel.DataBuffer.CurrentSnapshot.GetText();
 
-                if (code != null)
-                {
-                    begin = code.LastIndexOf(ManuaCode.BEGIN_MANUAL, pos, pos + 1);
-                    end = code.IndexOf(ManuaCode.END_MANUAL, pos) + ManuaCode.END_MANUAL.Length;
-                }
 
-                if (begin != -1 && begin <= pos && end > begin)
-                {
-                    length = end - begin;
-                    subCode = code.Substring(begin, length);
-                }
+                CodeSegment segment = CodeSegment.ParseFromPosition(ManuaCode.BEGIN_MANUAL, ManuaCode.END_MANUAL, code, pos);
+                if (segment.IsValid())
+                    subCode = segment.CompleteTextSegment;
 
                 List<IManual> codeList = ManuaCode.GetManualCode(subCode);
                 if (codeList.Count == 1 && codeList[0] is ManuaCode)
                 {
-                    int dif = code.IndexOf(Utils.Util.NewLine, begin) - begin + Utils.Util.NewLine.Length;
-                    begin = code.IndexOf(Utils.Util.NewLine, begin) + Utils.Util.NewLine.Length;
-                    length -= dif;
-
-                    length = code.LastIndexOf(Utils.Util.NewLine, end, Math.Abs(begin - length)) - begin;
-
                     ManuaCode bd = ManuaCode.GetManual(codeList[0].CodeId, PackageOperations.ActiveProfile);
                     if (bd == null)
                     {
-                        MessageBox.Show(Properties.Resources.VerifyProfile, "Conflict resolve", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(Properties.Resources.VerifyProfile, Properties.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
@@ -152,7 +138,7 @@ namespace CodeFlow
 
                     using (var edit = view.TextBuffer.CreateEdit())
                     {
-                        edit.Replace(begin, length, bd.Code);
+                        edit.Replace(segment.SegmentStart, segment.SegmentLength, bd.Code);
                         edit.Apply();
                     }
                 }

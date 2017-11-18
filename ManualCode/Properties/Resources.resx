@@ -246,4 +246,7 @@ Verify your profile</value>
     <value>Unable to complete your request!
 {0}</value>
   </data>
+  <data name="Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
 </root>

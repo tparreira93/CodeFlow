@@ -47,11 +47,6 @@ namespace CodeFlow
             this.Code = code;
         }
 
-        public static List<IManual> GetManualCode(string vscode)
-        {
-            return ParseManual(BEGIN_MANUAL, END_MANUAL, vscode);
-        }
-
         public override bool Update(Profile profile)
         {
             bool result = false;
@@ -153,7 +148,7 @@ namespace CodeFlow
 
         }
 
-        public static List<CustomFunction> Search(Profile profile, string texto, int limitBodySize = 80, bool caseSensitive = false)
+        public static List<CustomFunction> Search(Profile profile, string texto, int limitBodySize = 80, bool caseSensitive = false, bool wholeWord = false)
         {
             List<CustomFunction> results = new List<CustomFunction>();
             SqlCommand cmd = new SqlCommand();
@@ -169,13 +164,18 @@ namespace CodeFlow
                     string tmp = String.Format("LEFT(CORPO, {0})", limitBodySize);
                     if (limitBodySize == 0)
                         tmp = "CORPO";
-                    string customFuncQuery = String.Format("SELECT IMPLS.CODIMPLS, {0}, PLATAFOR, FUNCS.NOME GENFUNCS FUNCS INNER JOIN GENIMPLS IMPLS ON IMPLS.CODFUNCS = FUNCS.CODFUNCS " +
+                    string customFuncQuery = String.Format("SELECT IMPLS.CODIMPLS, {0}, PLATAFOR, FUNCS.NOME FROM GENFUNCS FUNCS INNER JOIN GENIMPLS IMPLS ON IMPLS.CODFUNCS = FUNCS.CODFUNCS " +
                                                                     "WHERE CORPO LIKE @TERM OR NOME LIKE @TERM", tmp);
+
+                    string search = "%" + texto + "%";
                     if (caseSensitive)
                         customFuncQuery += " COLLATE Latin1_General_BIN;";
+                    if (wholeWord)
+                        search = $"%[ ]{texto}[ ]%";
+
                     cmd.CommandText = customFuncQuery;
                     cmd.CommandType = global::System.Data.CommandType.Text;
-                    cmd.Parameters.AddWithValue("@TERM", "%" + texto + "%");
+                    cmd.Parameters.AddWithValue("@TERM", search);
                     cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
                     try
@@ -207,6 +207,20 @@ namespace CodeFlow
             }
 
             return results;
+        }
+
+        public static List<IManual> GetManualCode(string vscode)
+        {
+            List<IManual> codeList = new List<IManual>();
+            string remainig = vscode ?? "";
+            do
+            {
+                IManual m = ParseText<ManuaCode>(BEGIN_MANUAL, END_MANUAL, remainig, out remainig);
+                if (m != null)
+                    codeList.Add(m);
+            } while (remainig.Length != 0);
+
+            return codeList;
         }
 
         public override string ToString()

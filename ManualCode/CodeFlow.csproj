@@ -83,7 +83,7 @@
     <Compile Include="Forms\ConflictHandler.Designer.cs">
       <DependentUpon>ConflictHandler.cs</DependentUpon>
     </Compile>
-    <Compile Include="ManualOperations\CodeSearch.cs" />
+    <Compile Include="ManualOperations\CodeSegment.cs" />
     <Compile Include="ManualOperations\CustomFunction.cs" />
     <Compile Include="ManualOperations\IManual.cs" />
     <Compile Include="ManualOperations\ManuaCode.cs" />

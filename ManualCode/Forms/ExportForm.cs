@@ -52,10 +52,10 @@ namespace CodeFlow
                 lstCode.Items.Add(item);
             }
 
-            lblManual.Text = String.Format("There {0} {1} manual code entrie{2} to export and {3} conflicts!",
-                exportCode.Count > 1 ? "are" : "is", exportCode.Count > 1 ? "s" : "", exportCode.Count, conflictCode.Count);
-
+            lblManual.Text = String.Format("{0} Manual code entrie(s) | {1} Conflicts",
+                exportCode.Count, conflictCode.Count);
             lblServer.Text = PackageOperations.ActiveProfile.ToString();
+
             btnCompare.Enabled = false;
             btnConflict.Enabled = false;
             btnExport.Enabled = false;

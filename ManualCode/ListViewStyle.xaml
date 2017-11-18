@@ -178,4 +178,25 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Background" Value="{DynamicResource {x:Static vsp:TreeViewColors.BackgroundBrushKey}}" />
     </Style>
+
+    <!--Styles for controls in a toolbar.-->
+    <Style x:Key="{x:Static ToolBar.SeparatorStyleKey}" TargetType="Separator">
+        <Setter Property="Background" Value="Black"/>
+        <Setter Property="Width" Value="2"/>
+    </Style>
+
+    <Style x:Key="{x:Static ToolBar.ButtonStyleKey}" TargetType="Button">
+        <Setter Property="Foreground" Value="Blue"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="{x:Static ToolBar.CheckBoxStyleKey}" TargetType="CheckBox">
+        <Setter Property="Foreground" Value="DarkSlateBlue"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Background" Value="White"/>
+    </Style>
 </ResourceDictionary>

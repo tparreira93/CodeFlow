@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -161,6 +160,57 @@ namespace CodeFlow
 
             var method = t.GetMethod("GetManual");
             return (Manual)method.Invoke(null, new object[] { codeID, profile });
+        }
+
+        protected static IManual ParseText<T>(string begin, string end, string vscode, out string remaning)
+            where T : IManual, new()
+        {
+            int b = vscode.IndexOf(begin);
+            int e = -1;
+            IManual m = null;
+            remaning = "";
+            if (b != -1)
+            {
+                string s = vscode.Substring(b + begin.Length);
+                int i = s.IndexOf(Utils.Util.NewLine);
+
+                if (i == -1)
+                    return m;
+
+                string guid = s.Substring(0, i).Trim();
+                guid = guid.Substring(0, 36);
+                e = s.IndexOf(end);
+                string c = "", code = "";
+                if (e == -1)
+                {
+                    c = s.Substring(i);
+                    code = c.Substring(Utils.Util.NewLine.Length);
+                    remaning = "";
+                }
+                else
+                {
+                    e = e - i;
+
+                    c = s.Substring(i, e);
+                    int tmp = c.LastIndexOf(Utils.Util.NewLine);
+                    if (tmp != -1)
+                        e = tmp;
+                    else
+                        e = c.Length - i - Utils.Util.NewLine.Length;
+                    code = c.Substring(Utils.Util.NewLine.Length, e - Utils.Util.NewLine.Length);
+
+                    b = vscode.IndexOf(begin, b);
+                    remaning = s.Substring(i + e);
+                }
+
+                m = new T
+                {
+                    Code = code,
+                    CodeId = Guid.Parse(guid)
+                };
+            }
+
+            return m;
         }
 
         protected static List<IManual> ParseManual(string begin, string end, string vscode)

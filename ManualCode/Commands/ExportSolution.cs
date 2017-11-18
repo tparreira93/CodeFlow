@@ -92,6 +92,11 @@ namespace CodeFlow
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
+            if(PackageOperations.DTE.Solution is null
+                || PackageOperations.DTE.Solution.Projects.Count == 0
+                || !PackageOperations.DTE.Solution.IsOpen)
+                return;
+
             ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(GenioSolutionProperties.SavedFiles);
             selectionProjectForm.ShowDialog();
 

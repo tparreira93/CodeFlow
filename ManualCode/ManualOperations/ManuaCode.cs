@@ -107,9 +107,52 @@ namespace CodeFlow
                 RegexOptions.Multiline);
         }
 
+        private static Regex reg = new Regex(@"(Plataforma:)\s*(\w)*\s*(\|)\s*(Tipo:)\s*(\w)*\s*(\|)\s*(Modulo:)\s*(\w)*\s*(\|)\s*(Parametro:)\s*(\w)*\s*(\|)\s*(Ficheiro:)\s*(\w)*\s*(\|)\s*(Ordem:)\s*([+-]?([0-9]*[.])?[0-9]+)", RegexOptions.Compiled);
+
         public static List<IManual> GetManualCode(string vscode)
         {
-            return ParseManual(BEGIN_MANUAL, END_MANUAL, vscode);
+            List<IManual> codeList = new List<IManual>();
+            string remainig = vscode ?? "", plat = "", tipo = "", modulo = "", param = "", fich = "", ordem = "";
+            do
+            {
+                int b = remainig.IndexOf(BEGIN_MANUAL);
+                if (b == -1)
+                    break;
+
+                int platEnd = remainig.LastIndexOf(Utils.Util.NewLine, b);
+                if (platEnd > -1)
+                {
+                    int platBegin = remainig.LastIndexOf(Utils.Util.NewLine, platEnd) + Utils.Util.NewLine.Length;
+                    if (platBegin != -1)
+                    {
+                        Match match = reg.Match(remainig.Substring(platBegin, platEnd - platBegin));
+                        if (match.Success)
+                        {
+                            plat = match.Groups[2].Value;
+                            tipo = match.Groups[5].Value;
+                            modulo = match.Groups[8].Value;
+                            param = match.Groups[11].Value;
+                            fich = match.Groups[14].Value;
+                            ordem = match.Groups[17].Value;
+                        }
+                    }
+                }
+                IManual m = ParseText<ManuaCode>(BEGIN_MANUAL, END_MANUAL, remainig, out remainig);
+                if (m != null)
+                {
+                    codeList.Add(m);
+                    ManuaCode manua = (ManuaCode)m;
+                    manua.Plataform = plat;
+                    manua.TipoRotina = tipo;
+                    manua.Modulo = modulo;
+                    manua.Parameter = param;
+                    manua.ManualFile = fich;
+                    Double.TryParse(ordem, out double tmp);
+                    manua.Order = tmp;
+                }
+            } while (remainig.Length != 0);
+
+            return codeList;
         }
 
         public override bool Update(Profile profile)
@@ -270,7 +313,7 @@ namespace CodeFlow
             return str;
         }
         
-        public static List<ManuaCode> Search(Profile profile, string texto, int limitBodySize = 80, bool caseSensitive = false)
+        public static List<ManuaCode> Search(Profile profile, string texto, int limitBodySize = 80, bool caseSensitive = false, bool wholeWord = false)
         {
             List<ManuaCode> results = new List<ManuaCode>();
             SqlCommand cmd = new SqlCommand();
@@ -287,12 +330,16 @@ namespace CodeFlow
                     if (limitBodySize == 0)
                         tmp = "CORPO";
                     string manuaQuery = String.Format("SELECT CODMANUA, {0}, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, LANG, ORDEM FROM GENMANUA WHERE CORPO LIKE @TERM", tmp);
+
+                    string search = "%" + texto + "%";
                     if (caseSensitive)
                         manuaQuery += " COLLATE Latin1_General_BIN;";
+                    if (wholeWord)
+                        search = $"%[ ]{texto}[ ]%";
 
                     cmd.CommandText = manuaQuery;
                     cmd.CommandType = global::System.Data.CommandType.Text;
-                    cmd.Parameters.AddWithValue("@TERM", "%" + texto + "%");
+                    cmd.Parameters.AddWithValue("@TERM", search);
                     cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
                     try

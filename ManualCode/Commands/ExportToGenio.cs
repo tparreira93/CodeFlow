@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Editor;
 using System.Linq;
 using System.IO;
+using CodeFlow.ManualOperations;
 
 namespace CodeFlow
 {
@@ -123,20 +124,9 @@ namespace CodeFlow
 
                 SnapshotPoint caretPosition = view.Caret.Position.BufferPosition;
                 int pos = caretPosition.Position;
-                int begin = -1, end = -1;
-
-                code = view.TextViewModel.DataBuffer.CurrentSnapshot.GetText();
-                if (code != null && !code.Equals("") && code.Length >= ManuaCode.BEGIN_MANUAL.Length)
-                {
-                    begin = code.LastIndexOf(ManuaCode.BEGIN_MANUAL, pos, pos + 1);
-                    end = code.IndexOf(ManuaCode.END_MANUAL, pos) + ManuaCode.END_MANUAL.Length;
-                }
-
-                if(begin != -1 && begin <= pos && end > begin)
-                {
-                    end = end - begin;
-                    subCode = code.Substring(begin, end);
-                }
+                CodeSegment segment = CodeSegment.ParseFromPosition(ManuaCode.BEGIN_MANUAL, ManuaCode.END_MANUAL, code, pos);
+                if (segment.IsValid())
+                    subCode = segment.CompleteTextSegment;
             }
 
             List<IManual> manual = ManuaCode.GetManualCode(subCode);

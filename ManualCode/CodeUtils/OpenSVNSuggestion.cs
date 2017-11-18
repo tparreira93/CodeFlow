@@ -12,12 +12,12 @@ namespace CodeFlow.CodeUtils
 
     internal class OpenSVNSuggestion : ISuggestedAction
     {
-        private readonly ManuaCode _manual;
+        private readonly IManual _manual;
         private readonly string _sysName;
         private readonly Profile _profile;
         private readonly string _display;
 
-        public OpenSVNSuggestion(ManuaCode manual, Profile profile, string systemName)
+        public OpenSVNSuggestion(IManual manual, Profile profile, string systemName)
         {
             _manual = manual;
             _profile = profile;

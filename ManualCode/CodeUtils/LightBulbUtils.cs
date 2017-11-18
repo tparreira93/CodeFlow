@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
 using System.Threading;
 using CodeFlow.SolutionOperations;
+using CodeFlow.ManualOperations;
 
 namespace CodeFlow.CodeUtils
 {
@@ -45,74 +46,40 @@ namespace CodeFlow.CodeUtils
             this.textBuffer = textBuffer;
             this.textView = textView;
         }
-        private bool TryGetWordUnderCaret(out TextExtent wordExtent)
-        {
-            ITextCaret caret = textView.Caret;
-            SnapshotPoint point;
 
-            if (caret.Position.BufferPosition > 0)
-            {
-                point = caret.Position.BufferPosition - 1;
-            }
-            else
-            {
-                wordExtent = default(TextExtent);
-                return false;
-            }
-            ITextStructureNavigator navigator = factory.NavigatorService.GetTextStructureNavigator(textBuffer);
-
-            wordExtent = navigator.GetExtentOfWord(point);
-            return true;
-        }
-
-        private bool TryGetManual(out ManuaCode manua, out int begin, out int length)
+        private bool TryGetManual(out IManual manua, out CodeSegment segment)
         {
             int pos = textView.Caret.Position.BufferPosition.Position;
-            string subCode = "";
             string code = textView.TextViewModel.DataBuffer.CurrentSnapshot.GetText();
-            begin = -1;
-            length = -1;
-            int end = 0;
-            int platBegin = -1;
-            int platEnd = -1;
-
-            if (code != null && !code.Equals("") && code.Length >= ManuaCode.BEGIN_MANUAL.Length)
-            {
-                begin = code.LastIndexOf(ManuaCode.BEGIN_MANUAL, pos, pos + 1);
-                end = code.IndexOf(ManuaCode.END_MANUAL, pos) + ManuaCode.END_MANUAL.Length;
-            }
-
-            if (begin != -1 && begin <= pos && end > begin)
-            {
-                platBegin = code.LastIndexOf(Utils.Util.NewLine, begin);
-                platEnd = code.LastIndexOf(Utils.Util.NewLine, platBegin);
-                length = end - begin;
-                subCode = code.Substring(begin, length);
-            }
-
-            List<IManual> codeList = ManuaCode.GetManualCode(subCode);
-            if(codeList.Count == 1)
-            {
-                int dif = code.IndexOf(Utils.Util.NewLine, begin) - begin + Utils.Util.NewLine.Length;
-                begin = code.IndexOf(Utils.Util.NewLine, begin) + Utils.Util.NewLine.Length;
-                length -= dif;
-
-                length = code.LastIndexOf(Utils.Util.NewLine, end, Math.Abs(begin - length)) - begin;
-
-                manua = codeList[0] as ManuaCode;
-                return true;
-            }
             manua = null;
-            return false;
+            segment = null;
+
+            if (!textView.Selection.IsEmpty)
+                return false;
+
+            segment = CodeSegment.ParseFromPosition(ManuaCode.BEGIN_MANUAL, ManuaCode.END_MANUAL, code, pos);
+            if (segment.IsValid())
+                code = segment.CompleteTextSegment;
+
+            List<IManual> codeList = ManuaCode.GetManualCode(code);
+            if(codeList.Count == 1)
+                manua = codeList[0] as ManuaCode;
+            else
+            {
+                segment = CodeSegment.ParseFromPosition(CustomFunction.BEGIN_MANUAL, CustomFunction.END_MANUAL, code, pos);
+                if (codeList.Count == 1)
+                    manua = codeList[0] as CustomFunction;
+            }
+
+            return manua != null;
         }
 
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
             return Task.Factory.StartNew(() =>
             {
-                if (PackageOperations.ContinuousAnalysis && TryGetManual(out ManuaCode man, out int begin, out int end))
+                if (PackageOperations.ContinuousAnalysis && TryGetManual(out IManual man, out CodeSegment segment))
                 {
-                    // don't display the action if the extent has whitespace  
                     return true;
                 }
                 return false;
@@ -123,16 +90,18 @@ namespace CodeFlow.CodeUtils
         {
             if (PackageOperations.ContinuousAnalysis 
                 && !cancellationToken.IsCancellationRequested 
-                && TryGetManual(out ManuaCode man, out int begin, out int end))
+                && TryGetManual(out IManual man, out CodeSegment segment))
             {
                 List<ISuggestedAction> actions = new List<ISuggestedAction>();
-                CompareDBSuggestion compare = new CompareDBSuggestion(man);
-                actions.Add(compare);
-
-                if (begin > 0 && end > 0)
+                if (man is ManuaCode)
                 {
-                    ImportFromDBSuggestion import = new ImportFromDBSuggestion(begin, end, textView, textBuffer, man.CodeId);
-                    actions.Add(import);
+                    CompareDBSuggestion compare = new CompareDBSuggestion(man as ManuaCode);
+                    actions.Add(compare);
+                    if (segment.SegmentStart > 0 && segment.SegmentLength > 0)
+                    {
+                        ImportFromDBSuggestion import = new ImportFromDBSuggestion(segment.SegmentStart, segment.SegmentLength, textView, textBuffer, man.CodeId);
+                        actions.Add(import);
+                    }
                 }
 
                 if (PackageOperations.SolutionProps != null
