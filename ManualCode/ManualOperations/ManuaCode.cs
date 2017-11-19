@@ -195,6 +195,10 @@ namespace CodeFlow
                     {
                         throw ex;
                     }
+                    finally
+                    {
+                        profile.GenioConfiguration.CloseConnection();
+                    }
                 }
             }
 
@@ -238,6 +242,10 @@ namespace CodeFlow
                     catch (Exception ex)
                     {
                         throw ex;
+                    }
+                    finally
+                    {
+                        profile.GenioConfiguration.CloseConnection();
                     }
                 }
             }
@@ -293,6 +301,7 @@ namespace CodeFlow
                     {
                         if (reader != null && !reader.IsClosed)
                             reader.Close();
+                        profile.GenioConfiguration.CloseConnection();
                     }
                 }
             }
@@ -369,6 +378,7 @@ namespace CodeFlow
                     {
                         if (reader != null && !reader.IsClosed)
                             reader.Close();
+                        profile.GenioConfiguration.CloseConnection();
                     }
                 }
             }

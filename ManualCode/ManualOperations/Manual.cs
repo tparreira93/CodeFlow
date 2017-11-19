@@ -64,18 +64,12 @@ namespace CodeFlow
         [DBName("DATACRIA")]
         public DateTime CreationDate { get => creationDate; set => creationDate = value; }
 
-        public abstract string Lang { get; set; }
-        public abstract string Tag { get; }
-        public abstract string TipoCodigo { get; }
-        public abstract string Tipo { get; }
-
         public string GetCodeExtension(Profile p)
         {
             p.GenioConfiguration.Tipos.TryGetValue(Tag, out string extension);
 
             return extension ?? "tmp";
         }
-
         public string OneLineCode
         {
             get
@@ -83,7 +77,6 @@ namespace CodeFlow
                 return Code.Replace("\r", " ").Replace("\n", " ").Trim();
             }
         }
-
         public string ShortOneLineCode(int max = 100)
         {
             if (Code.Length < max)
@@ -98,8 +91,7 @@ namespace CodeFlow
         {
             string tmp = Path.GetTempPath() + Guid.NewGuid().ToString() + "." + GetCodeExtension(p);
             File.WriteAllText(tmp, ToString());
-            //dte.ItemOperations.OpenFile(tmp);
-            dte.ExecuteCommand("File.OpenFile", tmp);
+            dte.ItemOperations.OpenFile(tmp);
             return tmp;
         }
         public void CompareDB(Profile profile)
@@ -156,7 +148,6 @@ namespace CodeFlow
                 throw e;
             }
         }
-
         protected static IManual ParseText<T>(string begin, string end, string vscode, out string remaning)
             where T : IManual, new()
         {
@@ -221,7 +212,6 @@ namespace CodeFlow
                 Code.Replace((char)entry.Value, (char)entry.Key);
             }
         }
-
         public static IManual Merge(IManual local, IManual bd)
         {
             return MergeCompare(local, bd, true);
@@ -230,7 +220,6 @@ namespace CodeFlow
         {
             MergeCompare(local, bd, false);
         }
-        public abstract void ShowSVNLog(Profile profile, string systemName);
         protected void OpenSVNLog(string filePath)
         {
             try
@@ -247,6 +236,11 @@ namespace CodeFlow
             }
         }
 
+        public abstract void ShowSVNLog(Profile profile, string systemName);
         public abstract bool Update(Profile profile);
+        public abstract string Lang { get; set; }
+        public abstract string Tag { get; }
+        public abstract string TipoCodigo { get; }
+        public abstract string Tipo { get; }
     }
 }

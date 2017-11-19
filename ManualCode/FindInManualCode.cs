@@ -19,6 +19,8 @@
     [Guid("93a46544-0f88-491b-b820-06fddb518d20")]
     public class FindInManualCode : ToolWindowPane
     {
+
+        public static bool WindowInitialized = false;
         /// <summary>
         /// Initializes a new instance of the <see cref="FindInManualCode"/> class.
         /// </summary>
@@ -30,6 +32,7 @@
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
             this.Content = new FindManwinControl();
+            WindowInitialized = true;
         }
 
         public void SetComboData(List<string> data)

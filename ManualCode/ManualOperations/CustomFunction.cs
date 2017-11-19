@@ -56,12 +56,6 @@ namespace CodeFlow
             this.CodeId = codeID;
             this.Code = code;
         }
-        public void CompareDB(Profile profile)
-        {
-            CustomFunction bd = GetManual(profile, CodeId);
-
-            Compare(this, bd);
-        }
         public override void ShowSVNLog(Profile profile, string systemName)
         {
             try
@@ -91,7 +85,7 @@ namespace CodeFlow
 
                         cmd.Parameters.AddWithValue("@CORPO", this.Code);
                         cmd.Parameters.AddWithValue("@CODIMPLS", this.CodeId);
-                        cmd.Parameters.AddWithValue("@OPERMUDA", PackageOperations.ActiveProfile.GenioConfiguration.Username);
+                        cmd.Parameters.AddWithValue("@OPERMUDA", PackageOperations.ActiveProfile.GenioConfiguration.GenioUser);
                         cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
                         cmd.ExecuteNonQuery();
@@ -101,6 +95,10 @@ namespace CodeFlow
                     catch (Exception ex)
                     {
                         throw ex;
+                    }
+                    finally
+                    {
+                        profile.GenioConfiguration.CloseConnection();
                     }
                 }
             }
@@ -157,6 +155,12 @@ namespace CodeFlow
                     catch (Exception ex)
                     {
                         throw ex;
+                    }
+                    finally
+                    {
+                        if (reader != null && !reader.IsClosed)
+                            reader.Close();
+                        profile.GenioConfiguration.CloseConnection();
                     }
                 }
             }
@@ -237,6 +241,7 @@ namespace CodeFlow
                     {
                         if (reader != null && !reader.IsClosed)
                             reader.Close();
+                        profile.GenioConfiguration.CloseConnection();
                     }
                 }
             }

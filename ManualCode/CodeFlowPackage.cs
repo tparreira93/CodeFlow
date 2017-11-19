@@ -151,7 +151,7 @@ namespace CodeFlow
             try
             {
                 GenioProjectProperties proj = GenioSolutionProperties.SavedFiles.Find(x => x.ProjectName == docProject.Name);
-                GenioProjectItem item = new GenioProjectItem(Document.ProjectItem);
+                GenioProjectItem item = new GenioProjectItem(Document.ProjectItem, Document.Name, Document.FullName);
                 if (proj == null)
                     GenioSolutionProperties.SavedFiles.Add(new GenioProjectProperties(docProject, new List<GenioProjectItem>() { item }));
                 else
@@ -271,12 +271,15 @@ namespace CodeFlow
                 else if (newChoice != null)
                 {
                     PackageOperations.SetProfile(newChoice);
-                    /*FindInManualCode findWindow = this.FindToolWindow(typeof(FindInManualCode), 0, true) as FindInManualCode;
-                    if (findWindow != null)
+                    if (FindInManualCode.WindowInitialized)
                     {
-                        List<string> plataforms = PackageOperations.ActiveProfile.GenioConfiguration.Plataforms;
-                        findWindow.SetComboData(plataforms);
-                    }*/
+                        FindInManualCode findWindow = this.FindToolWindow(typeof(FindInManualCode), 0, true) as FindInManualCode;
+                        if (findWindow != null)
+                        {
+                            List<string> plataforms = PackageOperations.ActiveProfile.GenioConfiguration.Plataforms;
+                            findWindow.SetComboData(plataforms);
+                        }
+                    }
                 }
                 else
                     throw (new ArgumentException("Invalid input and output!"));

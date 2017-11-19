@@ -54,6 +54,7 @@
             {
                 LangCombo.Items.Clear();
                 LangCombo.Items.Add("All");
+                LangCombo.SelectedIndex = 0;
                 foreach (string plat in data)
                     LangCombo.Items.Add(plat);
             }
