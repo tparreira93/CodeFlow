@@ -85,62 +85,61 @@ namespace CodeFlow
         /// <param name="line">Line to add the adornments</param>
         private void CreateVisuals(ITextViewLine line)
         {
-            IWpfTextViewLineCollection textViewLines = this.view.TextViewLines;
-            IEnumerable<Type> types = typeof(Manual).Assembly.GetTypes().Where(type => type.IsSubclassOf(typeof(Manual)));
-            foreach (Type t in types)
+            try
             {
-                IEnumerable<FieldInfo> fields = t.GetFields(BindingFlags.Public | BindingFlags.Static)
-                                                    .Where(name => name.Name.Equals("BEGIN_MANUAL") 
-                                                                    || name.Name.Equals("END_MANUAL"));
-                foreach(FieldInfo f in fields)
+                IWpfTextViewLineCollection textViewLines = this.view.TextViewLines;
+                List<string> fields = new List<string>() { ManuaCode.BEGIN_MANUAL, ManuaCode.END_MANUAL, CustomFunction.BEGIN_MANUAL, CustomFunction.END_MANUAL };
+                TryGetText(view, line, out string text);
+                if (text == null)
+                    return;
+                foreach (string val in fields)
                 {
-                    string val = (string)f.GetValue(null);
-                    if (val == null)
-                        continue;
-
-                    int i = 0;
-                    // Loop through each character, and place a box around any 'a'
-                    for (int charIndex = line.Start; charIndex < line.End; charIndex++)
+                    if(text.Contains(val))
                     {
-                        if (this.view.TextSnapshot[charIndex] == val[i])
-                            i++;
-                        else
-                            i = 0;
-
-                        if (i == val.Length)
+                        SnapshotSpan span = new SnapshotSpan(this.view.TextSnapshot, Span.FromBounds(line.Start, line.End));
+                        Geometry geometry = textViewLines.GetMarkerGeometry(span);
+                        if (geometry != null)
                         {
-                            i = 0;
-                            SnapshotSpan span = new SnapshotSpan(this.view.TextSnapshot, Span.FromBounds(line.Start, line.End));
-                            Geometry geometry = textViewLines.GetMarkerGeometry(span);
-                            if (geometry != null)
+                            var drawing = new GeometryDrawing(this.brush, this.pen, geometry);
+                            drawing.Freeze();
+
+                            var drawingImage = new DrawingImage(drawing);
+                            drawingImage.Freeze();
+
+                            var image = new Image
                             {
-                                var drawing = new GeometryDrawing(this.brush, this.pen, geometry);
-                                drawing.Freeze();
+                                Source = drawingImage,
+                            };
 
-                                var drawingImage = new DrawingImage(drawing);
-                                drawingImage.Freeze();
+                            // Align the image with the top of the bounds of the text geometry
+                            Canvas.SetLeft(image, geometry.Bounds.Left);
+                            Canvas.SetTop(image, geometry.Bounds.Top);
 
-                                var image = new Image
-                                {
-                                    Source = drawingImage,
-                                };
-
-                                // Align the image with the top of the bounds of the text geometry
-                                Canvas.SetLeft(image, geometry.Bounds.Left);
-                                Canvas.SetTop(image, geometry.Bounds.Top);
-
-                                this.layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, null, image, null);
-                            }
+                            this.layer.AddAdornment(AdornmentPositioningBehavior.TextRelative, span, null, image, null);
+                            break;
                         }
-                        else
-                            continue;
                     }
-
                 }
-
             }
-
-
+            catch(Exception e)
+            { }
+        }
+        public static bool TryGetText(IWpfTextView textView, ITextViewLine textViewLine, out string text)
+        {
+            var extent = textViewLine.Extent;
+            var bufferGraph = textView.BufferGraph;
+            try
+            {
+                var collection = bufferGraph.MapDownToSnapshot(extent, SpanTrackingMode.EdgeInclusive, textView.TextSnapshot);
+                var span = new SnapshotSpan(collection[0].Start, collection[collection.Count - 1].End);
+                text = span.GetText();
+                return true;
+            }
+            catch
+            {
+                text = null;
+                return false;
+            }
         }
     }
 }

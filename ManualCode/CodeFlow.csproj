@@ -143,6 +143,7 @@
     </Compile>
     <Compile Include="SolutionOperations\SolutionConstants.cs" />
     <Compile Include="SolutionOperations\GenioSolutionProperties.cs" />
+    <Compile Include="Utils\ExtensionMethods.cs" />
     <Compile Include="Utils\Util.cs" />
     <Compile Include="VSPackage.Designer.cs">
       <AutoGen>True</AutoGen>

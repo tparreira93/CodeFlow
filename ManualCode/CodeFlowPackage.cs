@@ -54,6 +54,7 @@ namespace CodeFlow
         private DocumentEvents documentEnvents;
         private Events dteEvents;
         private DteInitializer dteInitializer;
+        private bool isSolution = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportToGenio"/> class.
@@ -173,17 +174,30 @@ namespace CodeFlow
 
         public int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
         {
-            String lastActive = PackageOperations.SearchLastActiveProfile(System.IO.Path.GetDirectoryName(PackageOperations.DTE.Solution.FullName));
+            String lastActive = "";
+
+            if (PackageOperations.DTE.Solution != null
+                && PackageOperations.DTE.Solution.FullName.Length != 0)
+            {
+                isSolution = true;
+                try
+                {
+                    string path = System.IO.Path.GetDirectoryName(PackageOperations.DTE.Solution.FullName);
+                    lastActive = PackageOperations.SearchLastActiveProfile(path);
+                }
+                catch(Exception)
+                { }
+            }
 
             //Updates combo box
-            if (lastActive != null)
+            if (lastActive != null && lastActive.Length != 0)
                 OnMenuGenioProfilesCombo(this, new OleMenuCmdEventArgs(lastActive, IntPtr.Zero));
 
-            if (PackageOperations.ParseSolution)
+            if (PackageOperations.ParseSolution && isSolution)
             {
                 PackageOperations.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.DTE);
             }
-            if(PackageOperations.AutoVCCTO2008Fix)
+            if(PackageOperations.AutoVCCTO2008Fix && isSolution)
             {
                 GenioSolutionProperties.ChangeToolset2008(PackageOperations.DTE);
             }
@@ -222,7 +236,8 @@ namespace CodeFlow
 
         public int OnBeforeCloseSolution(object pUnkReserved)
         {
-            PackageOperations.StoreLastProfile(System.IO.Path.GetDirectoryName(PackageOperations.DTE.Solution.FullName));
+            if(isSolution)
+                PackageOperations.StoreLastProfile(System.IO.Path.GetDirectoryName(PackageOperations.DTE.Solution.FullName));
             PackageOperations.ActiveProfile.GenioConfiguration.CloseConnection();
             PackageOperations.RemoveTempFiles();
             SaveConfig();
@@ -254,7 +269,15 @@ namespace CodeFlow
                     Marshal.GetNativeVariantForObject(PackageOperations.ActiveProfile != null ? PackageOperations.ActiveProfile.ProfileName : "", vOut);
 
                 else if (newChoice != null)
+                {
                     PackageOperations.SetProfile(newChoice);
+                    /*FindInManualCode findWindow = this.FindToolWindow(typeof(FindInManualCode), 0, true) as FindInManualCode;
+                    if (findWindow != null)
+                    {
+                        List<string> plataforms = PackageOperations.ActiveProfile.GenioConfiguration.Plataforms;
+                        findWindow.SetComboData(plataforms);
+                    }*/
+                }
                 else
                     throw (new ArgumentException("Invalid input and output!"));
             }
@@ -309,20 +332,14 @@ namespace CodeFlow
             OptionsPage.LoadSettingsFromStorage();
 
             PackageOperations.AllProfiles = PackageOperations.LoadProfiles(Properties.Settings.Default.ConnectionStrings);
-            string lastActive = Settings.Default.LastActiveProfile;
 
-            Profile p = PackageOperations.AllProfiles.Find(x => x.ProfileName.Equals(lastActive));
-
-            if (p == null && PackageOperations.AllProfiles.Count == 1)
+            if (PackageOperations.AllProfiles.Count == 1)
                 PackageOperations.SetProfile(PackageOperations.AllProfiles[0].ProfileName);
-            else if(p != null)
-                PackageOperations.SetProfile(p.ProfileName);
         }
 
         public void SaveConfig()
         {
             Settings.Default.ConnectionStrings = PackageOperations.SaveProfiles(PackageOperations.AllProfiles);
-            Settings.Default.LastActiveProfile = PackageOperations.ActiveProfile.ProfileName;
             Settings.Default.Save();
 
             OptionsPage.SaveSettingsToStorage();

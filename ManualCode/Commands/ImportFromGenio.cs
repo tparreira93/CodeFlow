@@ -118,7 +118,6 @@ namespace CodeFlow
 
                 code = view.TextViewModel.DataBuffer.CurrentSnapshot.GetText();
 
-
                 CodeSegment segment = CodeSegment.ParseFromPosition(ManuaCode.BEGIN_MANUAL, ManuaCode.END_MANUAL, code, pos);
                 if (segment.IsValid())
                     subCode = segment.CompleteTextSegment;
@@ -126,7 +125,7 @@ namespace CodeFlow
                 List<IManual> codeList = ManuaCode.GetManualCode(subCode);
                 if (codeList.Count == 1 && codeList[0] is ManuaCode)
                 {
-                    ManuaCode bd = ManuaCode.GetManual(codeList[0].CodeId, PackageOperations.ActiveProfile);
+                    ManuaCode bd = ManuaCode.GetManual(PackageOperations.ActiveProfile, codeList[0].CodeId);
                     if (bd == null)
                     {
                         MessageBox.Show(Properties.Resources.VerifyProfile, Properties.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);

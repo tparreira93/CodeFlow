@@ -13,10 +13,10 @@ namespace CodeFlow.CodeUtils
 {
     internal class CompareDBSuggestion : ISuggestedAction
     {
-        private readonly ManuaCode _manual;
+        private readonly IManual _manual;
         private readonly string _display;
 
-        public CompareDBSuggestion(ManuaCode manual)
+        public CompareDBSuggestion(IManual manual)
         {
             _manual = manual;
             _display = string.Format("Open code compare for this manual code.");

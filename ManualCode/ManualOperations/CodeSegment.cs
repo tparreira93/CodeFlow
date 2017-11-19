@@ -47,11 +47,12 @@ namespace CodeFlow.ManualOperations
             if (textBuffer != null && !textBuffer.Equals("") && textBuffer.Length >= str_begin.Length)
             {
                 beginCode = begin = textBuffer.LastIndexOf(str_begin, cursorPos, cursorPos + 1);
-                end = textBuffer.IndexOf(str_end, cursorPos) + str_end.Length;
+                end = textBuffer.IndexOf(str_end, cursorPos);
             }
 
             if (begin != -1 && begin <= cursorPos && end > begin)
             {
+                end += str_end.Length;
                 platEnd = textBuffer.LastIndexOf(Utils.Util.NewLine, begin);
                 if (platEnd > -1)
                 {
@@ -65,8 +66,9 @@ namespace CodeFlow.ManualOperations
                 beginCode = textBuffer.IndexOf(Utils.Util.NewLine, beginCode) + Utils.Util.NewLine.Length;
                 length -= dif;
 
+                int count = Math.Abs(beginCode - length);
                 seg.segmentStart = beginCode;
-                seg.segmentLength = textBuffer.LastIndexOf(Utils.Util.NewLine, end, Math.Abs(beginCode - length)) - beginCode;
+                seg.segmentLength = textBuffer.LastIndexOf(Utils.Util.NewLine, end, count) - beginCode;
 
                 seg.simplifiedBufferSegment = textBuffer.Substring(seg.SegmentStart, seg.SegmentLength);
             }

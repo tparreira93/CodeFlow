@@ -8,12 +8,13 @@ namespace CodeFlow
 {
     public abstract class Manual : IManual
     {
-        protected Guid codeID;
-        protected string corpo;
-        protected string plataform;
-        protected string geniouser;
-        protected DateTime creationDate;
-        protected DateTime lastChangeDate;
+        protected Guid codeID = Guid.Empty;
+        protected string corpo = "";
+        protected string plataform = "";
+        protected string createdBy = "";
+        private string changedBy = "";
+        protected DateTime creationDate = DateTime.MaxValue;
+        protected DateTime lastChangeDate = DateTime.MaxValue;
         public static Dictionary<Int32, byte> SpecialChars = new Dictionary<Int32, byte>
         {
             //Unicode characters mappings to extended ASCII
@@ -55,15 +56,18 @@ namespace CodeFlow
         public string Plataform { get => plataform; set => plataform = value; }
 
         [DBName("OPERMUDA")]
-        public string GenioUser { get => geniouser; set => geniouser = value; }
+        public string CreatedBy { get => createdBy; set => createdBy = value; }
 
         [DBName("DATAMUDA")]
         public DateTime LastChangeDate { get => lastChangeDate; set => lastChangeDate = value; }
 
         [DBName("DATACRIA")]
         public DateTime CreationDate { get => creationDate; set => creationDate = value; }
+
         public abstract string Lang { get; set; }
         public abstract string Tag { get; }
+        public abstract string TipoCodigo { get; }
+        public abstract string Tipo { get; }
 
         public string GetCodeExtension(Profile p)
         {
@@ -72,38 +76,38 @@ namespace CodeFlow
             return extension ?? "tmp";
         }
 
-        public string ShortCode
+        public string OneLineCode
         {
             get
             {
-                int max = 80;
-                if (Code.Length < max)
-                    max = Code.Length;
-
-                return Code.Substring(0, max).Replace(Utils.Util.NewLine, " ").Trim();
+                return Code.Replace("\r", " ").Replace("\n", " ").Trim();
             }
         }
 
-        public abstract string TipoCodigo { get; }
-        public abstract string Tipo{ get; }
+        public string ShortOneLineCode(int max = 100)
+        {
+            if (Code.Length < max)
+                max = OneLineCode.Length;
+
+            return OneLineCode.Substring(0, max);
+        }
+
+        public string ChangedBy { get => changedBy; set => changedBy = value; }
 
         public string OpenManual(EnvDTE80.DTE2 dte, Profile p)
         {
             string tmp = Path.GetTempPath() + Guid.NewGuid().ToString() + "." + GetCodeExtension(p);
             File.WriteAllText(tmp, ToString());
-            dte.ItemOperations.OpenFile(tmp);
+            //dte.ItemOperations.OpenFile(tmp);
+            dte.ExecuteCommand("File.OpenFile", tmp);
             return tmp;
         }
-
-        public static IManual Merge(IManual local, IManual bd)
+        public void CompareDB(Profile profile)
         {
-            return MergeCompare(local, bd, true);
+            var t = this.GetType();
+            IManual bd = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { profile, this.CodeId }) as IManual;
+            Compare(this, bd);
         }
-        public static void Compare(IManual local, IManual bd)
-        {
-            MergeCompare(local, bd, false);
-        }
-
         private static IManual MergeCompare(IManual m1, IManual m2, bool saveRequired)
         {
             try
@@ -151,15 +155,6 @@ namespace CodeFlow
             {
                 throw e;
             }
-        }
-
-        public static IManual GetManual(Guid codeID, Profile profile)
-        {
-            StackTrace stackTrace = new StackTrace();
-            Type t = stackTrace.GetFrame(1).GetType();
-
-            var method = t.GetMethod("GetManual");
-            return (Manual)method.Invoke(null, new object[] { codeID, profile });
         }
 
         protected static IManual ParseText<T>(string begin, string end, string vscode, out string remaning)
@@ -212,70 +207,30 @@ namespace CodeFlow
 
             return m;
         }
-
-        protected static List<IManual> ParseManual(string begin, string end, string vscode)
+        public void CodeTransformKeyValue()
         {
-            List<IManual> man = new List<IManual>();
-            int b = vscode.IndexOf(begin);
-            int e = -1;
-            string nl = Utils.Util.NewLine;
-
-            StackFrame frame = new StackFrame(1);
-            var method = frame.GetMethod();
-            var t = method.DeclaringType;
-            if (t == null)
-                return man;
-
-            ConstructorInfo ctor = t.GetConstructor(new[] { typeof(Guid), typeof(string) });
-            if (ctor == null)
-                return man;
-
-            while (b != -1)
+            foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
             {
-                string s = vscode.Substring(b + begin.Length);
-                int i = s.IndexOf(nl);
-
-                if (i == -1)
-                    break;
-
-                string guid = s.Substring(0, i).Trim();
-                guid = guid.Substring(0, 36);
-                e = s.IndexOf(end);
-                string c = "", code = "";
-                if (e == -1)
-                {
-                    c = s.Substring(i);
-                    code = c.Substring(nl.Length);
-                    vscode = "";
-                }
-                else
-                {
-                    e = e - i;
-
-                    c = s.Substring(i, e);
-                    int tmp = c.LastIndexOf(Utils.Util.NewLine);
-                    if (tmp != -1)
-                        e = tmp;
-                    else
-                        e = c.Length - i - nl.Length;
-                    code = c.Substring(nl.Length, e - nl.Length);
-
-                    b = vscode.IndexOf(begin, b);
-                    vscode = s.Substring(i + e);
-                }
-
-                IManual m = (IManual)ctor.Invoke(new object[] { Guid.Parse(guid), code });
-                m.CodeTransformValueKey();
-                man.Add(m);
-
-                b = vscode.IndexOf(begin);
+                Code.Replace((char)entry.Key, (char)entry.Value);
             }
-
-            return man;
+        }
+        public void CodeTransformValueKey()
+        {
+            foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
+            {
+                Code.Replace((char)entry.Value, (char)entry.Key);
+            }
         }
 
-        public abstract bool Update(Profile profile);
-
+        public static IManual Merge(IManual local, IManual bd)
+        {
+            return MergeCompare(local, bd, true);
+        }
+        public static void Compare(IManual local, IManual bd)
+        {
+            MergeCompare(local, bd, false);
+        }
+        public abstract void ShowSVNLog(Profile profile, string systemName);
         protected void OpenSVNLog(string filePath)
         {
             try
@@ -292,21 +247,6 @@ namespace CodeFlow
             }
         }
 
-        public void CodeTransformKeyValue()
-        {
-            foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
-            {
-                Code.Replace((char)entry.Key, (char)entry.Value);
-            }
-        }
-        public void CodeTransformValueKey()
-        {
-            foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
-            {
-                Code.Replace((char)entry.Value, (char)entry.Key);
-            }
-        }
-
-        public abstract void ShowSVNLog(Profile profile, string systemName);
+        public abstract bool Update(Profile profile);
     }
 }

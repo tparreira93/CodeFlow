@@ -101,7 +101,7 @@ namespace CodeFlow.CodeUtils
 
             try
             {
-                ManuaCode bd = ManuaCode.GetManual(codmanua, PackageOperations.ActiveProfile);
+                ManuaCode bd = ManuaCode.GetManual(PackageOperations.ActiveProfile, codmanua);
                 if (bd == null)
                     return;
 

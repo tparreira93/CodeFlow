@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CodeFlow.Utils;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -282,8 +280,8 @@ namespace CodeFlow
 
                         while (reader.Read())
                         {
-                            Guid codmodul = reader.GetGuid(0);
-                            string codiprog = reader.GetString(1);
+                            Guid codmodul = reader.SafeGetGuid(0);
+                            string codiprog = reader.SafeGetString(1);
 
                             modules.Add(codiprog, codmodul);
                         }
@@ -305,7 +303,7 @@ namespace CodeFlow
             return modules;
         }
 
-        public Dictionary<string, string> GetTipos()
+        private Dictionary<string, string> GetTipos()
         {
             Dictionary<string, string> tipos = new Dictionary<string, string>();
 
@@ -315,7 +313,7 @@ namespace CodeFlow
                 if (GenioPath.Length == 0)
                     doc.LoadXml(Properties.Resources.ManwinInfoData);
                 else
-                    doc.LoadXml($"{GenioPath}\\ManwinInfoData.xml");
+                    doc.Load($"{GenioPath}\\ManwinInfoData.xml");
 
                 XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Manwins/ManwinTags/Tag");
                 if (nodes != null)
@@ -345,7 +343,7 @@ namespace CodeFlow
             return tipos;
         }
 
-        public List<string> GetPlataforms()
+        private List<string> GetPlataforms()
         {
             List<string> plataforms = new List<string>();
 
@@ -355,7 +353,7 @@ namespace CodeFlow
                 if (GenioPath.Length == 0)
                     doc.LoadXml(Properties.Resources.ManwinInfoData);
                 else
-                    doc.LoadXml($"{GenioPath}\\ManwinInfoData.xml");
+                    doc.Load($"{GenioPath}\\ManwinInfoData.xml");
 
                 XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Manwins/Platforms/Platform");
                 if (nodes != null)

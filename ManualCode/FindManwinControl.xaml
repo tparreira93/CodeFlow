@@ -15,8 +15,8 @@
     </UserControl.Resources>
 
     <Grid>
-        <TextBox x:Name="txtSearch" TextWrapping="Wrap" Grid.Row="0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,0,0"/>
-        <Button Content="Search" Click="btnSearch_Click" Grid.Row="0" x:Name="btnSearch" Height="23" VerticalAlignment="Top" HorizontalAlignment="Right" Width="55" Foreground="#FF042271"/>
+        <TextBox x:Name="txtSearch" TextWrapping="Wrap" Grid.Row="0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,0,0,0" KeyDown="txtSearch_KeyDown"/>
+        <Button Content="Search" Click="btnSearch_Click" Grid.Row="0" x:Name="btnSearch" Height="23" VerticalAlignment="Top" HorizontalAlignment="Right" Width="55"/>
         <ListView x:Name="lstFindMan" MouseDoubleClick="lstFindMan_MouseDoubleClick" Initialized="lstFindMan_Initialized" Margin="0,51,0,-0.4" SelectionMode="Single">
             <ListView.View>
                 <GridView>
@@ -25,15 +25,17 @@
                         <GridViewColumn Header="Tag"            Width="50"  DisplayMemberBinding="{Binding Tag}"/>
                         <GridViewColumn Header="Rot."           Width="50"  DisplayMemberBinding="{Binding Tipo}"/>
                         <GridViewColumn Header="Plat."          Width="50"  DisplayMemberBinding="{Binding Plataform}"/>
-                        <GridViewColumn Header="Code"           Width="150" DisplayMemberBinding="{Binding ShortCode}"/>
+                        <GridViewColumn Header="Code"           Width="150" DisplayMemberBinding="{Binding OneLineCode}"/>
                     </GridView.Columns>
                 </GridView>
             </ListView.View>
         </ListView>
-        <ToolBar x:Name="toolBar" HorizontalAlignment="Left" Height="28" Margin="0,23,0,0" VerticalAlignment="Top" Width="300" Header="" Background="#FFF6F6F6">
-            <CheckBox Background="#3FC8C8C8" Foreground="#FF1E1E1E">Whole word </CheckBox>
+        <ToolBar x:Name="toolBar" Height="28" Margin="0,23,0,0" VerticalAlignment="Top" Header="" Background="#FFF6F6F6">
+            <CheckBox Click="wholeChecked">Whole word</CheckBox>
             <Separator/>
-            <CheckBox IsChecked="True" Background="#7FC8C8C8" Foreground="#FF1E1E1E">Case sensitive</CheckBox>
+            <CheckBox Click="caseCheck">Case sensitive</CheckBox>
+            <ComboBox Margin="0,0,0,0.4" Width="85" HorizontalAlignment="Stretch">
+            </ComboBox>
         </ToolBar>
     </Grid>
 </UserControl>

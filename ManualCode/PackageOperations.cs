@@ -44,40 +44,6 @@ namespace CodeFlow
         public static bool AutoVCCTO2008Fix { get; internal set; }
         public static DTE2 DTE { get => dte; set => dte = value; }
 
-        public static String SearchLastActiveProfile(string folder)
-        {
-            string file = $"{folder}\\LastActiveProfile.xml";
-            String p = null;
-            try
-            {
-                if (File.Exists(file))
-                {
-                    var stringReader = new System.IO.StringReader(File.ReadAllText(file));
-                    var serializer = new XmlSerializer(typeof(String));
-                    p = serializer.Deserialize(stringReader) as String;
-                }
-            }
-            catch (Exception)
-            { }
-
-            return p;
-        }
-
-        public static void StoreLastProfile(string folder)
-        {
-            string file = $"{folder}\\LastActiveProfile.xml";
-            try
-            {
-                var stringwriter = new StringWriter();
-                var serializer = new XmlSerializer(ActiveProfile.ProfileName.GetType());
-                serializer.Serialize(stringwriter, ActiveProfile.ProfileName);
-
-                File.WriteAllText(file, stringwriter.ToString());                
-            }
-            catch (Exception)
-            { }
-        }
-
         public static bool AddProfile(Genio connection, string profileName)
         {
             if (AllProfiles.Find(x => x.ProfileName.Equals(profileName) == true) == null)
@@ -115,7 +81,10 @@ namespace CodeFlow
         {
             Profile p = AllProfiles.Find(x => x.ProfileName.Equals(profileName));
             if (p != null)
+            {
                 ActiveProfile = p;
+                ActiveProfile.GenioConfiguration.ParseGenioFiles();
+            }
         }
 
         public static void SaveProfiles()
@@ -123,13 +92,44 @@ namespace CodeFlow
             Properties.Settings.Default.ConnectionStrings = SaveProfiles(AllProfiles);
             Properties.Settings.Default.Save();
         }
+        public static void StoreLastProfile(string folder)
+        {
+            string file = $"{folder}\\LastActiveProfile.xml";
+            try
+            {
+                var stringwriter = new StringWriter();
+                var serializer = XmlSerializer.FromTypes(new[] { ActiveProfile.ProfileName.GetType() })[0];
+                serializer.Serialize(stringwriter, ActiveProfile.ProfileName);
 
+                File.WriteAllText(file, stringwriter.ToString());
+            }
+            catch (Exception)
+            { }
+        }
+        public static String SearchLastActiveProfile(string folder)
+        {
+            string file = $"{folder}\\LastActiveProfile.xml";
+            String p = null;
+            try
+            {
+                if (File.Exists(file))
+                {
+                    var stringReader = new System.IO.StringReader(File.ReadAllText(file));
+                    var serializer = XmlSerializer.FromTypes(new[] { ActiveProfile.ProfileName.GetType() })[0];
+                    p = serializer.Deserialize(stringReader) as String;
+                }
+            }
+            catch (Exception)
+            { }
+
+            return p;
+        }
         public static string SaveProfiles(List<Profile> configs)
         {
             var stringwriter = new StringWriter();
             try
             {
-                var serializer = new XmlSerializer(configs.GetType());
+                var serializer = XmlSerializer.FromTypes(new[] { configs.GetType() })[0];
                 serializer.Serialize(stringwriter, configs);
             }
             catch(Exception)
@@ -143,7 +143,7 @@ namespace CodeFlow
             try
             {
                 var stringReader = new System.IO.StringReader(conn);
-                var serializer = new XmlSerializer(typeof(List<Profile>));
+                var serializer = XmlSerializer.FromTypes(new[] { typeof(List<Profile>) })[0];
                 profiles = serializer.Deserialize(stringReader) as List<Profile>;
             }
             catch(Exception)
@@ -182,7 +182,6 @@ namespace CodeFlow
         {
             /*ENVDTE. */
             DTE vs = (DTE)provider.GetService(typeof(DTE));
-            if (vs == null) throw new InvalidOperationException("DTE not found.");
             return vs;
         }
         public static DTE GetCurrentDTE()

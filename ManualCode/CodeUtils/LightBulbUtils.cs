@@ -67,6 +67,9 @@ namespace CodeFlow.CodeUtils
             else
             {
                 segment = CodeSegment.ParseFromPosition(CustomFunction.BEGIN_MANUAL, CustomFunction.END_MANUAL, code, pos);
+                if (segment.IsValid())
+                    codeList = CustomFunction.GetManualCode(segment.CompleteTextSegment);
+
                 if (codeList.Count == 1)
                     manua = codeList[0] as CustomFunction;
             }
@@ -93,15 +96,13 @@ namespace CodeFlow.CodeUtils
                 && TryGetManual(out IManual man, out CodeSegment segment))
             {
                 List<ISuggestedAction> actions = new List<ISuggestedAction>();
-                if (man is ManuaCode)
+
+                CompareDBSuggestion compare = new CompareDBSuggestion(man);
+                actions.Add(compare);
+                if (segment.SegmentStart > 0 && segment.SegmentLength > 0)
                 {
-                    CompareDBSuggestion compare = new CompareDBSuggestion(man as ManuaCode);
-                    actions.Add(compare);
-                    if (segment.SegmentStart > 0 && segment.SegmentLength > 0)
-                    {
-                        ImportFromDBSuggestion import = new ImportFromDBSuggestion(segment.SegmentStart, segment.SegmentLength, textView, textBuffer, man.CodeId);
-                        actions.Add(import);
-                    }
+                    ImportFromDBSuggestion import = new ImportFromDBSuggestion(segment.SegmentStart, segment.SegmentLength, textView, textBuffer, man.CodeId);
+                    actions.Add(import);
                 }
 
                 if (PackageOperations.SolutionProps != null

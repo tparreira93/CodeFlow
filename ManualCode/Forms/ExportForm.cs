@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -40,13 +41,13 @@ namespace CodeFlow
             lstCode.Items.Clear();
             for (int i = 0; i < exportCode.Count; i++)
             {
-                ListViewItem item = new ListViewItem(exportCode[i].ShortCode);
+                ListViewItem item = new ListViewItem(exportCode[i].ShortOneLineCode());
                 item.Tag = exportCode[i];
                 lstCode.Items.Add(item);
             }
             foreach (KeyValuePair<Guid, List<ManuaCode>> pair in conflictCode)
             {
-                ListViewItem item = new ListViewItem(pair.Value[0].ShortCode);
+                ListViewItem item = new ListViewItem(pair.Value[0].ShortOneLineCode());
                 item.Tag = pair;
                 item.ForeColor = Color.DarkRed;
                 lstCode.Items.Add(item);
@@ -101,14 +102,11 @@ namespace CodeFlow
 
         private DialogResult CompareCode(IManual man)
         {
-            IManual bd;
             DialogResult funcResult = DialogResult.Yes;
             try
             {
-                if (man is ManuaCode)
-                    bd = ManuaCode.GetManual(man.CodeId, PackageOperations.ActiveProfile);
-                else
-                    bd = CustomFunction.GetManual(man.CodeId, PackageOperations.ActiveProfile);
+                Type t = man.GetType();
+                IManual bd = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { PackageOperations.ActiveProfile, man.CodeId }) as IManual;
 
                 if (bd == null)
                 {
@@ -129,7 +127,7 @@ namespace CodeFlow
                 return funcResult;
 
             funcResult = MessageBox.Show(Properties.Resources.ExportedMerged,
-                Properties.Resources.Export, MessageBoxButtons.YesNoCancel);
+                Properties.Resources.Export, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
             try
             {
@@ -152,7 +150,7 @@ namespace CodeFlow
         {
             DialogResult result;
 
-            result = MessageBox.Show(Properties.Resources.ConfirmationExport, Properties.Resources.Export, MessageBoxButtons.YesNo);
+            result = MessageBox.Show(Properties.Resources.ConfirmationExport, Properties.Resources.Export, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
             if (result != DialogResult.Yes)
                 return;
@@ -270,7 +268,7 @@ namespace CodeFlow
                     lstCode.Items.Remove(item);
                     try
                     {
-                        ManuaCode bd = ManuaCode.GetManual(code.CodeId, PackageOperations.ActiveProfile);
+                        ManuaCode bd = ManuaCode.GetManual(PackageOperations.ActiveProfile, code.CodeId);
                         if (bd == null)
                         {
                             MessageBox.Show(Properties.Resources.VerifyProfile,
@@ -279,7 +277,7 @@ namespace CodeFlow
                         }
                         if (!bd.Code.Equals(code.Code))
                         {
-                            item = new ListViewItem(code.ShortCode);
+                            item = new ListViewItem(code.ShortOneLineCode());
                             item.Tag = code;
                             lstCode.Items.Add(item);
                         }

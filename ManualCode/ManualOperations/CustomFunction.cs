@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Diagnostics;
+using CodeFlow.Utils;
 
 namespace CodeFlow
 {
@@ -14,6 +14,11 @@ namespace CodeFlow
         private string nome = "";
         private string lang = "";
         private Guid codfuncs = Guid.Empty;
+        private string tiportn = "";
+        private double ordem;
+        private double largura;
+        private double decimais;
+        private string resumprm = "";
 
         [DBName("CODIMPLS")]
         public override Guid CodeId { get => codeID; set => codeID = value; }
@@ -27,6 +32,11 @@ namespace CodeFlow
         public override string Tag { get => Nome; }
         public override string TipoCodigo { get => "Custom"; }
         public override string Tipo { get => ""; }
+        public string Tiportn { get => tiportn; set => tiportn = value; }
+        public double Ordem { get => ordem; set => ordem = value; }
+        public double Largura { get => largura; set => largura = value; }
+        public double Decimais { get => decimais; set => decimais = value; }
+        public string Resumprm { get => resumprm; set => resumprm = value; }
 
         public CustomFunction()
         {
@@ -43,10 +53,27 @@ namespace CodeFlow
         }
         public CustomFunction(Guid codeID, string code)
         {
-            this.CodeId = CodeId;
+            this.CodeId = codeID;
             this.Code = code;
         }
+        public void CompareDB(Profile profile)
+        {
+            CustomFunction bd = GetManual(profile, CodeId);
 
+            Compare(this, bd);
+        }
+        public override void ShowSVNLog(Profile profile, string systemName)
+        {
+            try
+            {
+                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "Functions." + systemName}");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+        }
         public override bool Update(Profile profile)
         {
             bool result = false;
@@ -59,10 +86,8 @@ namespace CodeFlow
                 {
                     try
                     {
-                        SqlCommand cmd = new SqlCommand
-                        {
-                            CommandText = String.Format("UPDATE GENIMPLS SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODIMPLS = @CODIMPLS")
-                        };
+                        SqlCommand cmd = new SqlCommand();
+                        cmd.CommandText = String.Format("UPDATE GENIMPLS SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODIMPLS = @CODIMPLS");
 
                         cmd.Parameters.AddWithValue("@CORPO", this.Code);
                         cmd.Parameters.AddWithValue("@CODIMPLS", this.CodeId);
@@ -82,8 +107,7 @@ namespace CodeFlow
 
             return result;
         }
-
-        public new static CustomFunction GetManual(Guid codimpls, Profile profile)
+        public static CustomFunction GetManual(Profile profile, Guid codimpls)
         {
             CustomFunction custom = new CustomFunction();
             SqlDataReader reader = null;
@@ -98,23 +122,35 @@ namespace CodeFlow
                     {
                         SqlCommand cmd = new SqlCommand
                         {
-                            CommandText = String.Format("SELECT FUNCS.CODFUNCS, IMPLS.CODIMPLS, FUNCS.NOME, IMPLS.CORPO, IMPLS.PLATAFOR, IMPLS.*" +
+                            CommandText = String.Format("SELECT FUNCS.CODFUNCS, IMPLS.CODIMPLS, FUNCS.NOME, IMPLS.CORPO, IMPLS.PLATAFOR, " +
+                                                            " FUNCS.TIPORTN, FUNCS.ORDEM, FUNCS.LARGURA, FUNCS.DECIMAIS, FUNCS.RESUMPRM, " +
+                                                            " IMPLS.OPERCRIA, IMPLS.OPERMUDA, IMPLS.DATACRIA, IMPLS.DATAMUDA" +
                                                             " FROM GENFUNCS FUNCS" +
                                                             " INNER JOIN GENIMPLS IMPLS ON IMPLS.CODFUNCS = FUNCS.CODFUNCS" +
-                                                            " WHERE CODIMPLS = {0}", codimpls),
+                                                            " WHERE CODIMPLS = @CODIMPLS"),
                             CommandType = global::System.Data.CommandType.Text,
                             Connection = profile.GenioConfiguration.SqlConnection
                         };
+                        cmd.Parameters.AddWithValue("@CODIMPLS", codimpls);
 
                         reader = cmd.ExecuteReader();
                         if (reader.HasRows)
                         {
                             reader.Read();
-                            custom.Codfuncs = reader.GetGuid(0);
-                            custom.CodeId = reader.GetGuid(1);
-                            custom.Nome = reader.GetString(2);
-                            custom.Code = reader.GetString(3);
-                            custom.Plataform = reader.GetString(4);
+                            custom.Codfuncs = reader.SafeGetGuid(0);
+                            custom.CodeId = reader.SafeGetGuid(1);
+                            custom.Nome = reader.SafeGetString(2);
+                            custom.Code = reader.SafeGetString(3);
+                            custom.Plataform = reader.SafeGetString(4);
+                            custom.Tiportn = reader.SafeGetString(5);
+                            custom.Ordem = reader.SafeGetDouble(6);
+                            custom.Largura = reader.SafeGetDouble(7);
+                            custom.Decimais = reader.SafeGetDouble(8);
+                            custom.Resumprm = reader.SafeGetString(9);
+                            custom.CreatedBy = reader.SafeGetString(10);
+                            custom.ChangedBy = reader.SafeGetString(11);
+                            custom.CreationDate = reader.SafeGetDateTime(12);
+                            custom.LastChangeDate = reader.SafeGetDateTime(13);
                             custom.CodeTransformKeyValue();
                         }
                     }
@@ -127,28 +163,7 @@ namespace CodeFlow
 
             return custom;
         }
-
-        public void CompareDB(Profile profile)
-        {
-            CustomFunction bd = GetManual(CodeId, profile);
-
-            Compare(this, bd);
-        }
-
-        public override void ShowSVNLog(Profile profile, string systemName)
-        {
-            try
-            {
-                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "Functions." + systemName}");
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-
-        }
-
-        public static List<CustomFunction> Search(Profile profile, string texto, int limitBodySize = 80, bool caseSensitive = false, bool wholeWord = false)
+        public static List<CustomFunction> Search(Profile profile, string texto, int limitBodySize = 80, bool caseSensitive = false, bool wholeWord = false, string plataform = "")
         {
             List<CustomFunction> results = new List<CustomFunction>();
             SqlCommand cmd = new SqlCommand();
@@ -164,14 +179,24 @@ namespace CodeFlow
                     string tmp = String.Format("LEFT(CORPO, {0})", limitBodySize);
                     if (limitBodySize == 0)
                         tmp = "CORPO";
-                    string customFuncQuery = String.Format("SELECT IMPLS.CODIMPLS, {0}, PLATAFOR, FUNCS.NOME FROM GENFUNCS FUNCS INNER JOIN GENIMPLS IMPLS ON IMPLS.CODFUNCS = FUNCS.CODFUNCS " +
-                                                                    "WHERE CORPO LIKE @TERM OR NOME LIKE @TERM", tmp);
+                    string customFuncQuery = String.Format("SELECT IMPLS.CODIMPLS, {0}, IMPLS.PLATAFOR, FUNCS.NOME, FUNCS.CODFUNCS," +
+                                                            " FUNCS.TIPORTN, FUNCS.ORDEM, FUNCS.LARGURA, FUNCS.DECIMAIS, FUNCS.RESUMPRM, " +
+                                                            " IMPLS.OPERCRIA, IMPLS.OPERMUDA, IMPLS.DATACRIA, IMPLS.DATAMUDA" +
+                                                            " FROM GENFUNCS FUNCS" +
+                                                            " INNER JOIN GENIMPLS IMPLS ON IMPLS.CODFUNCS = FUNCS.CODFUNCS" +
+                                                            " WHERE (' ' + CORPO + ' ') LIKE @TERM OR (' ' + NOME + ' ') LIKE @TERM", tmp);
 
                     string search = "%" + texto + "%";
+                    if (plataform.Length != 0)
+                    {
+                        customFuncQuery += " AND PLATAFOR = @PLATAFORM";
+                        cmd.Parameters.AddWithValue("@PLATAFORM", plataform);
+                    }
+
                     if (caseSensitive)
                         customFuncQuery += " COLLATE Latin1_General_BIN;";
                     if (wholeWord)
-                        search = $"%[ ]{texto}[ ]%";
+                        search = $"%[^a-z]{texto}[^a-z]%";
 
                     cmd.CommandText = customFuncQuery;
                     cmd.CommandType = global::System.Data.CommandType.Text;
@@ -183,15 +208,25 @@ namespace CodeFlow
                         reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
-                            Guid codmanua = reader.GetGuid(0);
-                            string corpo = reader.GetString(1);
+                            Guid codmanua = reader.SafeGetGuid(0);
+                            string corpo = reader.SafeGetString(1) ?? "";
 
-                            CustomFunction man = new CustomFunction(codmanua, corpo);
+                            CustomFunction custom = new CustomFunction(codmanua, corpo);
+                            custom.Plataform = reader.SafeGetString(2) ?? "";
+                            custom.Nome = reader.SafeGetString(3) ?? "";
+                            custom.Codfuncs = reader.SafeGetGuid(4);
+                            custom.Tiportn = reader.SafeGetString(5) ?? "";
+                            custom.Ordem = reader.SafeGetDouble(6);
+                            custom.Largura = reader.SafeGetDouble(7);
+                            custom.Decimais = reader.SafeGetDouble(8);
+                            custom.Resumprm = reader.SafeGetString(9) ?? "";
+                            custom.CreatedBy = reader.SafeGetString(10) ?? "";
+                            custom.ChangedBy = reader.SafeGetString(11) ?? "";
+                            custom.CreationDate = reader.SafeGetDateTime(12);
+                            custom.LastChangeDate = reader.SafeGetDateTime(13);
 
-                            man.Plataform = reader.GetString(2);
-                            man.Nome = reader.GetString(3);
-                            man.CodeTransformKeyValue();
-                            results.Add(man);
+                            custom.CodeTransformKeyValue();
+                            results.Add(custom);
                         }
                     }
                     catch (Exception ex)
@@ -208,14 +243,13 @@ namespace CodeFlow
 
             return results;
         }
-
         public static List<IManual> GetManualCode(string vscode)
         {
             List<IManual> codeList = new List<IManual>();
             string remainig = vscode ?? "";
             do
             {
-                IManual m = ParseText<ManuaCode>(BEGIN_MANUAL, END_MANUAL, remainig, out remainig);
+                IManual m = ParseText<CustomFunction>(BEGIN_MANUAL, END_MANUAL, remainig, out remainig);
                 if (m != null)
                     codeList.Add(m);
             } while (remainig.Length != 0);

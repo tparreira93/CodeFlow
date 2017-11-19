@@ -1,48 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
-
+using CodeFlow.Utils;
 namespace CodeFlow
 {
     [DBName("GENMANUA")]
     public class ManuaCode : Manual
     {
         [DBName("tipo")]
-        private string tipo;
+        private string tipo = "";
 
         [DBName("modulo")]
-        private string modulo;
+        private string modulo = "";
 
         [DBName("codmodul")]
-        private Guid codmodul;
+        private Guid codmodul = Guid.Empty;
 
         [DBName("parameter")]
-        private string parameter;
+        private string parameter = "";
 
         [DBName("lang")]
-        private string lang;
+        private string lang = "";
 
         [DBName("feature")]
-        private string feature;
+        private string feature = "";
 
         [DBName("codfeature")]
-        private Guid codfeature;
+        private Guid codfeature = Guid.Empty;
 
         [DBName("file")]
-        private string file;
+        private string file = "";
 
         [DBName("order")]
-        private double order;
+        private double order = 0;
 
         [DBName("system")]
-        private int system;
+        private int system = 0;
 
         [DBName("inhib")]
-        private int inhib;
+        private int inhib = 0;
 
         public static string BEGIN_MANUAL = "BEGIN_MANUALCODE_CODMANUA:";
         public static string END_MANUAL = "END_MANUALCODE";
@@ -60,7 +57,7 @@ namespace CodeFlow
             this.Order = .0f;
             this.Inhib = 0;
             this.System = 0;
-            this.GenioUser = "";
+            this.CreatedBy = "";
         }
 
         public ManuaCode()
@@ -70,13 +67,11 @@ namespace CodeFlow
 
         public ManuaCode(Guid codmanua, string code)
         {
-            init();
             this.CodeId = codmanua;
             this.Code = code;
         }
         public ManuaCode(string code)
         {
-            init();
             this.Code = code;
         }
 
@@ -98,7 +93,8 @@ namespace CodeFlow
         public override string TipoCodigo { get => "Manual"; }
         public override string Tag { get => Parameter; }
         public override string Tipo { get => TipoRotina; }
-
+        
+        private static Regex reg = new Regex(@"(Plataforma:)\s*(\w)*\s*(\|)\s*(Tipo:)\s*(\w)*\s*(\|)\s*(Modulo:)\s*(\w)*\s*(\|)\s*(Parametro:)\s*(\w)*\s*(\|)\s*(Ficheiro:)\s*(\w)*\s*(\|)\s*(Ordem:)\s*([+-]?([0-9]*[.])?[0-9]+)", RegexOptions.Compiled);
         private string FixSetCurrentIndex(string code)
         {
             return Regex.Replace(code,
@@ -106,9 +102,6 @@ namespace CodeFlow
                 "$1$4$5$6$7$13$10$11",
                 RegexOptions.Multiline);
         }
-
-        private static Regex reg = new Regex(@"(Plataforma:)\s*(\w)*\s*(\|)\s*(Tipo:)\s*(\w)*\s*(\|)\s*(Modulo:)\s*(\w)*\s*(\|)\s*(Parametro:)\s*(\w)*\s*(\|)\s*(Ficheiro:)\s*(\w)*\s*(\|)\s*(Ordem:)\s*([+-]?([0-9]*[.])?[0-9]+)", RegexOptions.Compiled);
-
         public static List<IManual> GetManualCode(string vscode)
         {
             List<IManual> codeList = new List<IManual>();
@@ -154,7 +147,26 @@ namespace CodeFlow
 
             return codeList;
         }
+        public override void ShowSVNLog(Profile profile, string systemName)
+        {
+            try
+            {
+                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "MAN" + this.ManualFile + "." + systemName}");
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+        }
+        public override string ToString()
+        {
+            string str = BEGIN_MANUAL + this.CodeId.ToString() + Utils.Util.NewLine;
+            str += this.Code;
+            str += Utils.Util.NewLine;
+            str += END_MANUAL;
 
+            return str;
+        }
         public override bool Update(Profile profile)
         {
             bool result = false;
@@ -188,7 +200,6 @@ namespace CodeFlow
 
             return result;
         }
-
         public bool Insert(Profile profile)
         {
             lock (PackageOperations.lockObject)
@@ -219,10 +230,10 @@ namespace CodeFlow
                         cmd.Parameters.AddWithValue("@NEGCARAC", this.Inhib);
                         cmd.Parameters.AddWithValue("@CARAC", this.Feature);
                         cmd.Parameters.AddWithValue("@DATACRIA", DateTime.Now);
-                        cmd.Parameters.AddWithValue("@OPERCRIA", this.GenioUser);
+                        cmd.Parameters.AddWithValue("@OPERCRIA", profile.GenioConfiguration.GenioUser);
                         cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
-                    return cmd.ExecuteNonQuery() != 0;
+                        return cmd.ExecuteNonQuery() != 0;
                     }
                     catch (Exception ex)
                     {
@@ -232,8 +243,7 @@ namespace CodeFlow
             }
             return false;
         }
-
-        public new static ManuaCode GetManual(Guid codmanua, Profile profile)
+        public static ManuaCode GetManual(Profile profile, Guid codmanua)
         {
             ManuaCode man = null;
             SqlDataReader reader = null;
@@ -247,7 +257,8 @@ namespace CodeFlow
                     try
                     {
                         SqlCommand cmd = new SqlCommand();
-                        cmd.CommandText = String.Format("SELECT CODMANUA, CORPO, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, LANG, ORDEM FROM GENMANUA WHERE CODMANUA = '{0}'", codmanua);
+                        cmd.CommandText = String.Format("SELECT CODMANUA, CORPO, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, LANG, ORDEM, OPERCRIA, OPERMUDA, DATACRIA, DATAMUDA FROM GENMANUA WHERE CODMANUA = @CODMANUA");
+                        cmd.Parameters.AddWithValue("@CODMANUA", codmanua);
                         cmd.CommandType = global::System.Data.CommandType.Text;
                         cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
@@ -256,15 +267,20 @@ namespace CodeFlow
                         if (reader.HasRows)
                         {
                             reader.Read();
-                            man.CodeId = reader.GetGuid(0);
-                            man.Code = reader.GetString(1);
-                            man.Plataform = reader.GetString(2);
-                            man.TipoRotina = reader.GetString(3);
-                            man.Modulo = reader.GetString(4);
-                            man.Parameter = reader.GetString(5);
-                            man.ManualFile = reader.GetString(6);
-                            man.Lang = reader.GetString(7);
-                            man.Order = reader.GetDouble(8);
+                            man.CodeId = reader.SafeGetGuid(0);
+                            man.Code = reader.SafeGetString(1);
+                            man.Plataform = reader.SafeGetString(2);
+                            man.TipoRotina = reader.SafeGetString(3);
+                            man.Modulo = reader.SafeGetString(4);
+                            man.Parameter = reader.SafeGetString(5);
+                            man.ManualFile = reader.SafeGetString(6);
+                            man.Lang = reader.SafeGetString(7);
+                            man.Order = reader.SafeGetDouble(8);
+                            man.CreatedBy = reader.SafeGetString(9);
+                            man.ChangedBy = reader.SafeGetString(10);
+                            man.CreationDate = reader.GetDateTime(11);
+                            man.LastChangeDate = reader.GetDateTime(12);
+
                             man.CodeTransformKeyValue();
                         }
 
@@ -283,37 +299,7 @@ namespace CodeFlow
 
             return man;
         }
-
-        public void CompareDB(Profile profile)
-        {
-            ManuaCode bd = GetManual(CodeId, profile);
-
-            Compare(this, bd);
-        }
-
-        public override void ShowSVNLog(Profile profile, string systemName)
-        {
-            try
-            {
-                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "MAN" + this.ManualFile + "." + systemName}");
-            }
-            catch(Exception e)
-            {
-                throw e;
-            }
-        }
-
-        public override string ToString()
-        {
-            string str = BEGIN_MANUAL + this.CodeId.ToString() + Utils.Util.NewLine;
-            str += this.Code;
-            str += Utils.Util.NewLine;
-            str += END_MANUAL;
-
-            return str;
-        }
-        
-        public static List<ManuaCode> Search(Profile profile, string texto, int limitBodySize = 80, bool caseSensitive = false, bool wholeWord = false)
+        public static List<ManuaCode> Search(Profile profile, string texto, int limitBodySize = 80, bool caseSensitive = false, bool wholeWord = false, string plataform = "")
         {
             List<ManuaCode> results = new List<ManuaCode>();
             SqlCommand cmd = new SqlCommand();
@@ -329,13 +315,20 @@ namespace CodeFlow
                     string tmp = String.Format("LEFT(CORPO, {0})", limitBodySize);
                     if (limitBodySize == 0)
                         tmp = "CORPO";
-                    string manuaQuery = String.Format("SELECT CODMANUA, {0}, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, LANG, ORDEM FROM GENMANUA WHERE CORPO LIKE @TERM", tmp);
+                    string manuaQuery = String.Format("SELECT CODMANUA, {0}, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, LANG, ORDEM, OPERCRIA, OPERMUDA, DATACRIA, DATAMUDA "
+                                                    + "FROM GENMANUA WHERE (' ' + CORPO + ' ') LIKE @TERM", tmp);
+
+                    if (plataform.Length != 0)
+                    {
+                        manuaQuery += " AND PLATAFOR = @PLATAFORM";
+                        cmd.Parameters.AddWithValue("@PLATAFORM", plataform);
+                    }
 
                     string search = "%" + texto + "%";
                     if (caseSensitive)
                         manuaQuery += " COLLATE Latin1_General_BIN;";
                     if (wholeWord)
-                        search = $"%[ ]{texto}[ ]%";
+                        search = $"%[^a-z]{texto}[^a-z]%";
 
                     cmd.CommandText = manuaQuery;
                     cmd.CommandType = global::System.Data.CommandType.Text;
@@ -348,17 +341,21 @@ namespace CodeFlow
                         while (reader.Read())
                         {
                             Guid codmanua = reader.GetGuid(0);
-                            string corpo = reader.GetString(1);
+                            string corpo = reader.SafeGetString(1);
 
                             ManuaCode man = new ManuaCode(codmanua, corpo)
                             {
-                                Plataform = reader.GetString(2),
-                                TipoRotina = reader.GetString(3),
-                                Modulo = reader.GetString(4),
-                                Parameter = reader.GetString(5),
-                                ManualFile = reader.GetString(6),
-                                Lang = reader.GetString(7),
-                                Order = reader.GetDouble(8)
+                                Plataform = reader.SafeGetString(2),
+                                TipoRotina = reader.SafeGetString(3),
+                                Modulo = reader.SafeGetString(4),
+                                Parameter = reader.SafeGetString(5),
+                                ManualFile = reader.SafeGetString(6),
+                                Lang = reader.SafeGetString(7),
+                                Order = reader.SafeGetDouble(8),
+                                CreatedBy = reader.SafeGetString(9),
+                                ChangedBy = reader.SafeGetString(10),
+                                CreationDate = reader.SafeGetDateTime(11),
+                                LastChangeDate = reader.SafeGetDateTime(12)
                             };
                             man.CodeTransformKeyValue();
                             results.Add(man);

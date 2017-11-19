@@ -99,7 +99,7 @@ namespace CodeFlow
         private void MenuItemCallback(object sender, EventArgs e)
         {
             var dte = ServiceProvider.GetService(typeof(DTE)) as _DTE;
-
+            List<IManual> manual = new List<IManual>();
             string code = "";
             string subCode = "";
 
@@ -124,13 +124,23 @@ namespace CodeFlow
 
                 SnapshotPoint caretPosition = view.Caret.Position.BufferPosition;
                 int pos = caretPosition.Position;
+                code = view.TextBuffer.CurrentSnapshot.GetText();
+
                 CodeSegment segment = CodeSegment.ParseFromPosition(ManuaCode.BEGIN_MANUAL, ManuaCode.END_MANUAL, code, pos);
                 if (segment.IsValid())
+                {
                     subCode = segment.CompleteTextSegment;
+                    manual.AddRange(ManuaCode.GetManualCode(subCode).ToArray());
+                }
+
+                segment = CodeSegment.ParseFromPosition(CustomFunction.BEGIN_MANUAL, CustomFunction.END_MANUAL, code, pos);
+                if (segment.IsValid())
+                {
+                    subCode = segment.CompleteTextSegment;
+                    manual.AddRange(CustomFunction.GetManualCode(subCode).ToArray());
+                }
             }
 
-            List<IManual> manual = ManuaCode.GetManualCode(subCode);
-            manual.AddRange(CustomFunction.GetManualCode(subCode));
             ExportForm exportForm = new ExportForm(manual);
             exportForm.ShowDialog();
         }

@@ -8,6 +8,7 @@
     using System.Data.SqlClient;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
+    using System.Reflection;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
@@ -21,6 +22,11 @@
 
         private ObservableCollection<IManual> results = new ObservableCollection<IManual>();
         private string currentSearch = "";
+        private bool caseSensitive = false;
+        private bool wholeWord = false;
+        private ComboBox combo = null;
+
+        public ComboBox LangCombo { get => combo; set => combo = value; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FindManwinControl"/> class.
@@ -30,13 +36,36 @@
             this.InitializeComponent();
             lstFindMan.ItemsSource = results;
             lstFindMan.DataContext = this;
+            foreach (object item in toolBar.Items)
+            {
+                if(item is ComboBox)
+                {
+                    LangCombo = item as ComboBox;
+                    break;
+                }
+            }
+            List<string> plats = PackageOperations.ActiveProfile.GenioConfiguration.Plataforms;
+            SetComboData(plats);
+        }
+
+        public void SetComboData(List<string> data)
+        {
+            if (LangCombo != null)
+            {
+                LangCombo.Items.Clear();
+                LangCombo.Items.Add("All");
+                foreach (string plat in data)
+                    LangCombo.Items.Add(plat);
+            }
         }
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
             btnSearch.IsEnabled = false;
             currentSearch = txtSearch.Text;
-            ItemCollection items = toolBar.Items;
+            string lang = ((string)LangCombo?.SelectedValue) ?? "";
+            if (lang.Equals("All"))
+                lang = "";
 
             System.Threading.Tasks.Task.Factory.StartNew(() =>
             {
@@ -44,8 +73,8 @@
                 List<IManual> res = new List<IManual>();
                 try
                 {
-                    res.AddRange(ManuaCode.Search(PackageOperations.ActiveProfile, currentSearch));
-                    res.AddRange(CustomFunction.Search(PackageOperations.ActiveProfile, currentSearch));
+                    res.AddRange(ManuaCode.Search(PackageOperations.ActiveProfile, currentSearch, caseSensitive: caseSensitive, wholeWord: wholeWord, plataform: lang));
+                    res.AddRange(CustomFunction.Search(PackageOperations.ActiveProfile, currentSearch, caseSensitive: caseSensitive, wholeWord: wholeWord, plataform: lang));
                 }
                 catch(Exception ex)
                 {
@@ -64,7 +93,7 @@
 
                     if(error.Length != 0)
                     {
-                        System.Windows.MessageBox.Show(Properties.Resources.ErrorSearch, Properties.Resources.Search,
+                        System.Windows.MessageBox.Show(String.Format(Properties.Resources.ErrorSearch, error), Properties.Resources.Search,
                             MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }), DispatcherPriority.Background);
@@ -77,11 +106,8 @@
             {
                 try
                 {
-                    IManual m;
-                    if (results[lstFindMan.SelectedIndex] is ManuaCode)
-                        m = ManuaCode.GetManual(results[lstFindMan.SelectedIndex].CodeId, PackageOperations.ActiveProfile);
-                    else
-                        m = CustomFunction.GetManual(results[lstFindMan.SelectedIndex].CodeId, PackageOperations.ActiveProfile);
+                    Type t = results[lstFindMan.SelectedIndex].GetType();
+                    IManual m = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { PackageOperations.ActiveProfile, results[lstFindMan.SelectedIndex].CodeId }) as IManual;
 
                     if (m == null)
                     {
@@ -120,6 +146,24 @@
         private void lstFindMan_Initialized(object sender, EventArgs e)
         {
             lstFindMan.ItemsSource = results;
+        }
+
+        private void caseCheck(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = e.Source as CheckBox;
+            caseSensitive = checkBox?.IsChecked ?? false;
+        }
+
+        private void wholeChecked(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = e.Source as CheckBox;
+            wholeWord = checkBox?.IsChecked ?? false;
+        }
+
+        private void txtSearch_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+                btnSearch_Click(sender, new RoutedEventArgs());
         }
     }
 }

@@ -82,7 +82,7 @@ namespace CodeFlow.SolutionOperations
                 }
 
                 //Compara com o que esta na BD
-                ManuaCode bd = ManuaCode.GetManual(m.CodeId, PackageOperations.ActiveProfile);
+                ManuaCode bd = ManuaCode.GetManual(PackageOperations.ActiveProfile, m.CodeId);
                 if (bd != null && !bd.Code.Equals(m.Code))
                     ToExport.Add(m);
                 verified.Add(m);
@@ -94,7 +94,7 @@ namespace CodeFlow.SolutionOperations
                 bool keep = false;
                 foreach (ManuaCode m in pair.Value)
                 {
-                    ManuaCode bd = ManuaCode.GetManual(pair.Key, PackageOperations.ActiveProfile);
+                    ManuaCode bd = ManuaCode.GetManual(PackageOperations.ActiveProfile, pair.Key);
                     if (bd != null && !bd.Code.Equals(m.Code))
                     {
                         keep = true;

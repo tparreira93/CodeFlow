@@ -2,6 +2,7 @@
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.VCProjectEngine;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -32,7 +33,15 @@ namespace CodeFlow.SolutionOperations
             GenioSolutionProperties properties = new GenioSolutionProperties();
 
             properties.GenioProjects = GetProjects(dte, loadFiles);
-            properties.ClientInfo = ParseClientOptions(dte.Solution != null ? System.IO.Path.GetDirectoryName(dte.Solution.FullName) : "");
+
+            try
+            {
+                if(dte.Solution != null 
+                    && dte.Solution.FullName.Length != 0)
+                properties.ClientInfo = ParseClientOptions(Path.GetDirectoryName(dte.Solution.FullName));
+            }
+            catch(Exception)
+            { }
 
             return properties;
         }
@@ -41,7 +50,8 @@ namespace CodeFlow.SolutionOperations
         {
             foreach (Project project in dte.Solution.Projects)
             {
-                if (project.Object is VCProject
+                if (project.Object != null
+                    && project.Object is VCProject
                     && GenioProjectProperties.GetProjectLanguage(project) == GenioProjectProperties.ProjectLanguage.VCCPlusPlus)
                 {
                     foreach (VCConfiguration vccon in (project.Object as VCProject).Configurations)
