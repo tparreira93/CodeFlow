@@ -63,6 +63,7 @@ namespace CodeFlow.Forms
         {
             if (GenioSolutionProperties.SavedFiles.Count == 0)
             {
+                RefreshFullSolution();
                 chkSavedFiles.Checked = false;
                 chkSavedFiles.Enabled = false;
             }

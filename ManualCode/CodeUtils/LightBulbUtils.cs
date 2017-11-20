@@ -64,15 +64,6 @@ namespace CodeFlow.CodeUtils
             List<IManual> codeList = ManuaCode.GetManualCode(code);
             if(codeList.Count == 1)
                 manua = codeList[0] as ManuaCode;
-            else
-            {
-                segment = CodeSegment.ParseFromPosition(CustomFunction.BEGIN_MANUAL, CustomFunction.END_MANUAL, code, pos);
-                if (segment.IsValid())
-                    codeList = CustomFunction.GetManualCode(segment.CompleteTextSegment);
-
-                if (codeList.Count == 1)
-                    manua = codeList[0] as CustomFunction;
-            }
 
             return manua != null;
         }
