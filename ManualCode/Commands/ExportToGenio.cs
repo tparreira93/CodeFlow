@@ -111,7 +111,8 @@ namespace CodeFlow
 
             if (code != null && code.Length != 0)
             {
-                subCode = code;
+                manual.AddRange(ManuaCode.GetManualCode(code).ToArray());
+                manual.AddRange(CustomFunction.GetManualCode(code).ToArray());
             }
             else
             {

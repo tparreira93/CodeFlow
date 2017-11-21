@@ -151,7 +151,7 @@ namespace CodeFlow
         {
             try
             {
-                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "MAN" + this.ManualFile + "." + systemName}");
+                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "MAN" + this.Plataform + this.ManualFile + "." + systemName}");
             }
             catch(Exception e)
             {
