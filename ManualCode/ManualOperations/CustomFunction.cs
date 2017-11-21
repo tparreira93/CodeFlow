@@ -216,19 +216,19 @@ namespace CodeFlow
                         while (reader.Read())
                         {
                             Guid codmanua = reader.SafeGetGuid(0);
-                            string corpo = reader.SafeGetString(1) ?? "";
+                            string corpo = reader.SafeGetString(1);
 
                             CustomFunction custom = new CustomFunction(codmanua, corpo);
-                            custom.Plataform = reader.SafeGetString(2) ?? "";
-                            custom.Nome = reader.SafeGetString(3) ?? "";
+                            custom.Plataform = reader.SafeGetString(2);
+                            custom.Nome = reader.SafeGetString(3);
                             custom.Codfuncs = reader.SafeGetGuid(4);
-                            custom.Tiportn = reader.SafeGetString(5) ?? "";
+                            custom.Tiportn = reader.SafeGetString(5);
                             custom.Ordem = reader.SafeGetDouble(6);
                             custom.Largura = reader.SafeGetDouble(7);
                             custom.Decimais = reader.SafeGetDouble(8);
-                            custom.Resumprm = reader.SafeGetString(9) ?? "";
-                            custom.CreatedBy = reader.SafeGetString(10) ?? "";
-                            custom.ChangedBy = reader.SafeGetString(11) ?? "";
+                            custom.Resumprm = reader.SafeGetString(9);
+                            custom.CreatedBy = reader.SafeGetString(10);
+                            custom.ChangedBy = reader.SafeGetString(11);
                             custom.CreationDate = reader.SafeGetDateTime(12);
                             custom.LastChangeDate = reader.SafeGetDateTime(13);
 
