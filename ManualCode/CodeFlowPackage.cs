@@ -169,6 +169,7 @@ namespace CodeFlow
         #region SolutionEvents
         public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
         {
+            GenioSolutionProperties.SavedFiles.Clear();
             return VSConstants.S_OK;
         }
 

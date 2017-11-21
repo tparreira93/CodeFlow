@@ -31,11 +31,11 @@ namespace CodeFlow
             {
                 if (PackageOperations.AddProfile(p.GenioConfiguration, p.ProfileName))
                     LoadProfiles();
+                else
+                    MessageBox.Show(Properties.Resources.ErrorAddProfile,
+                        Properties.Resources.Configuration,
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            else
-                MessageBox.Show(Properties.Resources.ErrorAddProfile, 
-                    Properties.Resources.Configuration, 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void btnExit_Click(object sender, EventArgs e)

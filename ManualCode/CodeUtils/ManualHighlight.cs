@@ -121,7 +121,7 @@ namespace CodeFlow
                     }
                 }
             }
-            catch(Exception e)
+            catch(Exception)
             { }
         }
         public static bool TryGetText(IWpfTextView textView, ITextViewLine textViewLine, out string text)

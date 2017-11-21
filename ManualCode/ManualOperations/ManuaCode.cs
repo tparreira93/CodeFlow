@@ -97,10 +97,7 @@ namespace CodeFlow
         private static Regex reg = new Regex(@"(Plataforma:)\s*(\w)*\s*(\|)\s*(Tipo:)\s*(\w)*\s*(\|)\s*(Modulo:)\s*(\w)*\s*(\|)\s*(Parametro:)\s*(\w)*\s*(\|)\s*(Ficheiro:)\s*(\w)*\s*(\|)\s*(Ordem:)\s*([+-]?([0-9]*[.])?[0-9]+)", RegexOptions.Compiled);
         private string FixSetCurrentIndex(string code)
         {
-            return Regex.Replace(code,
-                "((pDoc)(\\-\\>|\\.)){0,1}([0-9a-zA-Z_]*)(\\-\\>|\\.)(SetCurrentIndex)\\s*(\\()(\\s*INX_([_0-9a-zA-Z]\\s*)+\\s*)(\\))\\s*(;)\\s*(\\/\\/)*\\s*(\\[(([0-9a-zA-Z_]|\\s|(->))*\\]))",
-                "$1$4$5$6$7$13$10$11",
-                RegexOptions.Multiline);
+            return Regex.Replace(code, "(INX_[_0-9a-zA-Z]*)(.*)\\s*(\\/\\/)\\s*(\\[FNTX\\s*([0-9a-zA-Z_]|\\s|->)*\\])", "/$4/$2", RegexOptions.Multiline);
         }
         public static List<IManual> GetManualCode(string vscode)
         {
