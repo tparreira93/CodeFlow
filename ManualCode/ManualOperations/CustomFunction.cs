@@ -188,14 +188,17 @@ namespace CodeFlow
                                                             " IMPLS.OPERCRIA, IMPLS.OPERMUDA, IMPLS.DATACRIA, IMPLS.DATAMUDA" +
                                                             " FROM GENFUNCS FUNCS" +
                                                             " INNER JOIN GENIMPLS IMPLS ON IMPLS.CODFUNCS = FUNCS.CODFUNCS" +
-                                                            " WHERE (' ' + CORPO + ' ') LIKE @TERM OR (' ' + NOME + ' ') LIKE @TERM", tmp);
+                                                            " WHERE ", tmp);
 
                     string search = "%" + texto + "%";
+                    string whr = "(' ' + CORPO + ' ') LIKE @TERM OR (' ' + NOME + ' ') LIKE @TERM";
                     if (plataform.Length != 0)
                     {
-                        customFuncQuery += " AND PLATAFOR = @PLATAFORM";
+                        customFuncQuery += " (" + whr + ") AND PLATAFOR = @PLATAFORM";
                         cmd.Parameters.AddWithValue("@PLATAFORM", plataform);
                     }
+                    else
+                        customFuncQuery += whr;
 
                     if (caseSensitive)
                         customFuncQuery += " COLLATE Latin1_General_BIN;";
