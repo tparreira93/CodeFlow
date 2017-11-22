@@ -283,8 +283,8 @@ namespace CodeFlow
                             man.Order = reader.SafeGetDouble(8);
                             man.CreatedBy = reader.SafeGetString(9);
                             man.ChangedBy = reader.SafeGetString(10);
-                            man.CreationDate = reader.GetDateTime(11);
-                            man.LastChangeDate = reader.GetDateTime(12);
+                            man.CreationDate = reader.SafeGetDateTime(11);
+                            man.LastChangeDate = reader.SafeGetDateTime(12);
 
                             man.CodeTransformKeyValue();
                         }
@@ -346,7 +346,7 @@ namespace CodeFlow
                         reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
-                            Guid codmanua = reader.GetGuid(0);
+                            Guid codmanua = reader.SafeGetGuid(0);
                             string corpo = reader.SafeGetString(1);
 
                             ManuaCode man = new ManuaCode(codmanua, corpo)

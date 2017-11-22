@@ -317,8 +317,11 @@
             this.Controls.Add(this.lblUser);
             this.Controls.Add(this.lblDb);
             this.Controls.Add(this.lblServerName);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "ConnectionForm";
             this.Text = "Genio profile";
             this.Load += new System.EventHandler(this.ConnectionForm_Load);

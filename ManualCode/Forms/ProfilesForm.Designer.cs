@@ -49,7 +49,7 @@
             this.lstProfiles.Location = new System.Drawing.Point(17, 16);
             this.lstProfiles.Margin = new System.Windows.Forms.Padding(4);
             this.lstProfiles.Name = "lstProfiles";
-            this.lstProfiles.Size = new System.Drawing.Size(787, 366);
+            this.lstProfiles.Size = new System.Drawing.Size(766, 443);
             this.lstProfiles.TabIndex = 0;
             this.lstProfiles.UseCompatibleStateImageBehavior = false;
             this.lstProfiles.View = System.Windows.Forms.View.Details;
@@ -63,14 +63,14 @@
             // chConnection
             // 
             this.chConnection.Text = "Connection string";
-            this.chConnection.Width = 375;
+            this.chConnection.Width = 488;
             // 
             // btnExit
             // 
             this.btnExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnExit.Image = ((System.Drawing.Image)(resources.GetObject("btnExit.Image")));
-            this.btnExit.Location = new System.Drawing.Point(705, 390);
+            this.btnExit.Location = new System.Drawing.Point(684, 467);
             this.btnExit.Margin = new System.Windows.Forms.Padding(4);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(100, 31);
@@ -83,9 +83,8 @@
             // btnAddProf
             // 
             this.btnAddProf.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddProf.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnAddProf.Image = ((System.Drawing.Image)(resources.GetObject("btnAddProf.Image")));
-            this.btnAddProf.Location = new System.Drawing.Point(489, 390);
+            this.btnAddProf.Location = new System.Drawing.Point(468, 467);
             this.btnAddProf.Margin = new System.Windows.Forms.Padding(4);
             this.btnAddProf.Name = "btnAddProf";
             this.btnAddProf.Size = new System.Drawing.Size(100, 31);
@@ -99,7 +98,7 @@
             // 
             this.btnRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRemove.Image = ((System.Drawing.Image)(resources.GetObject("btnRemove.Image")));
-            this.btnRemove.Location = new System.Drawing.Point(597, 390);
+            this.btnRemove.Location = new System.Drawing.Point(576, 467);
             this.btnRemove.Margin = new System.Windows.Forms.Padding(4);
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size(100, 31);
@@ -114,7 +113,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnExit;
-            this.ClientSize = new System.Drawing.Size(815, 433);
+            this.ClientSize = new System.Drawing.Size(794, 510);
             this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.btnAddProf);
             this.Controls.Add(this.btnExit);

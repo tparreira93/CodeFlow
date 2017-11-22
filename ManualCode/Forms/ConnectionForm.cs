@@ -130,10 +130,8 @@ namespace CodeFlow
             tmpProfile.GenioConfiguration.Database = cmbDb.Text ?? "";
 
             if ((openMode == Mode.NEW && !saveProfile(oldProfile, tmpProfile)) || (openMode == Mode.EDIT && !saveProfile(oldProfile, tmpProfile)))
-            {
-                MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            }
+
             DialogResult = DialogResult.OK;
             this.Close();
         }

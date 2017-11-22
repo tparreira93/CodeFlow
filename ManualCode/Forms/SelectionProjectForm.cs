@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlow.SolutionOperations;
+using CodeFlow.Utils;
 
 namespace CodeFlow.Forms
 {
@@ -19,11 +20,16 @@ namespace CodeFlow.Forms
         public List<IManual> ExportCode { get; set; }
         public Dictionary<Guid, List<ManuaCode>> ConflictCode { get; set; }
 
+
+
         public ProjectSelectionForm(List<GenioProjectProperties> saved)
         {
             InitializeComponent();
             solution = GenioSolutionProperties.ParseSolution(PackageOperations.DTE, true);
             savedFiles = saved;
+            worker.DoWork += worker_DoWork;
+            worker.ProgressChanged += worker_ProgressChanged;
+            worker.RunWorkerCompleted += worker_end;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -31,10 +37,10 @@ namespace CodeFlow.Forms
             this.Close();
         }
 
-        private void RefreshSavedFiles()
+        private void Refresh(List<GenioProjectProperties> projects)
         {
             treeProjects.Nodes.Clear();
-            foreach (GenioProjectProperties genioProject in savedFiles)
+            foreach (GenioProjectProperties genioProject in projects)
             {
                 TreeNode node = new TreeNode(genioProject.ProjectName);
                 node.Tag = genioProject;
@@ -48,22 +54,14 @@ namespace CodeFlow.Forms
                 }
             }
         }
-        private void RefreshFullSolution()
-        {
-            treeProjects.Nodes.Clear();
-            foreach (GenioProjectProperties genioProject in solution.GenioProjects)
-            {
-                TreeNode node = new TreeNode(genioProject.ProjectName);
-                node.Tag = genioProject;
-                treeProjects.Nodes.Add(node);
-            }
-        }
 
         private void SelectionProjectForm_Load(object sender, EventArgs e)
         {
-            if (GenioSolutionProperties.SavedFiles.Count == 0)
+            toolProgress.Enabled = false;
+            cancelAnal.Enabled = false;
+            if (savedFiles.Count == 0)
             {
-                RefreshFullSolution();
+                Refresh(solution.GenioProjects);
                 chkSavedFiles.Checked = false;
                 chkSavedFiles.Enabled = false;
             }
@@ -76,6 +74,11 @@ namespace CodeFlow.Forms
 
         private void btnAnalyze_Click(object sender, EventArgs e)
         {
+            toolProgress.Enabled = true;
+            cancelAnal.Enabled = true;
+            btnAnalyze.Enabled = false;
+            btnCancel.Enabled = false;
+
             List<GenioProjectProperties> projects = new List<GenioProjectProperties>();
             foreach (TreeNode node in treeProjects.Nodes)
             {
@@ -97,21 +100,39 @@ namespace CodeFlow.Forms
                     projects.Add(project);
                 }
             }
+            worker.RunWorkerAsync(projects);
+        }
 
+        private void worker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            List<GenioProjectProperties> projects = e.Argument as List<GenioProjectProperties>;
             ProjectsAnalyzer analyzer = new ProjectsAnalyzer(projects);
-            analyzer.Analyze();
+            analyzer.Analyze(worker);
+            e.Result = analyzer;
+        }
+
+        private void worker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            toolProgress.Value = e.ProgressPercentage;
+        }
+
+        private void worker_end(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            ProjectsAnalyzer analyzer = e.Result as ProjectsAnalyzer;
+            toolProgress.Value = 100;
             Result = true;
             ExportCode = analyzer.ToExport;
             ConflictCode = analyzer.ManualConflict;
+
             this.Close();
         }
 
         private void chkSavedFiles_CheckedChanged(object sender, EventArgs e)
         {
             if(chkSavedFiles.Checked)
-                RefreshSavedFiles();
+                Refresh(savedFiles);
             else
-                RefreshFullSolution();
+                Refresh(solution.GenioProjects);
         }
 
         private void treeProjects_AfterCheck(object sender, TreeViewEventArgs e)
@@ -130,6 +151,12 @@ namespace CodeFlow.Forms
                     this.CheckTreeViewNode(item, isChecked);
                 }
             }
+        }
+
+        private void cancelAnal_Click(object sender, EventArgs e)
+        {
+            worker.CancelAsync();
+            cancelAnal.Enabled = false;
         }
     }
 }

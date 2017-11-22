@@ -4,10 +4,7 @@ using System.Windows.Media;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Formatting;
-using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace CodeFlow
 {

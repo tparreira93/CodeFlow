@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using CodeFlow.SolutionOperations;
 using EnvDTE;
+using CodeFlow.Utils;
+using System.ComponentModel;
 
 namespace CodeFlow.SolutionOperations
 {
@@ -27,17 +29,27 @@ namespace CodeFlow.SolutionOperations
         public Dictionary<Guid, List<ManuaCode>> ManualConflict { get => manualConflict; set => manualConflict = value; }
         public List<IManual> ToExport { get => ExportManual; set => ExportManual = value; }
 
-        public void Analyze()
+        public void Analyze(BackgroundWorker worker)
         {
+            int count = 0, i = 1;
+            foreach (GenioProjectProperties project in projectsList)
+                count += project.ProjectFiles.Count;
+
             try
             {
                 foreach (GenioProjectProperties project in projectsList)
                 {
                     foreach (GenioProjectItem item in project.ProjectFiles)
                     {
-                        if(PackageOperations.ExtensionFilters.Contains(Path.GetExtension(item.ItemPath))
-                            || !PackageOperations.IgnoreFilesFilters.Contains(item.ItemName))
+                        if(File.Exists(item.ItemPath) && Path.GetExtension(item.ItemPath).Length != 0
+                            && (PackageOperations.ExtensionFilters.Contains(Path.GetExtension(item.ItemPath.ToLower()))
+                            && !PackageOperations.IgnoreFilesFilters.Contains(item.ItemName.ToLower())))
                             AnalyzeFile(item.ItemPath);
+
+                        if (worker.CancellationPending)
+                            return;
+                        worker.ReportProgress((i * 100) / count);
+                        i++;
                     }
                 }
             }
@@ -47,7 +59,7 @@ namespace CodeFlow.SolutionOperations
 
         private void AnalyzeFile(string file)
         {
-            string code = File.ReadAllText(file);
+            string code = File.ReadAllText(file, Encoding.UTF8);
             List<IManual> tmp = ManuaCode.GetManualCode(code);
             foreach (ManuaCode m in tmp)
             {

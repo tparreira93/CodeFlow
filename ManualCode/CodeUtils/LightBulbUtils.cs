@@ -15,7 +15,7 @@ using CodeFlow.ManualOperations;
 namespace CodeFlow.CodeUtils
 {
     [Export(typeof(ISuggestedActionsSourceProvider))]
-    [Name("Test Suggested Actions")]
+    [Name("Code flow suggestions")]
     [ContentType("text")]
     internal class CodeFlowSuggestedActionsSourceProvider : ISuggestedActionsSourceProvider
     {

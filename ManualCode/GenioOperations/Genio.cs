@@ -236,8 +236,8 @@ namespace CodeFlow
 
                         while (reader.Read())
                         {
-                            Guid codcarac = reader.GetGuid(0);
-                            string nome = reader.GetString(1);
+                            Guid codcarac = reader.SafeGetGuid(0);
+                            string nome = reader.SafeGetString(1);
 
                             features.Add(nome, codcarac);
                         }

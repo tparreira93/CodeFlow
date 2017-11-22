@@ -47,10 +47,14 @@ namespace CodeFlow
 
             tipos = PackageOperations.ActiveProfile.GenioConfiguration.Tipos;
             cmbPlataform.Items.AddRange(PackageOperations.ActiveProfile.GenioConfiguration.Plataforms.ToArray());
+            cmbType.Items.AddRange(tipos.Keys.ToArray());
         }
 
         private void LoadDBInfo()
         {
+            cmbModule.Items.Clear();
+            cmbFeature.Items.Clear();
+
             modules = PackageOperations.ActiveProfile.GenioConfiguration.GetModules();
             features = PackageOperations.ActiveProfile.GenioConfiguration.GetFeatures();
             
@@ -75,14 +79,9 @@ namespace CodeFlow
 
         private void RefreshForm()
         {
-            cmbModule.Items.Clear();
-            cmbFeature.Items.Clear();
-            modules.Clear();
-            features.Clear();
-
             btnCreate.Enabled = true;
-            tssServer.Text = PackageOperations.ActiveProfile.ToString();
-            tssServer.ForeColor= Color.Green;
+            lblProfile.Text = PackageOperations.ActiveProfile.ToString();
+            lblProfile.ForeColor= Color.Green;
         }
 
         private void btnSetCon_Click(object sender, EventArgs e)
@@ -105,10 +104,10 @@ namespace CodeFlow
         {
             ManuaCode man = new ManuaCode(rtCode.Text);
 
-            string feature = (string)cmbFeature.SelectedItem;
-            string module = (string)cmbModule.SelectedItem;
-            string plataform = (string)cmbPlataform.SelectedItem;
-            string type = (string)cmbType.SelectedItem;
+            string feature = (string)cmbFeature.SelectedText;
+            string module = (string)cmbModule.SelectedText;
+            string plataform = (string)cmbPlataform.SelectedText;
+            string type = (string)cmbType.SelectedText;
             string param = txtParam.Text;
             string file = txtFile.Text;
             string order = txtOrder.Text;

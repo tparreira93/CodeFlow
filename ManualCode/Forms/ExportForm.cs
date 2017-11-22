@@ -86,7 +86,7 @@ namespace CodeFlow
             List<IManual> manualToRemove = new List<IManual>();
             for (int i = 0; i < items.Count; i++)
             {
-                if (!(items[i].Tag is Manual))
+                if (!(items[i].Tag is IManual))
                     continue;
                 IManual man = (IManual)items[i].Tag;
 
@@ -160,9 +160,9 @@ namespace CodeFlow
             List<Manual> manualToRemove = new List<Manual>();
             for (int i = 0; i < items.Count; i++)
             {
-                if (!(items[i].Tag is Manual))
+                if (!(items[i].Tag is IManual))
                     continue;
-                Manual man = (Manual)items[i].Tag;
+                IManual man = (IManual)items[i].Tag;
                 try
                 {
                     if (man.Update(PackageOperations.ActiveProfile))
@@ -195,7 +195,7 @@ namespace CodeFlow
                     conflictHandler.UpdateForm += onConflictResolve;
                     conflictHandler.Show(this);
                 }
-                else if (item.Tag is Manual)
+                else if (item.Tag is IManual)
                 {
                     DialogResult result = CompareCode((Manual)item.Tag);
                     if(result == DialogResult.Yes)
@@ -210,10 +210,10 @@ namespace CodeFlow
             bool conflict = false;
             foreach (ListViewItem item in lstCode.SelectedItems)
             {
-                if (item.Tag is KeyValuePair<Guid, List<Manual>>)
-                    conflict = true;
-                else
+                if (item.Tag is IManual)
                     manual = true;
+                else
+                    conflict = true;
             }
             if (manual != conflict)
             {
@@ -229,6 +229,12 @@ namespace CodeFlow
                     btnExport.Enabled = true;
                     btnConflict.Enabled = false;
                 }
+            }
+            else
+            {
+                btnCompare.Enabled = false;
+                btnExport.Enabled = false;
+                btnConflict.Enabled = false;
             }
         }
 
