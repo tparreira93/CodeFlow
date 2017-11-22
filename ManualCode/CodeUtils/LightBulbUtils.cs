@@ -88,8 +88,12 @@ namespace CodeFlow.CodeUtils
             {
                 List<ISuggestedAction> actions = new List<ISuggestedAction>();
 
+                ExportDBSuggestion export = new ExportDBSuggestion(man);
+                actions.Add(export);
+
                 CompareDBSuggestion compare = new CompareDBSuggestion(man);
                 actions.Add(compare);
+
                 if (segment.SegmentStart > 0 && segment.SegmentLength > 0)
                 {
                     ImportFromDBSuggestion import = new ImportFromDBSuggestion(segment.SegmentStart, segment.SegmentLength, textView, textBuffer, man.CodeId);

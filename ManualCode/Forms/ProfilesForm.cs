@@ -27,15 +27,6 @@ namespace CodeFlow
             Profile p = new Profile();
             ConnectionForm connection = new ConnectionForm(ConnectionForm.Mode.NEW, p);
             connection.ShowDialog();
-            if (connection.DialogResult == DialogResult.OK)
-            {
-                if (PackageOperations.AddProfile(p.GenioConfiguration, p.ProfileName))
-                    LoadProfiles();
-                else
-                    MessageBox.Show(Properties.Resources.ErrorAddProfile,
-                        Properties.Resources.Configuration,
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -73,18 +64,8 @@ namespace CodeFlow
             if(lstProfiles.SelectedItems.Count == 1)
             {
                 Profile p = lstProfiles.Items[lstProfiles.SelectedIndices[0]].Tag as Profile;
-                Profile tmp = new Profile(p);//Copy
-                ConnectionForm connectionForm = new ConnectionForm(ConnectionForm.Mode.EDIT, tmp);
+                ConnectionForm connectionForm = new ConnectionForm(ConnectionForm.Mode.EDIT, p);
                 connectionForm.ShowDialog();
-                if (connectionForm.DialogResult == DialogResult.OK)
-                {
-                    if(PackageOperations.UpdateProfile(p.ProfileName, tmp))
-                        LoadProfiles();
-                    else
-                        MessageBox.Show(Properties.Resources.ErrorAddProfile,
-                            Properties.Resources.Configuration,
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
             }
         }
 

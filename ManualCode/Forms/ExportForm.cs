@@ -197,9 +197,9 @@ namespace CodeFlow
                 }
                 else if (item.Tag is IManual)
                 {
-                    DialogResult result = CompareCode((Manual)item.Tag);
+                    DialogResult result = CompareCode((IManual)item.Tag);
                     if(result == DialogResult.Yes)
-                        exportCode.Remove((Manual)item.Tag);
+                        exportCode.Remove((IManual)item.Tag);
                 }
             }
         }

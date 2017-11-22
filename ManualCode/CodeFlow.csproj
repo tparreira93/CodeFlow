@@ -55,6 +55,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeUtils\CompareDBSuggestion.cs" />
+    <Compile Include="CodeUtils\ExportSugestion.cs" />
     <Compile Include="CodeUtils\ImportFromDBSuggestion.cs" />
     <Compile Include="CodeUtils\LightBulbUtils.cs" />
     <Compile Include="CodeUtils\OpenSVNSuggestion.cs" />
