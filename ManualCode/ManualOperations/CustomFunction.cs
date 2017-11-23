@@ -80,16 +80,17 @@ namespace CodeFlow
                 {
                     try
                     {
+                        string c = CodeTransformValueKey();
+
                         SqlCommand cmd = new SqlCommand();
                         cmd.CommandText = String.Format("UPDATE GENIMPLS SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODIMPLS = @CODIMPLS");
 
-                        cmd.Parameters.AddWithValue("@CORPO", this.Code);
+                        cmd.Parameters.AddWithValue("@CORPO", c);
                         cmd.Parameters.AddWithValue("@CODIMPLS", this.CodeId);
                         cmd.Parameters.AddWithValue("@OPERMUDA", PackageOperations.ActiveProfile.GenioConfiguration.GenioUser);
                         cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
                         cmd.ExecuteNonQuery();
-
                         result = true;
                     }
                     catch (Exception ex)
@@ -149,7 +150,7 @@ namespace CodeFlow
                             custom.ChangedBy = reader.SafeGetString(11);
                             custom.CreationDate = reader.SafeGetDateTime(12);
                             custom.LastChangeDate = reader.SafeGetDateTime(13);
-                            custom.CodeTransformKeyValue();
+                            custom.Code = custom.CodeTransformKeyValue();
                         }
                     }
                     catch (Exception ex)
@@ -232,7 +233,7 @@ namespace CodeFlow
                             custom.CreationDate = reader.SafeGetDateTime(12);
                             custom.LastChangeDate = reader.SafeGetDateTime(13);
 
-                            custom.CodeTransformKeyValue();
+                            custom.Code = custom.CodeTransformKeyValue();
                             results.Add(custom);
                         }
                     }

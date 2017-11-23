@@ -11,26 +11,32 @@ using System.ComponentModel;
 
 namespace CodeFlow.SolutionOperations
 {
-    public class ProjectsAnalyzer
+    public class ProjectsAnalyzer : BackgroundWorker
     {
-        private List<GenioProjectProperties> projectsList;
         private Dictionary<Guid, List<ManuaCode>> manualConflict;
         private List<IManual> ExportManual;
         private List<ManuaCode> verified;
 
-        public ProjectsAnalyzer(List<GenioProjectProperties> projectsToAnalyze)
+        public ProjectsAnalyzer()
         {
-            projectsList = projectsToAnalyze;
-            verified = new List<ManuaCode>();
-            ToExport = new List<IManual>();
-            ManualConflict = new Dictionary<Guid, List<ManuaCode>>();
+            WorkerReportsProgress = true;
+            WorkerSupportsCancellation = true;
+            DoWork += Analyze;
         }
 
         public Dictionary<Guid, List<ManuaCode>> ManualConflict { get => manualConflict; set => manualConflict = value; }
         public List<IManual> ToExport { get => ExportManual; set => ExportManual = value; }
 
-        public void Analyze(BackgroundWorker worker)
+        private void Analyze(object sender, DoWorkEventArgs e)
         {
+            if (!(e.Argument is List<GenioProjectProperties>))
+                return;
+
+            List<GenioProjectProperties>  projectsList = e.Argument as List<GenioProjectProperties>;
+            verified = new List<ManuaCode>();
+            ToExport = new List<IManual>();
+            ManualConflict = new Dictionary<Guid, List<ManuaCode>>();
+
             int count = 0, i = 1;
             foreach (GenioProjectProperties project in projectsList)
                 count += project.ProjectFiles.Count;
@@ -46,9 +52,9 @@ namespace CodeFlow.SolutionOperations
                             && !PackageOperations.IgnoreFilesFilters.Contains(item.ItemName.ToLower())))
                             AnalyzeFile(item.ItemPath);
 
-                        if (worker.CancellationPending)
+                        if (CancellationPending)
                             return;
-                        worker.ReportProgress((i * 100) / count);
+                        ReportProgress((i * 100) / count);
                         i++;
                     }
                 }

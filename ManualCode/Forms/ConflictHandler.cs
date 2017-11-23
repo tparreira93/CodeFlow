@@ -66,7 +66,7 @@ namespace CodeFlow
                 ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
                 ManuaCode m = (ManuaCode)item.Tag;
 
-                PackageOperations.AddTempFile(m.OpenManual(PackageOperations.DTE, PackageOperations.ActiveProfile));
+                PackageOperations.OpenManualFile(m, false);
             }
         }
 
@@ -77,7 +77,7 @@ namespace CodeFlow
                 ListViewItem item = lstConflicts.SelectedItems[lstConflicts.SelectedIndices[0]];
                 ManuaCode m = (ManuaCode)item.Tag;
 
-                PackageOperations.AddTempFile(m.OpenManual(PackageOperations.DTE, PackageOperations.ActiveProfile));                
+                PackageOperations.OpenManualFile(m, false);
             }
         }
 

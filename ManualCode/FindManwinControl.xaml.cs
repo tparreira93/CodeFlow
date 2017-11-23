@@ -116,7 +116,10 @@
                             Properties.Resources.Search, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                         return;
                     }
-                    PackageOperations.AddTempFile(m.OpenManual(PackageOperations.DTE, PackageOperations.ActiveProfile));
+                    PackageOperations.OpenManualFile(m, true);
+
+                    if (currentSearch == String.Empty)
+                        return;
 
                     Find find = PackageOperations.DTE.Find;
                     find.Action = vsFindAction.vsFindActionFind;

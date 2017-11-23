@@ -18,6 +18,7 @@ namespace CodeFlow
         public static Dictionary<Int32, byte> SpecialChars = new Dictionary<Int32, byte>
         {
             //Unicode characters mappings to extended ASCII
+            //Unicode = ASCII
             [0x20AC] = (byte)'\x80',
             [0x201A] = (byte)'\x82',
             [0x0192] = (byte)'\x83',
@@ -86,14 +87,6 @@ namespace CodeFlow
         }
 
         public string ChangedBy { get => changedBy; set => changedBy = value; }
-
-        public string OpenManual(EnvDTE80.DTE2 dte, Profile p)
-        {
-            string tmp = Path.GetTempPath() + Guid.NewGuid().ToString() + "." + GetCodeExtension(p);
-            File.WriteAllText(tmp, ToString());
-            dte.ItemOperations.OpenFile(tmp);
-            return tmp;
-        }
         public void CompareDB(Profile profile)
         {
             var t = this.GetType();
@@ -139,7 +132,7 @@ namespace CodeFlow
                 File.Delete(tmpFinal);
 
                 IManual m = new ManuaCode(m1.CodeId, finalCode);
-                m.CodeTransformValueKey();
+                m.Code = m.CodeTransformValueKey();
 
                 return m;
             }
@@ -194,23 +187,30 @@ namespace CodeFlow
                     Code = code,
                     CodeId = Guid.Parse(guid)
                 };
+                m.Code = m.CodeTransformKeyValue();
             }
 
             return m;
         }
-        public void CodeTransformKeyValue()
+        public string CodeTransformKeyValue()
         {
+            string c = Code;
             foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
             {
-                Code.Replace((char)entry.Key, (char)entry.Value);
+                c.Replace((char)entry.Key, (char)entry.Value);
             }
+
+            return c;
         }
-        public void CodeTransformValueKey()
+        public string CodeTransformValueKey()
         {
+            string c = Code;
             foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
             {
-                Code.Replace((char)entry.Value, (char)entry.Key);
+                c.Replace((char)entry.Value, (char)entry.Key);
             }
+
+            return c;
         }
         public static IManual Merge(IManual local, IManual bd)
         {

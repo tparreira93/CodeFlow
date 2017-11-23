@@ -13,7 +13,6 @@ namespace CodeFlow.SolutionOperations
         List<GenioProjectProperties> genioProjects;
         ClientInfo clientInfo = new ClientInfo();
 
-        public static List<GenioProjectProperties> SavedFiles = new List<GenioProjectProperties>();
 
         public GenioSolutionProperties()
         {

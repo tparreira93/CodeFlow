@@ -16,20 +16,16 @@ namespace CodeFlow.Forms
     {
         private List<GenioProjectProperties> savedFiles;
         private GenioSolutionProperties solution;
+        private ProjectsAnalyzer analyzer = new ProjectsAnalyzer();
         public bool Result { get; set; }
         public List<IManual> ExportCode { get; set; }
         public Dictionary<Guid, List<ManuaCode>> ConflictCode { get; set; }
-
-
 
         public ProjectSelectionForm(List<GenioProjectProperties> saved)
         {
             InitializeComponent();
             solution = GenioSolutionProperties.ParseSolution(PackageOperations.DTE, true);
             savedFiles = saved;
-            worker.DoWork += worker_DoWork;
-            worker.ProgressChanged += worker_ProgressChanged;
-            worker.RunWorkerCompleted += worker_end;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -42,6 +38,9 @@ namespace CodeFlow.Forms
             treeProjects.Nodes.Clear();
             foreach (GenioProjectProperties genioProject in projects)
             {
+                if (genioProject.ProjectFiles.Count == 0)
+                    continue;
+
                 TreeNode node = new TreeNode(genioProject.ProjectName);
                 node.Tag = genioProject;
                 treeProjects.Nodes.Add(node);
@@ -100,15 +99,10 @@ namespace CodeFlow.Forms
                     projects.Add(project);
                 }
             }
-            worker.RunWorkerAsync(projects);
-        }
-
-        private void worker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-        {
-            List<GenioProjectProperties> projects = e.Argument as List<GenioProjectProperties>;
-            ProjectsAnalyzer analyzer = new ProjectsAnalyzer(projects);
-            analyzer.Analyze(worker);
-            e.Result = analyzer;
+            analyzer = new ProjectsAnalyzer();
+            analyzer.ProgressChanged += worker_ProgressChanged;
+            analyzer.RunWorkerCompleted += worker_end;
+            analyzer.RunWorkerAsync(projects);
         }
 
         private void worker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
@@ -118,7 +112,6 @@ namespace CodeFlow.Forms
 
         private void worker_end(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            ProjectsAnalyzer analyzer = e.Result as ProjectsAnalyzer;
             toolProgress.Value = 100;
             Result = true;
             ExportCode = analyzer.ToExport;
@@ -155,7 +148,7 @@ namespace CodeFlow.Forms
 
         private void cancelAnal_Click(object sender, EventArgs e)
         {
-            worker.CancelAsync();
+            analyzer.CancelAsync();
             cancelAnal.Enabled = false;
         }
     }

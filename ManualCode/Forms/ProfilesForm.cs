@@ -27,6 +27,7 @@ namespace CodeFlow
             Profile p = new Profile();
             ConnectionForm connection = new ConnectionForm(ConnectionForm.Mode.NEW, p);
             connection.ShowDialog();
+            LoadProfiles();
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -66,6 +67,7 @@ namespace CodeFlow
                 Profile p = lstProfiles.Items[lstProfiles.SelectedIndices[0]].Tag as Profile;
                 ConnectionForm connectionForm = new ConnectionForm(ConnectionForm.Mode.EDIT, p);
                 connectionForm.ShowDialog();
+                LoadProfiles();
             }
         }
 

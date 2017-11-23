@@ -104,10 +104,10 @@ namespace CodeFlow
         {
             ManuaCode man = new ManuaCode(rtCode.Text);
 
-            string feature = (string)cmbFeature.SelectedText;
-            string module = (string)cmbModule.SelectedText;
-            string plataform = (string)cmbPlataform.SelectedText;
-            string type = (string)cmbType.SelectedText;
+            string feature = (string)cmbFeature.SelectedItem ?? cmbFeature.SelectedText;
+            string module = (string)cmbModule.SelectedItem ?? cmbModule.SelectedText;
+            string plataform = (string)cmbPlataform.SelectedItem ?? cmbPlataform.SelectedText;
+            string type = (string)cmbType.SelectedItem ?? cmbType.SelectedText;
             string param = txtParam.Text;
             string file = txtFile.Text;
             string order = txtOrder.Text;
@@ -121,19 +121,19 @@ namespace CodeFlow
             Guid codfeature = Guid.Empty;
             Guid codmodul = Guid.Empty;
 
-            if (feature != null)
+            if (feature != null && feature.Length != 0)
                 features.TryGetValue(feature, out codfeature);
 
-            if (module != null)
+            if (module != null && feature.Length != 0)
                 modules.TryGetValue(feature, out codmodul);
 
-            if (type != null)
+            if (type != null && type.Length != 0)
                 tipos.TryGetValue(type, out lang);
 
             man.Codfeature = codfeature;
             man.Feature = feature ?? "";
             man.Codmodul = codmodul;
-            man.Modulo = module != null ? (system ? "GIP" : module ) : "";
+            man.Modulo = module != null ? (system ? "GIP" : module ) : ""; //Change to system of active profile
             man.Plataform = plataform ?? "";
             man.TipoRotina = type ?? "";
             man.Parameter = param;
@@ -141,7 +141,7 @@ namespace CodeFlow
             man.Order = (float)Math.Round(f_order, 1);
             man.Inhib = inhib ? 1 : 0;
             man.System = system ? 1 : 0;
-            man.Lang = lang;
+            man.Lang = lang ?? "";
 
             try
             {

@@ -19,6 +19,7 @@ namespace CodeFlow
         private static Profile activeProfile = new Profile();
         private static List<Profile> allProfiles = new List<Profile>();
         private static List<string> openFiles = new List<string>();
+        private static Dictionary<string, IManual> openManual = new Dictionary<string, IManual>();
 
 
         private static GenioSolutionProperties solutionProps = null;
@@ -30,10 +31,10 @@ namespace CodeFlow
         private static List<Form> openForms = new List<Form>();
         private static DTE2 dte;
 
+        public static List<GenioProjectProperties> SavedFiles = new List<GenioProjectProperties>();
 
         internal static Profile ActiveProfile { get => activeProfile; set => activeProfile = value; }
         internal static List<Profile> AllProfiles { get => allProfiles; set => allProfiles = value; }
-        public static List<string> OpenFiles { get => openFiles; set => openFiles = value; }
         public static GenioSolutionProperties SolutionProps { get => solutionProps; set => solutionProps = value; }
         public static List<string> ExtensionFilters { get => extensionFilters; set => extensionFilters = value; }
         public static List<string> IgnoreFilesFilters { get => ignoreFilesFilters; set => ignoreFilesFilters = value; }
@@ -43,6 +44,7 @@ namespace CodeFlow
         public static List<Form> OpenForms { get => openForms; set => openForms = value; }
         public static bool AutoVCCTO2008Fix { get; internal set; }
         public static DTE2 DTE { get => dte; set => dte = value; }
+        public static Dictionary<string, IManual> AutoExportFiles { get => openManual; set => openManual = value; }
 
         public static bool AddProfile(Genio connection, string profileName)
         {
@@ -153,24 +155,25 @@ namespace CodeFlow
 
         public static void AddTempFile(string file)
         {
-            OpenFiles.Add(file);
+            openFiles.Add(file);
         }
 
         public static void RemoveTempFile(string file)
         {
             if (File.Exists(file))
                 File.Delete(file);
-            if (OpenFiles.Contains(file))
-                OpenFiles.Remove(file);
+            if (openFiles.Contains(file))
+                openFiles.Remove(file);
         }
 
         public static void RemoveTempFiles()
         {
-            foreach (string file in OpenFiles)
+            foreach (string file in openFiles)
             {
                 if (File.Exists(file))
                     File.Delete(file);
             }
+            openFiles.Clear();
         }
 
         private static Form FindForm(Form form)
@@ -194,6 +197,33 @@ namespace CodeFlow
             DTE2 dte = (DTE2)Package.GetGlobalService(typeof(SDTE));
 
             return dte;
+        }
+
+        public static string OpenManualFile(IManual man, bool autoExport)
+        {
+            string tmp = "";
+            try
+            {
+                tmp = Path.GetTempPath() + Guid.NewGuid().ToString() + "." + man.GetCodeExtension(ActiveProfile);
+                File.WriteAllText(tmp, man.ToString(), System.Text.Encoding.UTF8);
+
+                if(autoExport)
+                    AutoExportFiles.Add(tmp, man);
+
+                DTE.ItemOperations.OpenFile(tmp);
+                AddTempFile(tmp);
+            }
+            catch(Exception)
+            { }
+
+            return tmp;
+        }
+
+        public static IManual GetAutoExportIManual(string path)
+        {
+            IManual man = null;
+            AutoExportFiles.TryGetValue(path, out man);
+            return man;
         }
     }
 }

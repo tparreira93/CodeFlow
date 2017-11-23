@@ -98,6 +98,9 @@ namespace CodeFlow
             }
 
             RefreshForm();
+
+            if (lstCode.Items.Count == 0)
+                this.Close();
         }
 
         private DialogResult CompareCode(IManual man)
@@ -177,6 +180,9 @@ namespace CodeFlow
             }
 
             RefreshForm();
+
+            if (lstCode.Items.Count == 0)
+                this.Close();
         }
 
         private void ExportForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -202,6 +208,11 @@ namespace CodeFlow
                         exportCode.Remove((IManual)item.Tag);
                 }
             }
+
+            RefreshForm();
+
+            if (lstCode.Items.Count == 0)
+                this.Close();
         }
 
         private void lstCode_SelectedIndexChanged(object sender, EventArgs e)

@@ -145,15 +145,23 @@ namespace CodeFlow
         {
             string path = Document.FullName;
             Project docProject = Document.ProjectItem.ContainingProject;
-            if (docProject == null)
+            IManual man = PackageOperations.GetAutoExportIManual(path);
+
+            // Se for diferente de null quer dizer que é um ficheiro temporário que é para export automaticamente
+            if(man != null)
+            {
+                man.Update(PackageOperations.ActiveProfile);
+                return;
+            }
+            else if (docProject == null)
                 return;
 
             try
             {
-                GenioProjectProperties proj = GenioSolutionProperties.SavedFiles.Find(x => x.ProjectName == docProject.Name);
+                GenioProjectProperties proj = PackageOperations.SavedFiles.Find(x => x.ProjectName == docProject.Name);
                 GenioProjectItem item = new GenioProjectItem(Document.ProjectItem, Document.Name, Document.FullName);
                 if (proj == null)
-                    GenioSolutionProperties.SavedFiles.Add(new GenioProjectProperties(docProject, new List<GenioProjectItem>() { item }));
+                    PackageOperations.SavedFiles.Add(new GenioProjectProperties(docProject, new List<GenioProjectItem>() { item }));
                 else
                 {
                     GenioProjectItem tmp = proj.ProjectFiles.Find(x => x.ItemName == item.ItemName);
@@ -169,7 +177,7 @@ namespace CodeFlow
         #region SolutionEvents
         public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
         {
-            GenioSolutionProperties.SavedFiles.Clear();
+            PackageOperations.SavedFiles.Clear();
             return VSConstants.S_OK;
         }
 

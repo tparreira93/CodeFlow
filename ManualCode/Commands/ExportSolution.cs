@@ -97,7 +97,7 @@ namespace CodeFlow
                 || !PackageOperations.DTE.Solution.IsOpen)
                 return;
 
-            ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(GenioSolutionProperties.SavedFiles);
+            ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(PackageOperations.SavedFiles);
             selectionProjectForm.ShowDialog();
 
             if(selectionProjectForm.Result)

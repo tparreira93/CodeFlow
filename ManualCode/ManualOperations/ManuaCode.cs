@@ -177,9 +177,11 @@ namespace CodeFlow
                 {
                     try
                     {
+                        string c = CodeTransformKeyValue();
+
                         SqlCommand cmd = new SqlCommand();
                         cmd.CommandText = String.Format("UPDATE GENMANUA SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODMANUA = @CODMANUA");
-                        cmd.Parameters.AddWithValue("@CORPO", this.Code);
+                        cmd.Parameters.AddWithValue("@CORPO", c);
                         cmd.Parameters.AddWithValue("@CODMANUA", this.CodeId);
                         cmd.Parameters.AddWithValue("@OPERMUDA", PackageOperations.ActiveProfile.GenioConfiguration.Username);
                         cmd.Connection = profile.GenioConfiguration.SqlConnection;
@@ -203,6 +205,7 @@ namespace CodeFlow
         }
         public bool Insert(Profile profile)
         {
+            bool result = false;
             lock (PackageOperations.lockObject)
             {
                 if (!profile.GenioConfiguration.ConnectionIsOpen())
@@ -212,6 +215,8 @@ namespace CodeFlow
                 {
                     try
                     {
+                        string c = CodeTransformValueKey();
+
                         SqlCommand cmd = new SqlCommand();
                         cmd.CommandText = String.Format("INSERT INTO GENMANUA (CODMANUA, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, CORPO, LANG, ORDEM, CODCARAC, CODMODUL, ISSISTEM, NEGCARAC, CARAC, DATACRIA, OPERCRIA, ZZSTATE) "
                         + "VALUES (@CODMANUA, @PLATAFOR, @TIPO, @MODULO, @PARAMETR, @FICHEIRO, @CORPO, @LANG, @ORDEM, @CODCARAC, @CODMODUL, @ISSISTEM, @NEGCARAC, @CARAC, @DATACRIA, @OPERCRIA, 0)");
@@ -222,7 +227,7 @@ namespace CodeFlow
                         cmd.Parameters.AddWithValue("@MODULO", this.Modulo);
                         cmd.Parameters.AddWithValue("@PARAMETR", this.Parameter);
                         cmd.Parameters.AddWithValue("@FICHEIRO", this.ManualFile);
-                        cmd.Parameters.AddWithValue("@CORPO", this.Code);
+                        cmd.Parameters.AddWithValue("@CORPO", c);
                         cmd.Parameters.AddWithValue("@LANG", this.Lang);
                         cmd.Parameters.AddWithValue("@ORDEM", this.Order);
                         cmd.Parameters.AddWithValue("@CODCARAC", this.Codfeature);
@@ -234,7 +239,7 @@ namespace CodeFlow
                         cmd.Parameters.AddWithValue("@OPERCRIA", profile.GenioConfiguration.GenioUser);
                         cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
-                        return cmd.ExecuteNonQuery() != 0;
+                        result = cmd.ExecuteNonQuery() != 0;
                     }
                     catch (Exception ex)
                     {
@@ -246,7 +251,7 @@ namespace CodeFlow
                     }
                 }
             }
-            return false;
+            return result;
         }
         public static ManuaCode GetManual(Profile profile, Guid codmanua)
         {
@@ -286,7 +291,7 @@ namespace CodeFlow
                             man.CreationDate = reader.SafeGetDateTime(11);
                             man.LastChangeDate = reader.SafeGetDateTime(12);
 
-                            man.CodeTransformKeyValue();
+                            man.Code = man.CodeTransformKeyValue();
                         }
 
                     }
@@ -363,7 +368,7 @@ namespace CodeFlow
                                 CreationDate = reader.SafeGetDateTime(11),
                                 LastChangeDate = reader.SafeGetDateTime(12)
                             };
-                            man.CodeTransformKeyValue();
+                            man.Code = man.CodeTransformKeyValue();
                             results.Add(man);
                         }
                     }

@@ -17,15 +17,15 @@ namespace CodeFlow
         string TipoCodigo { get; }
         string Tipo { get; }
 
+        string GetCodeExtension(Profile p);
+
         string OneLineCode { get; }
 
         bool Update(Profile profile);
 
-        string OpenManual(EnvDTE80.DTE2 dte, Profile p);
+        string CodeTransformKeyValue();
 
-        void CodeTransformKeyValue();
-
-        void CodeTransformValueKey();
+        string CodeTransformValueKey();
 
         void ShowSVNLog(Profile profile, string systemName);
 

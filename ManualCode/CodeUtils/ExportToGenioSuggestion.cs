@@ -1,24 +1,24 @@
-﻿using Microsoft.VisualStudio.Language.Intellisense;
+﻿using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Language.Intellisense;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.Imaging.Interop;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CodeFlow.CodeUtils
 {
-    internal class ExportDBSuggestion : ISuggestedAction
+    internal class ExportToGenioSuggestion : ISuggestedAction
     {
         private readonly IManual _manual;
         private readonly string _display;
 
-        public ExportDBSuggestion(IManual manual)
+        public ExportToGenioSuggestion(IManual manual)
         {
             _manual = manual;
-            _display = string.Format("Open export window for this manual code.");
+            _display = string.Format("Export current manual code.");
         }
 
         public string DisplayText
@@ -89,20 +89,13 @@ namespace CodeFlow.CodeUtils
             {
                 return;
             }
-            IManual bd = null;
-            if(_manual is ManuaCode)
+            if (_manual is ManuaCode)
             {
                 try
                 {
-                    bd = ManuaCode.GetManual(PackageOperations.ActiveProfile, _manual.CodeId);
-                    if (bd != null)
-                    {
-                        IManual result = Manual.Merge(_manual, bd);
-                        if (MessageBox.Show(Properties.Resources.ExportedMerged, Properties.Resources.Export, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                            result.Update(PackageOperations.ActiveProfile);
-                    }
+                    _manual.Update(PackageOperations.ActiveProfile);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(String.Format(Properties.Resources.ErrorUpdating, ex.Message),
                        Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
