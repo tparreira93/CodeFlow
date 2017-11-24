@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using CodeFlow.Utils;
+using System.Text;
 namespace CodeFlow
 {
     [DBName("GENMANUA")]
@@ -78,7 +79,7 @@ namespace CodeFlow
         [DBName("CODMANUA")]
         public override Guid CodeId { get => codeID; set => codeID = value; }
         [DBName("CORPO")]
-        public override string Code { get => corpo; set => corpo = FixSetCurrentIndex(value); }
+        public override string Code { get => corpo; set => corpo = value; }
         public string Modulo { get => modulo; set => modulo = value; }
         public string Parameter { get => parameter; set => parameter = value; }
         public override string Lang { get => lang; set => lang = value; }
@@ -95,7 +96,7 @@ namespace CodeFlow
         public override string Tipo { get => TipoRotina; }
         
         private static Regex reg = new Regex(@"(Plataforma:)\s*(\w)*\s*(\|)\s*(Tipo:)\s*(\w)*\s*(\|)\s*(Modulo:)\s*(\w)*\s*(\|)\s*(Parametro:)\s*(\w)*\s*(\|)\s*(Ficheiro:)\s*(\w)*\s*(\|)\s*(Ordem:)\s*([+-]?([0-9]*[.])?[0-9]+)", RegexOptions.Compiled);
-        private string FixSetCurrentIndex(string code)
+        public static string FixSetCurrentIndex(string code)
         {
             return Regex.Replace(code, "(INX_[_0-9a-zA-Z]*)(.*)\\s*(\\/\\/)\\s*(\\[FNTX\\s*([0-9a-zA-Z_]|\\s|->)*\\])", "/$4/$2", RegexOptions.Multiline);
         }
@@ -139,6 +140,7 @@ namespace CodeFlow
                     manua.ManualFile = fich;
                     Double.TryParse(ordem, out double tmp);
                     manua.Order = tmp;
+                    manua.Code = FixSetCurrentIndex(manua.Code);
                 }
             } while (remainig.Length != 0);
 
@@ -183,7 +185,7 @@ namespace CodeFlow
                         cmd.CommandText = String.Format("UPDATE GENMANUA SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODMANUA = @CODMANUA");
                         cmd.Parameters.AddWithValue("@CORPO", c);
                         cmd.Parameters.AddWithValue("@CODMANUA", this.CodeId);
-                        cmd.Parameters.AddWithValue("@OPERMUDA", PackageOperations.ActiveProfile.GenioConfiguration.Username);
+                        cmd.Parameters.AddWithValue("@OPERMUDA", PackageOperations.ActiveProfile.GenioConfiguration.GenioUser);
                         cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
                         cmd.ExecuteNonQuery();

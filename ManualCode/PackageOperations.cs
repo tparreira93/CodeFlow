@@ -19,7 +19,7 @@ namespace CodeFlow
         private static Profile activeProfile = new Profile();
         private static List<Profile> allProfiles = new List<Profile>();
         private static List<string> openFiles = new List<string>();
-        private static Dictionary<string, IManual> openManual = new Dictionary<string, IManual>();
+        private static List<string> openManual = new List<string>();
 
 
         private static GenioSolutionProperties solutionProps = null;
@@ -44,7 +44,7 @@ namespace CodeFlow
         public static List<Form> OpenForms { get => openForms; set => openForms = value; }
         public static bool AutoVCCTO2008Fix { get; internal set; }
         public static DTE2 DTE { get => dte; set => dte = value; }
-        public static Dictionary<string, IManual> AutoExportFiles { get => openManual; set => openManual = value; }
+        public static List<string> AutoExportFiles { get => openManual; set => openManual = value; }
 
         public static bool AddProfile(Genio connection, string profileName)
         {
@@ -208,7 +208,7 @@ namespace CodeFlow
                 File.WriteAllText(tmp, man.ToString(), System.Text.Encoding.UTF8);
 
                 if(autoExport)
-                    AutoExportFiles.Add(tmp, man);
+                    AutoExportFiles.Add(tmp);
 
                 DTE.ItemOperations.OpenFile(tmp);
                 AddTempFile(tmp);
@@ -222,7 +222,13 @@ namespace CodeFlow
         public static IManual GetAutoExportIManual(string path)
         {
             IManual man = null;
-            AutoExportFiles.TryGetValue(path, out man);
+            if (AutoExportFiles.Contains(path))
+            {
+                string code = File.ReadAllText(path, System.Text.Encoding.GetEncoding("iso-8859-1"));
+                List<IManual> l = ManuaCode.GetManualCode(code);
+                if (l.Count == 1)
+                    man = l[0];
+            }
             return man;
         }
     }

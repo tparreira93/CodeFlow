@@ -48,7 +48,8 @@ namespace CodeFlow.SolutionOperations
                     foreach (GenioProjectItem item in project.ProjectFiles)
                     {
                         if(File.Exists(item.ItemPath) && Path.GetExtension(item.ItemPath).Length != 0
-                            && (PackageOperations.ExtensionFilters.Contains(Path.GetExtension(item.ItemPath.ToLower()))
+                            && ((PackageOperations.ExtensionFilters.Contains(Path.GetExtension(item.ItemPath.ToLower())) 
+                                || PackageOperations.ExtensionFilters.Contains("*"))
                             && !PackageOperations.IgnoreFilesFilters.Contains(item.ItemName.ToLower())))
                             AnalyzeFile(item.ItemPath);
 
@@ -65,7 +66,7 @@ namespace CodeFlow.SolutionOperations
 
         private void AnalyzeFile(string file)
         {
-            string code = File.ReadAllText(file, Encoding.UTF8);
+            string code = File.ReadAllText(file, Encoding.GetEncoding("iso-8859-1"));
             List<IManual> tmp = ManuaCode.GetManualCode(code);
             foreach (ManuaCode m in tmp)
             {

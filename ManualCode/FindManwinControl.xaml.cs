@@ -72,10 +72,11 @@
             {
                 string error = "";
                 List<IManual> res = new List<IManual>();
+                Profile p = PackageOperations.ActiveProfile;
                 try
                 {
-                    res.AddRange(ManuaCode.Search(PackageOperations.ActiveProfile, currentSearch, caseSensitive: caseSensitive, wholeWord: wholeWord, plataform: lang));
-                    res.AddRange(CustomFunction.Search(PackageOperations.ActiveProfile, currentSearch, caseSensitive: caseSensitive, wholeWord: wholeWord, plataform: lang));
+                    res.AddRange(ManuaCode.Search(p, currentSearch, caseSensitive: caseSensitive, wholeWord: wholeWord, plataform: lang));
+                    res.AddRange(CustomFunction.Search(p, currentSearch, caseSensitive: caseSensitive, wholeWord: wholeWord, plataform: lang));
                 }
                 catch(Exception ex)
                 {

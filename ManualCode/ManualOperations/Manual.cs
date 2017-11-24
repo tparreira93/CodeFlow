@@ -67,7 +67,7 @@ namespace CodeFlow
 
         public string GetCodeExtension(Profile p)
         {
-            p.GenioConfiguration.Tipos.TryGetValue(Tag, out string extension);
+            p.GenioConfiguration.Tipos.TryGetValue(Tipo, out string extension);
 
             return extension ?? "tmp";
         }
