@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using CodeFlow.Utils;
 using System.Xml;
 using System.Xml.Serialization;
+using CodeFlow.GenioOperations;
 
 namespace CodeFlow
 {
@@ -17,9 +18,10 @@ namespace CodeFlow
         private string password = "ZPH2LAB";
         private string genioPath = "";
         private string checkoutPath = "";
-        private string genioVersion = "";
-        private Dictionary<string, string> tipos = new Dictionary<string, string>();
-        private List<string> plataforms = new List<string>();
+        private double genioVersion = 0.0f;
+        private string systemInitials = "";
+        private string bdVersion;
+        private List<GenioPlataform> plataforms = new List<GenioPlataform>();
 
         private SqlConnection sqlConnection = new SqlConnection();
         private string geniouser = "";
@@ -38,10 +40,30 @@ namespace CodeFlow
             GenioUser = genioUser;
         }
 
+        public Genio Clone()
+        {
+            Genio g = new Genio();
+            g.CheckoutPath = this.CheckoutPath;
+            g.Database = this.Database;
+            g.GenioPath = this.GenioPath;
+            g.GenioUser = this.GenioUser;
+            g.GenioVersion = this.GenioVersion;
+            g.Password = this.Password;
+            g.Server = this.Server;
+            g.Username = this.Username;
+            g.Plataforms = this.Plataforms;
+            g.SystemInitials = this.SystemInitials;
+            g.BDVersion = this.BDVersion;
+
+            return g;
+        }
+
         public void ParseGenioFiles()
         {
-            Plataforms = GetPlataforms();
-            Tipos = GetTipos();
+            if (GenioPath.Length == 0)
+                Plataforms = GenioPlataform.ParseXml(Properties.Resources.ManwinInfoData);
+            else
+                Plataforms = GenioPlataform.ParseFile($"{GenioPath}\\ManwinInfoData.xml");
         }
 
         public string Server { get => server; set => server = value; }
@@ -54,13 +76,50 @@ namespace CodeFlow
         public string GenioUser { get => geniouser; set => geniouser = value; }
         public string GenioPath { get => genioPath; set => genioPath = value; }
         public string CheckoutPath { get => checkoutPath; set => checkoutPath = value; }
-        public string GenioVersion { get => genioVersion; set => genioVersion = value; }
+        public double GenioVersion { get => genioVersion; set => genioVersion = value; }
 
         [XmlIgnore]
-        public List<string> Plataforms { get => plataforms; set => plataforms = value; }
+        public List<GenioPlataform> Plataforms { get => plataforms; set => plataforms = value; }
+        public string SystemInitials { get => systemInitials; set => systemInitials = value; }
+        public string BDVersion { get => bdVersion; set => bdVersion = value; }
 
-        [XmlIgnore]
-        public Dictionary<string, string> Tipos { get => tipos; set => tipos = value; }
+        public void GetGenioInfo()
+        {
+            lock (PackageOperations.lockObject)
+            {
+                if (!ConnectionIsOpen())
+                    OpenConnection();
+
+                if (ConnectionIsOpen())
+                {
+                    SqlCommand cmd = new SqlCommand("SELECT SISTEMA, GENVERS, LOCLPATH, VERSAO FROM GENGLOB", SqlConnection);
+
+                    SqlDataReader reader = null;
+
+                    try
+                    {
+                        reader = cmd.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            SystemInitials = reader.SafeGetString(0);
+                            GenioVersion = reader.SafeGetDouble(1);
+                            CheckoutPath = reader.SafeGetString(2);
+                            BDVersion = reader.SafeGetString(3);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        throw e;
+                    }
+                    finally
+                    {
+                        if (reader != null && !reader.IsClosed)
+                            reader.Close();
+                    }
+                }
+            }
+        }
 
         public string GetConnectionString()
         {
@@ -104,117 +163,6 @@ namespace CodeFlow
                 SqlConnection.Close();
         }
 
-        /*public void LoadConfig(string XML)
-        {
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(XML);
-
-            if (doc.SelectSingleNode("/ManualConfig") == null)
-                return;
-
-            XmlNode node = doc.DocumentElement.SelectSingleNode("/ManualConfig/SqlServer");
-            if (node == null)
-                return;
-
-            Server = node.InnerText;
-
-            node = doc.DocumentElement.SelectSingleNode("/ManualConfig/Database");
-            if (node == null)
-                return;
-
-            Database = node.InnerText;
-            if (doc.SelectSingleNode("/ManualConfig/User") == null)
-            {
-                node = doc.DocumentElement.SelectSingleNode("/ManualConfig/User");
-                Username = node.InnerText;
-            }
-            else
-                Username = "QUIDGEST";
-
-            if (doc.SelectSingleNode("/ManualConfig/Password") == null)
-            {
-                node = doc.DocumentElement.SelectSingleNode("/ManualConfig/Password");
-                Password = node.InnerText;
-            }
-            else
-                Password = "ZPH2LAB";
-
-            if (doc.SelectSingleNode("/ManualConfig/GenioUser") == null)
-            {
-                node = doc.DocumentElement.SelectSingleNode("/ManualConfig/GenioUser");
-                GenioUser = node.InnerText;
-            }
-            else
-                GenioUser = "";
-
-            if (doc.SelectSingleNode("/ManualConfig/GenioPath") == null)
-            {
-                node = doc.DocumentElement.SelectSingleNode("/ManualConfig/GenioPath");
-                GenioPath = node.InnerText;
-            }
-            else
-                GenioPath = "";
-
-            if (doc.SelectSingleNode("/ManualConfig/CheckoutPath") == null)
-            {
-                node = doc.DocumentElement.SelectSingleNode("/ManualConfig/CheckoutPath");
-                CheckoutPath = node.InnerText;
-            }
-            else
-                CheckoutPath = "";
-        }
-
-        public String SaveConfig()
-        {
-            XmlDocument doc = new XmlDocument();
-
-            //(1) the xml declaration is recommended, but not mandatory
-            XmlDeclaration xmlDeclaration = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
-            XmlElement root = doc.DocumentElement;
-            doc.InsertBefore(xmlDeclaration, root);
-
-            //(2) string.Empty makes cleaner code
-            XmlElement element1 = doc.CreateElement(string.Empty, "ManualConfig", string.Empty);
-            doc.AppendChild(element1);
-
-            XmlElement server = doc.CreateElement(string.Empty, "SqlServer", string.Empty);
-            XmlText text1 = doc.CreateTextNode(Server);
-            server.AppendChild(text1);
-            element1.AppendChild(server);
-
-            XmlElement database = doc.CreateElement(string.Empty, "Database", string.Empty);
-            XmlText text2 = doc.CreateTextNode(Database);
-            database.AppendChild(text2);
-            element1.AppendChild(database);
-
-            XmlElement username = doc.CreateElement(string.Empty, "User", string.Empty);
-            XmlText text3 = doc.CreateTextNode(Username);
-            username.AppendChild(text3);
-            element1.AppendChild(username);
-
-            XmlElement password = doc.CreateElement(string.Empty, "Password", string.Empty);
-            XmlText text4 = doc.CreateTextNode(Password);
-            password.AppendChild(text4);
-            element1.AppendChild(password);
-
-            XmlElement geniouser = doc.CreateElement(string.Empty, "GenioUser", string.Empty);
-            XmlText text5 = doc.CreateTextNode(GenioUser);
-            geniouser.AppendChild(text5);
-            element1.AppendChild(geniouser);
-
-            XmlElement geniopath = doc.CreateElement(string.Empty, "GenioPath", string.Empty);
-            XmlText text6 = doc.CreateTextNode(GenioPath);
-            geniopath.AppendChild(text6);
-            element1.AppendChild(geniopath);
-
-            XmlElement checkoutpath = doc.CreateElement(string.Empty, "CheckoutPath", string.Empty);
-            XmlText text7 = doc.CreateTextNode(CheckoutPath);
-            checkoutpath.AppendChild(text6);
-            element1.AppendChild(checkoutpath);
-
-            return doc.OuterXml;
-        }*/
-
         public Dictionary<string, Guid> GetFeatures()
         {
             Dictionary<string, Guid> features = new Dictionary<string, Guid>();
@@ -225,8 +173,7 @@ namespace CodeFlow
 
                 if (ConnectionIsOpen())
                 {
-                    SqlCommand cmd = new SqlCommand("SELECT CODCARAC, NOME FROM GENCARAC WHERE ZZSTATE<>1",
-                        PackageOperations.ActiveProfile.GenioConfiguration.SqlConnection);
+                    SqlCommand cmd = new SqlCommand("SELECT CODCARAC, NOME FROM GENCARAC WHERE ZZSTATE<>1", SqlConnection);
 
                     SqlDataReader reader = null;
 
@@ -241,8 +188,6 @@ namespace CodeFlow
 
                             features.Add(nome, codcarac);
                         }
-
-                        reader.Close();
                     }
                     catch (Exception e)
                     {
@@ -270,8 +215,7 @@ namespace CodeFlow
 
                 if (ConnectionIsOpen())
                 {
-                    SqlCommand cmd = new SqlCommand("SELECT CODMODUL, CODIPROG FROM GENMODUL WHERE ZZSTATE<>1",
-                PackageOperations.ActiveProfile.GenioConfiguration.SqlConnection);
+                    SqlCommand cmd = new SqlCommand("SELECT CODMODUL, CODIPROG FROM GENMODUL WHERE ZZSTATE<>1", SqlConnection);
                     SqlDataReader reader = null;
 
                     try
@@ -285,8 +229,6 @@ namespace CodeFlow
 
                             modules.Add(codiprog, codmodul);
                         }
-
-                        reader.Close();
                     }
                     catch (Exception e)
                     {
@@ -301,75 +243,6 @@ namespace CodeFlow
             }
 
             return modules;
-        }
-
-        private Dictionary<string, string> GetTipos()
-        {
-            Dictionary<string, string> tipos = new Dictionary<string, string>();
-
-            try
-            {
-                XmlDocument doc = new XmlDocument();
-                if (GenioPath.Length == 0)
-                    doc.LoadXml(Properties.Resources.ManwinInfoData);
-                else
-                    doc.Load($"{GenioPath}\\ManwinInfoData.xml");
-
-                XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Manwins/ManwinTags/Tag");
-                if (nodes != null)
-                {
-                    foreach (XmlNode node in nodes)
-                    {
-                        string tipo = "";
-                        string lang = "";
-                        XmlNode n = node.SelectSingleNode("Identifier");
-                        if (n != null)
-                            tipo = n.InnerText;
-
-                        n = node.SelectSingleNode("ProgrammingLanguage");
-                        if (n != null)
-                            lang = n.InnerText;
-
-                        if (tipo != "" && !tipos.ContainsKey(tipo))
-                        {
-                            tipos.Add(tipo, lang);
-                        }
-                    }
-                }
-            }
-            catch(Exception)
-            { }
-
-            return tipos;
-        }
-
-        private List<string> GetPlataforms()
-        {
-            List<string> plataforms = new List<string>();
-
-            try
-            {
-                XmlDocument doc = new XmlDocument();
-                if (GenioPath.Length == 0)
-                    doc.LoadXml(Properties.Resources.ManwinInfoData);
-                else
-                    doc.Load($"{GenioPath}\\ManwinInfoData.xml");
-
-                XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Manwins/Platforms/Platform");
-                if (nodes != null)
-                {
-                    foreach (XmlNode node in nodes)
-                    {
-                        XmlNode n = node.SelectSingleNode("Identifier");
-                        if (n != null)
-                            plataforms.Add(n.InnerText);
-                    }
-                }
-            }
-            catch(Exception)
-            { }
-
-            return plataforms;
         }
     }
 }

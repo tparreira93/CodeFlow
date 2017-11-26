@@ -41,7 +41,7 @@ namespace CodeFlow
             foreach (Profile p in PackageOperations.AllProfiles)
             {
                 ListViewItem item = new ListViewItem();
-                if (PackageOperations.ActiveProfile.ProfileName.Equals(p.ProfileName))
+                if (PackageOperations.GetActiveProfile().ProfileName.Equals(p.ProfileName))
                     item.BackColor = Color.GreenYellow;
                 item.Text = p.ProfileName;
                 item.Tag = p;

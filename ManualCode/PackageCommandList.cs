@@ -8,7 +8,7 @@ namespace CodeFlow
 {
     static class PackageCommandList
     {
-        public const uint cmdGenioProfilesCombo = 0x101;
-        public const uint cmdGenioProfilesComboGetList = 0x102;
+        public const uint cmdGenioProfilesCombo = 257;
+        public const uint cmdGenioProfilesComboGetList = 258;
     };
 }

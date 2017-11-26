@@ -46,7 +46,7 @@
             this.lstConflicts.Location = new System.Drawing.Point(17, 16);
             this.lstConflicts.Margin = new System.Windows.Forms.Padding(4);
             this.lstConflicts.Name = "lstConflicts";
-            this.lstConflicts.Size = new System.Drawing.Size(1037, 551);
+            this.lstConflicts.Size = new System.Drawing.Size(1037, 556);
             this.lstConflicts.TabIndex = 0;
             this.lstConflicts.UseCompatibleStateImageBehavior = false;
             this.lstConflicts.View = System.Windows.Forms.View.Details;
@@ -62,11 +62,11 @@
             // 
             this.btnBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnBack.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnBack.Image = ((System.Drawing.Image)(resources.GetObject("btnBack.Image")));
-            this.btnBack.Location = new System.Drawing.Point(956, 575);
+            this.btnBack.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
+            this.btnBack.Location = new System.Drawing.Point(974, 580);
             this.btnBack.Margin = new System.Windows.Forms.Padding(4);
             this.btnBack.Name = "btnBack";
-            this.btnBack.Size = new System.Drawing.Size(100, 32);
+            this.btnBack.Size = new System.Drawing.Size(80, 30);
             this.btnBack.TabIndex = 3;
             this.btnBack.Text = "Exit";
             this.btnBack.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -76,12 +76,12 @@
             // btnUse
             // 
             this.btnUse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUse.Image = ((System.Drawing.Image)(resources.GetObject("btnUse.Image")));
+            this.btnUse.Image = global::CodeFlow.Properties.Resources.Checkmark_16x;
             this.btnUse.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnUse.Location = new System.Drawing.Point(806, 575);
+            this.btnUse.Location = new System.Drawing.Point(847, 580);
             this.btnUse.Margin = new System.Windows.Forms.Padding(4);
             this.btnUse.Name = "btnUse";
-            this.btnUse.Size = new System.Drawing.Size(141, 32);
+            this.btnUse.Size = new System.Drawing.Size(119, 30);
             this.btnUse.TabIndex = 2;
             this.btnUse.Text = "Use selected";
             this.btnUse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -91,11 +91,11 @@
             // btnViewCode
             // 
             this.btnViewCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnViewCode.Image = ((System.Drawing.Image)(resources.GetObject("btnViewCode.Image")));
-            this.btnViewCode.Location = new System.Drawing.Point(17, 575);
+            this.btnViewCode.Image = global::CodeFlow.Properties.Resources.PreviewWebTab_16x;
+            this.btnViewCode.Location = new System.Drawing.Point(17, 580);
             this.btnViewCode.Margin = new System.Windows.Forms.Padding(4);
             this.btnViewCode.Name = "btnViewCode";
-            this.btnViewCode.Size = new System.Drawing.Size(128, 32);
+            this.btnViewCode.Size = new System.Drawing.Size(104, 30);
             this.btnViewCode.TabIndex = 1;
             this.btnViewCode.Text = "View code";
             this.btnViewCode.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;

@@ -1,20 +1,15 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.Win32;
 using EnvDTE;
 using CodeFlow.Properties;
 using CodeFlow.SolutionOperations;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.Settings;
-using Microsoft.VisualStudio.Shell.Settings;
+using CodeFlow.Commands;
 
 namespace CodeFlow
 {
@@ -41,9 +36,10 @@ namespace CodeFlow
     [Guid(CodeFlowPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string)]
-    [ProvideToolWindow(typeof(FindInManualCode))]
+    [ProvideToolWindow(typeof(FindInManualCode), Style = VsDockStyle.Tabbed, Window = "3ae79031-e1bc-11d0-8f78-00a0c9110057")]
     [ProvideOptionPage(typeof(OptionsPageGrid), "Genio", "CodeFlow properties", 0, 0, true)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideToolWindow(typeof(CodeFlow.ToolWindow.SearchTool))]
     public sealed class CodeFlowPackage : Package, IVsSolutionEvents
     {
         /// <summary>
@@ -53,11 +49,11 @@ namespace CodeFlow
 
         private DocumentEvents documentEnvents;
         private Events dteEvents;
-        private DteInitializer dteInitializer;
+        //private DteInitializer dteInitializer;
         private bool isSolution = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExportToGenio"/> class.
+        /// Initializes a new instance of the <see cref="SubmitToGenio"/> class.
         /// </summary>
         public CodeFlowPackage()
         {
@@ -75,15 +71,32 @@ namespace CodeFlow
         /// </summary>
         protected override void Initialize()
         {
-            ExportToGenio.Initialize(this);
             base.Initialize();
+            SubmitToGenio.Initialize(this);
             ImportFromGenio.Initialize(this);
             CreateInGenio.Initialize(this);
             FindInManualCodeCommand.Initialize(this);
             ManageProfiles.Initialize(this);
             ExportSolution.Initialize(this);
+            ContextMenu.Initialize(this);
+            ToolWindow.SearchToolCommand.Initialize(this);
 
-            InitializeDTE();
+            // Try to retrieve the DTE instance at this point
+            InitializeDte();
+            //IVsShell shellService;
+            // If not retrieved, we must wait for the Visual Studio Shell to be initialized
+            if (PackageOperations.DTE == null)
+            {
+                // Note: if targetting only VS 2015 and higher, we could use this:
+                KnownUIContexts.ShellInitializedContext.WhenActivated(() => this.InitializeDte());
+
+                // For VS 2005 and higher, we use this:
+                /*shellService = this.GetService(typeof(Microsoft.VisualStudio.Shell.Interop.SVsShell)) as IVsShell;
+
+                dteInitializer = new DteInitializer(shellService, this.InitializeDte);*/
+            }
+            SetupEvents();
+
             IVsSolution solution = GetService(typeof(SVsSolution)) as IVsSolution;
             uint cookie = 0;
             solution.AdviseSolutionEvents(this, out cookie);
@@ -113,22 +126,11 @@ namespace CodeFlow
                 LoadConfig();
         }
 
-        private void InitializeDTE()
+
+        private void InitializeDte()
         {
-            IVsShell shellService;
-
-            PackageOperations.DTE = this.GetService(typeof(Microsoft.VisualStudio.Shell.Interop.SDTE)) as EnvDTE80.DTE2;
-
-            if (PackageOperations.DTE == null) // The IDE is not yet fully initialized
-            {
-                shellService = this.GetService(typeof(SVsShell)) as IVsShell;
-                this.dteInitializer = new DteInitializer(shellService, this.InitializeDTE);
-            }
-            else
-            {
-                this.dteInitializer = null;
-                SetupEvents();
-            }
+            PackageOperations.DTE = this.GetService(typeof(SDTE)) as EnvDTE80.DTE2;
+            //dteInitializer = null;
         }
 
     #endregion
@@ -145,12 +147,15 @@ namespace CodeFlow
         {
             string path = Document.FullName;
             Project docProject = Document.ProjectItem.ContainingProject;
-            IManual man = PackageOperations.GetAutoExportIManual(path);
+            IManual man = null;
 
-            // Se for diferente de null quer dizer que é um ficheiro temporário que é para export automaticamente
+            if(PackageOperations.AutoExportSaved)
+                man = PackageOperations.GetAutoExportIManual(path);
+
+            // Se for diferente de null quer dizer que é um ficheiro temporário que pode ser exportado automaticamente
             if(man != null)
             {
-                man.Update(PackageOperations.ActiveProfile);
+                man.Update(PackageOperations.GetActiveProfile());
                 return;
             }
             else if (docProject == null)
@@ -247,7 +252,7 @@ namespace CodeFlow
         {
             if(isSolution)
                 PackageOperations.StoreLastProfile(System.IO.Path.GetDirectoryName(PackageOperations.DTE.Solution.FullName));
-            PackageOperations.ActiveProfile.GenioConfiguration.CloseConnection();
+            PackageOperations.GetActiveProfile().GenioConfiguration.CloseConnection();
             PackageOperations.RemoveTempFiles();
             SaveConfig();
             return VSConstants.S_OK;
@@ -275,20 +280,11 @@ namespace CodeFlow
                     throw (new ArgumentException("Ilegal input and output parameters!"));
 
                 else if (vOut != IntPtr.Zero)
-                    Marshal.GetNativeVariantForObject(PackageOperations.ActiveProfile != null ? PackageOperations.ActiveProfile.ProfileName : "", vOut);
+                    Marshal.GetNativeVariantForObject(PackageOperations.GetActiveProfile() != null ? PackageOperations.GetActiveProfile().ProfileName : "", vOut);
 
                 else if (newChoice != null)
                 {
                     PackageOperations.SetProfile(newChoice);
-                    if (FindInManualCode.WindowInitialized)
-                    {
-                        FindInManualCode findWindow = this.FindToolWindow(typeof(FindInManualCode), 0, true) as FindInManualCode;
-                        if (findWindow != null)
-                        {
-                            List<string> plataforms = PackageOperations.ActiveProfile.GenioConfiguration.Plataforms;
-                            findWindow.SetComboData(plataforms);
-                        }
-                    }
                 }
                 else
                     throw (new ArgumentException("Invalid input and output!"));
@@ -378,27 +374,36 @@ namespace CodeFlow
 
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
         }
-
         int IVsShellPropertyEvents.OnShellPropertyChange(int propid, object var)
         {
             int hr;
-            bool isZombie;
+            bool isShellInitialized = false;
 
-            if (propid == (int)__VSSPROPID.VSSPROPID_Zombie)
+            switch (propid)
             {
-                isZombie = (bool)var;
+                // This was for VS 2005, 2008
+                //case (int) __VSSPROPID.VSSPROPID_Zombie:
 
-                if (!isZombie)
-                {
-                    // Release the event handler to detect when the IDE is fully initialized
-                    hr = this.shellService.UnadviseShellPropertyChanges(this.cookie);
+                //   isShellInitialized = !(bool)var;
+                //   break;
 
-                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+                // This is for VS 2010 and higher
+                case (int)__VSSPROPID4.VSSPROPID_ShellInitialized:
 
-                    this.cookie = 0;
+                    isShellInitialized = (bool)var;
+                    break;
+            }
 
-                    this.callback();
-                }
+            if (isShellInitialized)
+            {
+                // Release the event handler to detect when the IDE is fully initialized
+                hr = this.shellService.UnadviseShellPropertyChanges(this.cookie);
+
+                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+
+                this.cookie = 0;
+
+                this.callback();
             }
             return VSConstants.S_OK;
         }

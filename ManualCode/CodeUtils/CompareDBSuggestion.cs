@@ -91,7 +91,7 @@ namespace CodeFlow.CodeUtils
                 return;
             }
 
-            _manual.CompareDB(PackageOperations.ActiveProfile);
+            _manual.CompareDB(PackageOperations.GetActiveProfile());
         }
 
         public bool TryGetTelemetryId(out Guid telemetryId)

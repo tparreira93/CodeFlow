@@ -1,17 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Globalization;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using EnvDTE;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Text;
 using System.Windows.Forms;
-using CodeFlow.ManualOperations;
 
 namespace CodeFlow
 {
@@ -90,57 +80,10 @@ namespace CodeFlow
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            var dte = this.ServiceProvider.GetService(typeof(DTE)) as _DTE;
-            string code = "", subCode = "";
-
-            if (dte == null || dte.ActiveDocument == null)
+            if (!CommandHandlers.CommandHandler.ImportAndEditCurrentTag(ServiceProvider))
+            {
+                MessageBox.Show(Properties.Resources.VerifyProfile, Properties.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-
-            var selection = (TextSelection)dte.ActiveDocument.Selection;
-            code = selection.Text;
-
-            if (code != null && code.Length != 0)
-            {
-                subCode = code;
-            }
-            else
-            {
-
-                var textManager = (IVsTextManager)ServiceProvider.GetService(typeof(SVsTextManager));
-                var componentModel = (IComponentModel)this.ServiceProvider.GetService(typeof(SComponentModel));
-                var editor = componentModel.GetService<IVsEditorAdaptersFactoryService>();
-
-                textManager.GetActiveView(1, null, out IVsTextView textViewCurrent);
-                IWpfTextView view = editor.GetWpfTextView(textViewCurrent);
-
-                SnapshotPoint caretPosition = view.Caret.Position.BufferPosition;
-                int pos = caretPosition.Position;
-
-                code = view.TextViewModel.DataBuffer.CurrentSnapshot.GetText();
-
-                CodeSegment segment = CodeSegment.ParseFromPosition(ManuaCode.BEGIN_MANUAL, ManuaCode.END_MANUAL, code, pos);
-                if (segment.IsValid())
-                    subCode = segment.CompleteTextSegment;
-
-                List<IManual> codeList = ManuaCode.GetManualCode(subCode);
-                if (codeList.Count == 1 && codeList[0] is ManuaCode)
-                {
-                    ManuaCode bd = ManuaCode.GetManual(PackageOperations.ActiveProfile, codeList[0].CodeId);
-                    if (bd == null)
-                    {
-                        MessageBox.Show(Properties.Resources.VerifyProfile, Properties.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    var point = view.Caret.Position.BufferPosition;
-                    int position = point.Position;
-
-                    using (var edit = view.TextBuffer.CreateEdit())
-                    {
-                        edit.Replace(segment.SegmentStart, segment.SegmentLength, bd.Code);
-                        edit.Apply();
-                    }
-                }
             }
         }
     }

@@ -55,7 +55,7 @@ namespace CodeFlow
 
             lblManual.Text = String.Format("{0} Manual code entrie(s) | {1} Conflicts",
                 exportCode.Count, conflictCode.Count);
-            lblServer.Text = PackageOperations.ActiveProfile.ToString();
+            lblServer.Text = PackageOperations.GetActiveProfile().ToString();
 
             btnCompare.Enabled = false;
             btnConflict.Enabled = false;
@@ -109,7 +109,7 @@ namespace CodeFlow
             try
             {
                 Type t = man.GetType();
-                IManual bd = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { PackageOperations.ActiveProfile, man.CodeId }) as IManual;
+                IManual bd = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { PackageOperations.GetActiveProfile(), man.CodeId }) as IManual;
 
                 if (bd == null)
                 {
@@ -136,7 +136,7 @@ namespace CodeFlow
             {
                 if (funcResult == DialogResult.Yes)
                 {
-                    man.Update(PackageOperations.ActiveProfile);
+                    man.Update(PackageOperations.GetActiveProfile());
                 }
             }
             catch (Exception ex)
@@ -168,7 +168,7 @@ namespace CodeFlow
                 IManual man = (IManual)items[i].Tag;
                 try
                 {
-                    if (man.Update(PackageOperations.ActiveProfile))
+                    if (man.Update(PackageOperations.GetActiveProfile()))
                         exportCode.Remove(man);
                 }
                 catch (Exception ex)
@@ -187,7 +187,7 @@ namespace CodeFlow
 
         private void ExportForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            PackageOperations.ActiveProfile.GenioConfiguration.CloseConnection();
+            PackageOperations.GetActiveProfile().GenioConfiguration.CloseConnection();
         }
 
         private void lstCode_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -285,7 +285,7 @@ namespace CodeFlow
                     lstCode.Items.Remove(item);
                     try
                     {
-                        ManuaCode bd = ManuaCode.GetManual(PackageOperations.ActiveProfile, code.CodeId);
+                        ManuaCode bd = ManuaCode.GetManual(PackageOperations.GetActiveProfile(), code.CodeId);
                         if (bd == null)
                         {
                             MessageBox.Show(Properties.Resources.VerifyProfile,

@@ -30,7 +30,7 @@ namespace CodeFlow
         public string Nome { get => nome; set => nome = value; }
         public override string Lang { get => lang; set => lang = value; }
         public override string Tag { get => Nome; }
-        public override string TipoCodigo { get => "Custom"; }
+        public override string TipoCodigo { get => "Function"; }
         public override string Tipo { get => ""; }
         public string Tiportn { get => tiportn; set => tiportn = value; }
         public double Ordem { get => ordem; set => ordem = value; }
@@ -87,7 +87,7 @@ namespace CodeFlow
 
                         cmd.Parameters.AddWithValue("@CORPO", c);
                         cmd.Parameters.AddWithValue("@CODIMPLS", this.CodeId);
-                        cmd.Parameters.AddWithValue("@OPERMUDA", PackageOperations.ActiveProfile.GenioConfiguration.GenioUser);
+                        cmd.Parameters.AddWithValue("@OPERMUDA", PackageOperations.GetActiveProfile().GenioConfiguration.GenioUser);
                         cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
                         cmd.ExecuteNonQuery();

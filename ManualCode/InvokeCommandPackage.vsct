@@ -30,20 +30,7 @@
     called "command set" and is used to group different command inside a logically related
     group; your package should define its own command set in order to avoid collisions
     with command ids defined by other packages. -->
-
-    <!-- In this section you can define new menu groups. A menu group is a container for
-         other menus or buttons (commands); from a visual point of view you can see the
-         group as the part of a menu contained between two lines. The parent of a group
-         must be a menu. -->
-    <Groups>
-      <Group guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" priority="0x000">
-        <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbar" />
-      </Group>
-      <Group guid="guidCodeFlowPackageCmdSet" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
-      </Group>
-    </Groups>
-    
+  
     
     <Menus>
       <Menu guid="CodeFlowCommandSet" id="CodeFlowToolbar" type="Toolbar">
@@ -53,9 +40,126 @@
           <CommandName>Code Flow</CommandName>
         </Strings>
       </Menu>
+      <!--
+     <Menu guid="CodeFlowCommandSet" id="SearchToolbar" type="ToolWindowToolbar">
+       <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>Manual search tool bar</ButtonText>
+          <CommandName>Manual search tool bar</CommandName>
+        </Strings>
+      </Menu>
+      -->
+      <Menu guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbar" priority="0x0000" type="ToolWindowToolbar">
+        <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbar" />
+        <Strings>
+          <ButtonText>Window ToolBar</ButtonText>
+        </Strings>
+      </Menu>
     </Menus>
 
+    <!-- In this section you can define new menu groups. A menu group is a container for
+         other menus or buttons (commands); from a visual point of view you can see the
+         group as the part of a menu contained between two lines. The parent of a group
+         must be a menu. -->
+    <Groups>
+      <!-- TOOLBAR GROUP -->
+      <Group guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" priority="0x000">
+        <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbar" />
+      </Group>
+      <!-- CONTEXT MENU GROUP-->
+      <Group guid="guidVCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" />
+      <!-- TOOL WINDOW TOOLBAR SEARCH-->
+      <!--
+      <Group guid="CodeFlowCommandSet" id="SearchToolbarGroup" priority="0x0500">
+        <Parent guid="CodeFlowCommandSet" id="SearchToolbar" />
+      </Group>
+      -->
+      <!-- On the toolbar (menu) we can have 1 or more group that will contain the buttons -->
+      <Group guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbarGroup" priority="0x0500">
+        <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbar" />
+      </Group>
+      <Group guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbarGroup2" priority="0x0500">
+        <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbar" />
+      </Group>
+    </Groups>
+    
     <Combos>
+            <!-- NOTE: An important thing to know about combos is that if they are placed on a toolbar that is visible, and they are not marked
+                 with the CommandFlag DefaultDisabled the shell will load your package in order to determine the item to display in the
+                 display area (this is because it is done via IOleCommandTarget::Exec, and there is no special case logic to realize the
+                 Exec request is really a 'query' in disguise. This sample has all combos as being enabled out of the box; if the ComboBox 
+                 toolbar is set as visible, your package will be force loaded next time you start Visual Studio. But in general practice you 
+                 need to consider if you want your combos to be enabled (which is the default) and if so if you are fine with your package 
+                 being loaded almost immediately on rendering of the UI.
+      
+            The following types of combo boxes are supported: 
+
+            DropDownCombo 
+              a DropDownCombo does not let the user type into the combo box; they can only pick from the list of
+              items in the drop down. The string value of the element selected is given as a parameter when the 
+              command is executed (which happens automatically when the user chooses an item).
+
+              This type of combo could be used for something like the "Solution Configurations" combo on the "Standard" toolbar. 
+
+            IndexCombo 
+              An IndexCombo is the same as a DropDownCombo in that it is a "pick from the list" only combo. 
+              The difference is an IndexCombo returns the selected value as an index into the list (0 based). 
+
+              This type of combo could be used for something like the "Solution Configurations" combo on the "Standard" toolbar. 
+
+            MRUCombo 
+              An MRUCombo allows the user to type into the edit box. The history of strings entered 
+              is automatically persisted by the IDE on a per-user/per-machine basis.  
+
+              This type of combo could be used for something like the "Find" combo that was on the standard toolbar in previous
+              versions. It has been moved to the overflow area of the standard toolbar on more recent versions as part of the 
+              toolbar reduction effort.
+
+            DynamicCombo 
+              A DynamicCombo allows the user to type into the edit box or pick from the list. The  
+              list of choices is usually fixed and is managed by the command handler for the command.
+
+              This type of combo could be used for something like the "Zoom" combo on the "Class Designer" toolbar.
+
+          The following flags can be applied to Combo boxes: 
+            NoKeyCustomize      (rarely used) 
+            NoButtonCustomize   (rarely used) 
+            NoCustomize         (rarely used) 
+            DefaultInvisible    (often used: Exec is used to fetch info about combos, calling Exec on an unloaded package causes that package to load. If you place a combo on a visible 
+                                 toolbar without setting DefaultInvisible, you will force load your package upon IDE startup) 
+            DefaultDisabled     (often used) 
+            DynamicVisibility   (often used) 
+            CommandWellOnly     (used for commands that may have placements on the main menu for purposes of canonnical name generation but should not be actually created on main menu visually.) 
+            IconAndText         (sometimes used) 
+            FilterKeys          (rarely used ** used to hook window messages on commandbar controls) 
+            StretchHorizontally (only used with combos on Toolwindow toolbars. This tells the shell, when laying out the toolbar, to stretch the combo to fill all horizontal space
+                                 not taken by other controls. This is only honored for the first combo on the toolbar with this flag. An example of a toolbar that uses this is the
+                                 Task List Window's toolbar.) 
+
+          The following strings can be supplied with a command: 
+            Button Text (required) ** displayed as label of the command on a toolbar if IconAndText flag is specified.
+
+            If any of the following optional strings are missing then Button Text is used for their values. 
+
+            Menu Text (optional) ** displayed as label of the command on a menu if IconAndText flag is specified. 
+
+            Tooltip Text (optional) ** displayed when mouse hovers on command.
+
+            Command Well Name (optional) ** displayed as name of command in the Add Command dialog.
+
+            Canonical Name (optional) ** English programmatic name of command used in Command Window and DTE.ExecuteCommand. This name is used in
+                                         place of the ButtonText for purposes of canonical name formation. The value of this tag is appended to the 
+                                         value of the CanonicalName of the root of your placement. So if your command specifies a CanonicalName of 
+                                         Foo and is placed anywhere (at any nesting level) under the File menu, its runtime canonical name would be File.Foo.
+
+                                         In localized command/menu (CTO) resources, always provide the English canonical name in this tag so macros can be language independent. 
+
+            Localized Canonical Name (optional) ** Localized programmatic name of command used in Command Window, DTE.ExecuteCommand, and Tools.Options 
+                                                   "Environment/Keyboard" page. If you provide a CanonicalName you should *always* also provide a LocalizedCanonicalName
+                                                   tag, even if they are identical text (as they would be in English since the value of the CanonicalName tag should
+                                                   always be in English). Otherwise, for LocalizedCanonicalName the shell will use your ButtonText, if that is different 
+                                                   than your CanonicalName it means that on non-English versions of Visual Studio your programmatic access name will be 
+                                                   different than it would be on the English version.-->
       <Combo guid="CodeFlowCommandSet" id="cmdGenioProfilesCombo" priority="0x0010" type="DropDownCombo" defaultWidth="130" idCommandList="cmdGenioProfilesComboGetList">
         <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" />
         <CommandFlag>IconAndText</CommandFlag>
@@ -66,6 +170,34 @@
           <ToolTipText>Genio profile</ToolTipText>
           <CanonicalName>Profile</CanonicalName>
           <CommandName>Profile</CommandName>
+        </Strings>
+      </Combo>
+      <Combo guid="guidCodeFlowPackageCmdSet" id="cmdidSearchBox" priority="0x0040" type="MRUCombo" defaultWidth="300" toolbarPriorityInBand="0x0001" idCommandList="0">
+        <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbarGroup" />
+        <CommandFlag>IconAndText</CommandFlag>
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <CommandFlag>NoAutoComplete</CommandFlag>
+        <CommandFlag>CaseSensitive</CommandFlag>
+        <CommandFlag>StretchHorizontally</CommandFlag>
+        <Strings>
+          <ButtonText>Find what: </ButtonText>
+          <MenuText>Find what: </MenuText>
+          <ToolTipText>Enter search terms</ToolTipText>
+          <CommandName>Manual search</CommandName>
+          <CanonicalName>Manual search</CanonicalName>
+        </Strings>
+      </Combo>
+      <Combo guid="guidCodeFlowPackageCmdSet" id="cmdIdPlataformCombo" priority="0x0040" type="DropDownCombo" defaultWidth="300" toolbarPriorityInBand="0x0001" idCommandList="cmdIdPlataformComboGetList">
+        <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbarGroup2" />
+        <CommandFlag>IconAndText</CommandFlag>
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <CommandFlag>StretchHorizontally</CommandFlag>
+        <Strings>
+          <ButtonText>Plataform: </ButtonText>
+          <MenuText>Plataform: </MenuText>
+          <ToolTipText>Select plataform</ToolTipText>
+          <CommandName>Plataform</CommandName>
+          <CanonicalName>Plataform</CanonicalName>
         </Strings>
       </Combo>
     </Combos>
@@ -82,8 +214,28 @@
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
       
+      <!-- TOOLWINDOW SEARCH TOOLBAR -->
+      
+      
+      <Button guid="CodeFlowCommandSet" id="cmdFindManwinCommand" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
+        <Icon guid="searchGenioImage" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Search in Manual Code</ButtonText>
+        </Strings>
+      </Button>
+      
+      <Button guid="CodeFlowCommandSet" id="cmdidSearchManualCode" priority="0x100" type="Button">
+        <Parent guid="CodeFlowCommandSet" id="SearchToolbarGroup" />
+        <Icon guid="buttonSearchToolwindow" id="bmpPic1" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>Search</ButtonText>
+        </Strings>
+      </Button>
+      
         <!-- TOOLBAR BUTTONS-->
-      <Button guid="CodeFlowCommandSet" id="InvokeCommandId" priority="0x0100" type="Button">
+      <Button guid="CodeFlowCommandSet" id="cmdSubmitGenio" priority="0x0100" type="Button">
         <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" /> 
         <Icon guid="exportGenioImage" id="bmpPic1" />
         <Strings>
@@ -118,30 +270,74 @@
           <ButtonText>Manage Genio profiles</ButtonText>
         </Strings>
       </Button>
-      
-    <!--TOOL WINDOW-->
-      <Button guid="CodeFlowCommandSet" id="cmdFindManwinCommand" priority="0x0100" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
-        <Icon guid="searchGenioImage" id="bmpPic1" />
-        <Strings>
-          <ButtonText>Search in Manual Code</ButtonText>
-        </Strings>
-      </Button>
-        
-      <Button guid="guidCodeFlowPackageCmdSet" id="cmdidFixVS2008Solution" priority="0x0100" type="Button">
-        <Parent guid="guidCodeFlowPackageCmdSet" id="MyMenuGroup" />
-        <Icon guid="guidImages" id="bmpPic1" />
+      <Button guid="CodeFlowCommandSet" id="cmdidFixVS2008Solution" priority="0x0100" type="Button">
+        <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" />
+        <Icon guid="fixPlataformImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Change to VS2008 Plataform Toolset</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidCodeFlowPackageCmdSet" id="cmdidRefreshSolution" priority="0x0100" type="Button">
-        <Parent guid="guidCodeFlowPackageCmdSet" id="MyMenuGroup" />
-        <Icon guid="guidImages1" id="bmpPic1" />
+      <Button guid="CodeFlowCommandSet" id="cmdidRefreshSolution" priority="0x0100" type="Button">
+        <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" />
+        <Icon guid="refreshSolutionImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Refresh solution</ButtonText>
         </Strings>
       </Button>
+
+      
+      
+      <!--CODE WINDOW CONTEXT MENU-->
+      <Button guid="guidVCodeFlowContextMenuCmdSet" id="cmdidSubmitGenioContextMenu" type="Button">
+        <Icon guid="exportGenioImage" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Submit to Genio</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidVCodeFlowContextMenuCmdSet" id="cmdidImportGenioContextMenu" type="Button">
+        <Icon guid="importGenioImage" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Import from Genio</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidVCodeFlowContextMenuCmdSet" id="cmdidCreateGenioContextMenu" type="Button">
+        <Icon guid="createGenioImage" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Create in Genio</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidCodeFlowPackageCmdSet" id="cmdidSearchToolCommand" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
+        <Icon guid="buttonSearchToolwindow" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Code search</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidCodeFlowPackageCmdSet" id="cmdidWholeWord" priority="0x100" type="Button">
+        <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbarGroup" />
+        <Icon guid="buttonWholeWord" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Whole word</ButtonText>
+        </Strings>
+      </Button>
+      
+      <Button guid="guidCodeFlowPackageCmdSet" id="cmdidCaseSensitive" priority="0x100" type="Button">
+        <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbarGroup" />
+        <Icon guid="buttonCaseSensitive" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Case sensitive</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidCodeFlowPackageCmdSet" id="cmdidSearchCode" priority="0x100" type="Button">
+        <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbarGroup" />
+        <Icon guid="buttonSearchToolwindow" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Search</ButtonText>
+        </Strings>
+      </Button>
+      
     </Buttons>
     
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -151,43 +347,101 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="exportGenioImage" href="Resources\document_up.ico" usedList="bmpPic1" />
-      <Bitmap guid="importGenioImage" href="Resources\document_down.ico" usedList="bmpPic1" />
-      <Bitmap guid="createGenioImage" href="Resources\code_add.ico" usedList="bmpPic1" />
-      <Bitmap guid="searchGenioImage" href="Resources\document_view.ico" usedList="bmpPic1" />
-      <Bitmap guid="manageGenioProfilesImage" href="Resources\businessman_add.ico" usedList="bmpPic1" />
-      <Bitmap guid="exportSolutionImage" href="Resources\export2.ico" usedList="bmpPic1" />
-      <Bitmap guid="guidImages" href="Resources\flash_red.ico" usedList="bmpPic1" />
-      <Bitmap guid="guidImages1" href="Resources\refresh.ico" usedList="bmpPic1" />
+      <Bitmap guid="exportGenioImage" href="Resources\UploadFile_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="importGenioImage" href="Resources\DownloadFile_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="createGenioImage" href="Resources\AddFile_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="searchGenioImage" href="Resources\Search_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="manageGenioProfilesImage" href="Resources\Team_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="exportSolutionImage" href="Resources\CodeActivity_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="fixPlataformImage" href="Resources\Event_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="refreshSolutionImage" href="Resources\Refresh_grey_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="buttonSearchToolwindow" href="Resources\Search_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="buttonWholeWord" href="Resources\WholeWordMatch_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="buttonCaseSensitive" href="Resources\CaseSensitive_16x.png" usedList="bmpPic1" />
     </Bitmaps>
   </Commands>
 
-  <!--
   <CommandPlacements>
+    <!-- Command placement in tool menu
     <CommandPlacement guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" priority="0x0100">
       <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbar"/>
     </CommandPlacement>
-  </CommandPlacements>-->
-    
+    -->
+
+    <!-- CONTEXT MENU PLACEMENTS-->
+    <!-- The parent of the group will be the code window context menu -->
+
+    <!-- Placement for group. The parent of a group is a menu, context menu or toolbar. 
+           The priority sets the position of the group compared to the priority of other existing groups in the menu.    
+      -->
+    <CommandPlacement guid="guidVCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" priority="0xFFFF">
+      <!-- The parent of the group will be the code window context menu -->
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN" />
+    </CommandPlacement>
+
+    <!-- Placement for command. The parent of a command is always a group, never a menu, context menu or toolbar. -->
+    <CommandPlacement guid="guidVCodeFlowContextMenuCmdSet" id="cmdidSubmitGenioContextMenu" priority="0x0001">
+      <Parent guid="guidVCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVCodeFlowContextMenuCmdSet" id="cmdidImportGenioContextMenu" priority="0x0001">
+      <Parent guid="guidVCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidVCodeFlowContextMenuCmdSet" id="cmdidCreateGenioContextMenu" priority="0x0001">
+      <Parent guid="guidVCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" />
+    </CommandPlacement>
+  </CommandPlacements>
+
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="CodeFlowPackage" value="{23ac2f2d-5778-45dd-b5b2-5186260c958c}" />
 
     <!-- This is the guid used to group the toolbar commands together -->
     <GuidSymbol name="CodeFlowCommandSet" value="{657c211f-0665-4969-81bc-d3a266b0aac4}">
-      <IDSymbol name="CodeFlowToolbar" value="0x1000" />
-      <IDSymbol name="CodeFlowToolbarGroup" value="0x1030" />
-      <IDSymbol name="cmdGenioProfilesCombo" value="0x101" />
-      <IDSymbol name="cmdGenioProfilesComboGetList" value="0x102" />
-      <IDSymbol name="InvokeCommandId" value="0x0100" />
+      <IDSymbol name="CodeFlowToolbar" value="4096" />
+      <IDSymbol name="CodeFlowToolbarGroup" value="4144" />
+      <IDSymbol name="cmdGenioProfilesCombo" value="257" />
+      <IDSymbol name="cmdGenioProfilesComboGetList" value="258" />
+      <IDSymbol name="cmdSubmitGenio" value="256" />
       <IDSymbol name="cmdImportFromGenio" value="4129" />
       <IDSymbol name="cmdCreateInGenio" value="4130" />
       <IDSymbol name="cmdFindManwinCommand" value="4131" />
       <IDSymbol name="cmdManageProfiles" value="4132" />
       <IDSymbol name="cmdExportSolution" value="4133" />
+      <IDSymbol name="cmdidFixVS2008Solution" value="4134" />
+      <IDSymbol name="cmdidRefreshSolution" value="4135" />
+      
+      <!-- TOOLWINDOW SEARCH BAR -->
+      <IDSymbol name="SearchToolbar" value="4136" />
+      <IDSymbol name="SearchToolbarGroup" value="4137" />
+      <IDSymbol name="cmdidSearchManualCode" value="4138" />
+      <IDSymbol name="cmdidSearchBox" value="4139" />
     </GuidSymbol>
 
-    <GuidSymbol name="exportGenioImage" value="{fb7e123d-6799-411e-ac2f-0cc621636931}">
+    <GuidSymbol name="guidVCodeFlowContextMenuCmdSet" value="{7547EBCE-1079-4C06-8B74-BFE595D61E7E}">
+      <IDSymbol name="cmdidSubmitGenioContextMenu" value="5130" />
+      <IDSymbol name="cmdidImportGenioContextMenu" value="5131" />
+      <IDSymbol name="cmdidCreateGenioContextMenu" value="5132" />
+      <IDSymbol name="ContextCommandsGroup" value="5129" />
+    </GuidSymbol>
+
+    <!-- TOOLWINDOW  -->
+    <GuidSymbol value="{4f609967-bec4-4036-9038-1a779d23cc7e}" name="guidCodeFlowPackageCmdSet">
+      <!--Menus-->
+      <IDSymbol name="SearchWindowToolbar" value="0x101" />
+      <!--Groups-->
+      <IDSymbol name="SearchWindowToolbarGroup" value="0x1001" />
+      <IDSymbol name="SearchWindowToolbarGroup2" value="0x1002" />
+      <!--Commands-->
+      <IDSymbol name="cmdidSearchBox" value="0x105"/>
+      <IDSymbol name="cmdidSearchToolCommand" value="256" />
+      <IDSymbol name="cmdidSearchCode" value="0x2003" />
+      <IDSymbol name="cmdidWholeWord" value="0x2004" />
+      <IDSymbol name="cmdidCaseSensitive" value="0x2005" />
+      <IDSymbol name="cmdIdPlataformCombo" value="0x2006" />
+      <IDSymbol name="cmdIdPlataformComboGetList" value="0x2007" />
+    </GuidSymbol>
+
+    <GuidSymbol value="{fb7e123d-6799-411e-ac2f-0cc621636931}" name="exportGenioImage">
       <IDSymbol name="bmpPic1" value="1" />
     </GuidSymbol>
   
@@ -211,28 +465,24 @@
       <IDSymbol name="bmpPic1" value="1" />
     </GuidSymbol>
   
-    <GuidSymbol value="{ea4285de-6536-470f-b0a6-26800470cbe1}" name="guidCodeFlowPackageCmdSet">
-      <IDSymbol value="4128" name="MyMenuGroup" />
-      <IDSymbol value="256" name="cmdidFixVS2008Solution" />
-      <IDSymbol value="4129" name="cmdidRefreshSolution" />
+    <GuidSymbol value="{272aac2a-f7f3-4350-bfad-56dea775d795}" name="fixPlataformImage">
+      <IDSymbol name="bmpPic1" value="1" />
     </GuidSymbol>
   
-    <GuidSymbol value="{272aac2a-f7f3-4350-bfad-56dea775d795}" name="guidImages">
+    <GuidSymbol value="{27919957-86f0-4001-a55d-77ded2ef214b}" name="refreshSolutionImage">
       <IDSymbol name="bmpPic1" value="1" />
-      <IDSymbol name="bmpPic2" value="2" />
-      <IDSymbol name="bmpPicSearch" value="3" />
-      <IDSymbol name="bmpPicX" value="4" />
-      <IDSymbol name="bmpPicArrows" value="5" />
-      <IDSymbol name="bmpPicStrikethrough" value="6" />
     </GuidSymbol>
   
-    <GuidSymbol value="{27919957-86f0-4001-a55d-77ded2ef214b}" name="guidImages1">
+    <GuidSymbol value="{2FB16B43-18CA-4A58-A214-E1573B0214C6}" name="buttonSearchToolwindow">
       <IDSymbol name="bmpPic1" value="1" />
-      <IDSymbol name="bmpPic2" value="2" />
-      <IDSymbol name="bmpPicSearch" value="3" />
-      <IDSymbol name="bmpPicX" value="4" />
-      <IDSymbol name="bmpPicArrows" value="5" />
-      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{2F3B96EE-9415-4C7F-A8E9-B2A5AD450239}" name="buttonWholeWord">
+      <IDSymbol name="bmpPic1" value="1" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{716CED47-F3CC-4A16-B989-9FCCCFA38A09}" name="buttonCaseSensitive">
+      <IDSymbol name="bmpPic1" value="1" />
     </GuidSymbol>
   </Symbols>
 </CommandTable>

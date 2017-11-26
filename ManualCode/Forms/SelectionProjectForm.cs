@@ -151,5 +151,11 @@ namespace CodeFlow.Forms
             analyzer.CancelAsync();
             cancelAnal.Enabled = false;
         }
+
+        private void ProjectSelectionForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (analyzer != null && analyzer.IsBusy)
+                analyzer.CancelAsync();
+        }
     }
 }

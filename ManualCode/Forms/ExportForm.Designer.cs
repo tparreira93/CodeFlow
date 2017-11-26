@@ -32,7 +32,6 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnCompare = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
-            this.btnConfigure = new System.Windows.Forms.Button();
             this.lstCode = new System.Windows.Forms.ListView();
             this.clCode = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.statusStrip = new System.Windows.Forms.StatusStrip();
@@ -47,13 +46,13 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Image = ((System.Drawing.Image)(resources.GetObject("btnCancel.Image")));
-            this.btnCancel.Location = new System.Drawing.Point(832, 642);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
+            this.btnCancel.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
+            this.btnCancel.Location = new System.Drawing.Point(848, 642);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(100, 31);
+            this.btnCancel.Size = new System.Drawing.Size(85, 30);
             this.btnCancel.TabIndex = 0;
-            this.btnCancel.Text = "Cancel";
+            this.btnCancel.Text = "Exit";
             this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -61,11 +60,11 @@
             // btnCompare
             // 
             this.btnCompare.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCompare.Image = ((System.Drawing.Image)(resources.GetObject("btnCompare.Image")));
-            this.btnCompare.Location = new System.Drawing.Point(653, 642);
-            this.btnCompare.Margin = new System.Windows.Forms.Padding(4);
+            this.btnCompare.Image = global::CodeFlow.Properties.Resources.Compare_16x;
+            this.btnCompare.Location = new System.Drawing.Point(143, 642);
+            this.btnCompare.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnCompare.Name = "btnCompare";
-            this.btnCompare.Size = new System.Drawing.Size(171, 31);
+            this.btnCompare.Size = new System.Drawing.Size(163, 30);
             this.btnCompare.TabIndex = 1;
             this.btnCompare.Text = "Compare and export";
             this.btnCompare.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -75,30 +74,16 @@
             // btnExport
             // 
             this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExport.Image = ((System.Drawing.Image)(resources.GetObject("btnExport.Image")));
-            this.btnExport.Location = new System.Drawing.Point(545, 642);
-            this.btnExport.Margin = new System.Windows.Forms.Padding(4);
+            this.btnExport.Image = global::CodeFlow.Properties.Resources.Upload_gray_16x;
+            this.btnExport.Location = new System.Drawing.Point(314, 642);
+            this.btnExport.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(100, 31);
+            this.btnExport.Size = new System.Drawing.Size(85, 30);
             this.btnExport.TabIndex = 2;
             this.btnExport.Text = "Export";
             this.btnExport.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
-            // 
-            // btnConfigure
-            // 
-            this.btnConfigure.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnConfigure.Image = ((System.Drawing.Image)(resources.GetObject("btnConfigure.Image")));
-            this.btnConfigure.Location = new System.Drawing.Point(16, 642);
-            this.btnConfigure.Margin = new System.Windows.Forms.Padding(4);
-            this.btnConfigure.Name = "btnConfigure";
-            this.btnConfigure.Size = new System.Drawing.Size(153, 31);
-            this.btnConfigure.TabIndex = 3;
-            this.btnConfigure.Text = "Configure profile";
-            this.btnConfigure.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnConfigure.UseVisualStyleBackColor = true;
-            this.btnConfigure.Click += new System.EventHandler(this.btnConfigure_Click);
             // 
             // lstCode
             // 
@@ -109,7 +94,7 @@
             this.clCode});
             this.lstCode.FullRowSelect = true;
             this.lstCode.Location = new System.Drawing.Point(16, 15);
-            this.lstCode.Margin = new System.Windows.Forms.Padding(4);
+            this.lstCode.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.lstCode.Name = "lstCode";
             this.lstCode.Size = new System.Drawing.Size(914, 619);
             this.lstCode.TabIndex = 7;
@@ -134,7 +119,7 @@
             this.statusStrip.Location = new System.Drawing.Point(0, 679);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-            this.statusStrip.Size = new System.Drawing.Size(948, 25);
+            this.statusStrip.Size = new System.Drawing.Size(949, 25);
             this.statusStrip.TabIndex = 8;
             this.statusStrip.Text = "status";
             // 
@@ -149,7 +134,7 @@
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(789, 20);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(790, 20);
             this.toolStripStatusLabel1.Spring = true;
             // 
             // lblManual
@@ -163,11 +148,11 @@
             // btnConflict
             // 
             this.btnConflict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnConflict.Image = ((System.Drawing.Image)(resources.GetObject("btnConflict.Image")));
-            this.btnConflict.Location = new System.Drawing.Point(416, 642);
-            this.btnConflict.Margin = new System.Windows.Forms.Padding(4);
+            this.btnConflict.Image = global::CodeFlow.Properties.Resources.Conflict_16x;
+            this.btnConflict.Location = new System.Drawing.Point(16, 642);
+            this.btnConflict.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnConflict.Name = "btnConflict";
-            this.btnConflict.Size = new System.Drawing.Size(121, 31);
+            this.btnConflict.Size = new System.Drawing.Size(119, 30);
             this.btnConflict.TabIndex = 9;
             this.btnConflict.Text = "View conflict";
             this.btnConflict.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -179,16 +164,15 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(948, 704);
+            this.ClientSize = new System.Drawing.Size(949, 704);
             this.Controls.Add(this.btnConflict);
             this.Controls.Add(this.lstCode);
             this.Controls.Add(this.statusStrip);
-            this.Controls.Add(this.btnConfigure);
             this.Controls.Add(this.btnExport);
             this.Controls.Add(this.btnCompare);
             this.Controls.Add(this.btnCancel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.Name = "ExportForm";
             this.Text = "Export to Genio";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExportForm_FormClosing);
@@ -205,7 +189,6 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnCompare;
         private System.Windows.Forms.Button btnExport;
-        private System.Windows.Forms.Button btnConfigure;
         private System.Windows.Forms.ListView lstCode;
         private System.Windows.Forms.ColumnHeader clCode;
         private System.Windows.Forms.StatusStrip statusStrip;

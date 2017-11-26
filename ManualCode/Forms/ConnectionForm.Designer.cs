@@ -47,8 +47,6 @@
             this.lblConfigName = new System.Windows.Forms.Label();
             this.txtGenioPath = new System.Windows.Forms.TextBox();
             this.lblGenioPath = new System.Windows.Forms.Label();
-            this.txtCheckoutPath = new System.Windows.Forms.TextBox();
-            this.lblCheckout = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lblServerName
@@ -125,11 +123,11 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Image = ((System.Drawing.Image)(resources.GetObject("btnCancel.Image")));
-            this.btnCancel.Location = new System.Drawing.Point(592, 407);
+            this.btnCancel.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
+            this.btnCancel.Location = new System.Drawing.Point(592, 355);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(100, 31);
+            this.btnCancel.Size = new System.Drawing.Size(100, 30);
             this.btnCancel.TabIndex = 20;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -139,11 +137,11 @@
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Image = ((System.Drawing.Image)(resources.GetObject("btnSave.Image")));
-            this.btnSave.Location = new System.Drawing.Point(484, 407);
+            this.btnSave.Image = global::CodeFlow.Properties.Resources.save_16xLG;
+            this.btnSave.Location = new System.Drawing.Point(484, 355);
             this.btnSave.Margin = new System.Windows.Forms.Padding(4);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(100, 31);
+            this.btnSave.Size = new System.Drawing.Size(100, 30);
             this.btnSave.TabIndex = 19;
             this.btnSave.Text = "Save";
             this.btnSave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -178,11 +176,11 @@
             // btnRefresh
             // 
             this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefresh.Image = ((System.Drawing.Image)(resources.GetObject("btnRefresh.Image")));
-            this.btnRefresh.Location = new System.Drawing.Point(376, 407);
+            this.btnRefresh.Image = global::CodeFlow.Properties.Resources.refresh_16xLG;
+            this.btnRefresh.Location = new System.Drawing.Point(376, 355);
             this.btnRefresh.Margin = new System.Windows.Forms.Padding(4);
             this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(100, 31);
+            this.btnRefresh.Size = new System.Drawing.Size(100, 30);
             this.btnRefresh.TabIndex = 18;
             this.btnRefresh.Text = "Refresh";
             this.btnRefresh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -192,11 +190,11 @@
             // btnTry
             // 
             this.btnTry.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnTry.Image = ((System.Drawing.Image)(resources.GetObject("btnTry.Image")));
-            this.btnTry.Location = new System.Drawing.Point(20, 407);
+            this.btnTry.Image = global::CodeFlow.Properties.Resources.UserTrigger_16x;
+            this.btnTry.Location = new System.Drawing.Point(20, 355);
             this.btnTry.Margin = new System.Windows.Forms.Padding(4);
             this.btnTry.Name = "btnTry";
-            this.btnTry.Size = new System.Drawing.Size(128, 31);
+            this.btnTry.Size = new System.Drawing.Size(96, 30);
             this.btnTry.TabIndex = 16;
             this.btnTry.Text = "Try it!";
             this.btnTry.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -269,36 +267,12 @@
             this.lblGenioPath.TabIndex = 12;
             this.lblGenioPath.Text = "Genio path";
             // 
-            // txtCheckoutPath
-            // 
-            this.txtCheckoutPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtCheckoutPath.Location = new System.Drawing.Point(20, 369);
-            this.txtCheckoutPath.Margin = new System.Windows.Forms.Padding(4);
-            this.txtCheckoutPath.Name = "txtCheckoutPath";
-            this.txtCheckoutPath.Size = new System.Drawing.Size(669, 22);
-            this.txtCheckoutPath.TabIndex = 15;
-            // 
-            // lblCheckout
-            // 
-            this.lblCheckout.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCheckout.AutoSize = true;
-            this.lblCheckout.Location = new System.Drawing.Point(17, 350);
-            this.lblCheckout.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblCheckout.Name = "lblCheckout";
-            this.lblCheckout.Size = new System.Drawing.Size(99, 17);
-            this.lblCheckout.TabIndex = 14;
-            this.lblCheckout.Text = "Checkout path";
-            // 
             // ConnectionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(703, 452);
-            this.Controls.Add(this.txtCheckoutPath);
-            this.Controls.Add(this.lblCheckout);
+            this.ClientSize = new System.Drawing.Size(703, 395);
             this.Controls.Add(this.txtGenioPath);
             this.Controls.Add(this.lblGenioPath);
             this.Controls.Add(this.txtConfigName);
@@ -349,7 +323,5 @@
         private System.Windows.Forms.Label lblConfigName;
         private System.Windows.Forms.TextBox txtGenioPath;
         private System.Windows.Forms.Label lblGenioPath;
-        private System.Windows.Forms.TextBox txtCheckoutPath;
-        private System.Windows.Forms.Label lblCheckout;
     }
 }

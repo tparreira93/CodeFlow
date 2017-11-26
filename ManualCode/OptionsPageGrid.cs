@@ -16,6 +16,7 @@ namespace CodeFlow
         private bool lightbulbSuggestions;
         private bool parseSolutionOnStartup;
         private bool autoVCCTO2008Fix;
+        private bool autoExportSaved;
 
         [Category("Solution")]
         [DefaultValue(".cpp;.cs;.xml;.js")]
@@ -51,6 +52,31 @@ namespace CodeFlow
             }
         }
 
+        [Category("Solution")]
+        [DefaultValue(true)]
+        [DisplayName("Solution parsing")]
+        [Description("Parses solution for list of projects, items, client, version and system. This allows more lightbulb suggestions.")]
+        public bool ParseSolutionOnStartup
+        {
+            get => parseSolutionOnStartup; set
+            {
+                parseSolutionOnStartup = value;
+                PackageOperations.ParseSolution = value;
+            }
+        }
+
+        [Category("Solution")]
+        [DefaultValue(false)]
+        [DisplayName("Auto VCC++ project fix")]
+        [Description("Automatically changes VCC++ projects plataform toolset to 2008.")]
+        public bool AutoVCCTO2008Fix
+        {
+            get => autoVCCTO2008Fix; set
+            {
+                autoVCCTO2008Fix = value;
+                PackageOperations.AutoVCCTO2008Fix = value;
+            }
+        }
 
         [Category("Lightbulb")]
         [DefaultValue(true)]
@@ -63,27 +89,17 @@ namespace CodeFlow
             }
         }
 
-        [Category("Solution")]
-        [DefaultValue(true)]
-        [DisplayName("Solution parsing")]
-        [Description("Parses solution for list of projects, items, client, version and system. This allows more lightbulb suggestions")]
-        public bool ParseSolutionOnStartup { get => parseSolutionOnStartup; set
-            {
-                parseSolutionOnStartup = value;
-                PackageOperations.ParseSolution = value;
-            }
-        }
 
-        [Category("Solution")]
-        [DefaultValue(false)]
-        [DisplayName("Auto VCC++ project fix")]
-        [Description("Automatically changes VCC++ projects plataform toolset to 2008")]
-        public bool AutoVCCTO2008Fix
+        [Category("Code search")]
+        [DefaultValue(true)]
+        [DisplayName("Auto export saved")]
+        [Description("Allows automatic export to database when file from code search is saved.")]
+        public bool AutoExportSaved
         {
-            get => autoVCCTO2008Fix; set
+            get => autoExportSaved; set
             {
-                autoVCCTO2008Fix = value;
-                PackageOperations.AutoVCCTO2008Fix = value;
+                autoExportSaved = value;
+                PackageOperations.AutoExportSaved = value;
             }
         }
     }

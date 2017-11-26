@@ -8,6 +8,7 @@
     using System.Data.SqlClient;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.Windows;
     using System.Windows.Controls;
@@ -44,8 +45,6 @@
                     break;
                 }
             }
-            List<string> plats = PackageOperations.ActiveProfile.GenioConfiguration.Plataforms;
-            SetComboData(plats);
         }
 
         public void SetComboData(List<string> data)
@@ -72,7 +71,7 @@
             {
                 string error = "";
                 List<IManual> res = new List<IManual>();
-                Profile p = PackageOperations.ActiveProfile;
+                Profile p = PackageOperations.GetActiveProfile();
                 try
                 {
                     res.AddRange(ManuaCode.Search(p, currentSearch, caseSensitive: caseSensitive, wholeWord: wholeWord, plataform: lang));
@@ -109,7 +108,7 @@
                 try
                 {
                     Type t = results[lstFindMan.SelectedIndex].GetType();
-                    IManual m = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { PackageOperations.ActiveProfile, results[lstFindMan.SelectedIndex].CodeId }) as IManual;
+                    IManual m = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { PackageOperations.GetActiveProfile(), results[lstFindMan.SelectedIndex].CodeId }) as IManual;
 
                     if (m == null)
                     {

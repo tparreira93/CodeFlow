@@ -48,7 +48,6 @@
             this.rtCode = new System.Windows.Forms.RichTextBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnCreate = new System.Windows.Forms.Button();
-            this.btnSetCon = new System.Windows.Forms.Button();
             this.status = new System.Windows.Forms.StatusStrip();
             this.lblProfile = new System.Windows.Forms.ToolStripStatusLabel();
             this.status.SuspendLayout();
@@ -56,19 +55,23 @@
             // 
             // cmbPlataform
             // 
+            this.cmbPlataform.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbPlataform.FormattingEnabled = true;
-            this.cmbPlataform.Location = new System.Drawing.Point(15, 26);
+            this.cmbPlataform.Location = new System.Drawing.Point(20, 32);
+            this.cmbPlataform.Margin = new System.Windows.Forms.Padding(4);
             this.cmbPlataform.Name = "cmbPlataform";
-            this.cmbPlataform.Size = new System.Drawing.Size(121, 21);
+            this.cmbPlataform.Size = new System.Drawing.Size(148, 24);
             this.cmbPlataform.TabIndex = 0;
+            this.cmbPlataform.SelectedIndexChanged += new System.EventHandler(this.cmbPlataform_SelectedIndexChanged);
             // 
             // chkSystem
             // 
             this.chkSystem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkSystem.AutoSize = true;
-            this.chkSystem.Location = new System.Drawing.Point(528, 28);
+            this.chkSystem.Location = new System.Drawing.Point(741, 34);
+            this.chkSystem.Margin = new System.Windows.Forms.Padding(4);
             this.chkSystem.Name = "chkSystem";
-            this.chkSystem.Size = new System.Drawing.Size(60, 17);
+            this.chkSystem.Size = new System.Drawing.Size(76, 21);
             this.chkSystem.TabIndex = 2;
             this.chkSystem.Text = "System";
             this.chkSystem.UseVisualStyleBackColor = true;
@@ -77,28 +80,33 @@
             // cmbModule
             // 
             this.cmbModule.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbModule.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbModule.FormattingEnabled = true;
-            this.cmbModule.Location = new System.Drawing.Point(594, 25);
+            this.cmbModule.Location = new System.Drawing.Point(825, 32);
+            this.cmbModule.Margin = new System.Windows.Forms.Padding(4);
             this.cmbModule.Name = "cmbModule";
-            this.cmbModule.Size = new System.Drawing.Size(88, 21);
+            this.cmbModule.Size = new System.Drawing.Size(116, 24);
             this.cmbModule.TabIndex = 3;
             // 
             // cmbFeature
             // 
             this.cmbFeature.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbFeature.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFeature.FormattingEnabled = true;
-            this.cmbFeature.Location = new System.Drawing.Point(688, 25);
+            this.cmbFeature.Location = new System.Drawing.Point(949, 31);
+            this.cmbFeature.Margin = new System.Windows.Forms.Padding(4);
             this.cmbFeature.Name = "cmbFeature";
-            this.cmbFeature.Size = new System.Drawing.Size(121, 21);
+            this.cmbFeature.Size = new System.Drawing.Size(160, 24);
             this.cmbFeature.TabIndex = 4;
             // 
             // chkInhibt
             // 
             this.chkInhibt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkInhibt.AutoSize = true;
-            this.chkInhibt.Location = new System.Drawing.Point(815, 27);
+            this.chkInhibt.Location = new System.Drawing.Point(1117, 34);
+            this.chkInhibt.Margin = new System.Windows.Forms.Padding(4);
             this.chkInhibt.Name = "chkInhibt";
-            this.chkInhibt.Size = new System.Drawing.Size(54, 17);
+            this.chkInhibt.Size = new System.Drawing.Size(67, 21);
             this.chkInhibt.TabIndex = 5;
             this.chkInhibt.Text = "Inhibit";
             this.chkInhibt.UseVisualStyleBackColor = true;
@@ -106,34 +114,38 @@
             // txtFile
             // 
             this.txtFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtFile.Location = new System.Drawing.Point(875, 25);
+            this.txtFile.Location = new System.Drawing.Point(1192, 34);
+            this.txtFile.Margin = new System.Windows.Forms.Padding(4);
             this.txtFile.Name = "txtFile";
-            this.txtFile.Size = new System.Drawing.Size(100, 20);
+            this.txtFile.Size = new System.Drawing.Size(105, 22);
             this.txtFile.TabIndex = 6;
             // 
             // txtOrder
             // 
             this.txtOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtOrder.Location = new System.Drawing.Point(981, 25);
+            this.txtOrder.Location = new System.Drawing.Point(1306, 34);
+            this.txtOrder.Margin = new System.Windows.Forms.Padding(4);
             this.txtOrder.Name = "txtOrder";
-            this.txtOrder.Size = new System.Drawing.Size(100, 20);
+            this.txtOrder.Size = new System.Drawing.Size(92, 22);
             this.txtOrder.TabIndex = 7;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Location = new System.Drawing.Point(16, 11);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(51, 13);
+            this.label1.Size = new System.Drawing.Size(68, 17);
             this.label1.TabIndex = 8;
             this.label1.Text = "Plataform";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(139, 9);
+            this.label2.Location = new System.Drawing.Point(173, 11);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(31, 13);
+            this.label2.Size = new System.Drawing.Size(40, 17);
             this.label2.TabIndex = 9;
             this.label2.Text = "Type";
             // 
@@ -141,9 +153,10 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(591, 9);
+            this.label3.Location = new System.Drawing.Point(822, 12);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(42, 13);
+            this.label3.Size = new System.Drawing.Size(54, 17);
             this.label3.TabIndex = 10;
             this.label3.Text = "Module";
             // 
@@ -151,9 +164,10 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(685, 9);
+            this.label4.Location = new System.Drawing.Point(949, 12);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(43, 13);
+            this.label4.Size = new System.Drawing.Size(57, 17);
             this.label4.TabIndex = 11;
             this.label4.Text = "Feature";
             // 
@@ -161,9 +175,10 @@
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(872, 9);
+            this.label5.Location = new System.Drawing.Point(1189, 11);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(23, 13);
+            this.label5.Size = new System.Drawing.Size(30, 17);
             this.label5.TabIndex = 12;
             this.label5.Text = "File";
             // 
@@ -171,35 +186,40 @@
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(978, 9);
+            this.label6.Location = new System.Drawing.Point(1302, 12);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(33, 13);
+            this.label6.Size = new System.Drawing.Size(45, 17);
             this.label6.TabIndex = 13;
             this.label6.Text = "Order";
             // 
             // cmbType
             // 
+            this.cmbType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbType.FormattingEnabled = true;
-            this.cmbType.Location = new System.Drawing.Point(142, 26);
+            this.cmbType.Location = new System.Drawing.Point(176, 32);
+            this.cmbType.Margin = new System.Windows.Forms.Padding(4);
             this.cmbType.Name = "cmbType";
-            this.cmbType.Size = new System.Drawing.Size(117, 21);
+            this.cmbType.Size = new System.Drawing.Size(269, 24);
             this.cmbType.TabIndex = 14;
             // 
             // txtParam
             // 
             this.txtParam.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtParam.Location = new System.Drawing.Point(265, 26);
+            this.txtParam.Location = new System.Drawing.Point(453, 33);
+            this.txtParam.Margin = new System.Windows.Forms.Padding(4);
             this.txtParam.Name = "txtParam";
-            this.txtParam.Size = new System.Drawing.Size(257, 20);
+            this.txtParam.Size = new System.Drawing.Size(280, 22);
             this.txtParam.TabIndex = 15;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(262, 10);
+            this.label7.Location = new System.Drawing.Point(450, 12);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(60, 13);
+            this.label7.Size = new System.Drawing.Size(81, 17);
             this.label7.TabIndex = 16;
             this.label7.Text = "Parameters";
             // 
@@ -208,9 +228,10 @@
             this.rtCode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtCode.Location = new System.Drawing.Point(15, 54);
+            this.rtCode.Location = new System.Drawing.Point(20, 66);
+            this.rtCode.Margin = new System.Windows.Forms.Padding(4);
             this.rtCode.Name = "rtCode";
-            this.rtCode.Size = new System.Drawing.Size(1066, 459);
+            this.rtCode.Size = new System.Drawing.Size(1377, 660);
             this.rtCode.TabIndex = 17;
             this.rtCode.Text = "";
             // 
@@ -218,10 +239,11 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Image = ((System.Drawing.Image)(resources.GetObject("btnCancel.Image")));
-            this.btnCancel.Location = new System.Drawing.Point(1006, 519);
+            this.btnCancel.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
+            this.btnCancel.Location = new System.Drawing.Point(1318, 735);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 25);
+            this.btnCancel.Size = new System.Drawing.Size(80, 30);
             this.btnCancel.TabIndex = 18;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -231,37 +253,26 @@
             // btnCreate
             // 
             this.btnCreate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCreate.Image = ((System.Drawing.Image)(resources.GetObject("btnCreate.Image")));
-            this.btnCreate.Location = new System.Drawing.Point(925, 519);
+            this.btnCreate.Image = global::CodeFlow.Properties.Resources.AddFile_16x;
+            this.btnCreate.Location = new System.Drawing.Point(1219, 735);
+            this.btnCreate.Margin = new System.Windows.Forms.Padding(4);
             this.btnCreate.Name = "btnCreate";
-            this.btnCreate.Size = new System.Drawing.Size(75, 25);
+            this.btnCreate.Size = new System.Drawing.Size(91, 30);
             this.btnCreate.TabIndex = 19;
             this.btnCreate.Text = "Create";
             this.btnCreate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCreate.UseVisualStyleBackColor = true;
             this.btnCreate.Click += new System.EventHandler(this.btnCreate_Click);
             // 
-            // btnSetCon
-            // 
-            this.btnSetCon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSetCon.Image = ((System.Drawing.Image)(resources.GetObject("btnSetCon.Image")));
-            this.btnSetCon.Location = new System.Drawing.Point(12, 519);
-            this.btnSetCon.Name = "btnSetCon";
-            this.btnSetCon.Size = new System.Drawing.Size(155, 25);
-            this.btnSetCon.TabIndex = 20;
-            this.btnSetCon.Text = "Configure connection";
-            this.btnSetCon.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnSetCon.UseVisualStyleBackColor = true;
-            this.btnSetCon.Click += new System.EventHandler(this.btnSetCon_Click);
-            // 
             // status
             // 
             this.status.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.status.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblProfile});
-            this.status.Location = new System.Drawing.Point(0, 547);
+            this.status.Location = new System.Drawing.Point(0, 771);
             this.status.Name = "status";
-            this.status.Size = new System.Drawing.Size(1090, 22);
+            this.status.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
+            this.status.Size = new System.Drawing.Size(1410, 25);
             this.status.TabIndex = 21;
             this.status.Text = "statusStrip1";
             // 
@@ -270,17 +281,16 @@
             this.lblProfile.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProfile.ForeColor = System.Drawing.Color.MidnightBlue;
             this.lblProfile.Name = "lblProfile";
-            this.lblProfile.Size = new System.Drawing.Size(53, 17);
+            this.lblProfile.Size = new System.Drawing.Size(68, 20);
             this.lblProfile.Text = "PROFILE";
             // 
             // CreateInGenioForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(1090, 569);
+            this.ClientSize = new System.Drawing.Size(1410, 796);
             this.Controls.Add(this.status);
-            this.Controls.Add(this.btnSetCon);
             this.Controls.Add(this.btnCreate);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.rtCode);
@@ -301,6 +311,7 @@
             this.Controls.Add(this.chkSystem);
             this.Controls.Add(this.cmbPlataform);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "CreateInGenioForm";
             this.Text = "Create in Genio";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CreateInGenioForm_FormClosing);
@@ -333,7 +344,6 @@
         private System.Windows.Forms.RichTextBox rtCode;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnCreate;
-        private System.Windows.Forms.Button btnSetCon;
         private System.Windows.Forms.StatusStrip status;
         private System.Windows.Forms.ToolStripStatusLabel lblProfile;
     }

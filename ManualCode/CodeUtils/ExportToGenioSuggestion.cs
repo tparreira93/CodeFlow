@@ -93,7 +93,9 @@ namespace CodeFlow.CodeUtils
             {
                 try
                 {
-                    _manual.Update(PackageOperations.ActiveProfile);
+                    if(MessageBox.Show(Properties.Resources.ConfirmExportDirect, 
+                        Properties.Resources.Export, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+                    _manual.Update(PackageOperations.GetActiveProfile());
                 }
                 catch (Exception ex)
                 {

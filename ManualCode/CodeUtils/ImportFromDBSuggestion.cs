@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Imaging.Interop;
+﻿using CodeFlow.CommandHandlers;
+using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
@@ -101,9 +102,13 @@ namespace CodeFlow.CodeUtils
 
             try
             {
-                ManuaCode bd = ManuaCode.GetManual(PackageOperations.ActiveProfile, codmanua);
+                ManuaCode bd = ManuaCode.GetManual(PackageOperations.GetActiveProfile(), codmanua);
                 if (bd == null)
                     return;
+
+
+
+                CommandHandlers.CommandHandler.EditCodeSegment(textView.TextBuffer, begin, end, bd.Code);
 
                 var point = textView.Caret.Position.BufferPosition;
                 int position = point.Position;

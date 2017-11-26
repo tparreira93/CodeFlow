@@ -1,16 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Globalization;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using EnvDTE;
-using System.IO;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Text;
 
 namespace CodeFlow
 {
@@ -95,16 +86,8 @@ namespace CodeFlow
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            var dte = ServiceProvider.GetService(typeof(DTE)) as _DTE;
-
-            string code = "";
-
-            if (dte == null || dte.ActiveDocument == null)
-                return;
+            string code = CommandHandlers.CommandHandler.GetCurrentSelection(ServiceProvider);
             
-            var selection = (TextSelection)dte.ActiveDocument.Selection;
-            code = selection.Text;
-
             if (code != null && code.Length != 0)
             {
                 List<ManuaCode> manual = new List<ManuaCode>();

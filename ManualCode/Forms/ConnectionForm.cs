@@ -31,10 +31,10 @@ namespace CodeFlow
         {
             InitializeComponent();
             openMode = mode;
-            if (profile != null)
+            if (profile != null && openMode == Mode.EDIT)
             {
                 oldProfile = profile;
-                tmpProfile = new Profile(oldProfile);
+                tmpProfile = oldProfile.Clone();
             }
             else
                 tmpProfile = new Profile();
@@ -86,7 +86,6 @@ namespace CodeFlow
                     if (div.Substring(0, 3) == "GEN")
                         cmbDb.Items.Add(div);
                 }
-                sqlConnection.Close();
             }
             catch (Exception ex)
             {
@@ -107,7 +106,6 @@ namespace CodeFlow
             txtPassword.DataBindings.Add("Text", tmpProfile.GenioConfiguration, "Password");
             txtGenioUser.DataBindings.Add("Text", tmpProfile.GenioConfiguration, "GenioUser");
             txtGenioPath.DataBindings.Add("Text", tmpProfile.GenioConfiguration, "GenioPath");
-            txtCheckoutPath.DataBindings.Add("Text", tmpProfile.GenioConfiguration, "CheckoutPath");
 
             if (tmpProfile.GenioConfiguration.Server.Length != 0 && tmpProfile.GenioConfiguration.Database.Length != 0)
             {
@@ -129,11 +127,13 @@ namespace CodeFlow
             tmpProfile.GenioConfiguration.Server = cmbServers.Text ?? "";
             tmpProfile.GenioConfiguration.Database = cmbDb.Text ?? "";
 
-            if ((openMode == Mode.NEW && !saveProfile(oldProfile, tmpProfile)) || (openMode == Mode.EDIT && !saveProfile(oldProfile, tmpProfile)))
-                return;
+            if ((openMode == Mode.NEW && addProfile(tmpProfile)) || (openMode == Mode.EDIT && saveProfile(oldProfile, tmpProfile)))
+            {
+                DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            return;
 
-            DialogResult = DialogResult.OK;
-            this.Close();
         }
 
         private bool saveProfile(Profile oldProfile, Profile newProfile)
@@ -176,12 +176,12 @@ namespace CodeFlow
 
                 if (openMode == Mode.NEW
                     && MessageBox.Show(Properties.Resources.ConfirmAdd, Properties.Resources.ConnectDB, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes
-                    && saveProfile(oldProfile, tmpProfile))
+                    && addProfile(tmpProfile))
                         this.Close();
 
                 else if (openMode == Mode.EDIT
                     && MessageBox.Show(Properties.Resources.ConfirmUpdate, Properties.Resources.ConnectDB, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes
-                    && addProfile(tmpProfile))
+                    && saveProfile(oldProfile, tmpProfile))
                         this.Close();
             }
         }

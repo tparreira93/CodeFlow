@@ -1,31 +1,19 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Globalization;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.TextManager.Interop;
-using EnvDTE;
-using System.Data.SqlClient;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.Editor;
-using System.Linq;
-using System.IO;
-using CodeFlow.ManualOperations;
 
 namespace CodeFlow
 {
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class ExportToGenio
+    internal sealed class SubmitToGenio
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 0x0100;
+        public const int CommandId = 256;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -38,11 +26,11 @@ namespace CodeFlow
         private readonly Package package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExportToGenio"/> class.
+        /// Initializes a new instance of the <see cref="SubmitToGenio"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private ExportToGenio(Package package)
+        private SubmitToGenio(Package package)
         {
             if (package == null)
             {
@@ -63,7 +51,7 @@ namespace CodeFlow
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static ExportToGenio Instance
+        public static SubmitToGenio Instance
         {
             get;
             private set;
@@ -86,7 +74,7 @@ namespace CodeFlow
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new ExportToGenio(package);
+            Instance = new SubmitToGenio(package);
         }
 
         /// <summary>
@@ -98,49 +86,7 @@ namespace CodeFlow
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            var dte = ServiceProvider.GetService(typeof(DTE)) as _DTE;
-            List<IManual> manual = new List<IManual>();
-            string code = "";
-            string subCode = "";
-
-            if (dte == null || dte.ActiveDocument == null)
-                return;
-
-            var selection = (TextSelection)dte.ActiveDocument.Selection;
-            code = selection.Text;
-
-            if (code != null && code.Length != 0)
-            {
-                manual.AddRange(ManuaCode.GetManualCode(code).ToArray());
-                manual.AddRange(CustomFunction.GetManualCode(code).ToArray());
-            }
-            else
-            {
-                var textManager = (IVsTextManager)ServiceProvider.GetService(typeof(SVsTextManager));
-                var componentModel = (IComponentModel)this.ServiceProvider.GetService(typeof(SComponentModel));
-                var editor = componentModel.GetService<IVsEditorAdaptersFactoryService>();
-
-                textManager.GetActiveView(1, null, out IVsTextView textViewCurrent);
-                IWpfTextView view = editor.GetWpfTextView(textViewCurrent);
-
-                SnapshotPoint caretPosition = view.Caret.Position.BufferPosition;
-                int pos = caretPosition.Position;
-                code = view.TextBuffer.CurrentSnapshot.GetText();
-
-                CodeSegment segment = CodeSegment.ParseFromPosition(ManuaCode.BEGIN_MANUAL, ManuaCode.END_MANUAL, code, pos);
-                if (segment.IsValid())
-                {
-                    subCode = segment.CompleteTextSegment;
-                    manual.AddRange(ManuaCode.GetManualCode(subCode).ToArray());
-                }
-
-                segment = CodeSegment.ParseFromPosition(CustomFunction.BEGIN_MANUAL, CustomFunction.END_MANUAL, code, pos);
-                if (segment.IsValid())
-                {
-                    subCode = segment.CompleteTextSegment;
-                    manual.AddRange(CustomFunction.GetManualCode(subCode).ToArray());
-                }
-            }
+            List<IManual> manual = CommandHandlers.CommandHandler.SearchTagsCurrentView(ServiceProvider);
 
             ExportForm exportForm = new ExportForm(manual);
             exportForm.ShowDialog();

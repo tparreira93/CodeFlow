@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CodeFlow.SolutionOperations;
-using EnvDTE;
-using CodeFlow.Utils;
 using System.ComponentModel;
 
 namespace CodeFlow.SolutionOperations
@@ -66,7 +60,7 @@ namespace CodeFlow.SolutionOperations
 
         private void AnalyzeFile(string file)
         {
-            string code = File.ReadAllText(file, Encoding.GetEncoding("iso-8859-1"));
+            string code = File.ReadAllText(file, PackageOperations.GetFileEncoding());
             List<IManual> tmp = ManuaCode.GetManualCode(code);
             foreach (ManuaCode m in tmp)
             {
@@ -101,7 +95,7 @@ namespace CodeFlow.SolutionOperations
                 }
 
                 //Compara com o que esta na BD
-                ManuaCode bd = ManuaCode.GetManual(PackageOperations.ActiveProfile, m.CodeId);
+                ManuaCode bd = ManuaCode.GetManual(PackageOperations.GetActiveProfile(), m.CodeId);
                 if (bd != null && !bd.Code.Equals(m.Code))
                     ToExport.Add(m);
                 verified.Add(m);
@@ -113,7 +107,7 @@ namespace CodeFlow.SolutionOperations
                 bool keep = false;
                 foreach (ManuaCode m in pair.Value)
                 {
-                    ManuaCode bd = ManuaCode.GetManual(PackageOperations.ActiveProfile, pair.Key);
+                    ManuaCode bd = ManuaCode.GetManual(PackageOperations.GetActiveProfile(), pair.Key);
                     if (bd != null && !bd.Code.Equals(m.Code))
                     {
                         keep = true;

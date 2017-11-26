@@ -9,7 +9,6 @@ using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
 using System.Threading;
-using CodeFlow.SolutionOperations;
 using CodeFlow.ManualOperations;
 
 namespace CodeFlow.CodeUtils
@@ -104,10 +103,10 @@ namespace CodeFlow.CodeUtils
                 }
 
                 if (PackageOperations.SolutionProps != null
-                    && PackageOperations.ActiveProfile.GenioConfiguration.CheckoutPath.Length > 0
-                    && PackageOperations.SolutionProps.ClientInfo.System.Length > 0)
+                    && !String.IsNullOrEmpty(PackageOperations.GetActiveProfile().GenioConfiguration.CheckoutPath)
+                    && !String.IsNullOrEmpty(PackageOperations.GetActiveProfile().GenioConfiguration.SystemInitials))
                 {
-                    OpenSVNSuggestion openSVNSuggestion = new OpenSVNSuggestion(man, PackageOperations.ActiveProfile, PackageOperations.SolutionProps.ClientInfo.System);
+                    OpenSVNSuggestion openSVNSuggestion = new OpenSVNSuggestion(man, PackageOperations.GetActiveProfile(), PackageOperations.GetActiveProfile().GenioConfiguration.SystemInitials);
                     actions.Add(openSVNSuggestion);
                 }
                 return new SuggestedActionSet[] { new SuggestedActionSet(actions.ToArray()) };

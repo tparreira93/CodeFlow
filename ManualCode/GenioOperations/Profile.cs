@@ -19,21 +19,13 @@ namespace CodeFlow
         {
         }
 
-        public Profile(Profile p)
+        public Profile Clone()
         {
-            ProfileID = p.ProfileID;
-            ProfileName = p.ProfileName;
-
-            GenioConfiguration.CheckoutPath = p.GenioConfiguration.CheckoutPath;
-            GenioConfiguration.Database = p.GenioConfiguration.Database;
-            GenioConfiguration.GenioPath = p.GenioConfiguration.GenioPath;
-            GenioConfiguration.GenioUser = p.GenioConfiguration.GenioUser;
-            GenioConfiguration.GenioVersion = p.GenioConfiguration.GenioVersion;
-            GenioConfiguration.Password = p.GenioConfiguration.Password;
-            GenioConfiguration.Plataforms = p.GenioConfiguration.Plataforms;
-            GenioConfiguration.Server = p.GenioConfiguration.Server;
-            GenioConfiguration.Tipos = p.GenioConfiguration.Tipos;
-            GenioConfiguration.Username = p.GenioConfiguration.Username;
+            Profile p = new Profile();
+            p.ProfileID = this.ProfileID;
+            p.ProfileName = this.ProfileName;
+            p.GenioConfiguration = this.GenioConfiguration.Clone();
+            return p;
         }
 
         public Profile(string profileName, Genio connection)

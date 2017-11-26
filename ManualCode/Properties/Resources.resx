@@ -118,135 +118,180 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="document_up" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\document_up.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="DeleteUser_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DeleteUser_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="hammer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\hammer.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Conflict_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Conflict_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="genio" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ico_01.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="DownloadFile_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DownloadFile_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="document_down" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\document_down.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="document_forbidden" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\document_forbidden.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="code_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\code_add.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ManwinInfoData" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ManwinInfoData.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
-  <data name="profile_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\data_add.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="search_genio" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\document_view.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="export_genio" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\export2.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="connection" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\data_unknown.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="create_genio" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\data_new.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="businessman_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\businessman_add.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="documents_exchange" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\documents_exchange.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="error" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\error.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="exit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\exit.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="flash_red" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\flash_red.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\refresh.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Compare" xml:space="preserve">
-    <value>Compare</value>
-  </data>
-  <data name="ConfirmationExport" xml:space="preserve">
-    <value>Are you sure you want to export all non conflict code in the list to Genio?</value>
-  </data>
-  <data name="Conflict" xml:space="preserve">
-    <value>Conflict</value>
-  </data>
-  <data name="ErrorComparing" xml:space="preserve">
-    <value>An error occurred while comparing code!
-{0}</value>
-  </data>
-  <data name="ErrorResolvingConflict" xml:space="preserve">
-    <value>An error occurred while resolving conflict!
-{0}</value>
-  </data>
-  <data name="ErrorUpdating" xml:space="preserve">
-    <value>An error occurred while updating manual code!
-{0}</value>
-  </data>
-  <data name="Export" xml:space="preserve">
-    <value>Export</value>
-  </data>
-  <data name="ExportedMerged" xml:space="preserve">
-    <value>Export merged code?</value>
-  </data>
-  <data name="VerifyProfile" xml:space="preserve">
-    <value>Manual code not found in database!
-Verify your profile</value>
-  </data>
-  <data name="ConfirmAdd" xml:space="preserve">
-    <value>Do you wish to add this profile?</value>
-  </data>
-  <data name="ConfirmUpdate" xml:space="preserve">
-    <value>Do you wish to update this profile?</value>
-  </data>
-  <data name="ConnectDB" xml:space="preserve">
-    <value>Genio profile</value>
-  </data>
-  <data name="ConnectionOpen" xml:space="preserve">
-    <value>Connection open!</value>
-  </data>
-  <data name="CreateInGenio" xml:space="preserve">
-    <value>Create in genio</value>
-  </data>
-  <data name="ErrorAddProfile" xml:space="preserve">
-    <value>Profile name must be unique!</value>
-  </data>
-  <data name="ErrorConnect" xml:space="preserve">
-    <value>Unable to connect to server {0}!
-{1}</value>
-  </data>
-  <data name="ErrorCreate" xml:space="preserve">
-    <value>Unable to create code in Genio!
-{0}</value>
-  </data>
-  <data name="ErrorSelectDB" xml:space="preserve">
-    <value>A server and database must be selected!</value>
-  </data>
-  <data name="ErrorSearch" xml:space="preserve">
-    <value>Unable to search for given terms!
-{0}</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Search</value>
-  </data>
-  <data name="Configuration" xml:space="preserve">
-    <value>Configuration</value>
+  <data name="Upload_gray_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Upload_gray_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ErrorRequest" xml:space="preserve">
     <value>Unable to complete your request!
 {0}</value>
   </data>
+  <data name="ManwinInfoData" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ManwinInfoData.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="ConfirmAdd" xml:space="preserve">
+    <value>Do you wish to add this profile?</value>
+  </data>
+  <data name="ConfirmationExport" xml:space="preserve">
+    <value>Are you sure you want to export all non conflict code in the list to Genio?</value>
+  </data>
+  <data name="ConfirmExportDirect" xml:space="preserve">
+    <value>Are you sure you want to export this manual code?</value>
+  </data>
+  <data name="ErrorSearch" xml:space="preserve">
+    <value>Unable to search for given terms!
+{0}</value>
+  </data>
+  <data name="ConnectionOpen" xml:space="preserve">
+    <value>Connection open!</value>
+  </data>
+  <data name="ErrorComparing" xml:space="preserve">
+    <value>An error occurred while comparing code!
+{0}</value>
+  </data>
+  <data name="AddUser_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AddUser_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Checkmark_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Checkmark_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PreviewWebTab_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\PreviewWebTab_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="VerifyProfile" xml:space="preserve">
+    <value>Manual code not found in database!
+Verify your profile</value>
+  </data>
+  <data name="Compare" xml:space="preserve">
+    <value>Compare</value>
+  </data>
+  <data name="StartupProject_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\StartupProject_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="refresh_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\refresh_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ExportedMerged" xml:space="preserve">
+    <value>Export merged code?</value>
+  </data>
+  <data name="ErrorResolvingConflict" xml:space="preserve">
+    <value>An error occurred while resolving conflict!
+{0}</value>
+  </data>
+  <data name="UploadFile_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UploadFile_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ErrorAddProfile" xml:space="preserve">
+    <value>Profile name must be unique!</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Search1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Search.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Import" xml:space="preserve">
     <value>Import</value>
+  </data>
+  <data name="ErrorConnect" xml:space="preserve">
+    <value>Unable to connect to server {0}!
+{1}</value>
+  </data>
+  <data name="CreateInGenio" xml:space="preserve">
+    <value>Create in genio</value>
+  </data>
+  <data name="save_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\save_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Download_grey" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Download_grey.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Conflict" xml:space="preserve">
+    <value>Conflict</value>
+  </data>
+  <data name="AddFile_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AddFile_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ErrorCreate" xml:space="preserve">
+    <value>Unable to create code in Genio!
+{0}</value>
+  </data>
+  <data name="Configuration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="Close_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Close_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ErrorUpdating" xml:space="preserve">
+    <value>An error occurred while updating manual code!
+{0}</value>
+  </data>
+  <data name="Refresh_grey" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Refresh_grey.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="genio" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ico_01.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="ConnectDB" xml:space="preserve">
+    <value>Genio profile</value>
+  </data>
+  <data name="UserTrigger_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UserTrigger_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Compare_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Compare_16x1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Event" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Event.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ConfirmUpdate" xml:space="preserve">
+    <value>Do you wish to update this profile?</value>
+  </data>
+  <data name="ErrorSelectDB" xml:space="preserve">
+    <value>A server and database must be selected!</value>
+  </data>
+  <data name="Cancel_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Cancel_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CodeActivity_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CodeActivity_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Event_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Event_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Refresh_grey_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Refresh_grey_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Search_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Search_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Team_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Team_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CaseSensitive_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CaseSensitive_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="WholeWordMatch_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\WholeWordMatch_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CodeCreated" xml:space="preserve">
+    <value>Code created!</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="CreateError" xml:space="preserve">
+    <value>You are missing some options in your manual code!</value>
   </data>
 </root>

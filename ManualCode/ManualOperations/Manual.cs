@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CodeFlow.GenioOperations;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -67,8 +68,8 @@ namespace CodeFlow
 
         public string GetCodeExtension(Profile p)
         {
-            p.GenioConfiguration.Tipos.TryGetValue(Tipo, out string extension);
-
+            GenioPlataform plat = PackageOperations.GetActiveProfile().GenioConfiguration.Plataforms.Find(x => x.ID.Equals(Plataform));
+            string extension = plat?.TipoRotina?.Find(x => x.Identifier.Equals(Tipo))?.ProgrammingLanguage;
             return extension ?? "tmp";
         }
         public string OneLineCode

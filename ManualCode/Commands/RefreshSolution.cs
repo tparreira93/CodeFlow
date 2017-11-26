@@ -15,12 +15,12 @@ namespace CodeFlow
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4129;
+        public const int CommandId = 4135;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("ea4285de-6536-470f-b0a6-26800470cbe1");
+        public static readonly Guid CommandSet = new Guid("657c211f-0665-4969-81bc-d3a266b0aac4");
 
         /// <summary>
         /// VS Package that provides this command, not null.

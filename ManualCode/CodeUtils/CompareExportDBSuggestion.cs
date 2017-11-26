@@ -94,12 +94,12 @@ namespace CodeFlow.CodeUtils
             {
                 try
                 {
-                    bd = ManuaCode.GetManual(PackageOperations.ActiveProfile, _manual.CodeId);
+                    bd = ManuaCode.GetManual(PackageOperations.GetActiveProfile(), _manual.CodeId);
                     if (bd != null)
                     {
                         IManual result = Manual.Merge(_manual, bd);
                         if (MessageBox.Show(Properties.Resources.ExportedMerged, Properties.Resources.Export, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                            result.Update(PackageOperations.ActiveProfile);
+                            result.Update(PackageOperations.GetActiveProfile());
                     }
                 }
                 catch(Exception ex)
