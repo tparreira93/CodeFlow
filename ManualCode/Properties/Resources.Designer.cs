@@ -140,6 +140,15 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code search.
+        /// </summary>
+        internal static string CodeSearch {
+            get {
+                return ResourceManager.GetString("CodeSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compare.
         /// </summary>
         internal static string Compare {

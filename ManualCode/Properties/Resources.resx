@@ -294,4 +294,7 @@ Verify your profile</value>
   <data name="CreateError" xml:space="preserve">
     <value>You are missing some options in your manual code!</value>
   </data>
+  <data name="CodeSearch" xml:space="preserve">
+    <value>Code search</value>
+  </data>
 </root>

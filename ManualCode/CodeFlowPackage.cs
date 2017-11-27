@@ -36,10 +36,9 @@ namespace CodeFlow
     [Guid(CodeFlowPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string)]
-    [ProvideToolWindow(typeof(FindInManualCode), Style = VsDockStyle.Tabbed, Window = "3ae79031-e1bc-11d0-8f78-00a0c9110057")]
     [ProvideOptionPage(typeof(OptionsPageGrid), "Genio", "CodeFlow properties", 0, 0, true)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(CodeFlow.ToolWindow.SearchTool))]
+    [ProvideToolWindow(typeof(CodeFlow.ToolWindow.SearchTool), Style = VsDockStyle.Tabbed, Orientation = ToolWindowOrientation.Bottom)]
     public sealed class CodeFlowPackage : Package, IVsSolutionEvents
     {
         /// <summary>
@@ -75,7 +74,6 @@ namespace CodeFlow
             SubmitToGenio.Initialize(this);
             ImportFromGenio.Initialize(this);
             CreateInGenio.Initialize(this);
-            FindInManualCodeCommand.Initialize(this);
             ManageProfiles.Initialize(this);
             ExportSolution.Initialize(this);
             ContextMenu.Initialize(this);

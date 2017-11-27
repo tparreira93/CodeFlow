@@ -85,7 +85,7 @@
     <Compile Include="PackageGuidList.cs" />
     <Compile Include="PackageCommandList.cs" />
     <Compile Include="ToolWindow\SearchTool.cs" />
-    <Compile Include="ToolWindow\SearchToolCommand.cs" />
+    <Compile Include="Commands\SearchToolCommand.cs" />
     <Compile Include="ToolWindow\SearchToolControl.xaml.cs">
       <DependentUpon>SearchToolControl.xaml</DependentUpon>
     </Compile>
@@ -125,11 +125,6 @@
       <DependentUpon>ExportForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Commands\ExportSolution.cs" />
-    <Compile Include="FindInManualCode.cs" />
-    <Compile Include="Commands\FindInManualCodeCommand.cs" />
-    <Compile Include="FindManwinControl.xaml.cs">
-      <DependentUpon>FindManwinControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GenioOperations\Genio.cs" />
     <Compile Include="Commands\ImportFromGenio.cs" />
     <Compile Include="Commands\ExportToGenio.cs" />
@@ -180,7 +175,6 @@
     </Content>
     <None Include="Resources\WholeWordMatch_16x.png" />
     <None Include="Resources\CaseSensitive_16x.png" />
-    <Content Include="ToolWindow\Resources\SearchToolCommand.png" />
     <VSCTCompile Include="InvokeCommandPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <SubType>Designer</SubType>
@@ -388,10 +382,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="FindManwinControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="ListViewStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

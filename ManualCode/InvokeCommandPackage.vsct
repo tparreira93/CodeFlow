@@ -214,26 +214,6 @@
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
       
-      <!-- TOOLWINDOW SEARCH TOOLBAR -->
-      
-      
-      <Button guid="CodeFlowCommandSet" id="cmdFindManwinCommand" priority="0x0100" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
-        <Icon guid="searchGenioImage" id="bmpPic1" />
-        <Strings>
-          <ButtonText>Search in Manual Code</ButtonText>
-        </Strings>
-      </Button>
-      
-      <Button guid="CodeFlowCommandSet" id="cmdidSearchManualCode" priority="0x100" type="Button">
-        <Parent guid="CodeFlowCommandSet" id="SearchToolbarGroup" />
-        <Icon guid="buttonSearchToolwindow" id="bmpPic1" />
-        <CommandFlag>IconIsMoniker</CommandFlag>
-        <Strings>
-          <ButtonText>Search</ButtonText>
-        </Strings>
-      </Button>
-      
         <!-- TOOLBAR BUTTONS-->
       <Button guid="CodeFlowCommandSet" id="cmdSubmitGenio" priority="0x0100" type="Button">
         <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" /> 
@@ -306,6 +286,8 @@
           <ButtonText>Create in Genio</ButtonText>
         </Strings>
       </Button>
+      
+      <!-- CODE SEARCH TOOL WINDOW -->
       <Button guid="guidCodeFlowPackageCmdSet" id="cmdidSearchToolCommand" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
         <Icon guid="buttonSearchToolwindow" id="bmpPic1" />
@@ -313,7 +295,6 @@
           <ButtonText>Code search</ButtonText>
         </Strings>
       </Button>
-
       <Button guid="guidCodeFlowPackageCmdSet" id="cmdidWholeWord" priority="0x100" type="Button">
         <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbarGroup" />
         <Icon guid="buttonWholeWord" id="bmpPic1" />
@@ -321,7 +302,6 @@
           <ButtonText>Whole word</ButtonText>
         </Strings>
       </Button>
-      
       <Button guid="guidCodeFlowPackageCmdSet" id="cmdidCaseSensitive" priority="0x100" type="Button">
         <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbarGroup" />
         <Icon guid="buttonCaseSensitive" id="bmpPic1" />
@@ -329,7 +309,6 @@
           <ButtonText>Case sensitive</ButtonText>
         </Strings>
       </Button>
-
       <Button guid="guidCodeFlowPackageCmdSet" id="cmdidSearchCode" priority="0x100" type="Button">
         <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbarGroup" />
         <Icon guid="buttonSearchToolwindow" id="bmpPic1" />
@@ -404,17 +383,10 @@
       <IDSymbol name="cmdSubmitGenio" value="256" />
       <IDSymbol name="cmdImportFromGenio" value="4129" />
       <IDSymbol name="cmdCreateInGenio" value="4130" />
-      <IDSymbol name="cmdFindManwinCommand" value="4131" />
       <IDSymbol name="cmdManageProfiles" value="4132" />
       <IDSymbol name="cmdExportSolution" value="4133" />
       <IDSymbol name="cmdidFixVS2008Solution" value="4134" />
       <IDSymbol name="cmdidRefreshSolution" value="4135" />
-      
-      <!-- TOOLWINDOW SEARCH BAR -->
-      <IDSymbol name="SearchToolbar" value="4136" />
-      <IDSymbol name="SearchToolbarGroup" value="4137" />
-      <IDSymbol name="cmdidSearchManualCode" value="4138" />
-      <IDSymbol name="cmdidSearchBox" value="4139" />
     </GuidSymbol>
 
     <GuidSymbol name="guidVCodeFlowContextMenuCmdSet" value="{7547EBCE-1079-4C06-8B74-BFE595D61E7E}">

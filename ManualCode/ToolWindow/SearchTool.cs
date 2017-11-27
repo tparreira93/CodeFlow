@@ -71,7 +71,7 @@
             // Note that because we need access to the package for localization,
             // we have to wait to do this here. If we used a constant string,
             // we could do this in the consturctor.
-            this.Caption = "SearchTool";
+            this.Caption = Properties.Resources.CodeSearch;
 
             OleMenuCommandService commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
