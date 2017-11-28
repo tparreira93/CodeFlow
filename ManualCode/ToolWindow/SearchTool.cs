@@ -8,6 +8,7 @@
     using System.Collections.Generic;
     using System.Windows.Threading;
     using System.Windows;
+    using System.Threading;
 
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
@@ -41,6 +42,7 @@
         private string currentSearch = "";
         private bool caseSensitive = false;
         private bool wholeWord = false;
+        private object searchLock = new object();
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchTool"/> class.
         /// </summary>
@@ -114,7 +116,8 @@
         {
             if (e == EventArgs.Empty)
             {
-                throw (new ArgumentException("No event args"));
+                plataform = String.Empty;
+                return;
             }
             OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
             if (eventArgs != null)
@@ -165,63 +168,70 @@
         }
         private void SearchManualCode(object sender, EventArgs e)
         {
-            OleMenuCommandService commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-
-            OleMenuCommand cmd = commandService.FindCommand(new CommandID(new Guid(toolWindowSet), cmdIdSearchBox)) as OleMenuCommand;
-            //var cmdSearch = commandService.FindCommand(new CommandID(new Guid(toolWindowSet), cmdidSearchManualCode));
-            if (cmd == null /*|| cmdSearch == null*/)
-                return;
-            
-            if (String.IsNullOrEmpty(currentSearch))
+            // Only one search at time
+            if (Monitor.TryEnter(searchLock, 2000))
             {
-                currentSearch = cmd.Text;
-                if (String.IsNullOrEmpty(currentSearch))
-                    return;
-            }
-
-            cmd.Enabled = false;
-            PackageOperations.CurrentSearch = currentSearch;
-            PackageOperations.WholeWordSearch = wholeWord;
-            PackageOperations.CaseSensitive = caseSensitive;
-            currentSearch = "";
-            string searchPlat = plataform;
-            if (plataform.Equals("All"))
-                searchPlat = "";
-
-            System.Threading.Tasks.Task.Factory.StartNew(() =>
-            {
-                string error = "";
-                List<IManual> res = new List<IManual>();
-                Profile p = PackageOperations.GetActiveProfile();
                 try
                 {
-                    res.AddRange(ManuaCode.Search(p, PackageOperations.CurrentSearch, 150, PackageOperations.CaseSensitive, PackageOperations.WholeWordSearch, searchPlat));
-                    res.AddRange(CustomFunction.Search(p, PackageOperations.CurrentSearch, 150, PackageOperations.CaseSensitive, PackageOperations.WholeWordSearch, searchPlat));
-                }
-                catch (Exception ex)
-                {
-                    error = ex.Message;
-                }
+                    OleMenuCommandService commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
-                cmd.Enabled = true;
-
-                // Update UI 
-                control.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    control.PopulateList(res);
-
-                    if (error.Length != 0)
+                    OleMenuCommand cmd = commandService.FindCommand(new CommandID(new Guid(toolWindowSet), cmdIdSearchBox)) as OleMenuCommand;
+                    //var cmdSearch = commandService.FindCommand(new CommandID(new Guid(toolWindowSet), cmdidSearchManualCode));
+                    if (cmd == null /*|| cmdSearch == null*/)
+                        return;
+            
+                    if (String.IsNullOrEmpty(currentSearch))
                     {
-                        MessageBox.Show(String.Format(Properties.Resources.ErrorSearch, error), Properties.Resources.Search,
-                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        currentSearch = cmd.Text;
+                        if (String.IsNullOrEmpty(currentSearch))
+                            return;
                     }
-                }), DispatcherPriority.Background);
-            });
+                    PackageOperations.CurrentSearch = currentSearch;
+                    PackageOperations.WholeWordSearch = wholeWord;
+                    PackageOperations.CaseSensitive = caseSensitive;
+                    currentSearch = "";
+                    string searchPlat = plataform;
+                    if (plataform.Equals("All"))
+                        searchPlat = "";
+
+                    System.Threading.Tasks.Task.Factory.StartNew(() =>
+                    {
+                        string error = "";
+                        List<IManual> res = new List<IManual>();
+                        Profile p = PackageOperations.GetActiveProfile();
+                        try
+                        {
+                            res.AddRange(ManuaCode.Search(p, PackageOperations.CurrentSearch, 150, PackageOperations.CaseSensitive, PackageOperations.WholeWordSearch, searchPlat));
+                            res.AddRange(CustomFunction.Search(p, PackageOperations.CurrentSearch, 150, PackageOperations.CaseSensitive, PackageOperations.WholeWordSearch, searchPlat));
+                        }
+                        catch (Exception ex)
+                        {
+                            error = ex.Message;
+                        }                
+
+                        // Update UI 
+                        control.Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            control.PopulateList(res);
+
+                            if (error.Length != 0)
+                            {
+                                MessageBox.Show(String.Format(Properties.Resources.ErrorSearch, error), Properties.Resources.Search,
+                                    MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                        }), DispatcherPriority.Background);
+                    });
+                }
+                finally
+                {
+                    Monitor.Exit(searchLock);
+                }
+            }
         }
         private void SearchTerm(object sender, EventArgs e)
         {
             if (e == EventArgs.Empty)
-                throw (new ArgumentException("No event args"));
+                return;
 
             OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
 
@@ -245,9 +255,6 @@
                         currentSearch = newChoice;
                         SearchManualCode(sender, e);
                     }
-
-                    else
-                        throw (new ArgumentException("Empty string is not accepted"));
                 }
                 else
                     throw (new ArgumentException("Invalid input and output!"));

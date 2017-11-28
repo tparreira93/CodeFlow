@@ -28,7 +28,7 @@ namespace CodeFlow.CodeUtils
             this.codmanua = codmanua;
             this.begin = begin;
             this.end = end;
-            this.display = string.Format("Import manual code from database.");
+            this.display = string.Format("Update manual code.");
         }
 
         public string DisplayText

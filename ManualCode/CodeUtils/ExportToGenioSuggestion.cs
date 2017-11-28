@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Imaging.Interop;
+﻿using CodeFlow.ManualOperations;
+using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace CodeFlow.CodeUtils
         public ExportToGenioSuggestion(IManual manual)
         {
             _manual = manual;
-            _display = string.Format("Submit current manual code.");
+            _display = string.Format("Commit manual code.");
         }
 
         public string DisplayText
@@ -91,24 +92,10 @@ namespace CodeFlow.CodeUtils
             }
             if (_manual is ManuaCode)
             {
-                try
-                {
-                    if (MessageBox.Show(Properties.Resources.ConfirmExportDirect,
-                        Properties.Resources.Export, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
-                    {
-                        if (_manual.Update(PackageOperations.GetActiveProfile()))
-                            MessageBox.Show(Properties.Resources.Submited, Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
-                        else
-                            MessageBox.Show(Properties.Resources.NotSubmited
-                                + Environment.NewLine + Properties.Resources.VerifyProfile,
-                                Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(String.Format(Properties.Resources.ErrorUpdating, ex.Message),
-                       Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                DifferencesAnalyzer diffs = new DifferencesAnalyzer();
+                diffs.CheckBDDifferences(_manual);
+                ExportForm exportForm = new ExportForm(diffs.Differences, diffs.ManualConflict);
+                exportForm.ShowDialog();
             }
         }
 

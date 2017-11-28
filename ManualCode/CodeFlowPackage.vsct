@@ -219,28 +219,28 @@
         <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" /> 
         <Icon guid="exportGenioImage" id="bmpPic1" />
         <Strings>
-          <ButtonText>Compare and submit to Genio</ButtonText>
+          <ButtonText>Commit</ButtonText>
         </Strings>
       </Button>
       <Button guid="CodeFlowCommandSet" id="cmdExportSolution" priority="0x0100" type="Button">
          <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" /> 
         <Icon guid="exportSolutionImage" id="bmpPic1" />
         <Strings>
-          <ButtonText>Submit Solution</ButtonText>
+          <ButtonText>Commit solution</ButtonText>
         </Strings>
       </Button>
       <Button guid="CodeFlowCommandSet" id="cmdImportFromGenio" priority="0x0100" type="Button">
         <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" />
         <Icon guid="importGenioImage" id="bmpPic1" />
         <Strings>
-          <ButtonText>Import from genio</ButtonText>
+          <ButtonText>Update</ButtonText>
         </Strings>
       </Button>
       <Button guid="CodeFlowCommandSet" id="cmdCreateInGenio" priority="0x0100" type="Button">
         <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" /> 
         <Icon guid="createGenioImage" id="bmpPic1" />
         <Strings>
-          <ButtonText>Create in Genio</ButtonText>
+          <ButtonText>Create</ButtonText>
         </Strings>
       </Button>
       <Button guid="CodeFlowCommandSet" id="cmdManageProfiles" priority="0x0100" type="Button">
@@ -271,19 +271,19 @@
       <Button guid="guidVCodeFlowContextMenuCmdSet" id="cmdidSubmitGenioContextMenu" type="Button">
         <Icon guid="exportGenioImage" id="bmpPic1" />
         <Strings>
-          <ButtonText>Compare and submit to Genio</ButtonText>
+          <ButtonText>Commit</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidVCodeFlowContextMenuCmdSet" id="cmdidImportGenioContextMenu" type="Button">
         <Icon guid="importGenioImage" id="bmpPic1" />
         <Strings>
-          <ButtonText>Import from Genio</ButtonText>
+          <ButtonText>Update</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidVCodeFlowContextMenuCmdSet" id="cmdidCreateGenioContextMenu" type="Button">
         <Icon guid="createGenioImage" id="bmpPic1" />
         <Strings>
-          <ButtonText>Create in Genio</ButtonText>
+          <ButtonText>Create</ButtonText>
         </Strings>
       </Button>
       

@@ -141,10 +141,10 @@
     <value>Do you wish to add this profile?</value>
   </data>
   <data name="ConfirmationExport" xml:space="preserve">
-    <value>Are you sure you want to submit all non conflict code in the list to Genio?</value>
+    <value>Are you sure you want to commit all non conflict code in the list to Genio?</value>
   </data>
   <data name="ConfirmExportDirect" xml:space="preserve">
-    <value>Are you sure you want to submit this manual code?</value>
+    <value>Are you sure you want to commit this manual code?</value>
   </data>
   <data name="ErrorSearch" xml:space="preserve">
     <value>Unable to search for given terms!
@@ -180,7 +180,7 @@ Verify your profile</value>
     <value>..\Resources\refresh_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ExportedMerged" xml:space="preserve">
-    <value>Submit merged code?</value>
+    <value>Commit merged code?</value>
   </data>
   <data name="ErrorResolvingConflict" xml:space="preserve">
     <value>An error occurred while resolving conflict!
@@ -193,13 +193,13 @@ Verify your profile</value>
     <value>Profile name must be unique!</value>
   </data>
   <data name="Export" xml:space="preserve">
-    <value>Submit</value>
+    <value>Commit</value>
   </data>
   <data name="Search1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Search.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Import" xml:space="preserve">
-    <value>Import</value>
+    <value>Update</value>
   </data>
   <data name="ErrorConnect" xml:space="preserve">
     <value>Unable to connect to server {0}!
@@ -298,10 +298,10 @@ Verify your profile</value>
     <value>Code search</value>
   </data>
   <data name="NotSubmited" xml:space="preserve">
-    <value>Unable to submit code!</value>
+    <value>Unable to commit code!</value>
   </data>
   <data name="Submited" xml:space="preserve">
-    <value>Code submited</value>
+    <value>Code commited</value>
   </data>
   <data name="UnableToExecute" xml:space="preserve">
     <value>Unable to execute desired operation!

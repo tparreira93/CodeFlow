@@ -18,7 +18,7 @@ namespace CodeFlow.CodeUtils
         public CompareExportDBSuggestion(IManual manual)
         {
             _manual = manual;
-            _display = string.Format("Merge and submit current manual code.");
+            _display = string.Format("Merge and commit manual code.");
         }
 
         public string DisplayText

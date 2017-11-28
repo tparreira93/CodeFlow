@@ -2,6 +2,7 @@
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
+using CodeFlow.ManualOperations;
 
 namespace CodeFlow
 {
@@ -87,8 +88,9 @@ namespace CodeFlow
         private void MenuItemCallback(object sender, EventArgs e)
         {
             List<IManual> manual = CommandHandlers.CommandHandler.SearchTagsCurrentView(ServiceProvider);
-
-            ExportForm exportForm = new ExportForm(manual);
+            DifferencesAnalyzer diffs = new DifferencesAnalyzer();
+            diffs.CheckBDDifferences(manual);
+            ExportForm exportForm = new ExportForm(diffs.Differences, diffs.ManualConflict);
             exportForm.ShowDialog();
         }
     }

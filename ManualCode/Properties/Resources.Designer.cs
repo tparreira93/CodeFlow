@@ -186,7 +186,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to submit all non conflict code in the list to Genio?.
+        ///   Looks up a localized string similar to Are you sure you want to commit all non conflict code in the list to Genio?.
         /// </summary>
         internal static string ConfirmationExport {
             get {
@@ -195,7 +195,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to submit this manual code?.
+        ///   Looks up a localized string similar to Are you sure you want to commit this manual code?.
         /// </summary>
         internal static string ConfirmExportDirect {
             get {
@@ -415,7 +415,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Submit.
+        ///   Looks up a localized string similar to Commit.
         /// </summary>
         internal static string Export {
             get {
@@ -424,7 +424,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Submit merged code?.
+        ///   Looks up a localized string similar to Commit merged code?.
         /// </summary>
         internal static string ExportedMerged {
             get {
@@ -443,7 +443,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import.
+        ///   Looks up a localized string similar to Update.
         /// </summary>
         internal static string Import {
             get {
@@ -470,7 +470,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to submit code!.
+        ///   Looks up a localized string similar to Unable to commit code!.
         /// </summary>
         internal static string NotSubmited {
             get {
@@ -568,7 +568,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Code submited.
+        ///   Looks up a localized string similar to Code commited.
         /// </summary>
         internal static string Submited {
             get {

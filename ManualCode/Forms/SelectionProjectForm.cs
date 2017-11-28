@@ -114,7 +114,7 @@ namespace CodeFlow.Forms
         {
             toolProgress.Value = 100;
             Result = true;
-            ExportCode = analyzer.ToExport;
+            ExportCode = analyzer.Differences;
             ConflictCode = analyzer.ManualConflict;
 
             this.Close();

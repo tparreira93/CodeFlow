@@ -21,6 +21,7 @@ namespace CodeFlow
         private double genioVersion = 0.0f;
         private string systemInitials = "";
         private string bdVersion;
+        private bool productionSystem;
         private List<GenioPlataform> plataforms = new List<GenioPlataform>();
 
         private SqlConnection sqlConnection = new SqlConnection();
@@ -82,6 +83,7 @@ namespace CodeFlow
         public List<GenioPlataform> Plataforms { get => plataforms; set => plataforms = value; }
         public string SystemInitials { get => systemInitials; set => systemInitials = value; }
         public string BDVersion { get => bdVersion; set => bdVersion = value; }
+        public bool ProductionSystem { get => productionSystem; set => productionSystem = value; }
 
         public void GetGenioInfo()
         {

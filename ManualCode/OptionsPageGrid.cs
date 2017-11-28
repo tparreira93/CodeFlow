@@ -21,7 +21,7 @@ namespace CodeFlow
         [Category("Solution")]
         [DefaultValue(".cpp;.cs;.xml;.js")]
         [DisplayName("Extension filters")]
-        [Description("Extension of files to be analyzed on solution submit. Values separeted by ';'")]
+        [Description("Extension of files to be analyzed on solution commit. Values separeted by ';'")]
         public string ExtensionsFilters
         {
             get => extFilters;
@@ -31,7 +31,7 @@ namespace CodeFlow
                 if (value != null)
                 {
                     PackageOperations.ExtensionFilters.Clear();
-                    PackageOperations.ExtensionFilters.AddRange(extFilters.Split(';'));
+                    PackageOperations.ExtensionFilters.AddRange(extFilters.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
                 }
             }
         }
@@ -40,14 +40,14 @@ namespace CodeFlow
         [Category("Solution")]
         [DefaultValue("")]
         [DisplayName("Files to ignore")]
-        [Description("Files to be ignored on solution submit. Values separeted by ';'")]
+        [Description("Files to be ignored on solution commit. Values separeted by ';'")]
         public string IgnoreFilesFilters { get => ignoreFilesFilters; set
             {
                 ignoreFilesFilters = value;
                 if(value != null)
                 {
                     PackageOperations.IgnoreFilesFilters.Clear();
-                    PackageOperations.IgnoreFilesFilters.AddRange(ignoreFilesFilters.Split(';'));
+                    PackageOperations.IgnoreFilesFilters.AddRange(ignoreFilesFilters.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
                 }
             }
         }
@@ -81,7 +81,7 @@ namespace CodeFlow
         [Category("Lightbulb")]
         [DefaultValue(true)]
         [DisplayName("Lightbulb suggestions")]
-        [Description("Allows convenient usage of import, merge and submit through the visual studio lightbulb.")]
+        [Description("Allows convenient usage of update, merge and commit through the visual studio lightbulb.")]
         public bool LightbulbSuggestions { get => lightbulbSuggestions; set
             {
                 lightbulbSuggestions = value;
@@ -92,8 +92,8 @@ namespace CodeFlow
 
         [Category("Code search")]
         [DefaultValue(true)]
-        [DisplayName("Auto submit saved")]
-        [Description("Allows automatic submit to Genio when file from code search is saved.")]
+        [DisplayName("Auto commit saved")]
+        [Description("Allows automatic commit to Genio when file from code search is saved.")]
         public bool AutoExportSaved
         {
             get => autoExportSaved; set

@@ -43,10 +43,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstConflicts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.chCode});
-            this.lstConflicts.Location = new System.Drawing.Point(17, 16);
-            this.lstConflicts.Margin = new System.Windows.Forms.Padding(4);
+            this.lstConflicts.Location = new System.Drawing.Point(13, 13);
             this.lstConflicts.Name = "lstConflicts";
-            this.lstConflicts.Size = new System.Drawing.Size(1037, 556);
+            this.lstConflicts.Size = new System.Drawing.Size(779, 452);
             this.lstConflicts.TabIndex = 0;
             this.lstConflicts.UseCompatibleStateImageBehavior = false;
             this.lstConflicts.View = System.Windows.Forms.View.Details;
@@ -63,10 +62,9 @@
             this.btnBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnBack.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnBack.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
-            this.btnBack.Location = new System.Drawing.Point(974, 580);
-            this.btnBack.Margin = new System.Windows.Forms.Padding(4);
+            this.btnBack.Location = new System.Drawing.Point(730, 471);
             this.btnBack.Name = "btnBack";
-            this.btnBack.Size = new System.Drawing.Size(80, 30);
+            this.btnBack.Size = new System.Drawing.Size(60, 24);
             this.btnBack.TabIndex = 3;
             this.btnBack.Text = "Exit";
             this.btnBack.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -78,10 +76,9 @@
             this.btnUse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnUse.Image = global::CodeFlow.Properties.Resources.Checkmark_16x;
             this.btnUse.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnUse.Location = new System.Drawing.Point(847, 580);
-            this.btnUse.Margin = new System.Windows.Forms.Padding(4);
+            this.btnUse.Location = new System.Drawing.Point(623, 471);
             this.btnUse.Name = "btnUse";
-            this.btnUse.Size = new System.Drawing.Size(119, 30);
+            this.btnUse.Size = new System.Drawing.Size(101, 24);
             this.btnUse.TabIndex = 2;
             this.btnUse.Text = "Use selected";
             this.btnUse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -92,10 +89,9 @@
             // 
             this.btnViewCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnViewCode.Image = global::CodeFlow.Properties.Resources.PreviewWebTab_16x;
-            this.btnViewCode.Location = new System.Drawing.Point(17, 580);
-            this.btnViewCode.Margin = new System.Windows.Forms.Padding(4);
+            this.btnViewCode.Location = new System.Drawing.Point(13, 471);
             this.btnViewCode.Name = "btnViewCode";
-            this.btnViewCode.Size = new System.Drawing.Size(104, 30);
+            this.btnViewCode.Size = new System.Drawing.Size(90, 24);
             this.btnViewCode.TabIndex = 1;
             this.btnViewCode.Text = "View code";
             this.btnViewCode.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -104,16 +100,15 @@
             // 
             // ConflictHandler
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnBack;
-            this.ClientSize = new System.Drawing.Size(1072, 618);
+            this.ClientSize = new System.Drawing.Size(804, 502);
             this.Controls.Add(this.btnViewCode);
             this.Controls.Add(this.btnUse);
             this.Controls.Add(this.btnBack);
             this.Controls.Add(this.lstConflicts);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ConflictHandler";
             this.Text = "Conflict viewer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ConflictHandler_FormClosing);

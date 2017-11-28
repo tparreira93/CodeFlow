@@ -106,7 +106,8 @@ namespace CodeFlow
             txtPassword.DataBindings.Add("Text", tmpProfile.GenioConfiguration, "Password");
             txtGenioUser.DataBindings.Add("Text", tmpProfile.GenioConfiguration, "GenioUser");
             txtGenioPath.DataBindings.Add("Text", tmpProfile.GenioConfiguration, "GenioPath");
-
+            chkProd.DataBindings.Add("Checked", tmpProfile.GenioConfiguration, "ProductionSystem");
+            
             if (tmpProfile.GenioConfiguration.Server.Length != 0 && tmpProfile.GenioConfiguration.Database.Length != 0)
             {
                 cmbServers.Items.Add(tmpProfile.GenioConfiguration.Server);

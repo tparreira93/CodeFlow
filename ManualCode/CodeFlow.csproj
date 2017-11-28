@@ -66,6 +66,7 @@
     <Compile Include="Commands\RefreshSolution.cs" />
     <Compile Include="GenioOperations\GenioPlataform.cs" />
     <Compile Include="GenioOperations\TipoRotina.cs" />
+    <Compile Include="ManualOperations\DifferencesAnalyzer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -175,7 +176,7 @@
     </Content>
     <None Include="Resources\WholeWordMatch_16x.png" />
     <None Include="Resources\CaseSensitive_16x.png" />
-    <VSCTCompile Include="InvokeCommandPackage.vsct">
+    <VSCTCompile Include="CodeFlowPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <SubType>Designer</SubType>
     </VSCTCompile>
@@ -382,10 +383,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ListViewStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="ToolWindow\ListViewStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
