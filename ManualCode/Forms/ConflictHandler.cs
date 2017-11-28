@@ -74,7 +74,7 @@ namespace CodeFlow
         {
             if(lstConflicts.SelectedItems.Count == 1)
             {
-                ListViewItem item = lstConflicts.SelectedItems[lstConflicts.SelectedIndices[0]];
+                ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
                 ManuaCode m = (ManuaCode)item.Tag;
 
                 PackageOperations.OpenManualFile(m, false);

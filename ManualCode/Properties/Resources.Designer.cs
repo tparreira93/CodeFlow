@@ -186,7 +186,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to export all non conflict code in the list to Genio?.
+        ///   Looks up a localized string similar to Are you sure you want to submit all non conflict code in the list to Genio?.
         /// </summary>
         internal static string ConfirmationExport {
             get {
@@ -195,7 +195,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to export this manual code?.
+        ///   Looks up a localized string similar to Are you sure you want to submit this manual code?.
         /// </summary>
         internal static string ConfirmExportDirect {
             get {
@@ -415,7 +415,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export.
+        ///   Looks up a localized string similar to Submit.
         /// </summary>
         internal static string Export {
             get {
@@ -424,7 +424,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export merged code?.
+        ///   Looks up a localized string similar to Submit merged code?.
         /// </summary>
         internal static string ExportedMerged {
             get {
@@ -466,6 +466,15 @@ namespace CodeFlow.Properties {
         internal static string ManwinInfoData {
             get {
                 return ResourceManager.GetString("ManwinInfoData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to submit code!.
+        /// </summary>
+        internal static string NotSubmited {
+            get {
+                return ResourceManager.GetString("NotSubmited", resourceCulture);
             }
         }
         
@@ -559,12 +568,31 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Code submited.
+        /// </summary>
+        internal static string Submited {
+            get {
+                return ResourceManager.GetString("Submited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Team_16x {
             get {
                 object obj = ResourceManager.GetObject("Team_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to execute desired operation!
+        ///{0}.
+        /// </summary>
+        internal static string UnableToExecute {
+            get {
+                return ResourceManager.GetString("UnableToExecute", resourceCulture);
             }
         }
         

@@ -18,7 +18,7 @@ namespace CodeFlow.CodeUtils
         public ExportToGenioSuggestion(IManual manual)
         {
             _manual = manual;
-            _display = string.Format("Export current manual code.");
+            _display = string.Format("Submit current manual code.");
         }
 
         public string DisplayText
@@ -93,9 +93,16 @@ namespace CodeFlow.CodeUtils
             {
                 try
                 {
-                    if(MessageBox.Show(Properties.Resources.ConfirmExportDirect, 
+                    if (MessageBox.Show(Properties.Resources.ConfirmExportDirect,
                         Properties.Resources.Export, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
-                    _manual.Update(PackageOperations.GetActiveProfile());
+                    {
+                        if (_manual.Update(PackageOperations.GetActiveProfile()))
+                            MessageBox.Show(Properties.Resources.Submited, Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+                        else
+                            MessageBox.Show(Properties.Resources.NotSubmited
+                                + Environment.NewLine + Properties.Resources.VerifyProfile,
+                                Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    }
                 }
                 catch (Exception ex)
                 {

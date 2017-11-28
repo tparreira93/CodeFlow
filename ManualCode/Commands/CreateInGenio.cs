@@ -2,6 +2,7 @@
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
+using System.IO;
 
 namespace CodeFlow
 {
@@ -90,10 +91,15 @@ namespace CodeFlow
             
             if (code != null && code.Length != 0)
             {
-                List<ManuaCode> manual = new List<ManuaCode>();
-                manual.Add(new ManuaCode(code));
-                CreateInGenioForm genioForm = new CreateInGenioForm(manual);
+                ManuaCode man = new ManuaCode(code);
+                CreateInGenioForm genioForm = new CreateInGenioForm(man);
                 genioForm.ShowDialog();
+                if(genioForm.DialogResult == System.Windows.Forms.DialogResult.OK)
+                {
+                    string ext = Path.GetExtension(PackageOperations.DTE.ActiveDocument.ProjectItem.Name);
+                    var selection = (EnvDTE.TextSelection)PackageOperations.DTE.ActiveDocument.Selection;
+                    selection.Insert(man.FormatCode(ext));
+                }
             }
         }
     }

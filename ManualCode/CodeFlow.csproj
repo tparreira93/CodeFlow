@@ -82,8 +82,8 @@
     <Compile Include="OptionsPageGrid.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="PackageGuidList.cs" />
-    <Compile Include="PackageCommandList.cs" />
+    <Compile Include="Guids\PackageGuidList.cs" />
+    <Compile Include="Guids\PackageCommandList.cs" />
     <Compile Include="ToolWindow\SearchTool.cs" />
     <Compile Include="Commands\SearchToolCommand.cs" />
     <Compile Include="ToolWindow\SearchToolControl.xaml.cs">

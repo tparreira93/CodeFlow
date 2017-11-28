@@ -21,7 +21,7 @@ namespace CodeFlow
         [Category("Solution")]
         [DefaultValue(".cpp;.cs;.xml;.js")]
         [DisplayName("Extension filters")]
-        [Description("Extension of files to be analyzed on solution export. Values separeted by ';'")]
+        [Description("Extension of files to be analyzed on solution submit. Values separeted by ';'")]
         public string ExtensionsFilters
         {
             get => extFilters;
@@ -40,7 +40,7 @@ namespace CodeFlow
         [Category("Solution")]
         [DefaultValue("")]
         [DisplayName("Files to ignore")]
-        [Description("Files to be ignored on solution export. Values separeted by ';'")]
+        [Description("Files to be ignored on solution submit. Values separeted by ';'")]
         public string IgnoreFilesFilters { get => ignoreFilesFilters; set
             {
                 ignoreFilesFilters = value;
@@ -81,7 +81,7 @@ namespace CodeFlow
         [Category("Lightbulb")]
         [DefaultValue(true)]
         [DisplayName("Lightbulb suggestions")]
-        [Description("Allows convenient usage of import, merge and export through the visual studio lightbulb.")]
+        [Description("Allows convenient usage of import, merge and submit through the visual studio lightbulb.")]
         public bool LightbulbSuggestions { get => lightbulbSuggestions; set
             {
                 lightbulbSuggestions = value;
@@ -92,8 +92,8 @@ namespace CodeFlow
 
         [Category("Code search")]
         [DefaultValue(true)]
-        [DisplayName("Auto export saved")]
-        [Description("Allows automatic export to database when file from code search is saved.")]
+        [DisplayName("Auto submit saved")]
+        [Description("Allows automatic submit to Genio when file from code search is saved.")]
         public bool AutoExportSaved
         {
             get => autoExportSaved; set

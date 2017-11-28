@@ -219,14 +219,14 @@
         <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" /> 
         <Icon guid="exportGenioImage" id="bmpPic1" />
         <Strings>
-          <ButtonText>Export to Genio</ButtonText>
+          <ButtonText>Compare and submit to Genio</ButtonText>
         </Strings>
       </Button>
       <Button guid="CodeFlowCommandSet" id="cmdExportSolution" priority="0x0100" type="Button">
          <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" /> 
         <Icon guid="exportSolutionImage" id="bmpPic1" />
         <Strings>
-          <ButtonText>Export Solution</ButtonText>
+          <ButtonText>Submit Solution</ButtonText>
         </Strings>
       </Button>
       <Button guid="CodeFlowCommandSet" id="cmdImportFromGenio" priority="0x0100" type="Button">
@@ -271,7 +271,7 @@
       <Button guid="guidVCodeFlowContextMenuCmdSet" id="cmdidSubmitGenioContextMenu" type="Button">
         <Icon guid="exportGenioImage" id="bmpPic1" />
         <Strings>
-          <ButtonText>Submit to Genio</ButtonText>
+          <ButtonText>Compare and submit to Genio</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidVCodeFlowContextMenuCmdSet" id="cmdidImportGenioContextMenu" type="Button">
@@ -309,13 +309,13 @@
           <ButtonText>Case sensitive</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidCodeFlowPackageCmdSet" id="cmdidSearchCode" priority="0x100" type="Button">
+      <!--<Button guid="guidCodeFlowPackageCmdSet" id="cmdidSearchCode" priority="0x100" type="Button">
         <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbarGroup" />
         <Icon guid="buttonSearchToolwindow" id="bmpPic1" />
         <Strings>
           <ButtonText>Search</ButtonText>
         </Strings>
-      </Button>
+      </Button>-->
       
     </Buttons>
     

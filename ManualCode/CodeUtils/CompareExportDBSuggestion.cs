@@ -18,7 +18,7 @@ namespace CodeFlow.CodeUtils
         public CompareExportDBSuggestion(IManual manual)
         {
             _manual = manual;
-            _display = string.Format("Merge and export current manual code.");
+            _display = string.Format("Merge and submit current manual code.");
         }
 
         public string DisplayText
@@ -99,7 +99,14 @@ namespace CodeFlow.CodeUtils
                     {
                         IManual result = Manual.Merge(_manual, bd);
                         if (MessageBox.Show(Properties.Resources.ExportedMerged, Properties.Resources.Export, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                            result.Update(PackageOperations.GetActiveProfile());
+                        {
+                            if(result.Update(PackageOperations.GetActiveProfile()))
+                                MessageBox.Show(Properties.Resources.Submited, Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+                            else
+                                MessageBox.Show(Properties.Resources.NotSubmited
+                                    + Environment.NewLine + Properties.Resources.VerifyProfile,
+                                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                        }
                     }
                 }
                 catch(Exception ex)

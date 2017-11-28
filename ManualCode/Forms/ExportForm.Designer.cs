@@ -66,7 +66,7 @@
             this.btnCompare.Name = "btnCompare";
             this.btnCompare.Size = new System.Drawing.Size(163, 30);
             this.btnCompare.TabIndex = 1;
-            this.btnCompare.Text = "Compare and export";
+            this.btnCompare.Text = "Compare and submit";
             this.btnCompare.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCompare.UseVisualStyleBackColor = true;
             this.btnCompare.Click += new System.EventHandler(this.btnCompare_Click);
@@ -80,7 +80,7 @@
             this.btnExport.Name = "btnExport";
             this.btnExport.Size = new System.Drawing.Size(85, 30);
             this.btnExport.TabIndex = 2;
-            this.btnExport.Text = "Export";
+            this.btnExport.Text = "Submit";
             this.btnExport.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
@@ -174,7 +174,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.Name = "ExportForm";
-            this.Text = "Export to Genio";
+            this.Text = "Submit to Genio";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExportForm_FormClosing);
             this.Load += new System.EventHandler(this.ExportForm_Load);
             this.statusStrip.ResumeLayout(false);

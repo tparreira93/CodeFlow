@@ -220,8 +220,10 @@ namespace CodeFlow
                 DTE.ItemOperations.OpenFile(tmp);
                 AddTempFile(tmp);
             }
-            catch(Exception)
-            { }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
 
             return tmp;
         }

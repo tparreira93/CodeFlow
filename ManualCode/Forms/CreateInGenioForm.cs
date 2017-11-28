@@ -16,19 +16,11 @@ namespace CodeFlow
 {
     public partial class CreateInGenioForm : Form
     {
-        private List<ManuaCode> manualCode;
+        private ManuaCode manualCode;
         private Dictionary<string, Guid> features;
         private Dictionary<string, Guid> modules;
 
-        public CreateInGenioForm()
-        {
-            InitializeComponent();
-            manualCode = new List<ManuaCode>();
-            features = new Dictionary<string, Guid>();
-            modules = new Dictionary<string, Guid>();
-            DialogResult = DialogResult.Cancel;
-        }
-        public CreateInGenioForm(List<ManuaCode> manual)
+        public CreateInGenioForm(ManuaCode manual)
         {
             InitializeComponent();
             manualCode = manual;
@@ -39,7 +31,7 @@ namespace CodeFlow
 
         private void LoadFormData()
         {
-            rtCode.Text = manualCode[0].Code;
+            rtCode.Text = manualCode.Code;
 
             cmbPlataform.Items.Clear();
             cmbType.Items.Clear();
@@ -99,8 +91,6 @@ namespace CodeFlow
 
         private void btnCreate_Click(object sender, EventArgs e)
         {
-            ManuaCode man = new ManuaCode(rtCode.Text);
-
             string feature = (string)cmbFeature.SelectedItem ?? cmbFeature.SelectedText;
             string module = (string)cmbModule.SelectedItem ?? cmbModule.SelectedText;
             string plataform = (string)cmbPlataform.SelectedItem ?? cmbPlataform.SelectedText;
@@ -140,28 +130,28 @@ namespace CodeFlow
             if (!String.IsNullOrEmpty(module))
                 modules.TryGetValue(module, out codmodul);
 
-            man.Codfeature = codfeature;
-            man.Feature = feature ?? "";
-            man.Codmodul = codmodul;
-            man.Modulo = module != null ? (system ? PackageOperations.GetActiveProfile().GenioConfiguration.SystemInitials : module ) : ""; //Change to system of active profile
-            man.Plataform = plataform ?? "";
-            man.TipoRotina = type ?? "";
-            man.Parameter = param;
-            man.ManualFile = file;
-            man.Order = (float)Math.Round(f_order, 1);
-            man.Inhib = inhib ? 1 : 0;
-            man.System = system ? 1 : 0;
-            man.Lang = lang ?? "";
+            manualCode.Code = rtCode.Text;
+            manualCode.Codfeature = codfeature;
+            manualCode.Feature = feature ?? "";
+            manualCode.Codmodul = codmodul;
+            manualCode.Modulo = module != null ? (system ? PackageOperations.GetActiveProfile().GenioConfiguration.SystemInitials : module ) : ""; //Change to system of active profile
+            manualCode.Plataform = plataform ?? "";
+            manualCode.TipoRotina = type ?? "";
+            manualCode.Parameter = param;
+            manualCode.ManualFile = file;
+            manualCode.Order = (float)Math.Round(f_order, 1);
+            manualCode.Inhib = inhib ? 1 : 0;
+            manualCode.System = system ? 1 : 0;
+            manualCode.Lang = lang ?? "";
 
             try
             {
-                if (man.Insert(PackageOperations.GetActiveProfile()))
+                if (manualCode.Insert(PackageOperations.GetActiveProfile()))
                 {
                     MessageBox.Show(Properties.Resources.CodeCreated, Properties.Resources.Create, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     DialogResult = DialogResult.OK;
                     this.Close();
                 }
-                //TODO: REPLACE MANUAL CODE WITH THIS TOSTRING
             }
             catch (Exception ex)
             {

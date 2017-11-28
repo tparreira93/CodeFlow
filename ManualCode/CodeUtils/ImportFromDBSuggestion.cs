@@ -105,19 +105,8 @@ namespace CodeFlow.CodeUtils
                 ManuaCode bd = ManuaCode.GetManual(PackageOperations.GetActiveProfile(), codmanua);
                 if (bd == null)
                     return;
-
-
-
-                CommandHandlers.CommandHandler.EditCodeSegment(textView.TextBuffer, begin, end, bd.Code);
-
-                var point = textView.Caret.Position.BufferPosition;
-                int position = point.Position;
-
-                using (var edit = textBuffer.CreateEdit())
-                {
-                    edit.Replace(begin, end, bd.Code);
-                    edit.Apply();
-                }
+                
+                CommandHandler.EditCodeSegment(textView.TextBuffer, begin, end, bd.Code);
             }
             catch (Exception)
             {}

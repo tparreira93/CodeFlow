@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace CodeFlow.CodeUtils
 {
@@ -97,9 +98,10 @@ namespace CodeFlow.CodeUtils
             {
                 _manual.ShowSVNLog(_profile, _sysName);
             }
-            catch(Exception)
+            catch(Exception ex)
             {
-                
+                MessageBox.Show(String.Format(Properties.Resources.UnableToExecute, ex.Message),
+                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
         }
 

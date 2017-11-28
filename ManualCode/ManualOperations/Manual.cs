@@ -236,6 +236,22 @@ namespace CodeFlow
                 throw e;
             }
         }
+        protected string FormatComment(string extension, string str)
+        {
+            switch (extension)
+            {
+                case ".cs":
+                case ".cpp":
+                case ".js":
+                    return "//" + str;
+                case ".sql":
+                    return "/*" + str + "*/";
+                case ".xml":
+                    return "<!--" + str + "-->";
+                default:
+                    return "//" + str;
+            }
+        }
 
         public abstract void ShowSVNLog(Profile profile, string systemName);
         public abstract bool Update(Profile profile);

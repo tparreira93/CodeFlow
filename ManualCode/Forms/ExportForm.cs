@@ -36,6 +36,17 @@ namespace CodeFlow
             conflictCode = conflicts;
         }
 
+        private void RefreshControls()
+        {
+            lblManual.Text = String.Format("{0} Manual code entrie(s) | {1} Conflicts",
+                exportCode.Count, conflictCode.Count);
+            lblServer.Text = PackageOperations.GetActiveProfile().ToString();
+
+            btnCompare.Enabled = false;
+            btnConflict.Enabled = false;
+            btnExport.Enabled = false;
+        }
+
         private void RefreshForm()
         {
             lstCode.Items.Clear();
@@ -52,14 +63,7 @@ namespace CodeFlow
                 item.ForeColor = Color.DarkRed;
                 lstCode.Items.Add(item);
             }
-
-            lblManual.Text = String.Format("{0} Manual code entrie(s) | {1} Conflicts",
-                exportCode.Count, conflictCode.Count);
-            lblServer.Text = PackageOperations.GetActiveProfile().ToString();
-
-            btnCompare.Enabled = false;
-            btnConflict.Enabled = false;
-            btnExport.Enabled = false;
+            RefreshControls();
         }
 
         private void btnConfigure_Click(object sender, EventArgs e)
@@ -283,27 +287,12 @@ namespace CodeFlow
                 if (item != null)
                 {
                     lstCode.Items.Remove(item);
-                    try
-                    {
-                        ManuaCode bd = ManuaCode.GetManual(PackageOperations.GetActiveProfile(), code.CodeId);
-                        if (bd == null)
-                        {
-                            MessageBox.Show(Properties.Resources.VerifyProfile,
-                                Properties.Resources.Conflict, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                        if (!bd.Code.Equals(code.Code))
-                        {
-                            item = new ListViewItem(code.ShortOneLineCode());
-                            item.Tag = code;
-                            lstCode.Items.Add(item);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(String.Format(Properties.Resources.ErrorResolvingConflict, ex.Message),
-                            Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    item = new ListViewItem(code.ShortOneLineCode());
+                    item.Tag = code;
+                    lstCode.Items.Add(item);
+                    exportCode.Add(code);
+                    conflictCode.Remove(code.CodeId);
+                    RefreshControls();
                 }
             }
         }

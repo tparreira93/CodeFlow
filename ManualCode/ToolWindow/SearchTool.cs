@@ -168,8 +168,8 @@
             OleMenuCommandService commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
             OleMenuCommand cmd = commandService.FindCommand(new CommandID(new Guid(toolWindowSet), cmdIdSearchBox)) as OleMenuCommand;
-            var cmdSearch = commandService.FindCommand(new CommandID(new Guid(toolWindowSet), cmdidSearchManualCode));
-            if (cmd == null || cmdSearch == null)
+            //var cmdSearch = commandService.FindCommand(new CommandID(new Guid(toolWindowSet), cmdidSearchManualCode));
+            if (cmd == null /*|| cmdSearch == null*/)
                 return;
             
             if (String.IsNullOrEmpty(currentSearch))
@@ -179,7 +179,7 @@
                     return;
             }
 
-            cmdSearch.Enabled = false;
+            cmd.Enabled = false;
             PackageOperations.CurrentSearch = currentSearch;
             PackageOperations.WholeWordSearch = wholeWord;
             PackageOperations.CaseSensitive = caseSensitive;
@@ -203,7 +203,7 @@
                     error = ex.Message;
                 }
 
-                cmdSearch.Enabled = true;
+                cmd.Enabled = true;
 
                 // Update UI 
                 control.Dispatcher.BeginInvoke(new Action(() =>

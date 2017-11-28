@@ -114,7 +114,7 @@ namespace CodeFlow
                 if (platEnd > -1)
                 {
                     int platBegin = remainig.LastIndexOf(Utils.Util.NewLine, platEnd) + Utils.Util.NewLine.Length;
-                    if (platBegin != -1)
+                    if (platBegin != -1 && platEnd - platBegin > 0)
                     {
                         Match match = reg.Match(remainig.Substring(platBegin, platEnd - platBegin));
                         if (match.Success)
@@ -156,6 +156,15 @@ namespace CodeFlow
             {
                 throw e;
             }
+        }
+        public string FormatCode(string extension)
+        {
+            string str = FormatComment(extension, BEGIN_MANUAL + this.CodeId.ToString()) + Utils.Util.NewLine;
+            str += this.Code;
+            str += Utils.Util.NewLine;
+            str += FormatComment(extension, END_MANUAL);
+
+            return str;
         }
         public override string ToString()
         {
@@ -217,7 +226,9 @@ namespace CodeFlow
                 {
                     try
                     {
-                        this.CodeId = Guid.NewGuid();
+                        if(CodeId.Equals(Guid.Empty))
+                            this.CodeId = Guid.NewGuid();
+
                         string c = CodeTransformValueKey();
 
                         SqlCommand cmd = new SqlCommand();
