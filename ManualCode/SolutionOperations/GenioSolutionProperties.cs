@@ -72,7 +72,7 @@ namespace CodeFlow.SolutionOperations
             string p = $"{solutionPath}\\infoReindex.xml";
             if (File.Exists(p))
                 path = p;
-            else if (File.Exists(p = $"{solutionPath}\\Qweb3\\Interface\\Bin\\GIP_ReIdx\\infoReindex.xml"))
+            else if (File.Exists(p = $"{solutionPath}\\Interface\\Bin\\GIP_ReIdx\\infoReindex.xml"))
                 path = p;
 
             if (path.Length != 0)

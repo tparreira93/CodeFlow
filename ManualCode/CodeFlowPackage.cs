@@ -181,11 +181,6 @@ namespace CodeFlow
         public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
         {
             PackageOperations.SavedFiles.Clear();
-            return VSConstants.S_OK;
-        }
-
-        public int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
-        {
             String lastActive = "";
 
             if (PackageOperations.DTE.Solution != null
@@ -197,7 +192,7 @@ namespace CodeFlow
                     string path = System.IO.Path.GetDirectoryName(PackageOperations.DTE.Solution.FullName);
                     lastActive = PackageOperations.SearchLastActiveProfile(path);
                 }
-                catch(Exception)
+                catch (Exception)
                 { }
             }
 
@@ -209,10 +204,15 @@ namespace CodeFlow
             {
                 PackageOperations.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.DTE);
             }
-            if(PackageOperations.AutoVCCTO2008Fix && isSolution)
+            if (PackageOperations.AutoVCCTO2008Fix && isSolution)
             {
                 GenioSolutionProperties.ChangeToolset2008(PackageOperations.DTE);
             }
+            return VSConstants.S_OK;
+        }
+
+        public int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
+        {
             return VSConstants.S_OK;
         }
 

@@ -149,6 +149,15 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} Manual code entrie(s) | {1} Conflicts.
+        /// </summary>
+        internal static string CommitEntries {
+            get {
+                return ResourceManager.GetString("CommitEntries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compare.
         /// </summary>
         internal static string Compare {
@@ -489,6 +498,33 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selected profile is a development environment and its Genio version is {0}..
+        /// </summary>
+        internal static string ProfileDev {
+            get {
+                return ResourceManager.GetString("ProfileDev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected profile is a production environment and its Genio version is {0}..
+        /// </summary>
+        internal static string ProfileProd {
+            get {
+                return ResourceManager.GetString("ProfileProd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Database version from selected profile is {0}.
+        /// </summary>
+        internal static string ProfileVersion {
+            get {
+                return ResourceManager.GetString("ProfileVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap refresh_16xLG {
@@ -554,6 +590,15 @@ namespace CodeFlow.Properties {
             get {
                 object obj = ResourceManager.GetObject("Search1", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The solution version is {0} and the version of the selected profile is {1}..
+        /// </summary>
+        internal static string SolutionVersion {
+            get {
+                return ResourceManager.GetString("SolutionVersion", resourceCulture);
             }
         }
         
@@ -633,6 +678,15 @@ namespace CodeFlow.Properties {
         internal static string VerifyProfile {
             get {
                 return ResourceManager.GetString("VerifyProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WARNING: Solution version ({0}) is different from the selected profile ({1})!.
+        /// </summary>
+        internal static string WarningProfile {
+            get {
+                return ResourceManager.GetString("WarningProfile", resourceCulture);
             }
         }
         

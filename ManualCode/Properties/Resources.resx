@@ -307,4 +307,22 @@ Verify your profile</value>
     <value>Unable to execute desired operation!
 {0}</value>
   </data>
+  <data name="CommitEntries" xml:space="preserve">
+    <value>{0} Manual code entrie(s) | {1} Conflicts</value>
+  </data>
+  <data name="ProfileDev" xml:space="preserve">
+    <value>Selected profile is a development environment and its Genio version is {0}.</value>
+  </data>
+  <data name="ProfileProd" xml:space="preserve">
+    <value>Selected profile is a production environment and its Genio version is {0}.</value>
+  </data>
+  <data name="ProfileVersion" xml:space="preserve">
+    <value>Database version from selected profile is {0}</value>
+  </data>
+  <data name="SolutionVersion" xml:space="preserve">
+    <value>The solution version is {0} and the version of the selected profile is {1}.</value>
+  </data>
+  <data name="WarningProfile" xml:space="preserve">
+    <value>WARNING: Solution version ({0}) is different from the selected profile ({1})!</value>
+  </data>
 </root>

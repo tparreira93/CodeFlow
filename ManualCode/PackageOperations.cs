@@ -77,6 +77,10 @@ namespace CodeFlow
                 AllProfiles.Add(newProfile);
                 newProfile.GenioConfiguration.ParseGenioFiles();
                 newProfile.GenioConfiguration.GetGenioInfo();
+
+                if(ActiveProfile.ProfileID.Equals(newProfile.ProfileID))
+                    ActiveProfile = newProfile;
+
                 return true;
             }
             return false;
@@ -247,8 +251,8 @@ namespace CodeFlow
             Encoding enc = null;
             try
             {
-                //enc = Encoding.GetEncoding("Windows-1250");
-                enc = Encoding.Unicode;
+                enc = Encoding.GetEncoding("Windows-1250");
+                //enc = Encoding.Unicode;
             }
             catch(Exception)
             { }

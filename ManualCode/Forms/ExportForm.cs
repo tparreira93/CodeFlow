@@ -16,7 +16,6 @@ namespace CodeFlow
     {
         private List<IManual> exportCode;
         private Dictionary<Guid, List<ManuaCode>> conflictCode;
-        private bool sameSystem = false;
         public CommitForm()
         {
             InitializeComponent();
@@ -39,29 +38,33 @@ namespace CodeFlow
         private void RefreshControls()
         {
             lblWarning.Visible = false;
-            lblManual.Text = String.Format("{0} Manual code entrie(s) | {1} Conflicts",
-                exportCode.Count, conflictCode.Count);
+            lblManual.Text = String.Format(Properties.Resources.CommitEntries,exportCode.Count, conflictCode.Count);
             lblServer.Text = PackageOperations.GetActiveProfile().ToString();
+
             if (!String.IsNullOrEmpty(PackageOperations.SolutionProps.ClientInfo.Version)
                 && !String.IsNullOrEmpty(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion))
-                lblSolutionVersion.Text = String.Format("The solution version is {0} and the version of the selected profile is {1}", PackageOperations.SolutionProps.ClientInfo.Version, PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
+                lblSolutionVersion.Text = String.Format(Properties.Resources.SolutionVersion, 
+                    PackageOperations.SolutionProps.ClientInfo.Version, PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
             else
-                lblSolutionVersion.Text = String.Format("Database version from selected profile is {0}", PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
+                lblSolutionVersion.Text = String.Format(Properties.Resources.ProfileVersion, PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
+
             if (PackageOperations.GetActiveProfile().GenioConfiguration.ProductionSystem)
             {
-                lblProd.Text = String.Format("Selected profile is a production environment.");
+                lblProd.Text = String.Format(Properties.Resources.ProfileProd, PackageOperations.GetActiveProfile().GenioConfiguration.GenioVersion);
                 lblProd.ForeColor = Color.DarkRed;
 
                 if (!String.IsNullOrEmpty(PackageOperations.SolutionProps.ClientInfo.Version)
                     && !String.IsNullOrEmpty(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion)
                     && !PackageOperations.SolutionProps.ClientInfo.Version.Equals(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion))
                 {
-                    lblWarning.Text = String.Format("Solution version ({0}) is superior from the selected profile ({1})!!!", PackageOperations.SolutionProps.ClientInfo.Version, PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
+                    lblWarning.Text = String.Format(Properties.Resources.WarningProfile, 
+                        PackageOperations.SolutionProps.ClientInfo.Version, PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
+                    lblWarning.Visible = true;
                 }
             }
             else
             {
-                lblProd.Text = String.Format("Selected profile is a development environment.");
+                lblProd.Text = String.Format(Properties.Resources.ProfileDev, PackageOperations.GetActiveProfile().GenioConfiguration.GenioVersion);
                 lblProd.ForeColor = Color.DarkGreen;
             }
             btnCompare.Enabled = false;

@@ -60,6 +60,12 @@ namespace CodeFlow.SolutionOperations
         {
             Encoding enc = PackageOperations.GetFileEncoding();
             string code = File.ReadAllText(file, enc);
+
+            /*Encoding unicode = Encoding.Unicode;
+            byte[] encBytes = enc.GetBytes(code);
+            byte[] unicodeBytes = Encoding.Convert(enc, unicode, encBytes);
+            string convertedCode = unicode.GetString(unicodeBytes);*/
+
             List<IManual> tmp = ManuaCode.GetManualCode(code);
             diffAnalyzer.CheckBDDifferences(tmp);
         }
