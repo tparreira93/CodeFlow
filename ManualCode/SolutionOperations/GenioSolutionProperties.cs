@@ -67,19 +67,17 @@ namespace CodeFlow.SolutionOperations
         public static ClientInfo ParseClientOptions(string solutionPath)
         {
             ClientInfo client = new ClientInfo();
+            var fileList = new DirectoryInfo(solutionPath).GetFiles("infoReindex.xml", SearchOption.AllDirectories);
 
-            string path = "";
-            string p = $"{solutionPath}\\infoReindex.xml";
-            if (File.Exists(p))
-                path = p;
-            else if (File.Exists(p = $"{solutionPath}\\Interface\\Bin\\GIP_ReIdx\\infoReindex.xml"))
-                path = p;
-
-            if (path.Length != 0)
+            if(fileList.Length != 0)
             {
-                client.Version = Util.MatchCodeDeclaration("(<Versao>)([0-9]*)(</Versao>)", 2, path);
-                client.Client = Util.MatchCodeDeclaration("(<Cliente>)([0-9a-zA-Z]*)(</Cliente>)", 2, path);
-                client.System = Util.MatchCodeDeclaration("(<Sistema>)([0-9a-zA-Z]*)(</Sistema>)", 2, path);
+                string path = fileList[0].FullName;
+                if (File.Exists(path))
+                {
+                    client.Version = Util.MatchCodeDeclaration("(<Versao>)([0-9]*)(</Versao>)", 2, path);
+                    client.Client = Util.MatchCodeDeclaration("(<Cliente>)([0-9a-zA-Z]*)(</Cliente>)", 2, path);
+                    client.System = Util.MatchCodeDeclaration("(<Sistema>)([0-9a-zA-Z]*)(</Sistema>)", 2, path);
+                }
             }
             return client;
         }

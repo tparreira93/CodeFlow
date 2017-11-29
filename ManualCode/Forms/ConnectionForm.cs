@@ -139,7 +139,7 @@ namespace CodeFlow
 
         private bool saveProfile(Profile oldProfile, Profile newProfile)
         {
-            if (!PackageOperations.UpdateProfile(oldProfile.ProfileName, newProfile))
+            if (!PackageOperations.UpdateProfile(oldProfile, newProfile))
             {
                 MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;

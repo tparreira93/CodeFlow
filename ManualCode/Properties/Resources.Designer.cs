@@ -63,6 +63,26 @@ namespace CodeFlow.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap action_add_16xLG {
+            get {
+                object obj = ResourceManager.GetObject("action_add_16xLG", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Add_grey_16x {
+            get {
+                object obj = ResourceManager.GetObject("Add_grey_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap AddFile_16x {
             get {
                 object obj = ResourceManager.GetObject("AddFile_16x", resourceCulture);
@@ -302,6 +322,16 @@ namespace CodeFlow.Properties {
             get {
                 object obj = ResourceManager.GetObject("Download_grey", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Download_grey_16x {
+            get {
+                object obj = ResourceManager.GetObject("Download_grey_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -682,7 +712,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to WARNING: Solution version ({0}) is different from the selected profile ({1})!.
+        ///   Looks up a localized string similar to WARNING: Solution version is different from the selected profile!.
         /// </summary>
         internal static string WarningProfile {
             get {

@@ -71,6 +71,33 @@ namespace CodeFlow
             btnCreate.Enabled = true;
             lblProfile.Text = PackageOperations.GetActiveProfile().ToString();
             lblProfile.ForeColor= Color.Green;
+            lblWarning.Visible = false;
+
+            if (!String.IsNullOrEmpty(PackageOperations.SolutionProps.ClientInfo.Version)
+                && !String.IsNullOrEmpty(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion))
+                lblSolutionVersion.Text = String.Format(Properties.Resources.SolutionVersion,
+                    PackageOperations.SolutionProps.ClientInfo.Version, PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
+            else
+                lblSolutionVersion.Text = String.Format(Properties.Resources.ProfileVersion, PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
+
+            if (PackageOperations.GetActiveProfile().GenioConfiguration.ProductionSystem)
+            {
+                lblProd.Text = String.Format(Properties.Resources.ProfileProd, PackageOperations.GetActiveProfile().GenioConfiguration.GenioVersion);
+                lblProd.ForeColor = Color.DarkRed;
+
+                if (!String.IsNullOrEmpty(PackageOperations.SolutionProps.ClientInfo.Version)
+                    && !String.IsNullOrEmpty(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion)
+                    && !PackageOperations.SolutionProps.ClientInfo.Version.Equals(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion))
+                {
+                    lblWarning.Text = String.Format(Properties.Resources.WarningProfile);
+                    lblWarning.Visible = true;
+                }
+            }
+            else
+            {
+                lblProd.Text = String.Format(Properties.Resources.ProfileDev, PackageOperations.GetActiveProfile().GenioConfiguration.GenioVersion);
+                lblProd.ForeColor = Color.DarkGreen;
+            }
         }
 
         private void btnSetCon_Click(object sender, EventArgs e)

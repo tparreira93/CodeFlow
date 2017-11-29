@@ -6,6 +6,7 @@ using CodeFlow.Utils;
 using System.Xml;
 using System.Xml.Serialization;
 using CodeFlow.GenioOperations;
+using System.Reflection;
 
 namespace CodeFlow
 {
@@ -44,6 +45,8 @@ namespace CodeFlow
         public Genio Clone()
         {
             Genio g = new Genio();
+            CopyFrom(typeof(Genio), this, g);
+            /*
             g.CheckoutPath = this.CheckoutPath;
             g.Database = this.Database;
             g.GenioPath = this.GenioPath;
@@ -55,9 +58,19 @@ namespace CodeFlow
             g.Plataforms = this.Plataforms;
             g.SystemInitials = this.SystemInitials;
             g.BDVersion = this.BDVersion;
-            g.ProductionSystem = this.ProductionSystem;
+            g.ProductionSystem = this.ProductionSystem;*/
 
             return g;
+        }
+
+        public static void CopyFrom(Type type, Genio source, Genio destination)
+        {
+            FieldInfo[] myObjectFields = type.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (FieldInfo fi in myObjectFields)
+            {
+                fi.SetValue(destination, fi.GetValue(source));
+            }
         }
 
         public void ParseGenioFiles()

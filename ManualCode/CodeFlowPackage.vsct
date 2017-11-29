@@ -326,9 +326,9 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="exportGenioImage" href="Resources\UploadFile_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="importGenioImage" href="Resources\DownloadFile_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="createGenioImage" href="Resources\AddFile_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="exportGenioImage" href="Resources\Upload_gray_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="importGenioImage" href="Resources\Download_grey_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="createGenioImage" href="Resources\Add_grey_16x.png" usedList="bmpPic1" />
       <Bitmap guid="searchGenioImage" href="Resources\Search_16x.png" usedList="bmpPic1" />
       <Bitmap guid="manageGenioProfilesImage" href="Resources\Team_16x.png" usedList="bmpPic1" />
       <Bitmap guid="exportSolutionImage" href="Resources\CodeActivity_16x.png" usedList="bmpPic1" />

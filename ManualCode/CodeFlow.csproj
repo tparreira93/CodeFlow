@@ -198,6 +198,9 @@
     <None Include="Resources\Cancel_16x.png" />
     <None Include="Resources\CodeActivity_16x.png" />
     <None Include="Resources\Event_16x.png" />
+    <None Include="Resources\Download_grey_16x.png" />
+    <None Include="Resources\action_add_16xLG.png" />
+    <None Include="Resources\Add_grey_16x.png" />
     <Content Include="Resources\ico_01.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -218,6 +221,7 @@
     <None Include="Resources\Search_16x.png" />
     <None Include="Resources\Team_16x.png" />
     <None Include="Resources\Refresh_grey_16x.png" />
+    <None Include="Resources\VSO_Add_16x.png" />
     <Content Include="stylesheet.css" />
   </ItemGroup>
   <ItemGroup>

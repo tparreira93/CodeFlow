@@ -57,8 +57,7 @@ namespace CodeFlow
                     && !String.IsNullOrEmpty(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion)
                     && !PackageOperations.SolutionProps.ClientInfo.Version.Equals(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion))
                 {
-                    lblWarning.Text = String.Format(Properties.Resources.WarningProfile, 
-                        PackageOperations.SolutionProps.ClientInfo.Version, PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
+                    lblWarning.Text = String.Format(Properties.Resources.WarningProfile);
                     lblWarning.Visible = true;
                 }
             }

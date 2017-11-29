@@ -58,7 +58,7 @@ namespace CodeFlow.SolutionOperations
 
         private void AnalyzeFile(string file)
         {
-            Encoding enc = PackageOperations.GetFileEncoding();
+            Encoding enc = PackageOperations.DetectTextEncoding(file, out string text);
             string code = File.ReadAllText(file, enc);
 
             /*Encoding unicode = Encoding.Unicode;
