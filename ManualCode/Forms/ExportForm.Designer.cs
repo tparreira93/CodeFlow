@@ -1,6 +1,6 @@
 ﻿namespace CodeFlow
 {
-    partial class ExportForm
+    partial class CommitForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExportForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CommitForm));
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnCompare = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
@@ -39,6 +39,9 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblManual = new System.Windows.Forms.ToolStripStatusLabel();
             this.btnConflict = new System.Windows.Forms.Button();
+            this.lblSolutionVersion = new System.Windows.Forms.Label();
+            this.lblProd = new System.Windows.Forms.Label();
+            this.lblWarning = new System.Windows.Forms.Label();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,10 +50,10 @@
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
-            this.btnCancel.Location = new System.Drawing.Point(636, 522);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.btnCancel.Location = new System.Drawing.Point(1036, 609);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(64, 24);
+            this.btnCancel.Size = new System.Drawing.Size(85, 30);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Exit";
             this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -59,12 +62,12 @@
             // 
             // btnCompare
             // 
-            this.btnCompare.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCompare.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnCompare.Image = global::CodeFlow.Properties.Resources.Compare_16x;
-            this.btnCompare.Location = new System.Drawing.Point(122, 522);
-            this.btnCompare.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.btnCompare.Location = new System.Drawing.Point(163, 609);
+            this.btnCompare.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnCompare.Name = "btnCompare";
-            this.btnCompare.Size = new System.Drawing.Size(138, 24);
+            this.btnCompare.Size = new System.Drawing.Size(184, 30);
             this.btnCompare.TabIndex = 1;
             this.btnCompare.Text = "Compare and commit";
             this.btnCompare.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -73,12 +76,12 @@
             // 
             // btnExport
             // 
-            this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnExport.Image = global::CodeFlow.Properties.Resources.Upload_gray_16x;
-            this.btnExport.Location = new System.Drawing.Point(268, 522);
-            this.btnExport.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.btnExport.Location = new System.Drawing.Point(357, 609);
+            this.btnExport.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(85, 24);
+            this.btnExport.Size = new System.Drawing.Size(113, 30);
             this.btnExport.TabIndex = 2;
             this.btnExport.Text = "Commit";
             this.btnExport.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -93,10 +96,10 @@
             this.lstCode.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.clCode});
             this.lstCode.FullRowSelect = true;
-            this.lstCode.Location = new System.Drawing.Point(12, 12);
-            this.lstCode.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.lstCode.Location = new System.Drawing.Point(16, 15);
+            this.lstCode.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.lstCode.Name = "lstCode";
-            this.lstCode.Size = new System.Drawing.Size(686, 504);
+            this.lstCode.Size = new System.Drawing.Size(1101, 535);
             this.lstCode.TabIndex = 7;
             this.lstCode.UseCompatibleStateImageBehavior = false;
             this.lstCode.View = System.Windows.Forms.View.Details;
@@ -116,9 +119,10 @@
             this.lblServer,
             this.toolStripStatusLabel1,
             this.lblManual});
-            this.statusStrip.Location = new System.Drawing.Point(0, 550);
+            this.statusStrip.Location = new System.Drawing.Point(0, 646);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(712, 22);
+            this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
+            this.statusStrip.Size = new System.Drawing.Size(1137, 25);
             this.statusStrip.TabIndex = 8;
             this.statusStrip.Text = "status";
             // 
@@ -127,13 +131,13 @@
             this.lblServer.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblServer.ForeColor = System.Drawing.Color.MidnightBlue;
             this.lblServer.Name = "lblServer";
-            this.lblServer.Size = new System.Drawing.Size(50, 17);
+            this.lblServer.Size = new System.Drawing.Size(63, 20);
             this.lblServer.Text = "SERVER";
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(589, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(978, 20);
             this.toolStripStatusLabel1.Spring = true;
             // 
             // lblManual
@@ -141,29 +145,66 @@
             this.lblManual.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblManual.ForeColor = System.Drawing.Color.Crimson;
             this.lblManual.Name = "lblManual";
-            this.lblManual.Size = new System.Drawing.Size(58, 17);
+            this.lblManual.Size = new System.Drawing.Size(76, 20);
             this.lblManual.Text = "MANUAL";
             // 
             // btnConflict
             // 
-            this.btnConflict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnConflict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnConflict.Image = global::CodeFlow.Properties.Resources.Conflict_16x;
-            this.btnConflict.Location = new System.Drawing.Point(12, 522);
-            this.btnConflict.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.btnConflict.Location = new System.Drawing.Point(16, 609);
+            this.btnConflict.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnConflict.Name = "btnConflict";
-            this.btnConflict.Size = new System.Drawing.Size(102, 24);
+            this.btnConflict.Size = new System.Drawing.Size(136, 30);
             this.btnConflict.TabIndex = 9;
             this.btnConflict.Text = "View conflict";
             this.btnConflict.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnConflict.UseVisualStyleBackColor = true;
             this.btnConflict.Click += new System.EventHandler(this.btnConflict_Click);
             // 
-            // ExportForm
+            // lblSolutionVersion
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.lblSolutionVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblSolutionVersion.AutoSize = true;
+            this.lblSolutionVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSolutionVersion.Location = new System.Drawing.Point(13, 554);
+            this.lblSolutionVersion.Name = "lblSolutionVersion";
+            this.lblSolutionVersion.Size = new System.Drawing.Size(132, 17);
+            this.lblSolutionVersion.TabIndex = 10;
+            this.lblSolutionVersion.Text = "SOLUTION_INFO";
+            // 
+            // lblProd
+            // 
+            this.lblProd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblProd.AutoSize = true;
+            this.lblProd.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblProd.Location = new System.Drawing.Point(13, 581);
+            this.lblProd.Name = "lblProd";
+            this.lblProd.Size = new System.Drawing.Size(151, 17);
+            this.lblProd.TabIndex = 11;
+            this.lblProd.Text = "PRODUCTION ENV.";
+            // 
+            // lblWarning
+            // 
+            this.lblWarning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblWarning.ForeColor = System.Drawing.Color.Red;
+            this.lblWarning.Location = new System.Drawing.Point(458, 554);
+            this.lblWarning.Name = "lblWarning";
+            this.lblWarning.Size = new System.Drawing.Size(663, 23);
+            this.lblWarning.TabIndex = 12;
+            this.lblWarning.Text = "WARNING";
+            this.lblWarning.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // CommitForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(712, 572);
+            this.ClientSize = new System.Drawing.Size(1137, 671);
+            this.Controls.Add(this.lblWarning);
+            this.Controls.Add(this.lblProd);
+            this.Controls.Add(this.lblSolutionVersion);
             this.Controls.Add(this.btnConflict);
             this.Controls.Add(this.lstCode);
             this.Controls.Add(this.statusStrip);
@@ -171,8 +212,8 @@
             this.Controls.Add(this.btnCompare);
             this.Controls.Add(this.btnCancel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.Name = "ExportForm";
+            this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.Name = "CommitForm";
             this.Text = "Commit";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExportForm_FormClosing);
             this.Load += new System.EventHandler(this.ExportForm_Load);
@@ -195,5 +236,8 @@
         private System.Windows.Forms.ToolStripStatusLabel lblServer;
         private System.Windows.Forms.ToolStripStatusLabel lblManual;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.Label lblSolutionVersion;
+        private System.Windows.Forms.Label lblProd;
+        private System.Windows.Forms.Label lblWarning;
     }
 }

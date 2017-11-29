@@ -23,7 +23,7 @@ namespace CodeFlow.CodeUtils
             _manual = manual;
             _profile = profile;
             _sysName = systemName;
-            _display = string.Format("Open SVN for the file that has this manual code.");
+            _display = string.Format("Open SVN for this manual code.");
         }
 
         public string DisplayText

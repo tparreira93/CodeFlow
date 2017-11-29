@@ -23,8 +23,7 @@ namespace CodeFlow
         private static List<string> openFiles = new List<string>();
         private static Dictionary<string, Type> openManual = new Dictionary<string, Type>();
         private static Dictionary<string, Type> AutoExportFiles { get => openManual; set => openManual = value; }
-        private static GenioSolutionProperties solutionProps = null;
-        private static ClientInfo client = new ClientInfo();
+        private static GenioSolutionProperties solutionProps = new GenioSolutionProperties();
         private static DTE2 dte;
         private static bool wholeWordSearch = false;
         private static bool caseSensitive = false;
@@ -46,7 +45,6 @@ namespace CodeFlow
         public static List<string> IgnoreFilesFilters { get => ignoreFilesFilters; set => ignoreFilesFilters = value; }
         public static bool ParseSolution { get => parseSolution; set => parseSolution = value; }
         public static bool ContinuousAnalysis { get => continuousAnalysis; set => continuousAnalysis = value; }
-        public static ClientInfo Client { get => client; set => client = value; }
         public static bool AutoVCCTO2008Fix { get; internal set; }
         public static DTE2 DTE { get => dte; set => dte = value; }
         public static bool WholeWordSearch { get => wholeWordSearch; set => wholeWordSearch = value; }
@@ -249,12 +247,30 @@ namespace CodeFlow
             Encoding enc = null;
             try
             {
-                enc = Encoding.GetEncoding("iso-8859-1");
+                //enc = Encoding.GetEncoding("Windows-1250");
+                enc = Encoding.Unicode;
             }
             catch(Exception)
             { }
 
             return enc;
+        }
+        public static Encoding GetEncoding(string filename)
+        {
+            // Read the BOM
+            var bom = new byte[4];
+            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                file.Read(bom, 0, 4);
+            }
+
+            // Analyze the BOM
+            if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76) return Encoding.UTF7;
+            if (bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf) return Encoding.UTF8;
+            if (bom[0] == 0xff && bom[1] == 0xfe) return Encoding.Unicode; //UTF-16LE
+            if (bom[0] == 0xfe && bom[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
+            if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xfe && bom[3] == 0xff) return Encoding.UTF32;
+            return Encoding.ASCII;
         }
         #endregion
     }

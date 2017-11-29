@@ -90,7 +90,7 @@ namespace CodeFlow
             List<IManual> manual = CommandHandlers.CommandHandler.SearchTagsCurrentView(ServiceProvider);
             DifferencesAnalyzer diffs = new DifferencesAnalyzer();
             diffs.CheckBDDifferences(manual);
-            ExportForm exportForm = new ExportForm(diffs.Differences, diffs.ManualConflict);
+            CommitForm exportForm = new CommitForm(diffs.Differences, diffs.ManualConflict);
             exportForm.ShowDialog();
         }
     }

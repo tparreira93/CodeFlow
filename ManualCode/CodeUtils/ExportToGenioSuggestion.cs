@@ -94,7 +94,7 @@ namespace CodeFlow.CodeUtils
             {
                 DifferencesAnalyzer diffs = new DifferencesAnalyzer();
                 diffs.CheckBDDifferences(_manual);
-                ExportForm exportForm = new ExportForm(diffs.Differences, diffs.ManualConflict);
+                CommitForm exportForm = new CommitForm(diffs.Differences, diffs.ManualConflict);
                 exportForm.ShowDialog();
             }
         }

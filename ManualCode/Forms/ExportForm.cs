@@ -12,24 +12,24 @@ using System.Windows.Forms;
 
 namespace CodeFlow
 {
-    public partial class ExportForm : Form
+    public partial class CommitForm : Form
     {
         private List<IManual> exportCode;
         private Dictionary<Guid, List<ManuaCode>> conflictCode;
-
-        public ExportForm()
+        private bool sameSystem = false;
+        public CommitForm()
         {
             InitializeComponent();
             exportCode = new List<IManual>();
             conflictCode = new Dictionary<Guid, List<ManuaCode>>();
         }
-        public ExportForm(List<IManual> manual)
+        public CommitForm(List<IManual> manual)
         {
             InitializeComponent();
             exportCode = manual;
             conflictCode = new Dictionary<Guid, List<ManuaCode>>();
         }
-        public ExportForm(List<IManual> manual, Dictionary<Guid, List<ManuaCode>> conflicts)
+        public CommitForm(List<IManual> manual, Dictionary<Guid, List<ManuaCode>> conflicts)
         {
             InitializeComponent();
             exportCode = manual;
@@ -38,10 +38,32 @@ namespace CodeFlow
 
         private void RefreshControls()
         {
+            lblWarning.Visible = false;
             lblManual.Text = String.Format("{0} Manual code entrie(s) | {1} Conflicts",
                 exportCode.Count, conflictCode.Count);
             lblServer.Text = PackageOperations.GetActiveProfile().ToString();
+            if (!String.IsNullOrEmpty(PackageOperations.SolutionProps.ClientInfo.Version)
+                && !String.IsNullOrEmpty(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion))
+                lblSolutionVersion.Text = String.Format("The solution version is {0} and the version of the selected profile is {1}", PackageOperations.SolutionProps.ClientInfo.Version, PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
+            else
+                lblSolutionVersion.Text = String.Format("Database version from selected profile is {0}", PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
+            if (PackageOperations.GetActiveProfile().GenioConfiguration.ProductionSystem)
+            {
+                lblProd.Text = String.Format("Selected profile is a production environment.");
+                lblProd.ForeColor = Color.DarkRed;
 
+                if (!String.IsNullOrEmpty(PackageOperations.SolutionProps.ClientInfo.Version)
+                    && !String.IsNullOrEmpty(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion)
+                    && !PackageOperations.SolutionProps.ClientInfo.Version.Equals(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion))
+                {
+                    lblWarning.Text = String.Format("Solution version ({0}) is superior from the selected profile ({1})!!!", PackageOperations.SolutionProps.ClientInfo.Version, PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
+                }
+            }
+            else
+            {
+                lblProd.Text = String.Format("Selected profile is a development environment.");
+                lblProd.ForeColor = Color.DarkGreen;
+            }
             btnCompare.Enabled = false;
             btnConflict.Enabled = false;
             btnExport.Enabled = false;

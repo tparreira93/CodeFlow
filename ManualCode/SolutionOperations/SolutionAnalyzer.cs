@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.ComponentModel;
 using CodeFlow.ManualOperations;
+using System.Text;
 
 namespace CodeFlow.SolutionOperations
 {
@@ -57,7 +58,8 @@ namespace CodeFlow.SolutionOperations
 
         private void AnalyzeFile(string file)
         {
-            string code = File.ReadAllText(file, PackageOperations.GetFileEncoding());
+            Encoding enc = PackageOperations.GetFileEncoding();
+            string code = File.ReadAllText(file, enc);
             List<IManual> tmp = ManuaCode.GetManualCode(code);
             diffAnalyzer.CheckBDDifferences(tmp);
         }

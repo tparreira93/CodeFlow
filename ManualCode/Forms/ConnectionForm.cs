@@ -14,7 +14,7 @@ using System.Xml;
 
 namespace CodeFlow
 {
-    public partial class ConnectionForm : Form
+    public partial class ProfileForm : Form
     {
         private bool servers = false;
         private Mode openMode;
@@ -27,7 +27,7 @@ namespace CodeFlow
             EDIT
         }
 
-        public ConnectionForm(Mode mode, Profile profile = null)
+        public ProfileForm(Mode mode, Profile profile = null)
         {
             InitializeComponent();
             openMode = mode;

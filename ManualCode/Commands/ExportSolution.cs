@@ -105,7 +105,7 @@ namespace CodeFlow
                 List<IManual> toExport = selectionProjectForm.ExportCode;
                 Dictionary<Guid, List<ManuaCode>> conflict = selectionProjectForm.ConflictCode;
 
-                ExportForm export = new ExportForm(toExport, conflict);
+                CommitForm export = new CommitForm(toExport, conflict);
                 export.Show();
             }
         }

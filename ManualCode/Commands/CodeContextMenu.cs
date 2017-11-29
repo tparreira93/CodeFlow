@@ -111,7 +111,7 @@ namespace CodeFlow.Commands
         {
             List<IManual> manual = CommandHandler.SearchTagsCurrentView(ServiceProvider);
 
-            ExportForm exportForm = new ExportForm(manual);
+            CommitForm exportForm = new CommitForm(manual);
             exportForm.ShowDialog();
         }
 

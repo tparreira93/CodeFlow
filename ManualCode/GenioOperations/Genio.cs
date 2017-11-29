@@ -20,8 +20,8 @@ namespace CodeFlow
         private string checkoutPath = "";
         private double genioVersion = 0.0f;
         private string systemInitials = "";
-        private string bdVersion;
-        private bool productionSystem;
+        private string bdVersion = "";
+        private bool productionSystem = false;
         private List<GenioPlataform> plataforms = new List<GenioPlataform>();
 
         private SqlConnection sqlConnection = new SqlConnection();
@@ -55,6 +55,7 @@ namespace CodeFlow
             g.Plataforms = this.Plataforms;
             g.SystemInitials = this.SystemInitials;
             g.BDVersion = this.BDVersion;
+            g.ProductionSystem = this.ProductionSystem;
 
             return g;
         }

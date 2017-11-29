@@ -25,7 +25,7 @@ namespace CodeFlow
         private void btnAddProf_Click(object sender, EventArgs e)
         {
             Profile p = new Profile();
-            ConnectionForm connection = new ConnectionForm(ConnectionForm.Mode.NEW, p);
+            ProfileForm connection = new ProfileForm(ProfileForm.Mode.NEW, p);
             connection.ShowDialog();
             LoadProfiles();
         }
@@ -65,7 +65,7 @@ namespace CodeFlow
             if(lstProfiles.SelectedItems.Count == 1)
             {
                 Profile p = lstProfiles.Items[lstProfiles.SelectedIndices[0]].Tag as Profile;
-                ConnectionForm connectionForm = new ConnectionForm(ConnectionForm.Mode.EDIT, p);
+                ProfileForm connectionForm = new ProfileForm(ProfileForm.Mode.EDIT, p);
                 connectionForm.ShowDialog();
                 LoadProfiles();
             }
