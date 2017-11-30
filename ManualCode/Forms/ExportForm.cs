@@ -35,15 +35,15 @@ namespace CodeFlow
             conflictCode = conflicts;
         }
 
-        private void RefreshControls()
+        private void RefreshLabels()
         {
             lblWarning.Visible = false;
-            lblManual.Text = String.Format(Properties.Resources.CommitEntries,exportCode.Count, conflictCode.Count);
+            lblManual.Text = String.Format(Properties.Resources.CommitEntries, exportCode.Count, conflictCode.Count);
             lblServer.Text = PackageOperations.GetActiveProfile().ToString();
 
             if (!String.IsNullOrEmpty(PackageOperations.SolutionProps.ClientInfo.Version)
                 && !String.IsNullOrEmpty(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion))
-                lblSolutionVersion.Text = String.Format(Properties.Resources.SolutionVersion, 
+                lblSolutionVersion.Text = String.Format(Properties.Resources.SolutionVersion,
                     PackageOperations.SolutionProps.ClientInfo.Version, PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
             else
                 lblSolutionVersion.Text = String.Format(Properties.Resources.ProfileVersion, PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
@@ -66,6 +66,11 @@ namespace CodeFlow
                 lblProd.Text = String.Format(Properties.Resources.ProfileDev, PackageOperations.GetActiveProfile().GenioConfiguration.GenioVersion);
                 lblProd.ForeColor = Color.DarkGreen;
             }
+        }
+
+        private void RefreshControls()
+        {
+            RefreshLabels();
             btnCompare.Enabled = false;
             btnConflict.Enabled = false;
             btnExport.Enabled = false;
@@ -77,6 +82,7 @@ namespace CodeFlow
             for (int i = 0; i < exportCode.Count; i++)
             {
                 ListViewItem item = new ListViewItem(exportCode[i].ShortOneLineCode());
+                item.SubItems.Add(exportCode[i].LocalFileName);
                 item.Tag = exportCode[i];
                 lstCode.Items.Add(item);
             }
@@ -94,7 +100,7 @@ namespace CodeFlow
         {
             ProfilesForm profilesForm = new ProfilesForm();
             profilesForm.ShowDialog();
-            RefreshForm();
+            RefreshLabels();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -111,27 +117,32 @@ namespace CodeFlow
         {
             ListView.SelectedListViewItemCollection items = lstCode.SelectedItems;
             List<ListViewItem> itemsToRemove = new List<ListViewItem>();
-            List<IManual> manualToRemove = new List<IManual>();
             for (int i = 0; i < items.Count; i++)
             {
                 if (!(items[i].Tag is IManual))
                     continue;
                 IManual man = (IManual)items[i].Tag;
 
-                DialogResult result = CompareCode(man);
+                DialogResult result = MergeCode(man);
                 if (result == DialogResult.Yes)
+                {
                     exportCode.Remove(man);
-                else if(result == DialogResult.Cancel)
+                    itemsToRemove.Add(items[i]);
+                }
+                else if (result == DialogResult.Cancel)
                     break;
             }
 
-            RefreshForm();
+            foreach (ListViewItem item in itemsToRemove)
+                lstCode.Items.Remove(item);
+
+            RefreshLabels();
 
             if (lstCode.Items.Count == 0)
                 this.Close();
         }
 
-        private DialogResult CompareCode(IManual man)
+        private DialogResult MergeCode(IManual man)
         {
             DialogResult funcResult = DialogResult.Yes;
             try
@@ -188,7 +199,6 @@ namespace CodeFlow
 
             ListView.ListViewItemCollection items = lstCode.Items;
             List<ListViewItem> itemsToRemove = new List<ListViewItem>();
-            List<Manual> manualToRemove = new List<Manual>();
             for (int i = 0; i < items.Count; i++)
             {
                 if (!(items[i].Tag is IManual))
@@ -197,7 +207,10 @@ namespace CodeFlow
                 try
                 {
                     if (man.Update(PackageOperations.GetActiveProfile()))
+                    {
                         exportCode.Remove(man);
+                        itemsToRemove.Add(items[i]);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -207,7 +220,10 @@ namespace CodeFlow
                 }
             }
 
-            RefreshForm();
+            foreach (ListViewItem item in itemsToRemove)
+                lstCode.Items.Remove(item);
+
+            RefreshLabels();
 
             if (lstCode.Items.Count == 0)
                 this.Close();
@@ -231,13 +247,16 @@ namespace CodeFlow
                 }
                 else if (item.Tag is IManual)
                 {
-                    DialogResult result = CompareCode((IManual)item.Tag);
-                    if(result == DialogResult.Yes)
+                    DialogResult result = MergeCode((IManual)item.Tag);
+                    if (result == DialogResult.Yes)
+                    {
                         exportCode.Remove((IManual)item.Tag);
+                        lstCode.Items.Remove(lstCode.SelectedItems[0]);
+                    }
                 }
             }
 
-            RefreshForm();
+            RefreshLabels();
 
             if (lstCode.Items.Count == 0)
                 this.Close();
@@ -316,7 +335,7 @@ namespace CodeFlow
                     lstCode.Items.Add(item);
                     exportCode.Add(code);
                     conflictCode.Remove(code.CodeId);
-                    RefreshControls();
+                    RefreshLabels();
                 }
             }
         }

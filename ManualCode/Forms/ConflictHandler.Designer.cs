@@ -34,6 +34,7 @@
             this.btnBack = new System.Windows.Forms.Button();
             this.btnUse = new System.Windows.Forms.Button();
             this.btnViewCode = new System.Windows.Forms.Button();
+            this.clFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // lstConflicts
@@ -42,7 +43,8 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstConflicts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.chCode});
+            this.chCode,
+            this.clFileName});
             this.lstConflicts.Location = new System.Drawing.Point(13, 13);
             this.lstConflicts.Name = "lstConflicts";
             this.lstConflicts.Size = new System.Drawing.Size(779, 452);
@@ -55,7 +57,7 @@
             // chCode
             // 
             this.chCode.Text = "Code";
-            this.chCode.Width = 623;
+            this.chCode.Width = 543;
             // 
             // btnBack
             // 
@@ -98,6 +100,11 @@
             this.btnViewCode.UseVisualStyleBackColor = true;
             this.btnViewCode.Click += new System.EventHandler(this.btnViewCode_Click);
             // 
+            // clFileName
+            // 
+            this.clFileName.Text = "File name";
+            this.clFileName.Width = 198;
+            // 
             // ConflictHandler
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -124,5 +131,6 @@
         private System.Windows.Forms.Button btnUse;
         private System.Windows.Forms.Button btnViewCode;
         private System.Windows.Forms.ColumnHeader chCode;
+        private System.Windows.Forms.ColumnHeader clFileName;
     }
 }

@@ -38,7 +38,7 @@ namespace CodeFlow.CommandHandlers
             }
             return code;
         }
-        public static List<IManual> SearchTagsCurrentView(IServiceProvider serviceProvider)
+        public static List<IManual> SearchForTags(IServiceProvider serviceProvider)
         {
             var dte = PackageOperations.DTE;
             List<IManual> manual = new List<IManual>();
@@ -52,8 +52,8 @@ namespace CodeFlow.CommandHandlers
 
             if (code != null && code.Length != 0)
             {
-                manual.AddRange(ManuaCode.GetManualCode(code).ToArray());
-                manual.AddRange(CustomFunction.GetManualCode(code).ToArray());
+                manual.AddRange(ManuaCode.GetManualCode(code, dte.ActiveDocument.Name).ToArray());
+                manual.AddRange(CustomFunction.GetManualCode(code, dte.ActiveDocument.Name).ToArray());
             }
             else
             {
@@ -63,14 +63,14 @@ namespace CodeFlow.CommandHandlers
                 if (segment.IsValid())
                 {
                     subCode = segment.CompleteTextSegment;
-                    manual.AddRange(ManuaCode.GetManualCode(subCode).ToArray());
+                    manual.AddRange(ManuaCode.GetManualCode(subCode, dte.ActiveDocument.Name).ToArray());
                 }
 
                 segment = CodeSegment.ParseFromPosition(CustomFunction.BEGIN_MANUAL, CustomFunction.END_MANUAL, code, pos);
                 if (segment.IsValid())
                 {
                     subCode = segment.CompleteTextSegment;
-                    manual.AddRange(CustomFunction.GetManualCode(subCode).ToArray());
+                    manual.AddRange(CustomFunction.GetManualCode(subCode, dte.ActiveDocument.Name).ToArray());
                 }
             }
 

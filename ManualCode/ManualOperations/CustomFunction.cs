@@ -252,7 +252,7 @@ namespace CodeFlow
 
             return results;
         }
-        public static List<IManual> GetManualCode(string vscode)
+        public static List<IManual> GetManualCode(string vscode, string localFileName = "")
         {
             List<IManual> codeList = new List<IManual>();
             string remainig = vscode ?? "";
@@ -260,7 +260,10 @@ namespace CodeFlow
             {
                 IManual m = ParseText<CustomFunction>(BEGIN_MANUAL, END_MANUAL, remainig, out remainig);
                 if (m != null)
+                {
+                    m.LocalFileName = localFileName;
                     codeList.Add(m);
+                }
             } while (remainig.Length != 0);
 
             return codeList;

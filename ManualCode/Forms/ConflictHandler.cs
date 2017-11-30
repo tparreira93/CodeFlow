@@ -29,11 +29,8 @@ namespace CodeFlow
             foreach (ManuaCode m in conflictList)
             {
                 ListViewItem item = new ListViewItem();
-                if (m.Code.Length < substringSize)
-                    sz = m.Code.Length;
-
-                item.Text = m.Code.Substring(0, sz);
-                item.Tag = m;
+                item.Text = m.ShortOneLineCode();
+                item.SubItems.Add(m.LocalFileName);
                 lstConflicts.Items.Add(item);
             }
         }

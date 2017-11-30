@@ -87,7 +87,7 @@ namespace CodeFlow
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            List<IManual> manual = CommandHandlers.CommandHandler.SearchTagsCurrentView(ServiceProvider);
+            List<IManual> manual = CommandHandlers.CommandHandler.SearchForTags(ServiceProvider);
             DifferencesAnalyzer diffs = new DifferencesAnalyzer();
             diffs.CheckBDDifferences(manual);
             CommitForm exportForm = new CommitForm(diffs.Differences, diffs.ManualConflict);

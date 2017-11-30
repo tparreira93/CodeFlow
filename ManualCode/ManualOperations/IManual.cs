@@ -16,6 +16,7 @@ namespace CodeFlow
         string ChangedBy { get; set; }
         string TipoCodigo { get; }
         string Tipo { get; }
+        string LocalFileName { get; set; }
 
         string GetCodeExtension(Profile p);
 

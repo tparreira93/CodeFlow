@@ -236,9 +236,10 @@ namespace CodeFlow
             if (AutoExportFiles.TryGetValue(path, out Type t))
             {
                 string code = File.ReadAllText(path, GetFileEncoding());
+                string fileName = Path.GetFileName(path);
                 try
                 {
-                    List<IManual> l = t.GetMethod("GetManualCode", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { code }) as List<IManual>;
+                    List<IManual> l = t.GetMethod("GetManualCode", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { code, fileName }) as List<IManual>;
                     if (l.Count == 1)
                         man = l[0];
                 }

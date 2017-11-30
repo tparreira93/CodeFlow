@@ -109,7 +109,7 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void SubmitGenio(object sender, EventArgs e)
         {
-            List<IManual> manual = CommandHandler.SearchTagsCurrentView(ServiceProvider);
+            List<IManual> manual = CommandHandler.SearchForTags(ServiceProvider);
 
             CommitForm exportForm = new CommitForm(manual);
             exportForm.ShowDialog();

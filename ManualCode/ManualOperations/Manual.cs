@@ -13,9 +13,10 @@ namespace CodeFlow
         protected string corpo = "";
         protected string plataform = "";
         protected string createdBy = "";
-        private string changedBy = "";
+        protected string changedBy = "";
         protected DateTime creationDate = DateTime.MaxValue;
         protected DateTime lastChangeDate = DateTime.MaxValue;
+        private string localFileName = "";
         public static Dictionary<Int32, byte> SpecialChars = new Dictionary<Int32, byte>
         {
             //Unicode characters mappings to extended ASCII
@@ -271,5 +272,6 @@ namespace CodeFlow
         public abstract string Tag { get; }
         public abstract string TipoCodigo { get; }
         public abstract string Tipo { get; }
+        public string LocalFileName { get => localFileName; set => localFileName = value; }
     }
 }

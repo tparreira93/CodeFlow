@@ -100,7 +100,7 @@ namespace CodeFlow
         {
             return Regex.Replace(code, "(INX_[_0-9a-zA-Z]*)(.*)\\s*(\\/\\/)(\\s*)(\\[FNTX\\s*([0-9a-zA-Z_]|\\s|->)*\\])", "/$5/$2$3$4$5", RegexOptions.Multiline);
         }
-        public static List<IManual> GetManualCode(string vscode)
+        public static List<IManual> GetManualCode(string vscode, string localFileName = "")
         {
             List<IManual> codeList = new List<IManual>();
             string remainig = vscode ?? "", plat = "", tipo = "", modulo = "", param = "", fich = "", ordem = "";
@@ -131,6 +131,7 @@ namespace CodeFlow
                 IManual m = ParseText<ManuaCode>(BEGIN_MANUAL, END_MANUAL, remainig, out remainig);
                 if (m != null)
                 {
+                    m.LocalFileName = localFileName;
                     codeList.Add(m);
                     ManuaCode manua = (ManuaCode)m;
                     manua.Plataform = plat;
