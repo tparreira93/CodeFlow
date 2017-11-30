@@ -58,11 +58,13 @@ namespace CodeFlow.CodeUtils
 
             segment = CodeSegment.ParseFromPosition(ManuaCode.BEGIN_MANUAL, ManuaCode.END_MANUAL, code, pos);
             if (segment.IsValid())
+            {
                 code = segment.CompleteTextSegment;
 
-            List<IManual> codeList = ManuaCode.GetManualCode(code);
-            if(codeList.Count == 1)
-                manua = codeList[0] as ManuaCode;
+                List<IManual> codeList = ManuaCode.GetManualCode(code);
+                if (codeList.Count == 1)
+                    manua = codeList[0] as ManuaCode;
+            }
 
             return manua != null;
         }

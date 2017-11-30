@@ -149,6 +149,7 @@ namespace CodeFlow
             int e = -1;
             IManual m = null;
             remaning = "";
+            Guid g;
             if (b != -1)
             {
                 string s = vscode.Substring(b + begin.Length);
@@ -159,36 +160,47 @@ namespace CodeFlow
 
                 string guid = s.Substring(0, i).Trim();
                 guid = guid.Substring(0, 36);
-                e = s.IndexOf(end);
-                string c = "", code = "";
-                if (e == -1)
+                if (Guid.TryParse(guid, out g))
                 {
-                    c = s.Substring(i);
-                    code = c.Substring(Utils.Util.NewLine.Length);
-                    remaning = "";
-                }
-                else
-                {
-                    e = e - i;
+                    e = s.IndexOf(end);
+                    string c = "", code = "";
+                    if (e == -1)
+                    {
+                        int anotherB = s.IndexOf(begin, i);
+                        if (anotherB != -1)
+                            return m;
 
-                    c = s.Substring(i, e);
-                    int tmp = c.LastIndexOf(Utils.Util.NewLine);
-                    if (tmp != -1)
-                        e = tmp;
+                        c = s.Substring(i);
+                        code = c.Substring(Utils.Util.NewLine.Length);
+                        remaning = "";
+                    }
                     else
-                        e = c.Length - i - Utils.Util.NewLine.Length;
-                    code = c.Substring(Utils.Util.NewLine.Length, e - Utils.Util.NewLine.Length);
+                    {
+                        e = e - i;
 
-                    b = vscode.IndexOf(begin, b);
-                    remaning = s.Substring(i + e);
+                        int anotherB = s.IndexOf(begin, i, e);
+                        if (anotherB != -1)
+                            return m;
+
+                        c = s.Substring(i, e);
+                        int tmp = c.LastIndexOf(Utils.Util.NewLine);
+                        if (tmp != -1)
+                            e = tmp;
+                        else
+                            e = c.Length - i - Utils.Util.NewLine.Length;
+                        code = c.Substring(Utils.Util.NewLine.Length, e - Utils.Util.NewLine.Length);
+
+                        b = vscode.IndexOf(begin, b);
+                        remaning = s.Substring(i + e);
+                    }
+
+                    m = new T
+                    {
+                        Code = code,
+                        CodeId = g
+                    };
+                    m.Code = m.CodeTransformKeyValue();
                 }
-
-                m = new T
-                {
-                    Code = code,
-                    CodeId = Guid.Parse(guid)
-                };
-                m.Code = m.CodeTransformKeyValue();
             }
 
             return m;
