@@ -331,7 +331,7 @@
       <Bitmap guid="createGenioImage" href="Resources\Add_grey_16x.png" usedList="bmpPic1" />
       <Bitmap guid="searchGenioImage" href="Resources\Search_16x.png" usedList="bmpPic1" />
       <Bitmap guid="manageGenioProfilesImage" href="Resources\Team_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="exportSolutionImage" href="Resources\CodeActivity_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="exportSolutionImage" href="Resources\Synchronize_16x.png" usedList="bmpPic1" />
       <Bitmap guid="fixPlataformImage" href="Resources\Event_16x.png" usedList="bmpPic1" />
       <Bitmap guid="refreshSolutionImage" href="Resources\Refresh_grey_16x.png" usedList="bmpPic1" />
       <Bitmap guid="buttonSearchToolwindow" href="Resources\Search_16x.png" usedList="bmpPic1" />

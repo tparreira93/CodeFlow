@@ -222,6 +222,7 @@
     <None Include="Resources\Team_16x.png" />
     <None Include="Resources\Refresh_grey_16x.png" />
     <None Include="Resources\VSO_Add_16x.png" />
+    <None Include="Resources\Synchronize_16x.png" />
     <Content Include="stylesheet.css" />
   </ItemGroup>
   <ItemGroup>
