@@ -1,4 +1,5 @@
 ﻿using CodeFlow.GenioOperations;
+using CodeFlow.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -77,32 +78,52 @@ namespace CodeFlow
         {
             get
             {
-                return Code.Replace("\r", " ").Replace("\n", " ").Trim();
+                if (String.IsNullOrEmpty(Code))
+                {
+                    return Code;
+                }
+                string lineSeparator = ((char)0x2028).ToString();
+                string paragraphSeparator = ((char)0x2029).ToString();
+
+                return Code.Replace("\r\n", String.Empty).Replace("\n", String.Empty).Replace("\r", String.Empty).Replace(lineSeparator, String.Empty).Replace(paragraphSeparator, String.Empty);
             }
         }
-        public string ShortOneLineCode(int max = 100)
+        public string ShortOneLineCode(int max = 300)
         {
             if (Code.Length < max)
                 max = OneLineCode.Length;
 
             return OneLineCode.Substring(0, max);
         }
-
         public string ChangedBy { get => changedBy; set => changedBy = value; }
         public void CompareDB(Profile profile)
         {
             var t = this.GetType();
             IManual bd = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { profile, this.CodeId }) as IManual;
-            Compare(this, bd);
+            Compare(bd, this);
         }
-        private static IManual MergeCompare(IManual m1, IManual m2, bool saveRequired)
+        public IManual MergeDB(Profile profile)
+        {
+            var t = this.GetType();
+            IManual bd = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { profile, this.CodeId }) as IManual;
+            return MergeCompare(bd, this, true);
+        }
+        public static IManual Merge(IManual bd, IManual local)
+        {
+            return MergeCompare(bd, local, true);
+        }
+        public static void Compare(IManual bd, IManual local)
+        {
+            MergeCompare(bd, local, false);
+        }
+        private static IManual MergeCompare(IManual database, IManual local, bool saveRequired)
         {
             try
             {
-                if (m1 == null 
-                    || m2 == null)
+                if (local == null 
+                    || database == null)
                 {
-                    throw new Exception("Unable to merge/compare manual code!");
+                    throw new Exception(Properties.Resources.ErrorComparing);
                 }
 
                 string tmpOld = Path.GetTempFileName();
@@ -111,29 +132,59 @@ namespace CodeFlow
                 string tmpFinal = Path.GetTempFileName();
                 string finalCode;
 
+                string lname = "Genio copy";
+                string rname = "Working copy";
 
-                File.WriteAllText(tmpBD, m2.Code);
-                File.WriteAllText(tmpOld, m2.Code);
-                File.WriteAllText(tmpCode, m1.Code);
+                File.WriteAllText(tmpBD, database.Code);
+                File.WriteAllText(tmpOld, database.Code);
+                File.WriteAllText(tmpCode, local.Code);
+
 
                 Process merge = new Process();
-                merge.StartInfo.FileName = "TortoiseMerge.exe";
-                merge.StartInfo.Arguments =
-                    String.Format("/base:\"{0}\" /basename:\"BASE\" /theirs:\"{1}\" /mine:\"{2}\" /merged:\"{3}\" {4} {5}",
-                    tmpOld, tmpBD, tmpCode, tmpFinal, saveRequired ? "/saverequired" : "", saveRequired ? "/saverequiredonconflicts" : "");
+                if (!String.IsNullOrEmpty(PackageOperations.UseCustomTool))
+                {
+                    string tool = PackageOperations.UseCustomTool
+                        .Replace("%left", tmpBD)
+                        .Replace("%right", tmpCode)
+                        .Replace("%result", tmpFinal)
+                        .Replace("%lname", lname)
+                        .Replace("%rname", rname);
+
+                    int toolIDX = tool.IndexOf(' ');
+                    if (toolIDX == -1)
+                        throw new Exception(Properties.Resources.CustomToolError);
+
+                    merge.StartInfo.FileName = tool.Substring(0, toolIDX);
+                    merge.StartInfo.Arguments = tool.Substring(toolIDX);
+                }
+                else
+                {
+                    merge.StartInfo.FileName = "TortoiseMerge.exe";
+                    merge.StartInfo.Arguments =
+                        $"/base:\"{tmpOld}\" /basename:\"BASE\" " +
+                        $"/theirs:\"{tmpBD}\" /theirsname:{lname} " +
+                        $"/mine:\"{tmpCode}\" /minename:{rname} " +
+                        $"/merged:\"{tmpFinal}\" {(saveRequired ? " / saverequiredonconflicts" : "")}";
+                }
+
                 merge.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
                 merge.Start();
 
                 merge.WaitForExit();
 
                 finalCode = File.ReadAllText(tmpFinal);
+                if (String.IsNullOrEmpty(finalCode))
+                    finalCode = local.Code;
 
                 File.Delete(tmpBD);
                 File.Delete(tmpOld);
                 File.Delete(tmpCode);
                 File.Delete(tmpFinal);
 
-                IManual m = new ManuaCode(m1.CodeId, finalCode);
+                ConstructorInfo ctor = local.GetType().GetConstructor(new Type[] { });
+                IManual m = ctor.Invoke(new object[] { }) as IManual;
+                Util.CopyFrom(local.GetType(), local, m);
+                m.Code = finalCode;
                 m.Code = m.CodeTransformValueKey();
 
                 return m;
@@ -150,18 +201,18 @@ namespace CodeFlow
             int e = -1;
             IManual m = null;
             remaning = "";
-            Guid g;
+
             if (b != -1)
             {
                 string s = vscode.Substring(b + begin.Length);
-                int i = s.IndexOf(Utils.Util.NewLine);
+                int i = s.IndexOf(Util.NewLine);
 
                 if (i == -1)
                     return m;
 
                 string guid = s.Substring(0, i).Trim();
                 guid = guid.Substring(0, 36);
-                if (Guid.TryParse(guid, out g))
+                if (Guid.TryParse(guid, out Guid g))
                 {
                     e = s.IndexOf(end);
                     string c = "", code = "";
@@ -172,32 +223,31 @@ namespace CodeFlow
                             return m;
 
                         c = s.Substring(i);
-                        code = c.Substring(Utils.Util.NewLine.Length);
+                        code = c.Substring(Util.NewLine.Length);
                         remaning = "";
                     }
                     else
                     {
                         e = e - i;
+                        c = s.Substring(i, e);
+                        int tmp = c.LastIndexOf(Util.NewLine);
+                        if (tmp != -1)
+                            e = tmp;
+                        else
+                            e = c.Length - i - Util.NewLine.Length;
+                        code = c.Substring(Util.NewLine.Length, e - Util.NewLine.Length);
+
+                        b = vscode.IndexOf(begin, b);
+                        remaning = s.Substring(i + e);
 
                         int anotherB = s.IndexOf(begin, i, e);
                         if (anotherB != -1)
                             return m;
-
-                        c = s.Substring(i, e);
-                        int tmp = c.LastIndexOf(Utils.Util.NewLine);
-                        if (tmp != -1)
-                            e = tmp;
-                        else
-                            e = c.Length - i - Utils.Util.NewLine.Length;
-                        code = c.Substring(Utils.Util.NewLine.Length, e - Utils.Util.NewLine.Length);
-
-                        b = vscode.IndexOf(begin, b);
-                        remaning = s.Substring(i + e);
                     }
 
                     m = new T
                     {
-                        Code = code,
+                        Code = Util.ConverToDOSLineEndings(code),
                         CodeId = g
                     };
                     m.Code = m.CodeTransformKeyValue();
@@ -225,14 +275,6 @@ namespace CodeFlow
             }
 
             return c;
-        }
-        public static IManual Merge(IManual local, IManual bd)
-        {
-            return MergeCompare(local, bd, true);
-        }
-        public static void Compare(IManual local, IManual bd)
-        {
-            MergeCompare(local, bd, false);
         }
         protected void OpenSVNLog(string filePath)
         {
@@ -265,7 +307,6 @@ namespace CodeFlow
                     return "//" + str;
             }
         }
-
         public abstract void ShowSVNLog(Profile profile, string systemName);
         public abstract bool Update(Profile profile);
         public abstract string Lang { get; set; }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CodeFlow.CodeControl;
+using CodeFlow.ManualOperations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,31 +16,20 @@ namespace CodeFlow
 {
     public partial class CommitForm : Form
     {
-        private List<IManual> exportCode;
-        private Dictionary<Guid, List<ManuaCode>> conflictCode;
-        public CommitForm()
+        private DifferenceList differences;
+        private ConflictList conflictCode;
+        public CommitForm(DifferencesAnalyzer difs)
         {
             InitializeComponent();
-            exportCode = new List<IManual>();
-            conflictCode = new Dictionary<Guid, List<ManuaCode>>();
-        }
-        public CommitForm(List<IManual> manual)
-        {
-            InitializeComponent();
-            exportCode = manual;
-            conflictCode = new Dictionary<Guid, List<ManuaCode>>();
-        }
-        public CommitForm(List<IManual> manual, Dictionary<Guid, List<ManuaCode>> conflicts)
-        {
-            InitializeComponent();
-            exportCode = manual;
-            conflictCode = conflicts;
+            differences = difs.Differences;
+            conflictCode = difs.ManualConflict;
         }
 
-        private void RefreshLabels()
+
+        private void RefreshControls()
         {
             lblWarning.Visible = false;
-            lblManual.Text = String.Format(Properties.Resources.CommitEntries, exportCode.Count, conflictCode.Count);
+            lblManual.Text = String.Format(Properties.Resources.CommitEntries, differences.AsList.Count, conflictCode.AsList.Count);
             lblServer.Text = PackageOperations.GetActiveProfile().ToString();
 
             if (!String.IsNullOrEmpty(PackageOperations.SolutionProps.ClientInfo.Version)
@@ -68,41 +59,18 @@ namespace CodeFlow
             }
         }
 
-        private void RefreshControls()
-        {
-            RefreshLabels();
-            btnCompare.Enabled = false;
-            btnConflict.Enabled = false;
-            btnExport.Enabled = false;
-        }
-
         private void RefreshForm()
         {
             lstCode.Items.Clear();
-            for (int i = 0; i < exportCode.Count; i++)
-            {
-                ListViewItem item = new ListViewItem(exportCode[i].ShortOneLineCode());
-                item.SubItems.Add(exportCode[i].LocalFileName);
-                item.Tag = exportCode[i];
-                lstCode.Items.Add(item);
-            }
-            foreach (KeyValuePair<Guid, List<ManuaCode>> pair in conflictCode)
-            {
-                ListViewItem item = new ListViewItem(pair.Value[0].ShortOneLineCode());
-                item.Tag = pair;
-                item.ForeColor = Color.DarkRed;
-                lstCode.Items.Add(item);
-            }
+            foreach(Difference diff in differences.AsList)
+                AddListItem(diff, diff.IsMerged ? lblMerged.ForeColor : lblNotMerged.ForeColor, true);
+
+            foreach (Conflict pair in conflictCode.AsList)
+                AddListItem(pair, lblConflict.ForeColor, false);
+
             RefreshControls();
         }
-
-        private void btnConfigure_Click(object sender, EventArgs e)
-        {
-            ProfilesForm profilesForm = new ProfilesForm();
-            profilesForm.ShowDialog();
-            RefreshLabels();
-        }
-
+        
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -115,18 +83,17 @@ namespace CodeFlow
 
         private void btnCompare_Click(object sender, EventArgs e)
         {
-            ListView.SelectedListViewItemCollection items = lstCode.SelectedItems;
+            ListView.CheckedListViewItemCollection items = lstCode.CheckedItems;
             List<ListViewItem> itemsToRemove = new List<ListViewItem>();
             for (int i = 0; i < items.Count; i++)
             {
-                if (!(items[i].Tag is IManual))
+                if (!(items[i].Tag is Difference diff))
                     continue;
-                IManual man = (IManual)items[i].Tag;
 
-                DialogResult result = MergeCode(man);
+                DialogResult result = CommitMergeCode(diff);
                 if (result == DialogResult.Yes)
                 {
-                    exportCode.Remove(man);
+                    differences.AsList.Remove(diff);
                     itemsToRemove.Add(items[i]);
                 }
                 else if (result == DialogResult.Cancel)
@@ -136,39 +103,30 @@ namespace CodeFlow
             foreach (ListViewItem item in itemsToRemove)
                 lstCode.Items.Remove(item);
 
-            RefreshLabels();
+            RefreshControls();
 
             if (lstCode.Items.Count == 0)
                 this.Close();
         }
 
-        private DialogResult MergeCode(IManual man)
+        private DialogResult CommitMergeCode(Difference diff)
         {
             DialogResult funcResult = DialogResult.Yes;
+            IManual man = null;
             try
             {
-                Type t = man.GetType();
-                IManual bd = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { PackageOperations.GetActiveProfile(), man.CodeId }) as IManual;
-
-                if (bd == null)
-                {
-                    MessageBox.Show(String.Format(Properties.Resources.VerifyProfile), Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    funcResult = DialogResult.Cancel;
-                }
-                else
-                    man = Manual.Merge(man, bd);
+                man = Manual.Merge(diff.Database, diff.Local);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(String.Format(Properties.Resources.ErrorComparing, ex.Message),
-                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 funcResult = DialogResult.Cancel;
             }
 
             if (funcResult != DialogResult.Yes)
                 return funcResult;
 
-            funcResult = MessageBox.Show(Properties.Resources.ExportedMerged,
+            funcResult = MessageBox.Show(Properties.Resources.ExportedMerged, 
                 Properties.Resources.Export, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
             try
@@ -188,27 +146,24 @@ namespace CodeFlow
             return funcResult;
         }
 
-        private void btnExport_Click(object sender, EventArgs e)
+        private void btnCommit_Click(object sender, EventArgs e)
         {
-            DialogResult result;
-
-            result = MessageBox.Show(Properties.Resources.ConfirmationExport, Properties.Resources.Export, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
-            if (result != DialogResult.Yes)
+            if (MessageBox.Show(Properties.Resources.ConfirmationExport,
+                Properties.Resources.Export, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
-            ListView.ListViewItemCollection items = lstCode.Items;
+            ListView.CheckedListViewItemCollection items = lstCode.CheckedItems;
             List<ListViewItem> itemsToRemove = new List<ListViewItem>();
             for (int i = 0; i < items.Count; i++)
             {
-                if (!(items[i].Tag is IManual))
+                if (!(items[i].Tag is Difference))
                     continue;
-                IManual man = (IManual)items[i].Tag;
+                Difference diff = (Difference)items[i].Tag;
                 try
                 {
-                    if (man.Update(PackageOperations.GetActiveProfile()))
+                    if (diff.Local.Update(PackageOperations.GetActiveProfile()))
                     {
-                        exportCode.Remove(man);
+                        differences.AsList.Remove(diff);
                         itemsToRemove.Add(items[i]);
                     }
                 }
@@ -223,7 +178,7 @@ namespace CodeFlow
             foreach (ListViewItem item in itemsToRemove)
                 lstCode.Items.Remove(item);
 
-            RefreshLabels();
+            RefreshControls();
 
             if (lstCode.Items.Count == 0)
                 this.Close();
@@ -239,60 +194,45 @@ namespace CodeFlow
             if (lstCode.SelectedItems.Count == 1)
             {
                 ListViewItem item = lstCode.Items[lstCode.SelectedIndices[0]];
-                if (item.Tag is KeyValuePair<Guid, List<ManuaCode>> conflict)
-                {
-                    ConflictHandler conflictHandler = new ConflictHandler(conflict.Value);
-                    conflictHandler.UpdateForm += onConflictResolve;
-                    conflictHandler.Show(this);
-                }
-                else if (item.Tag is IManual)
-                {
-                    DialogResult result = MergeCode((IManual)item.Tag);
-                    if (result == DialogResult.Yes)
-                    {
-                        exportCode.Remove((IManual)item.Tag);
-                        lstCode.Items.Remove(lstCode.SelectedItems[0]);
-                    }
-                }
+
+                if (item.Tag is Conflict conflict)
+                    btnConflict_Click(sender, new EventArgs());
+
+                else if (item.Tag is Difference)
+                    btnMerge_Click(sender, new EventArgs());
             }
-
-            RefreshLabels();
-
-            if (lstCode.Items.Count == 0)
-                this.Close();
         }
 
         private void lstCode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            bool manual = false;
+            bool diff = false;
             bool conflict = false;
             foreach (ListViewItem item in lstCode.SelectedItems)
             {
-                if (item.Tag is IManual)
-                    manual = true;
+                if (item.Tag is Difference)
+                    diff = true;
                 else
                     conflict = true;
             }
-            if (manual != conflict)
+            if (diff != conflict)
             {
                 if (conflict)
                 {
-                    btnCompare.Enabled = false;
-                    btnExport.Enabled = false;
                     btnConflict.Enabled = true;
+                    btnMerge.Enabled = false;
                 }
                 else
                 {
-                    btnCompare.Enabled = true;
-                    btnExport.Enabled = true;
                     btnConflict.Enabled = false;
+
+                    if(lstCode.SelectedItems.Count == 1)
+                        btnMerge.Enabled = true;
                 }
             }
             else
             {
-                btnCompare.Enabled = false;
-                btnExport.Enabled = false;
                 btnConflict.Enabled = false;
+                btnMerge.Enabled = false;
             }
         }
 
@@ -301,26 +241,25 @@ namespace CodeFlow
         {
             if (lstCode.SelectedItems.Count == 1)
             {
-                ListViewItem item = lstCode.Items[lstCode.SelectedIndices[0]];
-                if (item.Tag is KeyValuePair<Guid, List<ManuaCode>> conflict)
+                if (lstCode.Items[lstCode.SelectedIndices[0]].Tag is Conflict conflict)
                 {
-                    ConflictHandler conflictHandler = new ConflictHandler(conflict.Value);
-                    conflictHandler.UpdateForm += onConflictResolve;
-                    conflictHandler.Show(this);
+                    ConflictForm conflictHandler = new ConflictForm(conflict);
+                    conflictHandler.UpdateForm += OnConflictResolve;
+                    conflictHandler.ShowDialog(this);
+                    RefreshControls();
                 }
             }
         }
 
-        // Nao se resolvem conflitos de CustomFunctions
-        private void onConflictResolve(object sender, ManuaCode code)
+        private void OnConflictResolve(object sender, ConflictResolveArgs args)
         {
-            if (code != null)
+            if (args != null)
             {
                 ListViewItem item = null;
                 foreach (ListViewItem it in lstCode.Items)
                 {
-                    if (it.Tag is KeyValuePair<Guid, List<ManuaCode>>
-                        && ((KeyValuePair<Guid, List<ManuaCode>>)it.Tag).Key.Equals(code.CodeId))
+                    if (it.Tag is Conflict
+                        && ((Conflict)it.Tag).Id.Equals(args.Conflict.Id))
                     {
                         item = it;
                         break;
@@ -330,14 +269,71 @@ namespace CodeFlow
                 if (item != null)
                 {
                     lstCode.Items.Remove(item);
-                    item = new ListViewItem(code.ShortOneLineCode());
-                    item.Tag = code;
-                    lstCode.Items.Add(item);
-                    exportCode.Add(code);
-                    conflictCode.Remove(code.CodeId);
-                    RefreshLabels();
+                    conflictCode.AsList.Remove(args.Conflict);
+
+                    if (args.Keep.HasDifference())
+                    {
+                        AddListItem(args.Keep, args.Keep.IsMerged ? lblMerged.ForeColor : lblNotMerged.ForeColor, true);
+                        differences.AsList.Add(args.Keep);
+                        RefreshControls();
+                    }
                 }
             }
+        }
+
+        private void btnMerge_Click(object sender, EventArgs e)
+        {
+            if(lstCode.SelectedItems.Count == 1
+                && lstCode.SelectedItems[0].Tag is Difference diff)
+            {
+                diff.Merge();
+                if (diff.HasDifference())
+                {
+                    lstCode.SelectedItems[0].Text = diff.Local.ShortOneLineCode();
+                    lstCode.SelectedItems[0].ForeColor = lblMerged.ForeColor;
+                }
+                else
+                    lstCode.Items.Remove(lstCode.SelectedItems[0]);
+            }
+        }
+
+        private void AddListItem(Difference diff, Color c, bool chk)
+        {
+            ListViewItem item = new ListViewItem(diff.Local.ShortOneLineCode());
+            item.SubItems.Add(diff.Local.LocalFileName);
+            item.Tag = diff;
+            item.Checked = chk;
+            item.ForeColor = c;
+            lstCode.Items.Add(item);
+        }
+
+        private void AddListItem(Conflict conf, Color c, bool chk)
+        {
+            ListViewItem item = new ListViewItem(conf.DifferenceList.AsList[0].Local.ShortOneLineCode());
+            item.SubItems.Add(conf.DifferenceList.AsList[0].Local.LocalFileName);
+            item.Tag = conf;
+            item.Checked = chk;
+            item.ForeColor = c;
+            lstCode.Items.Add(item);
+        }
+
+        private void lstCode_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            bool enable = false;
+            if (lstCode.CheckedItems.Count > 0)
+            {
+                foreach (ListViewItem item in lstCode.CheckedItems)
+                {
+                    if(item.Tag is Difference)
+                    {
+                        enable = true;
+                        break;
+                    }
+                }
+            }
+
+            btnCommit.Enabled = enable;
+            btnCompare.Enabled = enable;
         }
     }
 }

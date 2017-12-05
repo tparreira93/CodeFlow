@@ -94,11 +94,14 @@ namespace CodeFlow
         public override string TipoCodigo { get => "Manual"; }
         public override string Tag { get => Parameter; }
         public override string Tipo { get => TipoRotina; }
-        
+
+        #region LocalOperations
         private static Regex reg = new Regex(@"(Plataforma:)\s*(\w*)\s*(\|)\s*(Tipo:)\s*(\w*)\s*(\|)\s*(Modulo:)\s*(\w*)\s*(\|)\s*(Parametro:)\s*(\w*)\s*(\|)\s*(Ficheiro:)\s*(\w*)\s*(\|)\s*(Ordem:)\s*([+-]?([0-9]*[.])?[0-9]+)", RegexOptions.Compiled);
         public static string FixSetCurrentIndex(string code)
         {
-            return Regex.Replace(code, "(INX_[_0-9a-zA-Z]*)(.*)\\s*(\\/\\/)(\\s*)(\\[FNTX\\s*([0-9a-zA-Z_]|\\s|->)*\\])", "/$5/$2$3$4$5", RegexOptions.Multiline);
+            return Regex.Replace(code, "(INX_[_0-9a-zA-Z]*)(.*)\\s*(\\/\\/)(\\s*)(\\[FNTX\\s*([0-9a-zA-Z_]|\\s|->)*\\])", 
+                "/$5/$2$3$4$5", 
+                RegexOptions.Multiline | RegexOptions.Compiled);
         }
         public static List<IManual> GetManualCode(string vscode, string localFileName = "")
         {
@@ -176,6 +179,9 @@ namespace CodeFlow
 
             return str;
         }
+        #endregion
+
+        #region DatabaseOperations
         public override bool Update(Profile profile)
         {
             bool result = false;
@@ -189,7 +195,7 @@ namespace CodeFlow
                 {
                     try
                     {
-                        string c = CodeTransformKeyValue();
+                        string c = Util.ConverToDOSLineEndings(CodeTransformKeyValue());
 
                         SqlCommand cmd = new SqlCommand();
                         cmd.CommandText = String.Format("UPDATE GENMANUA SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODMANUA = @CODMANUA");
@@ -230,7 +236,7 @@ namespace CodeFlow
                         if(CodeId.Equals(Guid.Empty))
                             this.CodeId = Guid.NewGuid();
 
-                        string c = CodeTransformValueKey();
+                        string c = Util.ConverToDOSLineEndings(CodeTransformValueKey());
 
                         SqlCommand cmd = new SqlCommand();
                         cmd.CommandText = String.Format("INSERT INTO GENMANUA (CODMANUA, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, CORPO, LANG, ORDEM, CODCARAC, CODMODUL, ISSISTEM, NEGCARAC, CARAC, DATACRIA, OPERCRIA, ZZSTATE) "
@@ -293,7 +299,7 @@ namespace CodeFlow
                         {
                             reader.Read();
                             man.CodeId = reader.SafeGetGuid(0);
-                            man.Code = reader.SafeGetString(1);
+                            man.Code = Util.ConverToDOSLineEndings(reader.SafeGetString(1));
                             man.Plataform = reader.SafeGetString(2);
                             man.TipoRotina = reader.SafeGetString(3);
                             man.Modulo = reader.SafeGetString(4);
@@ -325,7 +331,7 @@ namespace CodeFlow
 
             return man;
         }
-        public static List<ManuaCode> Search(Profile profile, string texto, int limitBodySize = 80, bool caseSensitive = false, bool wholeWord = false, string plataform = "")
+        public static List<ManuaCode> Search(Profile profile, string texto, bool caseSensitive = false, bool wholeWord = false, string plataform = "")
         {
             List<ManuaCode> results = new List<ManuaCode>();
             SqlCommand cmd = new SqlCommand();
@@ -338,11 +344,8 @@ namespace CodeFlow
 
                 if (profile.GenioConfiguration.ConnectionIsOpen())
                 {
-                    string tmp = String.Format("LEFT(CORPO, {0})", limitBodySize);
-                    if (limitBodySize == 0)
-                        tmp = "CORPO";
-                    string manuaQuery = String.Format("SELECT CODMANUA, {0}, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, LANG, ORDEM, OPERCRIA, OPERMUDA, DATACRIA, DATAMUDA "
-                                                    + "FROM GENMANUA WHERE (' ' + CORPO + ' ') LIKE @TERM", tmp);
+                    string manuaQuery = String.Format("SELECT CODMANUA, @RESULT_LINE FOUND_LINE, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, LANG, ORDEM, OPERCRIA, OPERMUDA, DATACRIA, DATAMUDA "
+                                                    + "FROM GENMANUA WHERE (' ' + CORPO + ' ') LIKE @TERM @CASESENSITIVE");
 
                     if (plataform.Length != 0)
                     {
@@ -351,8 +354,17 @@ namespace CodeFlow
                     }
 
                     string search = "%" + texto + "%";
+                    string result_line = "RIGHT(LEFT(CORPO, @AFTER_NEWLINE), @BEFORE_NEWLINE)";
+                    string after_newline = "CHARINDEX(CHAR(13), CORPO, PATINDEX(@TERM, CORPO @CASESENSITIVE))";
+                    string before_newline = "CHARINDEX(CHAR(13), REVERSE(LEFT(CORPO, @AFTER_NEWLINE)), 2)";
+                    result_line = result_line.Replace("@BEFORE_NEWLINE", before_newline).Replace("@AFTER_NEWLINE", after_newline);
+                    manuaQuery = manuaQuery.Replace("@RESULT_LINE", result_line);
+
                     if (caseSensitive)
-                        manuaQuery += " COLLATE Latin1_General_BIN;";
+                        manuaQuery = manuaQuery.Replace("@CASESENSITIVE", "COLLATE Latin1_General_BIN");
+                    else
+                        manuaQuery = manuaQuery.Replace("@CASESENSITIVE", "");
+
                     if (wholeWord)
                         search = $"%[^a-z]{texto}[^a-z]%";
 
@@ -369,7 +381,7 @@ namespace CodeFlow
                             Guid codmanua = reader.SafeGetGuid(0);
                             string corpo = reader.SafeGetString(1);
 
-                            ManuaCode man = new ManuaCode(codmanua, corpo)
+                            ManuaCode man = new ManuaCode(codmanua, Util.ConverToDOSLineEndings(corpo))
                             {
                                 Plataform = reader.SafeGetString(2),
                                 TipoRotina = reader.SafeGetString(3),
@@ -402,5 +414,6 @@ namespace CodeFlow
 
             return results;
         }
+        #endregion
     }
 }

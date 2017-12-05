@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using CodeFlow.CommandHandlers;
 using System.Windows.Forms;
 using System.IO;
+using CodeFlow.ManualOperations;
+using CodeFlow.CodeControl;
 
 namespace CodeFlow.Commands
 {
@@ -55,14 +57,14 @@ namespace CodeFlow.Commands
             OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
             {
-                var submitCommand = new CommandID(ContextMenuSet, SubmitCommandId);
-                var submitMenuItem = new MenuCommand(this.SubmitGenio, submitCommand);
-                commandService.AddCommand(submitMenuItem);
+                var commitCommand = new CommandID(ContextMenuSet, SubmitCommandId);
+                var commitMenuItem = new MenuCommand(this.SubmitGenio, commitCommand);
+                commandService.AddCommand(commitMenuItem);
 
 
-                var importCommand = new CommandID(ContextMenuSet, ImportCommandId);
-                var importMenuItem = new MenuCommand(this.ImportGenio, importCommand);
-                commandService.AddCommand(importMenuItem);
+                var updateCommand = new CommandID(ContextMenuSet, ImportCommandId);
+                var updateMenuItem = new MenuCommand(this.ImportGenio, updateCommand);
+                commandService.AddCommand(updateMenuItem);
 
 
                 var createCommand = new CommandID(ContextMenuSet, CreateCommandId);
@@ -110,8 +112,9 @@ namespace CodeFlow.Commands
         private void SubmitGenio(object sender, EventArgs e)
         {
             List<IManual> manual = CommandHandler.SearchForTags(ServiceProvider);
-
-            CommitForm exportForm = new CommitForm(manual);
+            DifferencesAnalyzer diffs = new DifferencesAnalyzer();
+            diffs.CheckBDDifferences(manual, PackageOperations.GetActiveProfile());
+            CommitForm exportForm = new CommitForm(diffs);
             exportForm.ShowDialog();
         }
 

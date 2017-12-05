@@ -45,32 +45,9 @@ namespace CodeFlow
         public Genio Clone()
         {
             Genio g = new Genio();
-            CopyFrom(typeof(Genio), this, g);
-            /*
-            g.CheckoutPath = this.CheckoutPath;
-            g.Database = this.Database;
-            g.GenioPath = this.GenioPath;
-            g.GenioUser = this.GenioUser;
-            g.GenioVersion = this.GenioVersion;
-            g.Password = this.Password;
-            g.Server = this.Server;
-            g.Username = this.Username;
-            g.Plataforms = this.Plataforms;
-            g.SystemInitials = this.SystemInitials;
-            g.BDVersion = this.BDVersion;
-            g.ProductionSystem = this.ProductionSystem;*/
+            Util.CopyFrom(typeof(Genio), this, g);
 
             return g;
-        }
-
-        public static void CopyFrom(Type type, Genio source, Genio destination)
-        {
-            FieldInfo[] myObjectFields = type.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-
-            foreach (FieldInfo fi in myObjectFields)
-            {
-                fi.SetValue(destination, fi.GetValue(source));
-            }
         }
 
         public void ParseGenioFiles()

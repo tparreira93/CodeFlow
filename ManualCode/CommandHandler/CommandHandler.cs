@@ -11,14 +11,13 @@ using Microsoft.VisualStudio.Text.Editor;
 
 namespace CodeFlow.CommandHandlers
 {
-    internal class CommandHandler
+    internal static class CommandHandler
     {
         public static string GetCurrentViewText(IServiceProvider serviceProvider, out int cursorPos, out IWpfTextView textView)
         {
             var textManager = (IVsTextManager)serviceProvider.GetService(typeof(SVsTextManager));
             var componentModel = (IComponentModel)serviceProvider.GetService(typeof(SComponentModel));
             var editor = componentModel.GetService<IVsEditorAdaptersFactoryService>();
-
             textManager.GetActiveView(1, null, out IVsTextView textViewCurrent);
             textView = editor.GetWpfTextView(textViewCurrent);
 

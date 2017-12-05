@@ -20,6 +20,7 @@ namespace CodeFlow.Forms
         public bool Result { get; set; }
         public List<IManual> ExportCode { get; set; }
         public Dictionary<Guid, List<ManuaCode>> ConflictCode { get; set; }
+        public ProjectsAnalyzer Analyzer { get => analyzer; set => analyzer = value; }
 
         public ProjectSelectionForm(List<GenioProjectProperties> saved)
         {
@@ -43,12 +44,14 @@ namespace CodeFlow.Forms
 
                 TreeNode node = new TreeNode(genioProject.ProjectName);
                 node.Tag = genioProject;
+                node.Checked = true;
                 treeProjects.Nodes.Add(node);
 
                 foreach (GenioProjectItem item in genioProject.ProjectFiles)
                 {
                     TreeNode itemNode = new TreeNode(item.ItemName);
                     itemNode.Tag = item;
+                    itemNode.Checked = true;
                     node.Nodes.Add(itemNode);
                 }
             }
@@ -99,10 +102,10 @@ namespace CodeFlow.Forms
                     projects.Add(project);
                 }
             }
-            analyzer = new ProjectsAnalyzer();
-            analyzer.ProgressChanged += worker_ProgressChanged;
-            analyzer.RunWorkerCompleted += worker_end;
-            analyzer.RunWorkerAsync(projects);
+            Analyzer = new ProjectsAnalyzer();
+            Analyzer.ProgressChanged += worker_ProgressChanged;
+            Analyzer.RunWorkerCompleted += worker_end;
+            Analyzer.RunWorkerAsync(projects);
         }
 
         private void worker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
@@ -114,8 +117,6 @@ namespace CodeFlow.Forms
         {
             toolProgress.Value = 100;
             Result = true;
-            ExportCode = analyzer.Differences;
-            ConflictCode = analyzer.ManualConflict;
 
             this.Close();
         }
@@ -148,14 +149,14 @@ namespace CodeFlow.Forms
 
         private void cancelAnal_Click(object sender, EventArgs e)
         {
-            analyzer.CancelAsync();
+            Analyzer.CancelAsync();
             cancelAnal.Enabled = false;
         }
 
         private void ProjectSelectionForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (analyzer != null && analyzer.IsBusy)
-                analyzer.CancelAsync();
+            if (Analyzer != null && Analyzer.IsBusy)
+                Analyzer.CancelAsync();
         }
     }
 }

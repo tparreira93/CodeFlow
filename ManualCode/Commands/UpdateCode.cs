@@ -1,20 +1,19 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
-using System.Collections.Generic;
-using CodeFlow.ManualOperations;
+using System.Windows.Forms;
 
 namespace CodeFlow
 {
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class SubmitToGenio
+    internal sealed class UpdateCode
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 256;
+        public const int CommandId = 4129;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -27,21 +26,15 @@ namespace CodeFlow
         private readonly Package package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SubmitToGenio"/> class.
+        /// Initializes a new instance of the <see cref="UpdateCode"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private SubmitToGenio(Package package)
+        private UpdateCode(Package package)
         {
-            if (package == null)
-            {
-                throw new ArgumentNullException("package");
-            }
+            this.package = package ?? throw new ArgumentNullException("package");
 
-            this.package = package;
-
-            OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (commandService != null)
+            if (this.ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
                 var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
@@ -52,7 +45,7 @@ namespace CodeFlow
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static SubmitToGenio Instance
+        public static UpdateCode Instance
         {
             get;
             private set;
@@ -75,7 +68,7 @@ namespace CodeFlow
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new SubmitToGenio(package);
+            Instance = new UpdateCode(package);
         }
 
         /// <summary>
@@ -87,11 +80,11 @@ namespace CodeFlow
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            List<IManual> manual = CommandHandlers.CommandHandler.SearchForTags(ServiceProvider);
-            DifferencesAnalyzer diffs = new DifferencesAnalyzer();
-            diffs.CheckBDDifferences(manual);
-            CommitForm exportForm = new CommitForm(diffs.Differences, diffs.ManualConflict);
-            exportForm.ShowDialog();
+            if (!CommandHandlers.CommandHandler.ImportAndEditCurrentTag(ServiceProvider))
+            {
+                MessageBox.Show(Properties.Resources.VerifyProfile, Properties.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
         }
     }
 }

@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.Text;
+using System.Windows.Forms;
 
 namespace CodeFlow.CodeUtils
 {
@@ -91,8 +88,16 @@ namespace CodeFlow.CodeUtils
                 return;
             }
 
-            _manual.CompareDB(PackageOperations.GetActiveProfile());
-        }
+            try
+            {
+                _manual.CompareDB(PackageOperations.GetActiveProfile());
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(String.Format(Properties.Resources.UnableToExecute, ex.Message),
+                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+            }
+}
 
         public bool TryGetTelemetryId(out Guid telemetryId)
         {

@@ -75,7 +75,7 @@
             this.chkSystem.Margin = new System.Windows.Forms.Padding(4);
             this.chkSystem.Name = "chkSystem";
             this.chkSystem.Size = new System.Drawing.Size(76, 21);
-            this.chkSystem.TabIndex = 2;
+            this.chkSystem.TabIndex = 3;
             this.chkSystem.Text = "System";
             this.chkSystem.UseVisualStyleBackColor = true;
             this.chkSystem.CheckedChanged += new System.EventHandler(this.chkSystem_CheckedChanged);
@@ -89,7 +89,7 @@
             this.cmbModule.Margin = new System.Windows.Forms.Padding(4);
             this.cmbModule.Name = "cmbModule";
             this.cmbModule.Size = new System.Drawing.Size(116, 24);
-            this.cmbModule.TabIndex = 3;
+            this.cmbModule.TabIndex = 4;
             // 
             // cmbFeature
             // 
@@ -100,7 +100,7 @@
             this.cmbFeature.Margin = new System.Windows.Forms.Padding(4);
             this.cmbFeature.Name = "cmbFeature";
             this.cmbFeature.Size = new System.Drawing.Size(160, 24);
-            this.cmbFeature.TabIndex = 4;
+            this.cmbFeature.TabIndex = 5;
             // 
             // chkInhibt
             // 
@@ -110,7 +110,7 @@
             this.chkInhibt.Margin = new System.Windows.Forms.Padding(4);
             this.chkInhibt.Name = "chkInhibt";
             this.chkInhibt.Size = new System.Drawing.Size(67, 21);
-            this.chkInhibt.TabIndex = 5;
+            this.chkInhibt.TabIndex = 6;
             this.chkInhibt.Text = "Inhibit";
             this.chkInhibt.UseVisualStyleBackColor = true;
             // 
@@ -121,7 +121,7 @@
             this.txtFile.Margin = new System.Windows.Forms.Padding(4);
             this.txtFile.Name = "txtFile";
             this.txtFile.Size = new System.Drawing.Size(105, 22);
-            this.txtFile.TabIndex = 6;
+            this.txtFile.TabIndex = 7;
             // 
             // txtOrder
             // 
@@ -130,7 +130,7 @@
             this.txtOrder.Margin = new System.Windows.Forms.Padding(4);
             this.txtOrder.Name = "txtOrder";
             this.txtOrder.Size = new System.Drawing.Size(92, 22);
-            this.txtOrder.TabIndex = 7;
+            this.txtOrder.TabIndex = 8;
             // 
             // label1
             // 
@@ -204,7 +204,7 @@
             this.cmbType.Margin = new System.Windows.Forms.Padding(4);
             this.cmbType.Name = "cmbType";
             this.cmbType.Size = new System.Drawing.Size(269, 24);
-            this.cmbType.TabIndex = 14;
+            this.cmbType.TabIndex = 1;
             // 
             // txtParam
             // 
@@ -214,7 +214,7 @@
             this.txtParam.Margin = new System.Windows.Forms.Padding(4);
             this.txtParam.Name = "txtParam";
             this.txtParam.Size = new System.Drawing.Size(223, 22);
-            this.txtParam.TabIndex = 15;
+            this.txtParam.TabIndex = 2;
             // 
             // label7
             // 
@@ -235,7 +235,7 @@
             this.rtCode.Margin = new System.Windows.Forms.Padding(4);
             this.rtCode.Name = "rtCode";
             this.rtCode.Size = new System.Drawing.Size(1320, 642);
-            this.rtCode.TabIndex = 17;
+            this.rtCode.TabIndex = 9;
             this.rtCode.Text = "";
             // 
             // btnCancel
@@ -247,7 +247,7 @@
             this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(92, 30);
-            this.btnCancel.TabIndex = 18;
+            this.btnCancel.TabIndex = 11;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -261,7 +261,7 @@
             this.btnCreate.Margin = new System.Windows.Forms.Padding(4);
             this.btnCreate.Name = "btnCreate";
             this.btnCreate.Size = new System.Drawing.Size(105, 30);
-            this.btnCreate.TabIndex = 19;
+            this.btnCreate.TabIndex = 10;
             this.btnCreate.Text = "Create";
             this.btnCreate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCreate.UseVisualStyleBackColor = true;

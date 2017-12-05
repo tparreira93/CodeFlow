@@ -32,5 +32,6 @@ namespace CodeFlow
 
         string ShortOneLineCode(int max = 100);
         void CompareDB(Profile profile);
+        IManual MergeDB(Profile profile);
     }
 }

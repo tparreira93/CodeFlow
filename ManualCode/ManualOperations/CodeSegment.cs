@@ -35,7 +35,6 @@ namespace CodeFlow.ManualOperations
         public int SegmentLength { get => segmentLength; }
         public int SegmentStart { get => segmentStart; }
         public string SimplifiedBufferSegment { get => simplifiedBufferSegment; }
-
         public static CodeSegment ParseFromPosition(string str_begin, string str_end, string textBuffer, int cursorPos)
         {
             CodeSegment seg = new CodeSegment(textBuffer, cursorPos);

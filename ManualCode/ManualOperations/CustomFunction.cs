@@ -41,33 +41,13 @@ namespace CodeFlow
         public CustomFunction()
         {
         }
-
-        public CustomFunction(string code)
-        {
-            this.Code = code;
-        }
-        public CustomFunction(string code, string nome)
-        {
-            this.Code = code;
-            this.Nome = nome;
-        }
         public CustomFunction(Guid codeID, string code)
         {
             this.CodeId = codeID;
             this.Code = code;
         }
-        public override void ShowSVNLog(Profile profile, string systemName)
-        {
-            try
-            {
-                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "Functions." + systemName}");
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
 
-        }
+        #region DatabaseOperations
         public override bool Update(Profile profile)
         {
             bool result = false;
@@ -80,7 +60,7 @@ namespace CodeFlow
                 {
                     try
                     {
-                        string c = CodeTransformValueKey();
+                        string c = Util.ConverToDOSLineEndings(CodeTransformValueKey());
 
                         SqlCommand cmd = new SqlCommand();
                         cmd.CommandText = String.Format("UPDATE GENIMPLS SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODIMPLS = @CODIMPLS");
@@ -139,7 +119,7 @@ namespace CodeFlow
                             custom.Codfuncs = reader.SafeGetGuid(0);
                             custom.CodeId = reader.SafeGetGuid(1);
                             custom.Nome = reader.SafeGetString(2);
-                            custom.Code = reader.SafeGetString(3);
+                            custom.Code = Util.ConverToDOSLineEndings(reader.SafeGetString(3));
                             custom.Plataform = reader.SafeGetString(4);
                             custom.Tiportn = reader.SafeGetString(5);
                             custom.Ordem = reader.SafeGetDouble(6);
@@ -168,7 +148,7 @@ namespace CodeFlow
 
             return custom;
         }
-        public static List<CustomFunction> Search(Profile profile, string texto, int limitBodySize = 80, bool caseSensitive = false, bool wholeWord = false, string plataform = "")
+        public static List<CustomFunction> Search(Profile profile, string texto, bool caseSensitive = false, bool wholeWord = false, string plataform = "")
         {
             List<CustomFunction> results = new List<CustomFunction>();
             SqlCommand cmd = new SqlCommand();
@@ -181,15 +161,19 @@ namespace CodeFlow
 
                 if (profile.GenioConfiguration.ConnectionIsOpen())
                 {
-                    string tmp = String.Format("LEFT(CORPO, {0})", limitBodySize);
-                    if (limitBodySize == 0)
-                        tmp = "CORPO";
-                    string customFuncQuery = String.Format("SELECT IMPLS.CODIMPLS, {0}, IMPLS.PLATAFOR, FUNCS.NOME, FUNCS.CODFUNCS," +
+                    string customFuncQuery = String.Format("SELECT IMPLS.CODIMPLS, @RESULT_LINE FOUND_LINE, IMPLS.PLATAFOR, FUNCS.NOME, FUNCS.CODFUNCS," +
                                                             " FUNCS.TIPORTN, FUNCS.ORDEM, FUNCS.LARGURA, FUNCS.DECIMAIS, FUNCS.RESUMPRM, " +
                                                             " IMPLS.OPERCRIA, IMPLS.OPERMUDA, IMPLS.DATACRIA, IMPLS.DATAMUDA" +
                                                             " FROM GENFUNCS FUNCS" +
                                                             " INNER JOIN GENIMPLS IMPLS ON IMPLS.CODFUNCS = FUNCS.CODFUNCS" +
-                                                            " WHERE ", tmp);
+                                                            " WHERE @WHERE @CASESENSITIVE");
+
+                    
+                    string result_line = "RIGHT(LEFT(CORPO, @AFTER_NEWLINE), @BEFORE_NEWLINE)";
+                    string after_newline = "CHARINDEX(CHAR(13), CORPO, PATINDEX(@TERM, CORPO @CASESENSITIVE))";
+                    string before_newline = "CHARINDEX(CHAR(13), REVERSE(LEFT(CORPO, @AFTER_NEWLINE)), 2)";
+                    result_line =result_line.Replace("@BEFORE_NEWLINE", before_newline).Replace("@AFTER_NEWLINE", after_newline);
+                    customFuncQuery = customFuncQuery.Replace("@RESULT_LINE", $"CASE WHEN LEN({result_line}) = 0 THEN CORPO ELSE LEFT({result_line}, 100) END");
 
                     string search = "%" + texto + "%";
                     string whr = "(' ' + CORPO + ' ') LIKE @TERM OR (' ' + NOME + ' ') LIKE @TERM";
@@ -198,11 +182,14 @@ namespace CodeFlow
                         customFuncQuery += " (" + whr + ") AND PLATAFOR = @PLATAFORM";
                         cmd.Parameters.AddWithValue("@PLATAFORM", plataform);
                     }
-                    else
-                        customFuncQuery += whr;
+
+                    customFuncQuery = customFuncQuery.Replace("@WHERE", whr);
 
                     if (caseSensitive)
-                        customFuncQuery += " COLLATE Latin1_General_BIN;";
+                        customFuncQuery = customFuncQuery.Replace("@CASESENSITIVE", "COLLATE Latin1_General_BIN");
+                    else
+                        customFuncQuery = customFuncQuery.Replace("@CASESENSITIVE", "");
+                    
                     if (wholeWord)
                         search = $"%[^a-z]{texto}[^a-z]%";
 
@@ -219,7 +206,7 @@ namespace CodeFlow
                             Guid codmanua = reader.SafeGetGuid(0);
                             string corpo = reader.SafeGetString(1);
 
-                            CustomFunction custom = new CustomFunction(codmanua, corpo);
+                            CustomFunction custom = new CustomFunction(codmanua, Util.ConverToDOSLineEndings(corpo));
                             custom.Plataform = reader.SafeGetString(2);
                             custom.Nome = reader.SafeGetString(3);
                             custom.Codfuncs = reader.SafeGetGuid(4);
@@ -252,6 +239,9 @@ namespace CodeFlow
 
             return results;
         }
+        #endregion
+
+        #region LocalOperations
         public static List<IManual> GetManualCode(string vscode, string localFileName = "")
         {
             List<IManual> codeList = new List<IManual>();
@@ -268,7 +258,18 @@ namespace CodeFlow
 
             return codeList;
         }
+        public override void ShowSVNLog(Profile profile, string systemName)
+        {
+            try
+            {
+                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "Functions." + systemName}");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
 
+        }
         public override string ToString()
         {
             string str = BEGIN_MANUAL + this.CodeId.ToString() + Utils.Util.NewLine;
@@ -278,5 +279,15 @@ namespace CodeFlow
 
             return str;
         }
+        public string FormatCode(string extension)
+        {
+            string str = FormatComment(extension, BEGIN_MANUAL + this.CodeId.ToString()) + Utils.Util.NewLine;
+            str += this.Code;
+            str += Utils.Util.NewLine;
+            str += FormatComment(extension, END_MANUAL);
+
+            return str;
+        }
+        #endregion
     }
 }

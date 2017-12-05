@@ -201,8 +201,8 @@
                         Profile p = PackageOperations.GetActiveProfile();
                         try
                         {
-                            res.AddRange(ManuaCode.Search(p, PackageOperations.CurrentSearch, 150, PackageOperations.CaseSensitive, PackageOperations.WholeWordSearch, searchPlat));
-                            res.AddRange(CustomFunction.Search(p, PackageOperations.CurrentSearch, 150, PackageOperations.CaseSensitive, PackageOperations.WholeWordSearch, searchPlat));
+                            res.AddRange(ManuaCode.Search(p, PackageOperations.CurrentSearch,  PackageOperations.CaseSensitive, PackageOperations.WholeWordSearch, searchPlat));
+                            res.AddRange(CustomFunction.Search(p, PackageOperations.CurrentSearch, PackageOperations.CaseSensitive, PackageOperations.WholeWordSearch, searchPlat));
                         }
                         catch (Exception ex)
                         {

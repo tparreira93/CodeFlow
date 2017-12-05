@@ -13,6 +13,7 @@ namespace CodeFlow
     {
         private string ignoreFilesFilters;
         private string extFilters;
+        private string useCustomTool;
         private bool lightbulbSuggestions;
         private bool parseSolutionOnStartup;
         private bool autoVCCTO2008Fix;
@@ -100,6 +101,19 @@ namespace CodeFlow
             {
                 autoExportSaved = value;
                 PackageOperations.AutoExportSaved = value;
+            }
+        }
+
+        [Category("Merge")]
+        [DefaultValue(false)]
+        [DisplayName("Use another tool")]
+        [Description("Use another tool to compare. Use the options %left is the path of genio copy, %right is the path of the working copy and %result is the merged path. All this options must be specified.")]
+        public string UseCustomTool
+        {
+            get => useCustomTool; set
+            {
+                useCustomTool = value;
+                PackageOperations.UseCustomTool = value;
             }
         }
     }

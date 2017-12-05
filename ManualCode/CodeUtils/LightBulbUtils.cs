@@ -92,15 +92,15 @@ namespace CodeFlow.CodeUtils
                 CompareDBSuggestion compare = new CompareDBSuggestion(man);
                 actions.Add(compare);
 
-                ExportToGenioSuggestion export = new ExportToGenioSuggestion(man);
+                CommitSuggestion export = new CommitSuggestion(man);
                 actions.Add(export);
                 
-                CompareExportDBSuggestion compareExport = new CompareExportDBSuggestion(man);
+                CompareCommitBSuggestion compareExport = new CompareCommitBSuggestion(man);
                 actions.Add(compareExport);
 
                 if (segment.SegmentStart > 0 && segment.SegmentLength > 0)
                 {
-                    ImportFromDBSuggestion import = new ImportFromDBSuggestion(segment.SegmentStart, segment.SegmentLength, textView, textBuffer, man.CodeId);
+                    UpdateSuggestion import = new UpdateSuggestion(segment.SegmentStart, segment.SegmentLength, textView, textBuffer, man.CodeId);
                     actions.Add(import);
                 }
 

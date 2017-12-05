@@ -103,6 +103,16 @@ namespace CodeFlow.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap arrow_merge_16xLG {
+            get {
+                object obj = ResourceManager.GetObject("arrow_merge_16xLG", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Cancel_16x {
             get {
                 object obj = ResourceManager.GetObject("Cancel_16x", resourceCulture);
@@ -215,7 +225,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to commit all non conflict code in the list to Genio?.
+        ///   Looks up a localized string similar to Are you sure you want to commit all selected non conflict code in the list to Genio?.
         /// </summary>
         internal static string ConfirmationExport {
             get {
@@ -306,6 +316,15 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to use desired tool. Please check your custom tool options..
+        /// </summary>
+        internal static string CustomToolError {
+            get {
+                return ResourceManager.GetString("CustomToolError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap DeleteUser_16x {
@@ -355,8 +374,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error occurred while comparing code!
-        ///{0}.
+        ///   Looks up a localized string similar to An error occurred while comparing code!.
         /// </summary>
         internal static string ErrorComparing {
             get {
@@ -487,6 +505,16 @@ namespace CodeFlow.Properties {
         internal static string Import {
             get {
                 return ResourceManager.GetString("Import", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Join_16x {
+            get {
+                object obj = ResourceManager.GetObject("Join_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

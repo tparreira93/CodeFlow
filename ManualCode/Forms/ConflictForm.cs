@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CodeFlow.CodeControl;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,26 +12,25 @@ using System.Windows.Forms;
 
 namespace CodeFlow
 {
-    public partial class ConflictHandler : Form
+    public partial class ConflictForm : Form
     {
-        private List<ManuaCode> conflictList;
-        public event EventHandler<ManuaCode> UpdateForm;
+        private Conflict conflict;
+        public event EventHandler<ConflictResolveArgs> UpdateForm;
 
-        public ConflictHandler(List<ManuaCode> conflicts)
+        public ConflictForm(Conflict conf)
         {
             InitializeComponent();
-            conflictList = conflicts;
+            conflict = conf;
         }
 
         private void RefreshForm()
         {
-            int substringSize = 250;
-            int sz = substringSize;
-            foreach (ManuaCode m in conflictList)
+            foreach (Difference diff in conflict.DifferenceList.AsList)
             {
                 ListViewItem item = new ListViewItem();
-                item.Text = m.ShortOneLineCode();
-                item.SubItems.Add(m.LocalFileName);
+                item.Text = diff.Local.ShortOneLineCode();
+                item.SubItems.Add(diff.Local.LocalFileName);
+                item.Tag = diff;
                 lstConflicts.Items.Add(item);
             }
         }
@@ -42,16 +42,12 @@ namespace CodeFlow
 
         private void btnUse_Click(object sender, EventArgs e)
         {
-            ManuaCode m = null;
-            if (lstConflicts.SelectedItems.Count == 1)
+            if (lstConflicts.SelectedItems.Count == 1 && lstConflicts.Items[lstConflicts.SelectedIndices[0]].Tag is Difference diff)
             {
-                ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
-                m = (ManuaCode)item.Tag;
-            }
-
-            if (m != null)
-            {
-                this.UpdateForm(this, m);
+                ConflictResolveArgs args = new ConflictResolveArgs();
+                args.Conflict = conflict;
+                args.Keep = diff;
+                this.UpdateForm(this, args);
                 this.Close();
             }
         }
@@ -61,9 +57,9 @@ namespace CodeFlow
             if (lstConflicts.SelectedItems.Count == 1)
             {
                 ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
-                ManuaCode m = (ManuaCode)item.Tag;
+                Difference m = (Difference)item.Tag;
 
-                PackageOperations.OpenManualFile(m, false);
+                PackageOperations.OpenManualFile(m.Local, false);
             }
         }
 
@@ -72,9 +68,9 @@ namespace CodeFlow
             if(lstConflicts.SelectedItems.Count == 1)
             {
                 ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
-                ManuaCode m = (ManuaCode)item.Tag;
+                Difference m = (Difference)item.Tag;
 
-                PackageOperations.OpenManualFile(m, false);
+                PackageOperations.OpenManualFile(m.Local, false);
             }
         }
 
@@ -90,9 +86,29 @@ namespace CodeFlow
         private void lstConflicts_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lstConflicts.SelectedItems.Count == 1)
+            {
+                btnMerge.Enabled = true;
+                btnViewCode.Enabled = true;
                 btnUse.Enabled = true;
+            }
             else
+            {
+                btnMerge.Enabled = false;
+                btnViewCode.Enabled = false;
                 btnUse.Enabled = false;
+            }
+        }
+
+        private void btnMerge_Click(object sender, EventArgs e)
+        {
+            if (lstConflicts.SelectedItems.Count == 1)
+            {
+                ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
+                Difference diff = (Difference)item.Tag;
+
+                diff.Merge();
+                lstConflicts.SelectedItems[0].Text = diff.Local.ShortOneLineCode();
+            }
         }
     }
 }

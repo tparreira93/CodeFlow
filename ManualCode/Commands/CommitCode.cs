@@ -1,25 +1,21 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Globalization;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using EnvDTE;
 using System.Collections.Generic;
-using System.IO;
-using CodeFlow.Forms;
-using CodeFlow.SolutionOperations;
+using CodeFlow.ManualOperations;
+using CodeFlow.CodeControl;
 
 namespace CodeFlow
 {
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class ExportSolution
+    internal sealed class CommitCode
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4133;
+        public const int CommandId = 256;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -32,11 +28,11 @@ namespace CodeFlow
         private readonly Package package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExportSolution"/> class.
+        /// Initializes a new instance of the <see cref="CommitCode"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private ExportSolution(Package package)
+        private CommitCode(Package package)
         {
             if (package == null)
             {
@@ -57,7 +53,7 @@ namespace CodeFlow
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static ExportSolution Instance
+        public static CommitCode Instance
         {
             get;
             private set;
@@ -80,7 +76,7 @@ namespace CodeFlow
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new ExportSolution(package);
+            Instance = new CommitCode(package);
         }
 
         /// <summary>
@@ -92,22 +88,11 @@ namespace CodeFlow
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            if(PackageOperations.DTE.Solution is null
-                || PackageOperations.DTE.Solution.Projects.Count == 0
-                || !PackageOperations.DTE.Solution.IsOpen)
-                return;
-
-            ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(PackageOperations.SavedFiles);
-            selectionProjectForm.ShowDialog();
-
-            if(selectionProjectForm.Result)
-            {
-                List<IManual> toExport = selectionProjectForm.ExportCode;
-                Dictionary<Guid, List<ManuaCode>> conflict = selectionProjectForm.ConflictCode;
-
-                CommitForm export = new CommitForm(toExport, conflict);
-                export.Show();
-            }
+            List<IManual> manual = CommandHandlers.CommandHandler.SearchForTags(ServiceProvider);
+            DifferencesAnalyzer diffs = new DifferencesAnalyzer();
+            diffs.CheckBDDifferences(manual, PackageOperations.GetActiveProfile());
+            CommitForm exportForm = new CommitForm(diffs);
+            exportForm.ShowDialog();
         }
     }
 }

@@ -52,7 +52,7 @@ namespace CodeFlow
         private bool isSolution = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SubmitToGenio"/> class.
+        /// Initializes a new instance of the <see cref="CommitCode"/> class.
         /// </summary>
         public CodeFlowPackage()
         {
@@ -71,11 +71,11 @@ namespace CodeFlow
         protected override void Initialize()
         {
             base.Initialize();
-            SubmitToGenio.Initialize(this);
-            ImportFromGenio.Initialize(this);
+            CommitCode.Initialize(this);
+            UpdateCode.Initialize(this);
             CreateInGenio.Initialize(this);
             ManageProfiles.Initialize(this);
-            ExportSolution.Initialize(this);
+            CommitSolution.Initialize(this);
             ContextMenu.Initialize(this);
             ToolWindow.SearchToolCommand.Initialize(this);
 

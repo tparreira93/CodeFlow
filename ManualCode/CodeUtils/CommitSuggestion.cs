@@ -1,41 +1,33 @@
-﻿using CodeFlow.CommandHandlers;
+﻿using CodeFlow.CodeControl;
+using CodeFlow.ManualOperations;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace CodeFlow.CodeUtils
 {
-    internal class ImportFromDBSuggestion : ISuggestedAction
+    internal class CommitSuggestion : ISuggestedAction
     {
-        private readonly Guid codmanua;
-        private readonly string display;
-        private readonly ITextBuffer textBuffer;
-        private readonly ITextView textView;
-        private readonly int begin;
-        private readonly int end;
+        private readonly IManual _manual;
+        private readonly string _display;
 
-        public ImportFromDBSuggestion(int begin, int end, ITextView textView, ITextBuffer textBuffer, Guid codmanua)
+        public CommitSuggestion(IManual manual)
         {
-            this.textBuffer = textBuffer;
-            this.textView = textView;
-            this.codmanua = codmanua;
-            this.begin = begin;
-            this.end = end;
-            this.display = string.Format("Update manual code.");
+            _manual = manual;
+            _display = string.Format("Commit manual code.");
         }
 
         public string DisplayText
         {
             get
             {
-                return display;
+                return _display;
             }
         }
 
@@ -99,17 +91,13 @@ namespace CodeFlow.CodeUtils
             {
                 return;
             }
-
-            try
+            if (_manual is ManuaCode)
             {
-                ManuaCode bd = ManuaCode.GetManual(PackageOperations.GetActiveProfile(), codmanua);
-                if (bd == null)
-                    return;
-                
-                CommandHandler.EditCodeSegment(textView.TextBuffer, begin, end, bd.Code);
+                DifferencesAnalyzer diffs = new DifferencesAnalyzer();
+                diffs.CheckBDDifferences(_manual, PackageOperations.GetActiveProfile());
+                CommitForm exportForm = new CommitForm(diffs);
+                exportForm.ShowDialog();
             }
-            catch (Exception)
-            {}
         }
 
         public bool TryGetTelemetryId(out Guid telemetryId)

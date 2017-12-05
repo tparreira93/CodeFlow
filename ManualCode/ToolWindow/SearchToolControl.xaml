@@ -20,13 +20,11 @@
         <ListView x:Name="lstFindMan" MouseDoubleClick="lstFindMan_MouseDoubleClick">
             <ListView.View>
                 <GridView>
-                    <GridView.Columns>
-                        <GridViewColumn Header="Type"               Width="100"  DisplayMemberBinding="{Binding TipoCodigo}"/>
+                    <GridViewColumn Header="Type"               Width="100"  DisplayMemberBinding="{Binding TipoCodigo}"/>
                         <GridViewColumn Header="Tag"                Width="150"  DisplayMemberBinding="{Binding Tag}"/>
                         <GridViewColumn Header="Rot."               Width="100"  DisplayMemberBinding="{Binding Tipo}"/>
                         <GridViewColumn Header="Plataform"          Width="100"  DisplayMemberBinding="{Binding Plataform}"/>
-                        <GridViewColumn Header="Code"               Width="900" DisplayMemberBinding="{Binding OneLineCode}"/>
-                    </GridView.Columns>
+                    <GridViewColumn Header="Code"               Width="900" DisplayMemberBinding="{Binding OneLineCode}"/>
                 </GridView>
             </ListView.View>
         </ListView>

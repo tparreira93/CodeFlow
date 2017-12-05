@@ -54,10 +54,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CodeControl\Conflict.cs" />
+    <Compile Include="CodeControl\ConflictList.cs" />
+    <Compile Include="CodeControl\ConflictResolveArgs.cs" />
+    <Compile Include="CodeControl\Difference.cs" />
+    <Compile Include="CodeControl\DifferenceList.cs" />
     <Compile Include="CodeUtils\CompareDBSuggestion.cs" />
-    <Compile Include="CodeUtils\CompareExportDBSuggestion.cs" />
-    <Compile Include="CodeUtils\ExportToGenioSuggestion.cs" />
-    <Compile Include="CodeUtils\ImportFromDBSuggestion.cs" />
+    <Compile Include="CodeUtils\CompareCommitBSuggestion.cs" />
+    <Compile Include="CodeUtils\CommitSuggestion.cs" />
+    <Compile Include="CodeUtils\UpdateSuggestion.cs" />
     <Compile Include="CodeUtils\LightBulbUtils.cs" />
     <Compile Include="CodeUtils\OpenSVNSuggestion.cs" />
     <Compile Include="CommandHandler\CommandHandler.cs" />
@@ -66,7 +71,7 @@
     <Compile Include="Commands\RefreshSolution.cs" />
     <Compile Include="GenioOperations\GenioPlataform.cs" />
     <Compile Include="GenioOperations\TipoRotina.cs" />
-    <Compile Include="ManualOperations\DifferencesAnalyzer.cs" />
+    <Compile Include="CodeControl\DifferencesAnalyzer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -74,11 +79,11 @@
     </Compile>
     <Compile Include="SolutionOperations\ClientInfo.cs" />
     <Compile Include="PackageOperations.cs" />
-    <Compile Include="Forms\SelectionProjectForm.cs">
+    <Compile Include="Forms\ProjectSelectionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SelectionProjectForm.Designer.cs">
-      <DependentUpon>SelectionProjectForm.cs</DependentUpon>
+    <Compile Include="Forms\ProjectSelectionForm.Designer.cs">
+      <DependentUpon>ProjectSelectionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="OptionsPageGrid.cs">
       <SubType>Component</SubType>
@@ -91,11 +96,11 @@
       <DependentUpon>SearchToolControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\DBName.cs" />
-    <Compile Include="Forms\ConflictHandler.cs">
+    <Compile Include="Forms\ConflictForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ConflictHandler.Designer.cs">
-      <DependentUpon>ConflictHandler.cs</DependentUpon>
+    <Compile Include="Forms\ConflictForm.Designer.cs">
+      <DependentUpon>ConflictForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ManualOperations\CodeSegment.cs" />
     <Compile Include="ManualOperations\CustomFunction.cs" />
@@ -106,11 +111,11 @@
     <Compile Include="SolutionOperations\SolutionAnalyzer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\ConnectionForm.cs">
+    <Compile Include="Forms\ProfileForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ConnectionForm.Designer.cs">
-      <DependentUpon>ConnectionForm.cs</DependentUpon>
+    <Compile Include="Forms\ProfileForm.Designer.cs">
+      <DependentUpon>ProfileForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Commands\CreateInGenio.cs" />
     <Compile Include="Forms\CreateInGenioForm.cs">
@@ -119,16 +124,16 @@
     <Compile Include="Forms\CreateInGenioForm.Designer.cs">
       <DependentUpon>CreateInGenioForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ExportForm.cs">
+    <Compile Include="Forms\CommitForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ExportForm.Designer.cs">
-      <DependentUpon>ExportForm.cs</DependentUpon>
+    <Compile Include="Forms\CommitForm.Designer.cs">
+      <DependentUpon>CommitForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Commands\ExportSolution.cs" />
+    <Compile Include="Commands\CommitSolution.cs" />
     <Compile Include="GenioOperations\Genio.cs" />
-    <Compile Include="Commands\ImportFromGenio.cs" />
-    <Compile Include="Commands\ExportToGenio.cs" />
+    <Compile Include="Commands\UpdateCode.cs" />
+    <Compile Include="Commands\CommitCode.cs" />
     <Compile Include="Commands\ManageProfiles.cs" />
     <Compile Include="CodeFlowPackage.cs" />
     <Compile Include="ManualOperations\Manual.cs" />
@@ -201,6 +206,7 @@
     <None Include="Resources\Download_grey_16x.png" />
     <None Include="Resources\action_add_16xLG.png" />
     <None Include="Resources\Add_grey_16x.png" />
+    <None Include="Resources\arrow_merge_16xLG.png" />
     <Content Include="Resources\ico_01.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -223,6 +229,7 @@
     <None Include="Resources\Refresh_grey_16x.png" />
     <None Include="Resources\VSO_Add_16x.png" />
     <None Include="Resources\Synchronize_16x.png" />
+    <None Include="Resources\Join_16x.png" />
     <Content Include="stylesheet.css" />
   </ItemGroup>
   <ItemGroup>
@@ -356,23 +363,23 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\ConflictHandler.resx">
-      <DependentUpon>ConflictHandler.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ConflictForm.resx">
+      <DependentUpon>ConflictForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ConnectionForm.resx">
-      <DependentUpon>ConnectionForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ProfileForm.resx">
+      <DependentUpon>ProfileForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CreateInGenioForm.resx">
       <DependentUpon>CreateInGenioForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ExportForm.resx">
-      <DependentUpon>ExportForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\CommitForm.resx">
+      <DependentUpon>CommitForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProfilesForm.resx">
       <DependentUpon>ProfilesForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SelectionProjectForm.resx">
-      <DependentUpon>SelectionProjectForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ProjectSelectionForm.resx">
+      <DependentUpon>ProjectSelectionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

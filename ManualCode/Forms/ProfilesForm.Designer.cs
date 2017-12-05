@@ -47,7 +47,8 @@
             this.chConnection});
             this.lstProfiles.FullRowSelect = true;
             this.lstProfiles.Location = new System.Drawing.Point(17, 16);
-            this.lstProfiles.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lstProfiles.Margin = new System.Windows.Forms.Padding(4);
+            this.lstProfiles.MultiSelect = false;
             this.lstProfiles.Name = "lstProfiles";
             this.lstProfiles.Size = new System.Drawing.Size(839, 445);
             this.lstProfiles.TabIndex = 0;
@@ -71,7 +72,7 @@
             this.btnExit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnExit.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
             this.btnExit.Location = new System.Drawing.Point(777, 468);
-            this.btnExit.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnExit.Margin = new System.Windows.Forms.Padding(4);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(79, 30);
             this.btnExit.TabIndex = 3;
@@ -85,7 +86,7 @@
             this.btnAddProf.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnAddProf.Image = global::CodeFlow.Properties.Resources.AddUser_16x;
             this.btnAddProf.Location = new System.Drawing.Point(17, 466);
-            this.btnAddProf.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnAddProf.Margin = new System.Windows.Forms.Padding(4);
             this.btnAddProf.Name = "btnAddProf";
             this.btnAddProf.Size = new System.Drawing.Size(95, 30);
             this.btnAddProf.TabIndex = 1;
@@ -99,7 +100,7 @@
             this.btnRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnRemove.Image = global::CodeFlow.Properties.Resources.DeleteUser_16x;
             this.btnRemove.Location = new System.Drawing.Point(120, 466);
-            this.btnRemove.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnRemove.Margin = new System.Windows.Forms.Padding(4);
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size(115, 30);
             this.btnRemove.TabIndex = 2;
@@ -119,7 +120,7 @@
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.lstProfiles);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ProfilesForm";
             this.Text = "Manage profiles";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProfilesForm_FormClosing);

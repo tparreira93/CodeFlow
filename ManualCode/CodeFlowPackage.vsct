@@ -67,7 +67,7 @@
         <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbar" />
       </Group>
       <!-- CONTEXT MENU GROUP-->
-      <Group guid="guidVCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" />
+      <Group guid="guidCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" />
       <!-- TOOL WINDOW TOOLBAR SEARCH-->
       <!--
       <Group guid="CodeFlowCommandSet" id="SearchToolbarGroup" priority="0x0500">
@@ -215,23 +215,23 @@
           If you do not want an image next to your command, remove the Icon node /> -->
       
         <!-- TOOLBAR BUTTONS-->
-      <Button guid="CodeFlowCommandSet" id="cmdSubmitGenio" priority="0x0100" type="Button">
+      <Button guid="CodeFlowCommandSet" id="cmdCommitCode" priority="0x0100" type="Button">
         <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" /> 
-        <Icon guid="exportGenioImage" id="bmpPic1" />
+        <Icon guid="commitCodeImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Commit</ButtonText>
         </Strings>
       </Button>
-      <Button guid="CodeFlowCommandSet" id="cmdExportSolution" priority="0x0100" type="Button">
+      <Button guid="CodeFlowCommandSet" id="cmdCommitSolution" priority="0x0100" type="Button">
          <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" /> 
-        <Icon guid="exportSolutionImage" id="bmpPic1" />
+        <Icon guid="commitSolutionImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Commit solution</ButtonText>
         </Strings>
       </Button>
-      <Button guid="CodeFlowCommandSet" id="cmdImportFromGenio" priority="0x0100" type="Button">
+      <Button guid="CodeFlowCommandSet" id="cmdUpdateCode" priority="0x0100" type="Button">
         <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" />
-        <Icon guid="importGenioImage" id="bmpPic1" />
+        <Icon guid="updateCodeImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Update</ButtonText>
         </Strings>
@@ -268,19 +268,19 @@
       
       
       <!--CODE WINDOW CONTEXT MENU-->
-      <Button guid="guidVCodeFlowContextMenuCmdSet" id="cmdidSubmitGenioContextMenu" type="Button">
-        <Icon guid="exportGenioImage" id="bmpPic1" />
+      <Button guid="guidCodeFlowContextMenuCmdSet" id="cmdidCommitCodeContextMenu" type="Button">
+        <Icon guid="commitCodeImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Commit</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidVCodeFlowContextMenuCmdSet" id="cmdidImportGenioContextMenu" type="Button">
-        <Icon guid="importGenioImage" id="bmpPic1" />
+      <Button guid="guidCodeFlowContextMenuCmdSet" id="cmdidUpdateCodeContextMenu" type="Button">
+        <Icon guid="updateCodeImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Update</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidVCodeFlowContextMenuCmdSet" id="cmdidCreateGenioContextMenu" type="Button">
+      <Button guid="guidCodeFlowContextMenuCmdSet" id="cmdidCreateGenioContextMenu" type="Button">
         <Icon guid="createGenioImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Create</ButtonText>
@@ -326,12 +326,12 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="exportGenioImage" href="Resources\Upload_gray_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="importGenioImage" href="Resources\Download_grey_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="commitCodeImage" href="Resources\Upload_gray_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="updateCodeImage" href="Resources\Download_grey_16x.png" usedList="bmpPic1" />
       <Bitmap guid="createGenioImage" href="Resources\Add_grey_16x.png" usedList="bmpPic1" />
       <Bitmap guid="searchGenioImage" href="Resources\Search_16x.png" usedList="bmpPic1" />
       <Bitmap guid="manageGenioProfilesImage" href="Resources\Team_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="exportSolutionImage" href="Resources\Synchronize_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="commitSolutionImage" href="Resources\Synchronize_16x.png" usedList="bmpPic1" />
       <Bitmap guid="fixPlataformImage" href="Resources\Event_16x.png" usedList="bmpPic1" />
       <Bitmap guid="refreshSolutionImage" href="Resources\Refresh_grey_16x.png" usedList="bmpPic1" />
       <Bitmap guid="buttonSearchToolwindow" href="Resources\Search_16x.png" usedList="bmpPic1" />
@@ -353,20 +353,20 @@
     <!-- Placement for group. The parent of a group is a menu, context menu or toolbar. 
            The priority sets the position of the group compared to the priority of other existing groups in the menu.    
       -->
-    <CommandPlacement guid="guidVCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" priority="0xFFFF">
+    <CommandPlacement guid="guidCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" priority="0xFFFF">
       <!-- The parent of the group will be the code window context menu -->
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN" />
     </CommandPlacement>
 
     <!-- Placement for command. The parent of a command is always a group, never a menu, context menu or toolbar. -->
-    <CommandPlacement guid="guidVCodeFlowContextMenuCmdSet" id="cmdidSubmitGenioContextMenu" priority="0x0001">
-      <Parent guid="guidVCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" />
+    <CommandPlacement guid="guidCodeFlowContextMenuCmdSet" id="cmdidCommitCodeContextMenu" priority="0x0001">
+      <Parent guid="guidCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" />
     </CommandPlacement>
-    <CommandPlacement guid="guidVCodeFlowContextMenuCmdSet" id="cmdidImportGenioContextMenu" priority="0x0001">
-      <Parent guid="guidVCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" />
+    <CommandPlacement guid="guidCodeFlowContextMenuCmdSet" id="cmdidUpdateCodeContextMenu" priority="0x0001">
+      <Parent guid="guidCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" />
     </CommandPlacement>
-    <CommandPlacement guid="guidVCodeFlowContextMenuCmdSet" id="cmdidCreateGenioContextMenu" priority="0x0001">
-      <Parent guid="guidVCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" />
+    <CommandPlacement guid="guidCodeFlowContextMenuCmdSet" id="cmdidCreateGenioContextMenu" priority="0x0001">
+      <Parent guid="guidCodeFlowContextMenuCmdSet" id="ContextCommandsGroup" />
     </CommandPlacement>
   </CommandPlacements>
 
@@ -380,18 +380,18 @@
       <IDSymbol name="CodeFlowToolbarGroup" value="4144" />
       <IDSymbol name="cmdGenioProfilesCombo" value="257" />
       <IDSymbol name="cmdGenioProfilesComboGetList" value="258" />
-      <IDSymbol name="cmdSubmitGenio" value="256" />
-      <IDSymbol name="cmdImportFromGenio" value="4129" />
+      <IDSymbol name="cmdCommitCode" value="256" />
+      <IDSymbol name="cmdUpdateCode" value="4129" />
       <IDSymbol name="cmdCreateInGenio" value="4130" />
       <IDSymbol name="cmdManageProfiles" value="4132" />
-      <IDSymbol name="cmdExportSolution" value="4133" />
+      <IDSymbol name="cmdCommitSolution" value="4133" />
       <IDSymbol name="cmdidFixVS2008Solution" value="4134" />
       <IDSymbol name="cmdidRefreshSolution" value="4135" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidVCodeFlowContextMenuCmdSet" value="{7547EBCE-1079-4C06-8B74-BFE595D61E7E}">
-      <IDSymbol name="cmdidSubmitGenioContextMenu" value="5130" />
-      <IDSymbol name="cmdidImportGenioContextMenu" value="5131" />
+    <GuidSymbol name="guidCodeFlowContextMenuCmdSet" value="{7547EBCE-1079-4C06-8B74-BFE595D61E7E}">
+      <IDSymbol name="cmdidCommitCodeContextMenu" value="5130" />
+      <IDSymbol name="cmdidUpdateCodeContextMenu" value="5131" />
       <IDSymbol name="cmdidCreateGenioContextMenu" value="5132" />
       <IDSymbol name="ContextCommandsGroup" value="5129" />
     </GuidSymbol>
@@ -413,11 +413,11 @@
       <IDSymbol name="cmdIdPlataformComboGetList" value="0x2007" />
     </GuidSymbol>
 
-    <GuidSymbol value="{fb7e123d-6799-411e-ac2f-0cc621636931}" name="exportGenioImage">
+    <GuidSymbol value="{fb7e123d-6799-411e-ac2f-0cc621636931}" name="commitCodeImage">
       <IDSymbol name="bmpPic1" value="1" />
     </GuidSymbol>
   
-    <GuidSymbol value="{ce2d19a6-a945-4d58-8035-305733537cfd}" name="importGenioImage">
+    <GuidSymbol value="{ce2d19a6-a945-4d58-8035-305733537cfd}" name="updateCodeImage">
       <IDSymbol name="bmpPic1" value="1" />
     </GuidSymbol>
   
@@ -433,7 +433,7 @@
       <IDSymbol name="bmpPic1" value="1" />
     </GuidSymbol>
   
-    <GuidSymbol value="{c1c018c1-ba6f-485e-8b83-0fb7d8f00b4f}" name="exportSolutionImage">
+    <GuidSymbol value="{c1c018c1-ba6f-485e-8b83-0fb7d8f00b4f}" name="commitSolutionImage">
       <IDSymbol name="bmpPic1" value="1" />
     </GuidSymbol>
   

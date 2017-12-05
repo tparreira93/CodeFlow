@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System.Xml.Serialization;
 using System.Text;
 using System.Reflection;
+using CodeFlow.Utils;
 
 namespace CodeFlow
 {
@@ -19,6 +20,8 @@ namespace CodeFlow
         public static object lockObject = new object();
         private static Profile activeProfile = new Profile();
         private static bool autoExportSaved;
+
+
         private static List<Profile> allProfiles = new List<Profile>();
         private static List<string> openFiles = new List<string>();
         private static Dictionary<string, Type> openManual = new Dictionary<string, Type>();
@@ -28,7 +31,8 @@ namespace CodeFlow
         private static bool wholeWordSearch = false;
         private static bool caseSensitive = false;
         private static string currentSearch = "";
-        
+        private static string useCustomTool = "";
+
         #region ToolOptions
         private static List<string> extensionFilters = new List<string>() { "cpp", "cs", "xml", "h" };
         private static List<string> ignoreFilesFilters = new List<string>();
@@ -46,6 +50,7 @@ namespace CodeFlow
         public static bool ParseSolution { get => parseSolution; set => parseSolution = value; }
         public static bool ContinuousAnalysis { get => continuousAnalysis; set => continuousAnalysis = value; }
         public static bool AutoVCCTO2008Fix { get; internal set; }
+        public static string UseCustomTool { get => useCustomTool; set => useCustomTool = value; }
         public static DTE2 DTE { get => dte; set => dte = value; }
         public static bool WholeWordSearch { get => wholeWordSearch; set => wholeWordSearch = value; }
         public static bool CaseSensitive { get => caseSensitive; set => caseSensitive = value; }
@@ -75,7 +80,7 @@ namespace CodeFlow
             {
                 //Copy stuff
                 oldProfile.GenioConfiguration.CloseConnection();
-                Genio.CopyFrom(typeof(Genio), newProfile.GenioConfiguration, oldProfile.GenioConfiguration);
+                Util.CopyFrom(typeof(Genio), newProfile.GenioConfiguration, oldProfile.GenioConfiguration);
                 oldProfile.ProfileName = newProfile.ProfileName;
 
                 // Load genio data

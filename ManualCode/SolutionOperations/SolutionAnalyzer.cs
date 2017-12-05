@@ -4,23 +4,23 @@ using System.IO;
 using System.ComponentModel;
 using CodeFlow.ManualOperations;
 using System.Text;
+using CodeFlow.CodeControl;
 
 namespace CodeFlow.SolutionOperations
 {
     public class ProjectsAnalyzer : BackgroundWorker
     {
-        private DifferencesAnalyzer diffAnalyzer;
+        private DifferencesAnalyzer differences;
 
         public ProjectsAnalyzer()
         {
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
             DoWork += Analyze;
-            diffAnalyzer = new DifferencesAnalyzer();
+            Differences = new DifferencesAnalyzer();
         }
 
-        public Dictionary<Guid, List<ManuaCode>> ManualConflict { get => diffAnalyzer.ManualConflict; }
-        public List<IManual> Differences { get => diffAnalyzer.Differences; }
+        public DifferencesAnalyzer Differences { get => differences; set => differences = value; }
 
         private void Analyze(object sender, DoWorkEventArgs e)
         {
@@ -66,8 +66,8 @@ namespace CodeFlow.SolutionOperations
             byte[] unicodeBytes = Encoding.Convert(enc, unicode, encBytes);
             string convertedCode = unicode.GetString(unicodeBytes);*/
 
-            List<IManual> tmp = ManuaCode.GetManualCode(code);
-            diffAnalyzer.CheckBDDifferences(tmp);
+            List<IManual> tmp = ManuaCode.GetManualCode(code, Path.GetFileName(file));
+            Differences.CheckBDDifferences(tmp, PackageOperations.GetActiveProfile());
         }
     }
 }
