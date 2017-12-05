@@ -354,7 +354,7 @@ namespace CodeFlow
                     }
 
                     string search = "%" + texto + "%";
-                    string result_line = "RIGHT(LEFT(CORPO, @AFTER_NEWLINE), @BEFORE_NEWLINE)";
+                    string result_line = "LEFT(SUBSTRING(CORPO, @BEFORE_NEWLINE, CASE WHEN @AFTER_NEWLINE = 0 THEN LEN(CORPO) ELSE @AFTER_NEWLINE END), 400)";
                     string after_newline = "CHARINDEX(CHAR(13), CORPO, PATINDEX(@TERM, CORPO @CASESENSITIVE))";
                     string before_newline = "CHARINDEX(CHAR(13), REVERSE(LEFT(CORPO, @AFTER_NEWLINE)), 2)";
                     result_line = result_line.Replace("@BEFORE_NEWLINE", before_newline).Replace("@AFTER_NEWLINE", after_newline);
