@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace CodeFlow
 {
@@ -144,18 +146,22 @@ namespace CodeFlow
                 if (!String.IsNullOrEmpty(PackageOperations.UseCustomTool))
                 {
                     string tool = PackageOperations.UseCustomTool
-                        .Replace("%left", tmpBD)
-                        .Replace("%right", tmpCode)
-                        .Replace("%result", tmpFinal)
-                        .Replace("%lname", lname)
-                        .Replace("%rname", rname);
+                        .Replace("%left",   "\"" + tmpBD + "\"")
+                        .Replace("%right",  "\"" + tmpCode + "\"")
+                        .Replace("%result", "\"" + tmpFinal + "\"")
+                        .Replace("%lname",  "\"" + lname + "\"")
+                        .Replace("%rname",  "\"" + rname + "\"");
 
-                    int toolIDX = tool.IndexOf(' ');
-                    if (toolIDX == -1)
+                    var parts = Regex.Matches(tool, @"[\""].+?[\""]|[^ ]+")
+                                    .Cast<Match>()
+                                    .Select(p => p.Value)
+                                    .ToList();
+
+                    if (parts.Count < 2)
                         throw new Exception(Properties.Resources.CustomToolError);
 
-                    merge.StartInfo.FileName = tool.Substring(0, toolIDX);
-                    merge.StartInfo.Arguments = tool.Substring(toolIDX);
+                    merge.StartInfo.FileName = parts[0];
+                    merge.StartInfo.Arguments = tool.Substring(parts[0].Length);
                 }
                 else
                 {
