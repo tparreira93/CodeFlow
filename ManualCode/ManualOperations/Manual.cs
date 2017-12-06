@@ -54,20 +54,15 @@ namespace CodeFlow
         };
         
         public abstract Guid CodeId { get; set; }
-
-        [DBName("Corpo")]
+        
         public virtual string Code { get => corpo; set => corpo = value; }
-
-        [DBName("Plataform")]
+        
         public string Plataform { get => plataform; set => plataform = value; }
-
-        [DBName("OPERMUDA")]
+        
         public string CreatedBy { get => createdBy; set => createdBy = value; }
-
-        [DBName("DATAMUDA")]
+        
         public DateTime LastChangeDate { get => lastChangeDate; set => lastChangeDate = value; }
-
-        [DBName("DATACRIA")]
+        
         public DateTime CreationDate { get => creationDate; set => creationDate = value; }
 
         public string GetCodeExtension(Profile p)
@@ -261,6 +256,13 @@ namespace CodeFlow
             }
 
             return m;
+        }
+        public static List<IManual> SearchDatabase(Profile profile, string texto, bool caseSensitive = false, bool wholeWord = false, string plataform = "")
+        {
+            List<IManual> results = new List<IManual>();
+            results.AddRange(ManuaCode.Search(profile, texto, caseSensitive, wholeWord, plataform));
+            results.AddRange(CustomFunction.Search(profile, texto, caseSensitive, wholeWord, plataform));
+            return results;
         }
         public string CodeTransformKeyValue()
         {

@@ -6,40 +6,28 @@ using CodeFlow.Utils;
 using System.Text;
 namespace CodeFlow
 {
-    [DBName("GENMANUA")]
     public class ManuaCode : Manual
     {
-        [DBName("tipo")]
         private string tipo = "";
-
-        [DBName("modulo")]
+        
         private string modulo = "";
 
-        [DBName("codmodul")]
         private Guid codmodul = Guid.Empty;
-
-        [DBName("parameter")]
+        
         private string parameter = "";
-
-        [DBName("lang")]
+        
         private string lang = "";
-
-        [DBName("feature")]
+        
         private string feature = "";
-
-        [DBName("codfeature")]
+        
         private Guid codfeature = Guid.Empty;
-
-        [DBName("file")]
+        
         private string file = "";
-
-        [DBName("order")]
+        
         private double order = 0;
-
-        [DBName("system")]
+        
         private int system = 0;
-
-        [DBName("inhib")]
+        
         private int inhib = 0;
 
         public static string BEGIN_MANUAL = "BEGIN_MANUALCODE_CODMANUA:";
@@ -75,10 +63,8 @@ namespace CodeFlow
         {
             this.Code = code;
         }
-
-        [DBName("CODMANUA")]
+        
         public override Guid CodeId { get => codeID; set => codeID = value; }
-        [DBName("CORPO")]
         public override string Code { get => corpo; set => corpo = value; }
         public string Modulo { get => modulo; set => modulo = value; }
         public string Parameter { get => parameter; set => parameter = value; }
@@ -331,9 +317,9 @@ namespace CodeFlow
 
             return man;
         }
-        public static List<ManuaCode> Search(Profile profile, string texto, bool caseSensitive = false, bool wholeWord = false, string plataform = "")
+        public static List<IManual> Search(Profile profile, string texto, bool caseSensitive = false, bool wholeWord = false, string plataform = "")
         {
-            List<ManuaCode> results = new List<ManuaCode>();
+            List<IManual> results = new List<IManual>();
             SqlCommand cmd = new SqlCommand();
             SqlDataReader reader = null;
 
@@ -354,9 +340,9 @@ namespace CodeFlow
                     }
 
                     string search = "%" + texto + "%";
-                    string result_line = "LEFT(SUBSTRING(CORPO, @BEFORE_NEWLINE, CASE WHEN @AFTER_NEWLINE = 0 THEN LEN(CORPO) ELSE @AFTER_NEWLINE END), 400)";
-                    string after_newline = "CHARINDEX(CHAR(13), CORPO, PATINDEX(@TERM, CORPO @CASESENSITIVE))";
-                    string before_newline = "CHARINDEX(CHAR(13), REVERSE(LEFT(CORPO, @AFTER_NEWLINE)), 2)";
+                    string result_line = "LEFT(RIGHT(LEFT(CORPO, COALESCE(NULLIF(@AFTER_NEWLINE, 0), LEN(CORPO))), COALESCE(NULLIF(@BEFORE_NEWLINE, 0), LEN(CORPO))), 400)";
+                    string after_newline = "CHARINDEX(CHAR(10), CORPO, PATINDEX(@TERM, CORPO @CASESENSITIVE))";
+                    string before_newline = "CHARINDEX(CHAR(10), REVERSE(LEFT(CORPO, @AFTER_NEWLINE)), 2)";
                     result_line = result_line.Replace("@BEFORE_NEWLINE", before_newline).Replace("@AFTER_NEWLINE", after_newline);
                     manuaQuery = manuaQuery.Replace("@RESULT_LINE", result_line);
 

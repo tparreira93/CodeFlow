@@ -442,6 +442,16 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to parse system info.
+        ///{0}.
+        /// </summary>
+        internal static string ErrorSystemInfo {
+            get {
+                return ResourceManager.GetString("ErrorSystemInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occurred while updating manual code!
         ///{0}.
         /// </summary>

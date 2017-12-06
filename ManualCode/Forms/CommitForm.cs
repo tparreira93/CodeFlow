@@ -25,7 +25,6 @@ namespace CodeFlow
             conflictCode = difs.ManualConflict;
         }
 
-
         private void RefreshControls()
         {
             lblWarning.Visible = false;
@@ -57,6 +56,7 @@ namespace CodeFlow
                 lblProd.Text = String.Format(Properties.Resources.ProfileDev, PackageOperations.GetActiveProfile().GenioConfiguration.GenioVersion);
                 lblProd.ForeColor = Color.DarkGreen;
             }
+            RefreshButtons();
         }
 
         private void RefreshForm()
@@ -103,10 +103,10 @@ namespace CodeFlow
             foreach (ListViewItem item in itemsToRemove)
                 lstCode.Items.Remove(item);
 
-            RefreshControls();
-
             if (lstCode.Items.Count == 0)
                 this.Close();
+
+            RefreshControls();
         }
 
         private DialogResult CommitMergeCode(Difference diff)
@@ -148,8 +148,9 @@ namespace CodeFlow
 
         private void btnCommit_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show(Properties.Resources.ConfirmationExport,
-                Properties.Resources.Export, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+            if (lstCode.CheckedItems.Count == 0
+                || MessageBox.Show(Properties.Resources.ConfirmationExport, 
+                    Properties.Resources.Export, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                 return;
 
             ListView.CheckedListViewItemCollection items = lstCode.CheckedItems;
@@ -177,11 +178,11 @@ namespace CodeFlow
 
             foreach (ListViewItem item in itemsToRemove)
                 lstCode.Items.Remove(item);
-
-            RefreshControls();
-
+            
             if (lstCode.Items.Count == 0)
                 this.Close();
+
+            RefreshControls();
         }
 
         private void ExportForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -275,8 +276,8 @@ namespace CodeFlow
                     {
                         AddListItem(args.Keep, args.Keep.IsMerged ? lblMerged.ForeColor : lblNotMerged.ForeColor, true);
                         differences.AsList.Add(args.Keep);
-                        RefreshControls();
                     }
+                    RefreshControls();
                 }
             }
         }
@@ -295,6 +296,7 @@ namespace CodeFlow
                 else
                     lstCode.Items.Remove(lstCode.SelectedItems[0]);
             }
+            RefreshControls();
         }
 
         private void AddListItem(Difference diff, Color c, bool chk)
@@ -319,21 +321,33 @@ namespace CodeFlow
 
         private void lstCode_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
+            RefreshButtons();
+        }
+
+        private void RefreshButtons()
+        {
             bool enable = false;
-            if (lstCode.CheckedItems.Count > 0)
+            foreach (ListViewItem item in lstCode.CheckedItems)
             {
-                foreach (ListViewItem item in lstCode.CheckedItems)
+                if (item.Tag is Difference)
                 {
-                    if(item.Tag is Difference)
-                    {
-                        enable = true;
-                        break;
-                    }
+                    enable = true;
+                    break;
                 }
             }
 
             btnCommit.Enabled = enable;
             btnCompare.Enabled = enable;
+        }
+
+        private void lstCode_KeyDown(object sender, KeyEventArgs e)
+        {
+
+            if (lstCode.SelectedItems.Count == 1
+                && e.KeyCode == Keys.Enter)
+            {
+                lstCode_MouseDoubleClick(this, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
+            }
         }
     }
 }

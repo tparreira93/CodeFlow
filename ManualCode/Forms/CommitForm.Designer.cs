@@ -118,6 +118,7 @@
             this.lstCode.View = System.Windows.Forms.View.Details;
             this.lstCode.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lstCode_ItemChecked);
             this.lstCode.SelectedIndexChanged += new System.EventHandler(this.lstCode_SelectedIndexChanged);
+            this.lstCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstCode_KeyDown);
             this.lstCode.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstCode_MouseDoubleClick);
             // 
             // clCode

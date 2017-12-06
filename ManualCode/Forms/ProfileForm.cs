@@ -139,13 +139,23 @@ namespace CodeFlow
 
         private bool saveProfile(Profile oldProfile, Profile newProfile)
         {
-            if (!PackageOperations.UpdateProfile(oldProfile, newProfile))
+            bool result = false;
+            try
             {
-                MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
+                if (!PackageOperations.UpdateProfile(oldProfile, newProfile))
+                {
+                    MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    result = false;
+                }
+                DialogResult = DialogResult.OK;
+                result = true;
             }
-            DialogResult = DialogResult.OK;
-            return true;
+            catch(Exception e)
+            {
+                MessageBox.Show(e.Message, Properties.Resources.Configuration, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                result = false;
+            }
+            return result;
         }
 
         private bool addProfile(Profile newProfile)

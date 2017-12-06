@@ -345,4 +345,8 @@ Verify your profile</value>
   <data name="CustomToolError" xml:space="preserve">
     <value>Unable to use desired tool. Please check your custom tool options.</value>
   </data>
+  <data name="ErrorSystemInfo" xml:space="preserve">
+    <value>Unable to parse system info.
+{0}</value>
+  </data>
 </root>

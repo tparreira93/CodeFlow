@@ -12,6 +12,7 @@ using System.Xml.Serialization;
 using System.Text;
 using System.Reflection;
 using CodeFlow.Utils;
+using System.ComponentModel.Design;
 
 namespace CodeFlow
 {
@@ -95,7 +96,17 @@ namespace CodeFlow
         {
             Profile p = AllProfiles.Find(x => x.ProfileName.Equals(profileName));
             if (p != null)
+            {
                 AllProfiles.Remove(p);
+
+
+                if (AllProfiles.Count == 0 && ServiceProvider.GlobalProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+                {
+                    OleMenuCommand cmd = commandService.FindCommand(new CommandID(PackageGuidList.guidComboBoxCmdSet, (int)PackageCommandList.cmdGenioProfilesCombo)) as OleMenuCommand;
+                    if (cmd != null)
+                        cmd.Invoke("", IntPtr.Zero);
+                }
+            }
         }
         public static void SetProfile(string profileName)
         {
@@ -379,8 +390,8 @@ namespace CodeFlow
             // definitely) the user's local codepage! One might present to the user a
             // list of alternative encodings as shown here: https://stackoverflow.com/questions/8509339/what-is-the-most-common-encoding-of-each-language
             // A full list can be found using Encoding.GetEncodings();
-            text = Encoding.Default.GetString(b);
-            return Encoding.Default;
+            text = Encoding.GetEncoding(1252).GetString(b);
+            return Encoding.GetEncoding(1252);
         }
         #endregion
     }

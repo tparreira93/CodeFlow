@@ -95,7 +95,6 @@
     <Compile Include="ToolWindow\SearchToolControl.xaml.cs">
       <DependentUpon>SearchToolControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utils\DBName.cs" />
     <Compile Include="Forms\ConflictForm.cs">
       <SubType>Form</SubType>
     </Compile>

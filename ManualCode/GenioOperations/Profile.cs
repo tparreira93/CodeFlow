@@ -14,7 +14,6 @@ namespace CodeFlow
         private Guid profileID = Guid.NewGuid();
         private Genio genioConfiguration = new Genio();
         private String profileName = "";
-
         public Profile()
         {
         }

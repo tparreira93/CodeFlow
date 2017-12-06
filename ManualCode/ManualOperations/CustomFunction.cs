@@ -5,7 +5,6 @@ using CodeFlow.Utils;
 
 namespace CodeFlow
 {
-    [DBName("GENIMPLS")]
     public class CustomFunction : Manual
     {
         public static string BEGIN_MANUAL = "BEGIN_CUSTOMFUNCS_CODFUNCS:";
@@ -19,14 +18,11 @@ namespace CodeFlow
         private double largura;
         private double decimais;
         private string resumprm = "";
-
-        [DBName("CODIMPLS")]
+        
         public override Guid CodeId { get => codeID; set => codeID = value; }
-
-        [DBName("CODFUNCS")]
+        
         public Guid Codfuncs { get => codfuncs; set => codfuncs = value; }
-
-        [DBName("NOME")]
+        
         public string Nome { get => nome; set => nome = value; }
         public override string Lang { get => lang; set => lang = value; }
         public override string Tag { get => Nome; }
@@ -148,9 +144,9 @@ namespace CodeFlow
 
             return custom;
         }
-        public static List<CustomFunction> Search(Profile profile, string texto, bool caseSensitive = false, bool wholeWord = false, string plataform = "")
+        public static List<IManual> Search(Profile profile, string texto, bool caseSensitive = false, bool wholeWord = false, string plataform = "")
         {
-            List<CustomFunction> results = new List<CustomFunction>();
+            List<IManual> results = new List<IManual>();
             SqlCommand cmd = new SqlCommand();
             SqlDataReader reader = null;
 
@@ -169,9 +165,9 @@ namespace CodeFlow
                                                             " WHERE @WHERE @CASESENSITIVE");
 
 
-                    string result_line = "LEFT(SUBSTRING(CORPO, @BEFORE_NEWLINE, CASE WHEN @AFTER_NEWLINE = 0 THEN LEN(CORPO) ELSE @AFTER_NEWLINE END), 400)";
-                    string after_newline = "CHARINDEX(CHAR(13), CORPO, PATINDEX(@TERM, CORPO @CASESENSITIVE))";
-                    string before_newline = "CHARINDEX(CHAR(13), REVERSE(LEFT(CORPO, @AFTER_NEWLINE)), 2)";
+                    string result_line = "LEFT(RIGHT(LEFT(CORPO, COALESCE(NULLIF(@AFTER_NEWLINE, 0), LEN(CORPO))), COALESCE(NULLIF(@BEFORE_NEWLINE, 0), LEN(CORPO))), 400)";
+                    string after_newline = "CHARINDEX(CHAR(10), CORPO, PATINDEX(@TERM, CORPO @CASESENSITIVE))";
+                    string before_newline = "CHARINDEX(CHAR(10), REVERSE(LEFT(CORPO, @AFTER_NEWLINE)), 2)";
                     result_line =result_line.Replace("@BEFORE_NEWLINE", before_newline).Replace("@AFTER_NEWLINE", after_newline);
                     customFuncQuery = customFuncQuery.Replace("@RESULT_LINE", result_line);
 

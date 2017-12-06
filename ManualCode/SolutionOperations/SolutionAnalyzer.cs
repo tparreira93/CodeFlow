@@ -59,14 +59,14 @@ namespace CodeFlow.SolutionOperations
         private void AnalyzeFile(string file)
         {
             Encoding enc = PackageOperations.DetectTextEncoding(file, out string text);
-            string code = File.ReadAllText(file, enc);
+            //string code = File.ReadAllText(file, enc);
 
             /*Encoding unicode = Encoding.Unicode;
             byte[] encBytes = enc.GetBytes(code);
             byte[] unicodeBytes = Encoding.Convert(enc, unicode, encBytes);
             string convertedCode = unicode.GetString(unicodeBytes);*/
 
-            List<IManual> tmp = ManuaCode.GetManualCode(code, Path.GetFileName(file));
+            List<IManual> tmp = ManuaCode.GetManualCode(text, Path.GetFileName(file));
             Differences.CheckBDDifferences(tmp, PackageOperations.GetActiveProfile());
         }
     }

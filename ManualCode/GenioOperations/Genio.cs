@@ -25,6 +25,7 @@ namespace CodeFlow
         private bool productionSystem = false;
         private List<GenioPlataform> plataforms = new List<GenioPlataform>();
 
+        [NonSerialized]
         private SqlConnection sqlConnection = new SqlConnection();
         private string geniouser = "";
 
@@ -103,7 +104,7 @@ namespace CodeFlow
                     }
                     catch (Exception e)
                     {
-                        throw e;
+                        throw new Exception(String.Format(Properties.Resources.ErrorSystemInfo, e.Message));
                     }
                     finally
                     {
@@ -223,10 +224,8 @@ namespace CodeFlow
                             modules.Add(codiprog, codmodul);
                         }
                     }
-                    catch (Exception e)
-                    {
-                        throw e;
-                    }
+                    catch (Exception)
+                    { }
                     finally
                     {
                         if (reader != null && !reader.IsClosed)

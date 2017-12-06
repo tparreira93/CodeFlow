@@ -193,7 +193,7 @@
                     string searchPlat = plataform;
                     if (plataform.Equals("All"))
                         searchPlat = "";
-
+                    cmd.Enabled = false;
                     System.Threading.Tasks.Task.Factory.StartNew(() =>
                     {
                         string error = "";
@@ -201,8 +201,9 @@
                         Profile p = PackageOperations.GetActiveProfile();
                         try
                         {
-                            res.AddRange(ManuaCode.Search(p, PackageOperations.CurrentSearch,  PackageOperations.CaseSensitive, PackageOperations.WholeWordSearch, searchPlat));
-                            res.AddRange(CustomFunction.Search(p, PackageOperations.CurrentSearch, PackageOperations.CaseSensitive, PackageOperations.WholeWordSearch, searchPlat));
+                            res.AddRange(Manual.SearchDatabase(p, PackageOperations.CurrentSearch,  
+                                PackageOperations.CaseSensitive, PackageOperations.WholeWordSearch, 
+                                searchPlat));
                         }
                         catch (Exception ex)
                         {
@@ -212,6 +213,7 @@
                         // Update UI 
                         control.Dispatcher.BeginInvoke(new Action(() =>
                         {
+                            cmd.Enabled = true;
                             control.PopulateList(res);
 
                             if (error.Length != 0)
