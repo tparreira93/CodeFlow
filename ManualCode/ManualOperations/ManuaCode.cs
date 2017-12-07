@@ -320,8 +320,8 @@ namespace CodeFlow
 
                 string search = "%" + texto + "%";
                 string result_line = "LEFT(RIGHT(LEFT(CORPO, COALESCE(NULLIF(@AFTER_NEWLINE, 0), LEN(CORPO))), COALESCE(NULLIF(@BEFORE_NEWLINE, 0), LEN(CORPO))), 400)";
-                string after_newline = "CHARINDEX(CHAR(10), CORPO, PATINDEX(@TERM, CORPO @CASESENSITIVE) + 2)";
-                string before_newline = "CHARINDEX(CHAR(10), REVERSE(LEFT(CORPO, @AFTER_NEWLINE)), 2)";
+                string after_newline = "CHARINDEX(CHAR(13), CORPO, PATINDEX(@TERM, CORPO @CASESENSITIVE) + 2)";
+                string before_newline = "CHARINDEX(CHAR(13), REVERSE(LEFT(CORPO, @AFTER_NEWLINE)), 2)";
                 result_line = result_line.Replace("@BEFORE_NEWLINE", before_newline).Replace("@AFTER_NEWLINE", after_newline);
                 manuaQuery = manuaQuery.Replace("@RESULT_LINE", result_line);
 

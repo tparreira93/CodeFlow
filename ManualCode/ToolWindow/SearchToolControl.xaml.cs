@@ -32,6 +32,32 @@
             this.InitializeComponent();
             lstCode.ItemsSource = results;
             lstCode.DataContext = this;
+
+            
+            /*if (lstCode.View is GridView grid)
+            {
+                foreach (GridViewColumn item in grid.Columns)
+                {
+                    GridViewColumnHeader column = item.Header as GridViewColumnHeader;
+                    if (column == null)
+                        continue;
+
+                    if (column.Tag.Equals("Type"))
+                        column.Width = Properties.Settings.Default.ColTypeSize;
+
+                    else if (column.Tag.Equals("Tag"))
+                        column.Width = Properties.Settings.Default.ColTagSize;
+
+                    else if (column.Tag.Equals("Tipo"))
+                        column.Width = Properties.Settings.Default.ColTipoSize;
+
+                    else if (column.Tag.Equals("Plataform"))
+                        column.Width = Properties.Settings.Default.ColPlatSize;
+
+                    else if (column.Tag.Equals("OneLineCode"))
+                        column.Width = Properties.Settings.Default.ColCodeSize;
+                }
+            }*/
         }
 
         public void RefreshteList(List<IManual> lst, string currentSearch, bool wholeWord, bool caseSensitive)
@@ -53,7 +79,7 @@
                 try
                 {
                     Type t = lstCode.SelectedItem.GetType();
-                    IManual m = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { PackageOperations.GetActiveProfile(), results[lstCode.SelectedIndex].CodeId }) as IManual;
+                    IManual m = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { PackageOperations.GetActiveProfile(), (lstCode.SelectedItem as IManual).CodeId }) as IManual;
 
                     if (m == null)
                     {
@@ -157,7 +183,6 @@
             }
         }
 
-
         private void HighlightText(Object itx)
         {
             if (itx != null)
@@ -195,8 +220,7 @@
 
         private void lstColumnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            /*
-            if(e.Source is GridViewColumnHeader column)
+            /*if(e.Source is GridViewColumnHeader column)
             {
                 if (column.Tag.Equals("Type"))
                     Properties.Settings.Default.ColTypeSize = column.ActualWidth;
@@ -214,8 +238,7 @@
                     Properties.Settings.Default.ColCodeSize = column.ActualWidth;
 
                 Properties.Settings.Default.Save();
-            }
-            */
+            }*/
         }
     }
 }
