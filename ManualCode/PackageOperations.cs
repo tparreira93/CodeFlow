@@ -18,21 +18,20 @@ namespace CodeFlow
 {
     internal static class PackageOperations
     {
-        public static object lockObject = new object();
         private static Profile activeProfile = new Profile();
         private static bool autoExportSaved;
 
 
         private static List<Profile> allProfiles = new List<Profile>();
+
+
         private static List<string> openFiles = new List<string>();
         private static Dictionary<string, Type> openManual = new Dictionary<string, Type>();
         private static Dictionary<string, Type> AutoExportFiles { get => openManual; set => openManual = value; }
         private static GenioSolutionProperties solutionProps = new GenioSolutionProperties();
         private static DTE2 dte;
-        private static bool wholeWordSearch = false;
-        private static bool caseSensitive = false;
-        private static string currentSearch = "";
         private static string useCustomTool = "";
+        private static bool forceDOSLine = false;
 
         #region ToolOptions
         private static List<string> extensionFilters = new List<string>() { "cpp", "cs", "xml", "h" };
@@ -52,10 +51,8 @@ namespace CodeFlow
         public static bool ContinuousAnalysis { get => continuousAnalysis; set => continuousAnalysis = value; }
         public static bool AutoVCCTO2008Fix { get; internal set; }
         public static string UseCustomTool { get => useCustomTool; set => useCustomTool = value; }
+        public static bool ForceDOSLine { get => forceDOSLine; set => forceDOSLine = value; }
         public static DTE2 DTE { get => dte; set => dte = value; }
-        public static bool WholeWordSearch { get => wholeWordSearch; set => wholeWordSearch = value; }
-        public static bool CaseSensitive { get => caseSensitive; set => caseSensitive = value; }
-        public static string CurrentSearch { get => currentSearch; set => currentSearch = value; }
 
         #region ApplicationProfileManagement
         public static Profile GetActiveProfile()

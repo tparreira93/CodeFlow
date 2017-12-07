@@ -46,5 +46,65 @@ namespace CodeFlow.Properties {
                 this["LastActiveProfile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double ColTypeSize {
+            get {
+                return ((double)(this["ColTypeSize"]));
+            }
+            set {
+                this["ColTypeSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("150")]
+        public double ColTagSize {
+            get {
+                return ((double)(this["ColTagSize"]));
+            }
+            set {
+                this["ColTagSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double ColTipoSize {
+            get {
+                return ((double)(this["ColTipoSize"]));
+            }
+            set {
+                this["ColTipoSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public double ColPlatSize {
+            get {
+                return ((double)(this["ColPlatSize"]));
+            }
+            set {
+                this["ColPlatSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("900")]
+        public double ColCodeSize {
+            get {
+                return ((double)(this["ColCodeSize"]));
+            }
+            set {
+                this["ColCodeSize"] = value;
+            }
+        }
     }
 }

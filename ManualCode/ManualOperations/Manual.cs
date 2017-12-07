@@ -82,12 +82,12 @@ namespace CodeFlow
                 string lineSeparator = ((char)0x2028).ToString();
                 string paragraphSeparator = ((char)0x2029).ToString();
 
-                return Code.Replace("\r\n", String.Empty).Replace("\n", String.Empty).Replace("\r", String.Empty).Replace(lineSeparator, String.Empty).Replace(paragraphSeparator, String.Empty);
+                return Code.Replace("\r\n", String.Empty).Replace("\n", String.Empty).Replace("\r", String.Empty).Replace(lineSeparator, String.Empty).Replace(paragraphSeparator, String.Empty).Replace("\t", String.Empty);
             }
         }
         public string ShortOneLineCode(int max = 300)
         {
-            if (Code.Length < max)
+            if (OneLineCode.Length < max)
                 max = OneLineCode.Length;
 
             return OneLineCode.Substring(0, max);
@@ -248,7 +248,7 @@ namespace CodeFlow
 
                     m = new T
                     {
-                        Code = Util.ConverToDOSLineEndings(code),
+                        Code = PackageOperations.ForceDOSLine ? Util.ConverToDOSLineEndings(code) : code,
                         CodeId = g
                     };
                     m.Code = m.CodeTransformKeyValue();

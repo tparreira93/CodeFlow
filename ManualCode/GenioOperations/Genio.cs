@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using CodeFlow.GenioOperations;
 using System.Reflection;
+using System.Threading;
 
 namespace CodeFlow
 {
@@ -24,7 +25,7 @@ namespace CodeFlow
         private string bdVersion = "";
         private bool productionSystem = false;
         private List<GenioPlataform> plataforms = new List<GenioPlataform>();
-
+        private Object obj = new Object();
         [NonSerialized]
         private SqlConnection sqlConnection = new SqlConnection();
         private string geniouser = "";
@@ -47,7 +48,7 @@ namespace CodeFlow
         {
             Genio g = new Genio();
             Util.CopyFrom(typeof(Genio), this, g);
-
+            obj = new object();
             return g;
         }
 
@@ -57,6 +58,19 @@ namespace CodeFlow
                 Plataforms = GenioPlataform.ParseXml(Properties.Resources.ManwinInfoData);
             else
                 Plataforms = GenioPlataform.ParseFile($"{GenioPath}\\ManwinInfoData.xml");
+        }
+
+        private bool LockConnection()
+        {
+            bool lockWasTaken = false;
+            Monitor.Enter(obj, ref lockWasTaken);
+
+            return lockWasTaken;
+        }
+
+        private void ReleaseConnection()
+        {
+            Monitor.Exit(obj);
         }
 
         public string Server { get => server; set => server = value; }
@@ -79,38 +93,33 @@ namespace CodeFlow
 
         public void GetGenioInfo()
         {
-            lock (PackageOperations.lockObject)
+            if (OpenConnection())
             {
-                if (!ConnectionIsOpen())
-                    OpenConnection();
+                SqlCommand cmd = new SqlCommand("SELECT SISTEMA, GENVERS, LOCLPATH, VERSAO FROM GENGLOB", SqlConnection);
 
-                if (ConnectionIsOpen())
+                SqlDataReader reader = null;
+
+                try
                 {
-                    SqlCommand cmd = new SqlCommand("SELECT SISTEMA, GENVERS, LOCLPATH, VERSAO FROM GENGLOB", SqlConnection);
+                    reader = cmd.ExecuteReader();
 
-                    SqlDataReader reader = null;
-
-                    try
+                    if (reader.Read())
                     {
-                        reader = cmd.ExecuteReader();
-
-                        if (reader.Read())
-                        {
-                            SystemInitials = reader.SafeGetString(0);
-                            GenioVersion = reader.SafeGetDouble(1);
-                            CheckoutPath = reader.SafeGetString(2);
-                            BDVersion = reader.SafeGetString(3);
-                        }
+                        SystemInitials = reader.SafeGetString(0);
+                        GenioVersion = reader.SafeGetDouble(1);
+                        CheckoutPath = reader.SafeGetString(2);
+                        BDVersion = reader.SafeGetString(3);
                     }
-                    catch (Exception e)
-                    {
-                        throw new Exception(String.Format(Properties.Resources.ErrorSystemInfo, e.Message));
-                    }
-                    finally
-                    {
-                        if (reader != null && !reader.IsClosed)
-                            reader.Close();
-                    }
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(String.Format(Properties.Resources.ErrorSystemInfo, e.Message));
+                }
+                finally
+                {
+                    if (reader != null && !reader.IsClosed)
+                        reader.Close();
+                    CloseConnection();
                 }
             }
         }
@@ -128,22 +137,25 @@ namespace CodeFlow
 
         public bool OpenConnection()
         {
+            bool open = false;
             if (Server.Length != 0 && Database.Length != 0 && Username.Length != 0 && Password.Length != 0)
             {
                 try
                 {
-                    sqlConnection = new SqlConnection(GetConnectionString());
-                    sqlConnection.Open();
+                    if (LockConnection())
+                    {
+                        sqlConnection = new SqlConnection(GetConnectionString());
+                        sqlConnection.Open();
+                        open = sqlConnection.State == ConnectionState.Open;
+                    }
                 }
                 catch (Exception ex)
                 {
+                    ReleaseConnection();
                     throw new Exception(String.Format("Unable to connect to the database {0}@{1}!\n{2}", Server, Database, ex.Message));
                 }
-
-                return sqlConnection.State == ConnectionState.Open;
             }
-            else
-                return false;
+            return open;
         }
 
         public bool ConnectionIsOpen()
@@ -151,47 +163,55 @@ namespace CodeFlow
             return sqlConnection != null && sqlConnection.State == ConnectionState.Open;
         }
 
+        /*
+         * Connections should be closed in the same thread! 
+         */
         public void CloseConnection()
         {
-            if (SqlConnection != null && SqlConnection.State == ConnectionState.Open)
-                SqlConnection.Close();
+            if (ConnectionIsOpen())
+            {
+                try
+                {
+                    SqlConnection.Close();
+                }
+                finally
+                {
+                    ReleaseConnection();
+                }
+            }
         }
 
         public Dictionary<string, Guid> GetFeatures()
         {
             Dictionary<string, Guid> features = new Dictionary<string, Guid>();
-            lock (PackageOperations.lockObject)
+            
+            if (OpenConnection())
             {
-                if (!ConnectionIsOpen())
-                    OpenConnection();
+                SqlCommand cmd = new SqlCommand("SELECT CODCARAC, NOME FROM GENCARAC WHERE ZZSTATE<>1", SqlConnection);
 
-                if (ConnectionIsOpen())
+                SqlDataReader reader = null;
+
+                try
                 {
-                    SqlCommand cmd = new SqlCommand("SELECT CODCARAC, NOME FROM GENCARAC WHERE ZZSTATE<>1", SqlConnection);
+                    reader = cmd.ExecuteReader();
 
-                    SqlDataReader reader = null;
-
-                    try
+                    while (reader.Read())
                     {
-                        reader = cmd.ExecuteReader();
+                        Guid codcarac = reader.SafeGetGuid(0);
+                        string nome = reader.SafeGetString(1);
 
-                        while (reader.Read())
-                        {
-                            Guid codcarac = reader.SafeGetGuid(0);
-                            string nome = reader.SafeGetString(1);
-
-                            features.Add(nome, codcarac);
-                        }
+                        features.Add(nome, codcarac);
                     }
-                    catch (Exception e)
-                    {
-                        throw e;
-                    }
-                    finally
-                    {
-                        if (reader != null && !reader.IsClosed)
-                            reader.Close();
-                    }
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+                finally
+                {
+                    if (reader != null && !reader.IsClosed)
+                        reader.Close();
+                    CloseConnection();
                 }
             }
 
@@ -201,36 +221,31 @@ namespace CodeFlow
         public Dictionary<string, Guid> GetModules()
         {
             Dictionary<string, Guid> modules = new Dictionary<string, Guid>();
-            
-            lock (PackageOperations.lockObject)
+
+            if (OpenConnection())
             {
-                if (!ConnectionIsOpen())
-                    OpenConnection();
+                SqlCommand cmd = new SqlCommand("SELECT CODMODUL, CODIPROG FROM GENMODUL WHERE ZZSTATE<>1", SqlConnection);
+                SqlDataReader reader = null;
 
-                if (ConnectionIsOpen())
+                try
                 {
-                    SqlCommand cmd = new SqlCommand("SELECT CODMODUL, CODIPROG FROM GENMODUL WHERE ZZSTATE<>1", SqlConnection);
-                    SqlDataReader reader = null;
+                    reader = cmd.ExecuteReader();
 
-                    try
+                    while (reader.Read())
                     {
-                        reader = cmd.ExecuteReader();
+                        Guid codmodul = reader.SafeGetGuid(0);
+                        string codiprog = reader.SafeGetString(1);
 
-                        while (reader.Read())
-                        {
-                            Guid codmodul = reader.SafeGetGuid(0);
-                            string codiprog = reader.SafeGetString(1);
-
-                            modules.Add(codiprog, codmodul);
-                        }
+                        modules.Add(codiprog, codmodul);
                     }
-                    catch (Exception)
-                    { }
-                    finally
-                    {
-                        if (reader != null && !reader.IsClosed)
-                            reader.Close();
-                    }
+                }
+                catch (Exception)
+                { }
+                finally
+                {
+                    if (reader != null && !reader.IsClosed)
+                        reader.Close();
+                    CloseConnection();
                 }
             }
 

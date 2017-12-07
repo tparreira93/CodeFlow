@@ -47,36 +47,31 @@ namespace CodeFlow
         public override bool Update(Profile profile)
         {
             bool result = false;
-            lock (PackageOperations.lockObject)
+
+            if (profile.GenioConfiguration.OpenConnection())
             {
-                if (!profile.GenioConfiguration.ConnectionIsOpen())
-                    profile.GenioConfiguration.OpenConnection();
-
-                if (profile.GenioConfiguration.ConnectionIsOpen())
+                try
                 {
-                    try
-                    {
-                        string c = Util.ConverToDOSLineEndings(CodeTransformValueKey());
+                    string c = PackageOperations.ForceDOSLine ? Util.ConverToDOSLineEndings(CodeTransformKeyValue()) : CodeTransformKeyValue();
 
-                        SqlCommand cmd = new SqlCommand();
-                        cmd.CommandText = String.Format("UPDATE GENIMPLS SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODIMPLS = @CODIMPLS");
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.CommandText = String.Format("UPDATE GENIMPLS SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODIMPLS = @CODIMPLS");
 
-                        cmd.Parameters.AddWithValue("@CORPO", c);
-                        cmd.Parameters.AddWithValue("@CODIMPLS", this.CodeId);
-                        cmd.Parameters.AddWithValue("@OPERMUDA", PackageOperations.GetActiveProfile().GenioConfiguration.GenioUser);
-                        cmd.Connection = profile.GenioConfiguration.SqlConnection;
+                    cmd.Parameters.AddWithValue("@CORPO", c);
+                    cmd.Parameters.AddWithValue("@CODIMPLS", this.CodeId);
+                    cmd.Parameters.AddWithValue("@OPERMUDA", profile.GenioConfiguration.GenioUser);
+                    cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
-                        cmd.ExecuteNonQuery();
-                        result = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
-                    finally
-                    {
-                        profile.GenioConfiguration.CloseConnection();
-                    }
+                    cmd.ExecuteNonQuery();
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    profile.GenioConfiguration.CloseConnection();
                 }
             }
 
@@ -86,59 +81,54 @@ namespace CodeFlow
         {
             CustomFunction custom = new CustomFunction();
             SqlDataReader reader = null;
-            lock (PackageOperations.lockObject)
+
+            if (profile.GenioConfiguration.OpenConnection())
             {
-                if (!profile.GenioConfiguration.ConnectionIsOpen())
-                    profile.GenioConfiguration.OpenConnection();
-
-                if (profile.GenioConfiguration.ConnectionIsOpen())
+                try
                 {
-                    try
+                    SqlCommand cmd = new SqlCommand
                     {
-                        SqlCommand cmd = new SqlCommand
-                        {
-                            CommandText = String.Format("SELECT FUNCS.CODFUNCS, IMPLS.CODIMPLS, FUNCS.NOME, IMPLS.CORPO, IMPLS.PLATAFOR, " +
-                                                            " FUNCS.TIPORTN, FUNCS.ORDEM, FUNCS.LARGURA, FUNCS.DECIMAIS, FUNCS.RESUMPRM, " +
-                                                            " IMPLS.OPERCRIA, IMPLS.OPERMUDA, IMPLS.DATACRIA, IMPLS.DATAMUDA" +
-                                                            " FROM GENFUNCS FUNCS" +
-                                                            " INNER JOIN GENIMPLS IMPLS ON IMPLS.CODFUNCS = FUNCS.CODFUNCS" +
-                                                            " WHERE CODIMPLS = @CODIMPLS"),
-                            CommandType = global::System.Data.CommandType.Text,
-                            Connection = profile.GenioConfiguration.SqlConnection
-                        };
-                        cmd.Parameters.AddWithValue("@CODIMPLS", codimpls);
+                        CommandText = String.Format("SELECT FUNCS.CODFUNCS, IMPLS.CODIMPLS, FUNCS.NOME, IMPLS.CORPO, IMPLS.PLATAFOR, " +
+                                                        " FUNCS.TIPORTN, FUNCS.ORDEM, FUNCS.LARGURA, FUNCS.DECIMAIS, FUNCS.RESUMPRM, " +
+                                                        " IMPLS.OPERCRIA, IMPLS.OPERMUDA, IMPLS.DATACRIA, IMPLS.DATAMUDA" +
+                                                        " FROM GENFUNCS FUNCS" +
+                                                        " INNER JOIN GENIMPLS IMPLS ON IMPLS.CODFUNCS = FUNCS.CODFUNCS" +
+                                                        " WHERE CODIMPLS = @CODIMPLS"),
+                        CommandType = global::System.Data.CommandType.Text,
+                        Connection = profile.GenioConfiguration.SqlConnection
+                    };
+                    cmd.Parameters.AddWithValue("@CODIMPLS", codimpls);
 
-                        reader = cmd.ExecuteReader();
-                        if (reader.HasRows)
-                        {
-                            reader.Read();
-                            custom.Codfuncs = reader.SafeGetGuid(0);
-                            custom.CodeId = reader.SafeGetGuid(1);
-                            custom.Nome = reader.SafeGetString(2);
-                            custom.Code = Util.ConverToDOSLineEndings(reader.SafeGetString(3));
-                            custom.Plataform = reader.SafeGetString(4);
-                            custom.Tiportn = reader.SafeGetString(5);
-                            custom.Ordem = reader.SafeGetDouble(6);
-                            custom.Largura = reader.SafeGetDouble(7);
-                            custom.Decimais = reader.SafeGetDouble(8);
-                            custom.Resumprm = reader.SafeGetString(9);
-                            custom.CreatedBy = reader.SafeGetString(10);
-                            custom.ChangedBy = reader.SafeGetString(11);
-                            custom.CreationDate = reader.SafeGetDateTime(12);
-                            custom.LastChangeDate = reader.SafeGetDateTime(13);
-                            custom.Code = custom.CodeTransformKeyValue();
-                        }
-                    }
-                    catch (Exception ex)
+                    reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
                     {
-                        throw ex;
+                        reader.Read();
+                        custom.Codfuncs = reader.SafeGetGuid(0);
+                        custom.CodeId = reader.SafeGetGuid(1);
+                        custom.Nome = reader.SafeGetString(2);
+                        custom.Code = PackageOperations.ForceDOSLine ? Util.ConverToDOSLineEndings(reader.SafeGetString(3)) : reader.SafeGetString(3);
+                        custom.Plataform = reader.SafeGetString(4);
+                        custom.Tiportn = reader.SafeGetString(5);
+                        custom.Ordem = reader.SafeGetDouble(6);
+                        custom.Largura = reader.SafeGetDouble(7);
+                        custom.Decimais = reader.SafeGetDouble(8);
+                        custom.Resumprm = reader.SafeGetString(9);
+                        custom.CreatedBy = reader.SafeGetString(10);
+                        custom.ChangedBy = reader.SafeGetString(11);
+                        custom.CreationDate = reader.SafeGetDateTime(12);
+                        custom.LastChangeDate = reader.SafeGetDateTime(13);
+                        custom.Code = custom.CodeTransformKeyValue();
                     }
-                    finally
-                    {
-                        if (reader != null && !reader.IsClosed)
-                            reader.Close();
-                        profile.GenioConfiguration.CloseConnection();
-                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    if (reader != null && !reader.IsClosed)
+                        reader.Close();
+                    profile.GenioConfiguration.CloseConnection();
                 }
             }
 
@@ -150,86 +140,80 @@ namespace CodeFlow
             SqlCommand cmd = new SqlCommand();
             SqlDataReader reader = null;
 
-            lock (PackageOperations.lockObject)
+            if (profile.GenioConfiguration.OpenConnection())
             {
-                if (!profile.GenioConfiguration.ConnectionIsOpen())
-                    profile.GenioConfiguration.OpenConnection();
+                string customFuncQuery = String.Format("SELECT IMPLS.CODIMPLS, @RESULT_LINE FOUND_LINE, IMPLS.PLATAFOR, FUNCS.NOME, FUNCS.CODFUNCS," +
+                                                        " FUNCS.TIPORTN, FUNCS.ORDEM, FUNCS.LARGURA, FUNCS.DECIMAIS, FUNCS.RESUMPRM, " +
+                                                        " IMPLS.OPERCRIA, IMPLS.OPERMUDA, IMPLS.DATACRIA, IMPLS.DATAMUDA" +
+                                                        " FROM GENFUNCS FUNCS" +
+                                                        " INNER JOIN GENIMPLS IMPLS ON IMPLS.CODFUNCS = FUNCS.CODFUNCS" +
+                                                        " WHERE @WHERE @CASESENSITIVE");
 
-                if (profile.GenioConfiguration.ConnectionIsOpen())
+
+                string result_line = "LEFT(RIGHT(LEFT(CORPO, COALESCE(NULLIF(@AFTER_NEWLINE, 0), LEN(CORPO))), COALESCE(NULLIF(@BEFORE_NEWLINE, 0), LEN(CORPO))), 400)";
+                string after_newline = "CHARINDEX(CHAR(10), CORPO, PATINDEX(@TERM, CORPO @CASESENSITIVE) + 2)";
+                string before_newline = "CHARINDEX(CHAR(10), REVERSE(LEFT(CORPO, @AFTER_NEWLINE)), 2)";
+                result_line =result_line.Replace("@BEFORE_NEWLINE", before_newline).Replace("@AFTER_NEWLINE", after_newline);
+                customFuncQuery = customFuncQuery.Replace("@RESULT_LINE", result_line);
+
+                string search = "%" + texto + "%";
+                string whr = "(' ' + CORPO + ' ') LIKE @TERM OR (' ' + NOME + ' ') LIKE @TERM";
+                if (plataform.Length != 0)
                 {
-                    string customFuncQuery = String.Format("SELECT IMPLS.CODIMPLS, @RESULT_LINE FOUND_LINE, IMPLS.PLATAFOR, FUNCS.NOME, FUNCS.CODFUNCS," +
-                                                            " FUNCS.TIPORTN, FUNCS.ORDEM, FUNCS.LARGURA, FUNCS.DECIMAIS, FUNCS.RESUMPRM, " +
-                                                            " IMPLS.OPERCRIA, IMPLS.OPERMUDA, IMPLS.DATACRIA, IMPLS.DATAMUDA" +
-                                                            " FROM GENFUNCS FUNCS" +
-                                                            " INNER JOIN GENIMPLS IMPLS ON IMPLS.CODFUNCS = FUNCS.CODFUNCS" +
-                                                            " WHERE @WHERE @CASESENSITIVE");
+                    whr = "(" + whr + ") AND PLATAFOR = @PLATAFORM";
+                    cmd.Parameters.AddWithValue("@PLATAFORM", plataform);
+                }
 
+                customFuncQuery = customFuncQuery.Replace("@WHERE", whr);
 
-                    string result_line = "LEFT(RIGHT(LEFT(CORPO, COALESCE(NULLIF(@AFTER_NEWLINE, 0), LEN(CORPO))), COALESCE(NULLIF(@BEFORE_NEWLINE, 0), LEN(CORPO))), 400)";
-                    string after_newline = "CHARINDEX(CHAR(10), CORPO, PATINDEX(@TERM, CORPO @CASESENSITIVE))";
-                    string before_newline = "CHARINDEX(CHAR(10), REVERSE(LEFT(CORPO, @AFTER_NEWLINE)), 2)";
-                    result_line =result_line.Replace("@BEFORE_NEWLINE", before_newline).Replace("@AFTER_NEWLINE", after_newline);
-                    customFuncQuery = customFuncQuery.Replace("@RESULT_LINE", result_line);
-
-                    string search = "%" + texto + "%";
-                    string whr = "(' ' + CORPO + ' ') LIKE @TERM OR (' ' + NOME + ' ') LIKE @TERM";
-                    if (plataform.Length != 0)
-                    {
-                        whr = "(" + whr + ") AND PLATAFOR = @PLATAFORM";
-                        cmd.Parameters.AddWithValue("@PLATAFORM", plataform);
-                    }
-
-                    customFuncQuery = customFuncQuery.Replace("@WHERE", whr);
-
-                    if (caseSensitive)
-                        customFuncQuery = customFuncQuery.Replace("@CASESENSITIVE", "COLLATE Latin1_General_BIN");
-                    else
-                        customFuncQuery = customFuncQuery.Replace("@CASESENSITIVE", "");
+                if (caseSensitive)
+                    customFuncQuery = customFuncQuery.Replace("@CASESENSITIVE", "COLLATE Latin1_General_BIN");
+                else
+                    customFuncQuery = customFuncQuery.Replace("@CASESENSITIVE", "");
                     
-                    if (wholeWord)
-                        search = $"%[^a-z]{texto}[^a-z]%";
+                if (wholeWord)
+                    search = $"%[^a-z]{texto}[^a-z]%";
 
-                    cmd.CommandText = customFuncQuery;
-                    cmd.CommandType = global::System.Data.CommandType.Text;
-                    cmd.Parameters.AddWithValue("@TERM", search);
-                    cmd.Connection = profile.GenioConfiguration.SqlConnection;
+                cmd.CommandText = customFuncQuery;
+                cmd.CommandType = global::System.Data.CommandType.Text;
+                cmd.Parameters.AddWithValue("@TERM", search);
+                cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
-                    try
+                try
+                {
+                    reader = cmd.ExecuteReader();
+                    while (reader.Read())
                     {
-                        reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            Guid codmanua = reader.SafeGetGuid(0);
-                            string corpo = reader.SafeGetString(1);
+                        Guid codmanua = reader.SafeGetGuid(0);
+                        string corpo = reader.SafeGetString(1);
 
-                            CustomFunction custom = new CustomFunction(codmanua, Util.ConverToDOSLineEndings(corpo));
-                            custom.Plataform = reader.SafeGetString(2);
-                            custom.Nome = reader.SafeGetString(3);
-                            custom.Codfuncs = reader.SafeGetGuid(4);
-                            custom.Tiportn = reader.SafeGetString(5);
-                            custom.Ordem = reader.SafeGetDouble(6);
-                            custom.Largura = reader.SafeGetDouble(7);
-                            custom.Decimais = reader.SafeGetDouble(8);
-                            custom.Resumprm = reader.SafeGetString(9);
-                            custom.CreatedBy = reader.SafeGetString(10);
-                            custom.ChangedBy = reader.SafeGetString(11);
-                            custom.CreationDate = reader.SafeGetDateTime(12);
-                            custom.LastChangeDate = reader.SafeGetDateTime(13);
+                        CustomFunction custom = new CustomFunction(codmanua, PackageOperations.ForceDOSLine ? Util.ConverToDOSLineEndings(corpo) : corpo);
+                        custom.Plataform = reader.SafeGetString(2);
+                        custom.Nome = reader.SafeGetString(3);
+                        custom.Codfuncs = reader.SafeGetGuid(4);
+                        custom.Tiportn = reader.SafeGetString(5);
+                        custom.Ordem = reader.SafeGetDouble(6);
+                        custom.Largura = reader.SafeGetDouble(7);
+                        custom.Decimais = reader.SafeGetDouble(8);
+                        custom.Resumprm = reader.SafeGetString(9);
+                        custom.CreatedBy = reader.SafeGetString(10);
+                        custom.ChangedBy = reader.SafeGetString(11);
+                        custom.CreationDate = reader.SafeGetDateTime(12);
+                        custom.LastChangeDate = reader.SafeGetDateTime(13);
 
-                            custom.Code = custom.CodeTransformKeyValue();
-                            results.Add(custom);
-                        }
+                        custom.Code = custom.CodeTransformKeyValue();
+                        results.Add(custom);
                     }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
-                    finally
-                    {
-                        if (reader != null && !reader.IsClosed)
-                            reader.Close();
-                        profile.GenioConfiguration.CloseConnection();
-                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    if (reader != null && !reader.IsClosed)
+                        reader.Close();
+                    profile.GenioConfiguration.CloseConnection();
                 }
             }
 

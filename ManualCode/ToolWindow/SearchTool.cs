@@ -186,10 +186,6 @@
                         if (String.IsNullOrEmpty(currentSearch))
                             return;
                     }
-                    PackageOperations.CurrentSearch = currentSearch;
-                    PackageOperations.WholeWordSearch = wholeWord;
-                    PackageOperations.CaseSensitive = caseSensitive;
-                    currentSearch = "";
                     string searchPlat = plataform;
                     if (plataform.Equals("All"))
                         searchPlat = "";
@@ -201,9 +197,7 @@
                         Profile p = PackageOperations.GetActiveProfile();
                         try
                         {
-                            res.AddRange(Manual.SearchDatabase(p, PackageOperations.CurrentSearch,  
-                                PackageOperations.CaseSensitive, PackageOperations.WholeWordSearch, 
-                                searchPlat));
+                            res.AddRange(Manual.SearchDatabase(p, currentSearch, caseSensitive, wholeWord, searchPlat));
                         }
                         catch (Exception ex)
                         {
@@ -214,7 +208,7 @@
                         control.Dispatcher.BeginInvoke(new Action(() =>
                         {
                             cmd.Enabled = true;
-                            control.PopulateList(res);
+                            control.RefreshteList(res, currentSearch, wholeWord, caseSensitive);
 
                             if (error.Length != 0)
                             {

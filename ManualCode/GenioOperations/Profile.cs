@@ -33,6 +33,17 @@ namespace CodeFlow
             ProfileName = profileName;
         }
 
+        public SqlDataReader ExecuteReader(SqlCommand command)
+        {
+            command.Connection = GenioConfiguration.SqlConnection;
+            return command.ExecuteReader();
+        }
+
+        public bool ExecuteUpdate(SqlCommand command)
+        {
+            command.Connection = GenioConfiguration.SqlConnection;
+            return command.ExecuteNonQuery() != 0;
+        }
         public Genio GenioConfiguration { get => genioConfiguration; set => genioConfiguration = value; }
         public string ProfileName { get => profileName; set => profileName = value; }
         public Guid ProfileID { get => profileID; set => profileID = value; }

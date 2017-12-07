@@ -17,14 +17,34 @@
     </UserControl.Resources>
     
     <Grid>
-        <ListView x:Name="lstFindMan" MouseDoubleClick="lstFindMan_MouseDoubleClick">
+        <ListView x:Name="lstCode" MouseDoubleClick="lstFindMan_MouseDoubleClick">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Type"               Width="100"  DisplayMemberBinding="{Binding TipoCodigo}"/>
-                        <GridViewColumn Header="Tag"                Width="150"  DisplayMemberBinding="{Binding Tag}"/>
-                        <GridViewColumn Header="Rot."               Width="100"  DisplayMemberBinding="{Binding Tipo}"/>
-                        <GridViewColumn Header="Plataform"          Width="100"  DisplayMemberBinding="{Binding Plataform}"/>
-                    <GridViewColumn Header="Code"               Width="900" DisplayMemberBinding="{Binding OneLineCode}"/>
+                    <GridViewColumn Width="100"  DisplayMemberBinding="{Binding TipoCodigo}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Type" Click="lstCodeColumnHeader_Click" SizeChanged="lstColumnSizeChanged">Type</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="150"  DisplayMemberBinding="{Binding Tag}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Tag" Click="lstCodeColumnHeader_Click" SizeChanged="lstColumnSizeChanged">Tag</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="100"  DisplayMemberBinding="{Binding Tipo}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Tipo" Click="lstCodeColumnHeader_Click" SizeChanged="lstColumnSizeChanged">Rot.</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="100"  DisplayMemberBinding="{Binding Plataform}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Plataform" Click="lstCodeColumnHeader_Click" SizeChanged="lstColumnSizeChanged">Plataform</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="900"  DisplayMemberBinding="{Binding OneLineCode}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="OneLineCode" Click="lstCodeColumnHeader_Click" SizeChanged="lstColumnSizeChanged">Code</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

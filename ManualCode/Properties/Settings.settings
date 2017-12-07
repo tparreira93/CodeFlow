@@ -8,5 +8,20 @@
     <Setting Name="LastActiveProfile" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="ColTypeSize" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="ColTagSize" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">150</Value>
+    </Setting>
+    <Setting Name="ColTipoSize" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="ColPlatSize" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="ColCodeSize" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">900</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
