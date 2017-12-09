@@ -28,13 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CommitForm));
             this.btnCancel = new System.Windows.Forms.Button();
-            this.btnCompare = new System.Windows.Forms.Button();
             this.btnCommit = new System.Windows.Forms.Button();
             this.lstCode = new System.Windows.Forms.ListView();
+            this.clOperation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clCode = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clFile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.lblServer = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -68,21 +70,6 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // btnCompare
-            // 
-            this.btnCompare.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCompare.Enabled = false;
-            this.btnCompare.Image = global::CodeFlow.Properties.Resources.arrow_merge_16xLG;
-            this.btnCompare.Location = new System.Drawing.Point(139, 620);
-            this.btnCompare.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.btnCompare.Name = "btnCompare";
-            this.btnCompare.Size = new System.Drawing.Size(184, 30);
-            this.btnCompare.TabIndex = 2;
-            this.btnCompare.Text = "Compare and commit";
-            this.btnCompare.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnCompare.UseVisualStyleBackColor = true;
-            this.btnCompare.Click += new System.EventHandler(this.btnCompare_Click);
-            // 
             // btnCommit
             // 
             this.btnCommit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -105,6 +92,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstCode.CheckBoxes = true;
             this.lstCode.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clOperation,
             this.clCode,
             this.clFile});
             this.lstCode.FullRowSelect = true;
@@ -113,6 +101,7 @@
             this.lstCode.MultiSelect = false;
             this.lstCode.Name = "lstCode";
             this.lstCode.Size = new System.Drawing.Size(1101, 546);
+            this.lstCode.SmallImageList = this.imageList1;
             this.lstCode.TabIndex = 0;
             this.lstCode.UseCompatibleStateImageBehavior = false;
             this.lstCode.View = System.Windows.Forms.View.Details;
@@ -121,16 +110,29 @@
             this.lstCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstCode_KeyDown);
             this.lstCode.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstCode_MouseDoubleClick);
             // 
+            // clOperation
+            // 
+            this.clOperation.Text = "Operation";
+            this.clOperation.Width = 171;
+            // 
             // clCode
             // 
             this.clCode.Tag = "clCode";
             this.clCode.Text = "Code";
-            this.clCode.Width = 797;
+            this.clCode.Width = 677;
             // 
             // clFile
             // 
             this.clFile.Text = "File name";
             this.clFile.Width = 224;
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "Upload_gray_48x.png");
+            this.imageList1.Images.SetKeyName(1, "StatusCriticalError_48x.png");
+            this.imageList1.Images.SetKeyName(2, "VSO_Remove_16x.png");
             // 
             // statusStrip
             // 
@@ -173,7 +175,7 @@
             this.btnConflict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnConflict.Enabled = false;
             this.btnConflict.Image = global::CodeFlow.Properties.Resources.Conflict_16x;
-            this.btnConflict.Location = new System.Drawing.Point(437, 620);
+            this.btnConflict.Location = new System.Drawing.Point(243, 620);
             this.btnConflict.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnConflict.Name = "btnConflict";
             this.btnConflict.Size = new System.Drawing.Size(130, 30);
@@ -222,7 +224,7 @@
             this.btnMerge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnMerge.Enabled = false;
             this.btnMerge.Image = global::CodeFlow.Properties.Resources.Join_16x;
-            this.btnMerge.Location = new System.Drawing.Point(333, 620);
+            this.btnMerge.Location = new System.Drawing.Point(139, 620);
             this.btnMerge.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnMerge.Name = "btnMerge";
             this.btnMerge.Size = new System.Drawing.Size(94, 30);
@@ -320,7 +322,6 @@
             this.Controls.Add(this.lstCode);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.btnCommit);
-            this.Controls.Add(this.btnCompare);
             this.Controls.Add(this.btnCancel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
@@ -338,7 +339,6 @@
         #endregion
 
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnCompare;
         private System.Windows.Forms.Button btnCommit;
         private System.Windows.Forms.ListView lstCode;
         private System.Windows.Forms.ColumnHeader clCode;
@@ -358,5 +358,7 @@
         private System.Windows.Forms.Label lblColors;
         private System.Windows.Forms.Label lblDivis;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.ColumnHeader clOperation;
     }
 }

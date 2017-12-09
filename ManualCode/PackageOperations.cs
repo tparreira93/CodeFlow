@@ -13,53 +13,60 @@ using System.Text;
 using System.Reflection;
 using CodeFlow.Utils;
 using System.ComponentModel.Design;
+using CodeFlow.CodeControl;
+using CodeFlow.ManualOperations;
 
 namespace CodeFlow
 {
-    internal static class PackageOperations
+    public sealed class PackageOperations
     {
-        private static Profile activeProfile = new Profile();
-        private static bool autoExportSaved;
+        private static PackageOperations instance;
 
-
-        private static List<Profile> allProfiles = new List<Profile>();
-
-
-        private static List<string> openFiles = new List<string>();
-        private static Dictionary<string, Type> openManual = new Dictionary<string, Type>();
-        private static Dictionary<string, Type> AutoExportFiles { get => openManual; set => openManual = value; }
-        private static GenioSolutionProperties solutionProps = new GenioSolutionProperties();
-        private static DTE2 dte;
-        private static string useCustomTool = "";
-        private static bool forceDOSLine = false;
+        private Profile activeProfile = new Profile();
+        private bool autoExportSaved;
+        private List<Profile> allProfiles = new List<Profile>();
+        private List<string> openFiles = new List<string>();
+        private Dictionary<string, Type> openManual = new Dictionary<string, Type>();
+        private Dictionary<string, Type> AutoExportFiles { get => openManual; set => openManual = value; }
+        private GenioSolutionProperties solutionProps = new GenioSolutionProperties();
+        private DTE2 dte;
+        private string useCustomTool = "";
+        private bool forceDOSLine = false;
+        private OperationLog codeLog = new OperationLog();
+        private bool logOperations = false;
 
         #region ToolOptions
-        private static List<string> extensionFilters = new List<string>() { "cpp", "cs", "xml", "h" };
-        private static List<string> ignoreFilesFilters = new List<string>();
-        private static bool continuousAnalysis = false;
-        private static bool parseSolution = false;
-        public static bool AutoExportSaved { get => autoExportSaved; set => autoExportSaved = value; }
+        private List<string> extensionFilters = new List<string>() { "cpp", "cs", "xml", "h" };
+        private List<string> ignoreFilesFilters = new List<string>();
+        private bool continuousAnalysis = false;
+        private bool parseSolution = false;
+        public bool AutoExportSaved { get => autoExportSaved; set => autoExportSaved = value; }
         #endregion
 
-        public static List<GenioProjectProperties> SavedFiles = new List<GenioProjectProperties>();
-        private static Profile ActiveProfile { get => activeProfile; set => activeProfile = value; }
-        public static List<Profile> AllProfiles { get => allProfiles; set => allProfiles = value; }
-        public static GenioSolutionProperties SolutionProps { get => solutionProps; set => solutionProps = value; }
-        public static List<string> ExtensionFilters { get => extensionFilters; set => extensionFilters = value; }
-        public static List<string> IgnoreFilesFilters { get => ignoreFilesFilters; set => ignoreFilesFilters = value; }
-        public static bool ParseSolution { get => parseSolution; set => parseSolution = value; }
-        public static bool ContinuousAnalysis { get => continuousAnalysis; set => continuousAnalysis = value; }
-        public static bool AutoVCCTO2008Fix { get; internal set; }
-        public static string UseCustomTool { get => useCustomTool; set => useCustomTool = value; }
-        public static bool ForceDOSLine { get => forceDOSLine; set => forceDOSLine = value; }
-        public static DTE2 DTE { get => dte; set => dte = value; }
+        #region Properties
+        private Profile ActiveProfile { get => activeProfile; set => activeProfile = value; }
+        public List<GenioProjectProperties> SavedFiles = new List<GenioProjectProperties>();
+        public List<Profile> AllProfiles { get => allProfiles; set => allProfiles = value; }
+        public GenioSolutionProperties SolutionProps { get => solutionProps; set => solutionProps = value; }
+        public List<string> ExtensionFilters { get => extensionFilters; set => extensionFilters = value; }
+        public List<string> IgnoreFilesFilters { get => ignoreFilesFilters; set => ignoreFilesFilters = value; }
+        public bool ParseSolution { get => parseSolution; set => parseSolution = value; }
+        public bool ContinuousAnalysis { get => continuousAnalysis; set => continuousAnalysis = value; }
+        public bool AutoVCCTO2008Fix { get; internal set; }
+        public string UseCustomTool { get => useCustomTool; set => useCustomTool = value; }
+        public bool ForceDOSLine { get => forceDOSLine; set => forceDOSLine = value; }
+        public DTE2 DTE { get => dte; set => dte = value; }
+        public OperationLog ChangeLog { get => codeLog; set => codeLog = value; }
+        public bool LogOperations { get => logOperations; set => logOperations = value; }
+        public static PackageOperations Instance { get => instance ?? (instance = new PackageOperations()); }
+        #endregion
 
         #region ApplicationProfileManagement
-        public static Profile GetActiveProfile()
+        public Profile GetActiveProfile()
         {
             return ActiveProfile;
         }
-        public static bool AddProfile(Genio connection, string profileName)
+        public bool AddProfile(Genio connection, string profileName)
         {
             if (AllProfiles.Find(x => x.ProfileName.Equals(profileName) == true) == null)
             {
@@ -70,7 +77,7 @@ namespace CodeFlow
             }
             return false;
         }
-        public static bool UpdateProfile(Profile oldProfile, Profile newProfile)
+        public bool UpdateProfile(Profile oldProfile, Profile newProfile)
         {
             Profile p = AllProfiles.Find(x => x.ProfileName.Equals(newProfile.ProfileName) 
                                                     && !x.ProfileID.Equals(newProfile.ProfileID));
@@ -89,7 +96,7 @@ namespace CodeFlow
             }
             return false;
         }
-        public static void RemoveProfile(string profileName)
+        public void RemoveProfile(string profileName)
         {
             Profile p = AllProfiles.Find(x => x.ProfileName.Equals(profileName));
             if (p != null)
@@ -105,7 +112,7 @@ namespace CodeFlow
                 }
             }
         }
-        public static void SetProfile(string profileName)
+        public void SetProfile(string profileName)
         {
             Profile p = AllProfiles.Find(x => x.ProfileName.Equals(profileName));
             if (p != null)
@@ -118,12 +125,12 @@ namespace CodeFlow
         #endregion
 
         #region ProfileSettings
-        public static void SaveProfiles()
+        public void SaveProfiles()
         {
             Properties.Settings.Default.ConnectionStrings = SaveProfiles(AllProfiles);
             Properties.Settings.Default.Save();
         }
-        public static void StoreLastProfile(string folder)
+        public void StoreLastProfile(string folder)
         {
             string file = $"{folder}\\LastActiveProfile.xml";
             try
@@ -137,7 +144,7 @@ namespace CodeFlow
             catch (Exception)
             { }
         }
-        public static String SearchLastActiveProfile(string folder)
+        public String SearchLastActiveProfile(string folder)
         {
             string file = $"{folder}\\LastActiveProfile.xml";
             String p = null;
@@ -155,7 +162,7 @@ namespace CodeFlow
 
             return p;
         }
-        public static string SaveProfiles(List<Profile> configs)
+        public string SaveProfiles(List<Profile> configs)
         {
             var stringwriter = new StringWriter();
             try
@@ -167,7 +174,7 @@ namespace CodeFlow
             { }
             return stringwriter.ToString();
         }
-        public static List<Profile> LoadProfiles(string conn)
+        public List<Profile> LoadProfiles(string conn)
         {
             List<Profile> profiles = null;
             try
@@ -183,17 +190,17 @@ namespace CodeFlow
         #endregion
 
         #region AutomationModel
-        public static DTE GetCurrentDTE(IServiceProvider provider)
+        public DTE GetCurrentDTE(IServiceProvider provider)
         {
             /*ENVDTE. */
             DTE vs = (DTE)provider.GetService(typeof(DTE));
             return vs;
         }
-        public static DTE GetCurrentDTE()
+        public DTE GetCurrentDTE()
         {
             return GetCurrentDTE(/* Microsoft.VisualStudio.Shell. */ServiceProvider.GlobalProvider);
         }
-        public static DTE2 GetCurrentDTE2()
+        public DTE2 GetCurrentDTE2()
         {
             DTE2 dte = (DTE2)Package.GetGlobalService(typeof(SDTE));
 
@@ -202,18 +209,18 @@ namespace CodeFlow
         #endregion
 
         #region FileOps
-        public static void AddTempFile(string file)
+        public void AddTempFile(string file)
         {
             openFiles.Add(file);
         }
-        public static void RemoveTempFile(string file)
+        public void RemoveTempFile(string file)
         {
             if (File.Exists(file))
                 File.Delete(file);
             if (openFiles.Contains(file))
                 openFiles.Remove(file);
         }
-        public static void RemoveTempFiles()
+        public void RemoveTempFiles()
         {
             foreach (string file in openFiles)
             {
@@ -222,13 +229,13 @@ namespace CodeFlow
             }
             openFiles.Clear();
         }
-        public static string OpenManualFile(IManual man, bool autoExport)
+        public string OpenManualFile(IManual man, bool autoExport)
         {
             string tmp = "";
             try
             {
                 tmp = Path.GetTempPath() + Guid.NewGuid().ToString() + "." + man.GetCodeExtension(ActiveProfile);
-                File.WriteAllText(tmp, man.ToString(), System.Text.Encoding.UTF8);
+                File.WriteAllText(tmp, man.ToString(), Encoding.UTF8);
 
                 if(autoExport)
                     AutoExportFiles.Add(tmp, man.GetType());
@@ -243,25 +250,23 @@ namespace CodeFlow
 
             return tmp;
         }
-        public static IManual GetAutoExportIManual(string path)
+        public List<IManual> GetAutoExportIManual(string path)
         {
-            IManual man = null;
+            List<IManual> man = null;
             if (AutoExportFiles.TryGetValue(path, out Type t))
             {
                 string code = File.ReadAllText(path, GetFileEncoding());
                 string fileName = Path.GetFileName(path);
                 try
                 {
-                    List<IManual> l = t.GetMethod("GetManualCode", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { code, fileName }) as List<IManual>;
-                    if (l.Count == 1)
-                        man = l[0];
+                    man = new VSCodeManualMatcher(code, fileName).Match();
                 }
                 catch(Exception)
                 { }
             }
             return man;
         }
-        public static Encoding GetFileEncoding()
+        public Encoding GetFileEncoding()
         {
             Encoding enc = null;
             try
@@ -274,7 +279,7 @@ namespace CodeFlow
 
             return enc;
         }
-        public static Encoding GetEncoding(string filename)
+        public Encoding GetEncoding(string filename)
         {
             // Read the BOM
             var bom = new byte[4];
@@ -299,7 +304,7 @@ namespace CodeFlow
         // later on may appear to be ASCII initially). If taster = 0, then taster
         // becomes the length of the file (for maximum reliability). 'text' is simply
         // the string with the discovered encoding applied to the file.
-        public static Encoding DetectTextEncoding(string filename, out String text, int taster = 1000)
+        public Encoding DetectTextEncoding(string filename, out String text, int taster = 1000)
         {
             byte[] b = File.ReadAllBytes(filename);
 
@@ -390,6 +395,19 @@ namespace CodeFlow
             text = Encoding.GetEncoding(1252).GetString(b);
             return Encoding.GetEncoding(1252);
         }
+        #endregion
+
+        #region Operations
+
+        public bool ExecuteOperation(IOperation operation)
+        {
+            bool result = operation.Execute(GetActiveProfile());
+            if (result && LogOperations)
+                ChangeLog.LogOperation(operation);
+
+            return result;
+        }
+
         #endregion
     }
 }

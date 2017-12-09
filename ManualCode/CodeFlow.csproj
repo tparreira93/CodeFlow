@@ -7,6 +7,21 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <UseCodebase>true</UseCodebase>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -54,11 +69,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CodeControl\Conflict.cs" />
-    <Compile Include="CodeControl\ConflictList.cs" />
-    <Compile Include="CodeControl\ConflictResolveArgs.cs" />
-    <Compile Include="CodeControl\Difference.cs" />
-    <Compile Include="CodeControl\DifferenceList.cs" />
+    <Compile Include="CodeControl\Changes\CodeChange.cs" />
+    <Compile Include="CodeControl\Changes\CodeCreate.cs" />
+    <Compile Include="CodeControl\Operations\ChangeOperation.cs" />
+    <Compile Include="CodeControl\Changes\CodeEmpty.cs" />
+    <Compile Include="CodeControl\Changes\CodeNotFound.cs" />
+    <Compile Include="CodeControl\Conflicts\Conflict.cs" />
+    <Compile Include="CodeControl\Conflicts\ConflictList.cs" />
+    <Compile Include="CodeControl\Conflicts\ConflictResolveArgs.cs" />
+    <Compile Include="CodeControl\Operations\CreateOperation.cs" />
+    <Compile Include="CodeControl\Operations\DeleteOperation.cs" />
+    <Compile Include="CodeControl\Changes\ManualChange.cs" />
+    <Compile Include="CodeControl\Changes\ChangeList.cs" />
+    <Compile Include="CodeControl\Changes\IChange.cs" />
+    <Compile Include="CodeControl\Operations\IOperation.cs" />
+    <Compile Include="CodeControl\Operations\OperationLog.cs" />
     <Compile Include="CodeUtils\CompareDBSuggestion.cs" />
     <Compile Include="CodeUtils\CompareCommitBSuggestion.cs" />
     <Compile Include="CodeUtils\CommitSuggestion.cs" />
@@ -69,9 +94,12 @@
     <Compile Include="Commands\FixVS2008Solution.cs" />
     <Compile Include="Commands\CodeContextMenu.cs" />
     <Compile Include="Commands\RefreshSolution.cs" />
-    <Compile Include="GenioOperations\GenioPlataform.cs" />
-    <Compile Include="GenioOperations\TipoRotina.cs" />
-    <Compile Include="CodeControl\DifferencesAnalyzer.cs" />
+    <Compile Include="GenioManual\ManualMatchProvider.cs" />
+    <Compile Include="Genio\GenioPlataform.cs" />
+    <Compile Include="Genio\TipoRotina.cs" />
+    <Compile Include="CodeControl\Analyzer\ChangeAnalyzer.cs" />
+    <Compile Include="GenioManual\ManualMatch.cs" />
+    <Compile Include="GenioManual\VSCodeManualMatcher.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -90,6 +118,11 @@
     </Compile>
     <Compile Include="Guids\PackageGuidList.cs" />
     <Compile Include="Guids\PackageCommandList.cs" />
+    <Compile Include="ToolWindow\ChangeHistory.cs" />
+    <Compile Include="Commands\ChangeHistoryCommand.cs" />
+    <Compile Include="ToolWindow\ChangeHistoryControl.xaml.cs">
+      <DependentUpon>ChangeHistoryControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindow\SearchTool.cs" />
     <Compile Include="Commands\SearchToolCommand.cs" />
     <Compile Include="ToolWindow\SearchToolControl.xaml.cs">
@@ -101,10 +134,9 @@
     <Compile Include="Forms\ConflictForm.Designer.cs">
       <DependentUpon>ConflictForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ManualOperations\CodeSegment.cs" />
-    <Compile Include="ManualOperations\CustomFunction.cs" />
-    <Compile Include="ManualOperations\IManual.cs" />
-    <Compile Include="ManualOperations\ManuaCode.cs" />
+    <Compile Include="GenioManual\CustomFunction.cs" />
+    <Compile Include="GenioManual\IManual.cs" />
+    <Compile Include="GenioManual\ManuaCode.cs" />
     <Compile Include="SolutionOperations\GenioProjectItem.cs" />
     <Compile Include="SolutionOperations\GenioProjectProperties.cs" />
     <Compile Include="SolutionOperations\SolutionAnalyzer.cs">
@@ -130,15 +162,15 @@
       <DependentUpon>CommitForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Commands\CommitSolution.cs" />
-    <Compile Include="GenioOperations\Genio.cs" />
+    <Compile Include="Genio\Genio.cs" />
     <Compile Include="Commands\UpdateCode.cs" />
     <Compile Include="Commands\CommitCode.cs" />
     <Compile Include="Commands\ManageProfiles.cs" />
     <Compile Include="CodeFlowPackage.cs" />
-    <Compile Include="ManualOperations\Manual.cs" />
+    <Compile Include="GenioManual\Manual.cs" />
     <Compile Include="CodeUtils\ManualHighlight.cs" />
     <Compile Include="CodeUtils\ManualHighlightTextViewCreationListener.cs" />
-    <Compile Include="GenioOperations\Profile.cs" />
+    <Compile Include="Genio\Profile.cs" />
     <Compile Include="Forms\ProfilesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -153,6 +185,7 @@
     </Compile>
     <Compile Include="SolutionOperations\SolutionConstants.cs" />
     <Compile Include="SolutionOperations\GenioSolutionProperties.cs" />
+    <Compile Include="ToolWindow\SortAdorner.cs" />
     <Compile Include="Utils\ExtensionMethods.cs" />
     <Compile Include="Utils\Util.cs" />
     <Compile Include="VSPackage.Designer.cs">
@@ -178,16 +211,14 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <None Include="Resources\History_16xLG.png" />
+    <Content Include="ToolWindow\Resources\ChangeHistoryCommand.png" />
     <None Include="Resources\WholeWordMatch_16x.png" />
     <None Include="Resources\CaseSensitive_16x.png" />
     <VSCTCompile Include="CodeFlowPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <SubType>Designer</SubType>
     </VSCTCompile>
-    <Content Include="Release\release-notes.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <None Include="Resources\Download_grey.ico" />
     <None Include="Resources\Event.ico" />
     <None Include="Resources\Compare_16x.png" />
@@ -394,6 +425,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="ToolWindow\ChangeHistoryControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ToolWindow\ListViewStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -406,7 +441,18 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.9\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.9\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets')" />

@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using CodeFlow.Utils;
+using CodeFlow.GenioManual;
 
-namespace CodeFlow
+namespace CodeFlow.ManualOperations
 {
+    [ManualMatchProvider("BEGIN_CUSTOMFUNCS_CODFUNCS:", "END_CUSTOMFUNCS")]
     public class CustomFunction : Manual
     {
-        public static string BEGIN_MANUAL = "BEGIN_CUSTOMFUNCS_CODFUNCS:";
-        public static string END_MANUAL = "END_CUSTOMFUNCS";
-
         private string nome = "";
         private string lang = "";
         private Guid codfuncs = Guid.Empty;
@@ -44,6 +43,20 @@ namespace CodeFlow
         }
 
         #region DatabaseOperations
+        /*
+         * Still no support for insert for CustomFunctions
+         */
+        public override bool Create(Profile profile)
+        {
+            return false;
+        }
+        /*
+         * Still no support for delete for CustomFunctions
+         */
+        public override bool Delete(Profile profile)
+        {
+            return false;
+        }
         public override bool Update(Profile profile)
         {
             bool result = false;
@@ -52,7 +65,7 @@ namespace CodeFlow
             {
                 try
                 {
-                    string c = PackageOperations.ForceDOSLine ? Util.ConverToDOSLineEndings(CodeTransformKeyValue()) : CodeTransformKeyValue();
+                    string c = PackageOperations.Instance.ForceDOSLine ? Util.ConverToDOSLineEndings(CodeTransformKeyValue()) : CodeTransformKeyValue();
 
                     SqlCommand cmd = new SqlCommand();
                     cmd.CommandText = String.Format("UPDATE GENIMPLS SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODIMPLS = @CODIMPLS");
@@ -79,7 +92,7 @@ namespace CodeFlow
         }
         public static CustomFunction GetManual(Profile profile, Guid codimpls)
         {
-            CustomFunction custom = new CustomFunction();
+            CustomFunction custom = null;
             SqlDataReader reader = null;
 
             if (profile.GenioConfiguration.OpenConnection())
@@ -103,10 +116,11 @@ namespace CodeFlow
                     if (reader.HasRows)
                     {
                         reader.Read();
+                        custom = new CustomFunction();
                         custom.Codfuncs = reader.SafeGetGuid(0);
                         custom.CodeId = reader.SafeGetGuid(1);
                         custom.Nome = reader.SafeGetString(2);
-                        custom.Code = PackageOperations.ForceDOSLine ? Util.ConverToDOSLineEndings(reader.SafeGetString(3)) : reader.SafeGetString(3);
+                        custom.Code = PackageOperations.Instance.ForceDOSLine ? Util.ConverToDOSLineEndings(reader.SafeGetString(3)) : reader.SafeGetString(3);
                         custom.Plataform = reader.SafeGetString(4);
                         custom.Tiportn = reader.SafeGetString(5);
                         custom.Ordem = reader.SafeGetDouble(6);
@@ -187,7 +201,7 @@ namespace CodeFlow
                         Guid codmanua = reader.SafeGetGuid(0);
                         string corpo = reader.SafeGetString(1);
 
-                        CustomFunction custom = new CustomFunction(codmanua, PackageOperations.ForceDOSLine ? Util.ConverToDOSLineEndings(corpo) : corpo);
+                        CustomFunction custom = new CustomFunction(codmanua, PackageOperations.Instance.ForceDOSLine ? Util.ConverToDOSLineEndings(corpo) : corpo);
                         custom.Plataform = reader.SafeGetString(2);
                         custom.Nome = reader.SafeGetString(3);
                         custom.Codfuncs = reader.SafeGetGuid(4);
@@ -222,21 +236,9 @@ namespace CodeFlow
         #endregion
 
         #region LocalOperations
-        public static List<IManual> GetManualCode(string vscode, string localFileName = "")
+        public override bool MatchAndFix(string upperLine)
         {
-            List<IManual> codeList = new List<IManual>();
-            string remainig = vscode ?? "";
-            do
-            {
-                IManual m = ParseText<CustomFunction>(BEGIN_MANUAL, END_MANUAL, remainig, out remainig);
-                if (m != null)
-                {
-                    m.LocalFileName = localFileName;
-                    codeList.Add(m);
-                }
-            } while (remainig.Length != 0);
-
-            return codeList;
+            return false;
         }
         public override void ShowSVNLog(Profile profile, string systemName)
         {
@@ -252,19 +254,19 @@ namespace CodeFlow
         }
         public override string ToString()
         {
-            string str = BEGIN_MANUAL + this.CodeId.ToString() + Utils.Util.NewLine;
+            string str = GetMatchProvider().MatchBeginnig + this.CodeId.ToString() + Util.NewLine;
             str += this.Code;
-            str += Utils.Util.NewLine;
-            str += END_MANUAL;
+            str += Util.NewLine;
+            str += GetMatchProvider().MatchEnd;
 
             return str;
         }
-        public string FormatCode(string extension)
+        public override string FormatCode(string extension)
         {
-            string str = FormatComment(extension, BEGIN_MANUAL + this.CodeId.ToString()) + Utils.Util.NewLine;
+            string str = FormatComment(extension, GetMatchProvider().MatchBeginnig + this.CodeId.ToString()) + Util.NewLine;
             str += this.Code;
-            str += Utils.Util.NewLine;
-            str += FormatComment(extension, END_MANUAL);
+            str += Util.NewLine;
+            str += FormatComment(extension, GetMatchProvider().MatchEnd);
 
             return str;
         }

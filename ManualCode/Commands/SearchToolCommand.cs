@@ -3,8 +3,9 @@ using System.ComponentModel.Design;
 using System.Globalization;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using CodeFlow.ToolWindow;
 
-namespace CodeFlow.ToolWindow
+namespace CodeFlow.Commands
 {
     /// <summary>
     /// Command handler

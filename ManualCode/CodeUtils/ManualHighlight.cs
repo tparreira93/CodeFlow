@@ -5,8 +5,10 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Formatting;
 using System.Collections.Generic;
+using CodeFlow.ManualOperations;
+using CodeFlow.GenioManual;
 
-namespace CodeFlow
+namespace CodeFlow.CodeUtils
 {
     /// <summary>
     /// ManualHighlight places red boxes behind all the "a"s in the editor window
@@ -33,6 +35,10 @@ namespace CodeFlow
         /// </summary>
         private readonly Pen pen;
 
+        List<string> matchFields;
+
+        public List<string> MatchFields { get => matchFields; set => matchFields = value; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ManualHighlight"/> class.
         /// </summary>
@@ -57,6 +63,12 @@ namespace CodeFlow
             penBrush.Freeze();
             this.pen = new Pen(penBrush, 0.5);
             this.pen.Freeze();
+            MatchFields = new List<string>();
+            foreach (KeyValuePair<Type, ManualMatchProvider> item in VSCodeManualMatcher.MatchProvider)
+            {
+                MatchFields.Add(item.Value.MatchBeginnig);
+                MatchFields.Add(item.Value.MatchEnd);
+            }
         }
 
         /// <summary>
@@ -85,11 +97,10 @@ namespace CodeFlow
             try
             {
                 IWpfTextViewLineCollection textViewLines = this.view.TextViewLines;
-                List<string> fields = new List<string>() { ManuaCode.BEGIN_MANUAL, ManuaCode.END_MANUAL, CustomFunction.BEGIN_MANUAL, CustomFunction.END_MANUAL };
                 TryGetText(view, line, out string text);
                 if (text == null)
                     return;
-                foreach (string val in fields)
+                foreach (string val in MatchFields)
                 {
                     if(text.Contains(val))
                     {

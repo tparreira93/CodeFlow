@@ -3,8 +3,10 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
 using System.IO;
+using CodeFlow.CommandHandlers;
+using CodeFlow.ManualOperations;
 
-namespace CodeFlow
+namespace CodeFlow.Commands
 {
     /// <summary>
     /// Command handler
@@ -87,19 +89,17 @@ namespace CodeFlow
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            string code = CommandHandlers.CommandHandler.GetCurrentSelection(ServiceProvider);
+            CommandHandler handler = new CommandHandler();
+            string code = handler.GetCurrentSelection();
             
             if (code != null && code.Length != 0)
             {
                 ManuaCode man = new ManuaCode(code);
+                man.LocalFileName = PackageOperations.Instance.DTE.ActiveDocument.Name;
                 CreateInGenioForm genioForm = new CreateInGenioForm(man);
                 genioForm.ShowDialog();
                 if(genioForm.DialogResult == System.Windows.Forms.DialogResult.OK)
-                {
-                    string ext = Path.GetExtension(PackageOperations.DTE.ActiveDocument.ProjectItem.Name);
-                    var selection = (EnvDTE.TextSelection)PackageOperations.DTE.ActiveDocument.Selection;
-                    selection.Insert(man.FormatCode(ext));
-                }
+                    handler.InsertCreatedCode(man);
             }
         }
     }

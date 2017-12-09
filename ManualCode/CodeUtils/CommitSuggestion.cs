@@ -93,8 +93,8 @@ namespace CodeFlow.CodeUtils
             }
             if (_manual is ManuaCode)
             {
-                DifferencesAnalyzer diffs = new DifferencesAnalyzer();
-                diffs.CheckBDDifferences(_manual, PackageOperations.GetActiveProfile());
+                ChangeAnalyzer diffs = new ChangeAnalyzer();
+                diffs.CheckBDDifferences(_manual, PackageOperations.Instance.GetActiveProfile());
                 CommitForm exportForm = new CommitForm(diffs);
                 exportForm.ShowDialog();
             }

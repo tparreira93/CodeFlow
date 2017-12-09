@@ -4,8 +4,11 @@ using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using CodeFlow.Utils;
 using System.Text;
-namespace CodeFlow
+using CodeFlow.GenioManual;
+
+namespace CodeFlow.ManualOperations
 {
+    [ManualMatchProvider("BEGIN_MANUALCODE_CODMANUA:", "END_MANUALCODE")]
     public class ManuaCode : Manual
     {
         private string tipo = "";
@@ -29,9 +32,6 @@ namespace CodeFlow
         private int system = 0;
         
         private int inhib = 0;
-
-        public static string BEGIN_MANUAL = "BEGIN_MANUALCODE_CODMANUA:";
-        public static string END_MANUAL = "END_MANUALCODE";
 
         private void init()
         {
@@ -89,52 +89,22 @@ namespace CodeFlow
                 "/$5/$2$3$4$5", 
                 RegexOptions.Multiline | RegexOptions.Compiled);
         }
-        public static List<IManual> GetManualCode(string vscode, string localFileName = "")
+        public override bool MatchAndFix(string upperLine)
         {
-            List<IManual> codeList = new List<IManual>();
-            string remainig = vscode ?? "", plat = "", tipo = "", modulo = "", param = "", fich = "", ordem = "";
-            do
+            Match match = reg.Match(upperLine);
+            if (match.Success)
             {
-                int b = remainig.IndexOf(BEGIN_MANUAL);
-                if (b == -1)
-                    break;
+                Plataform = match.Groups[2].Value;
+                TipoRotina = match.Groups[5].Value;
+                Modulo = match.Groups[8].Value;
+                Parameter = match.Groups[11].Value;
+                ManualFile = match.Groups[14].Value;
+                Double.TryParse(match.Groups[17].Value, out double tmp);
+                Order = tmp;
+            }
+            Code = FixSetCurrentIndex(Code);
 
-                int platEnd = remainig.LastIndexOf(Utils.Util.NewLine, b);
-                if (platEnd > -1)
-                {
-                    int platBegin = remainig.LastIndexOf(Utils.Util.NewLine, platEnd) + Utils.Util.NewLine.Length;
-                    if (platBegin != -1 && platEnd - platBegin > 0)
-                    {
-                        Match match = reg.Match(remainig.Substring(platBegin, platEnd - platBegin));
-                        if (match.Success)
-                        {
-                            plat = match.Groups[2].Value;
-                            tipo = match.Groups[5].Value;
-                            modulo = match.Groups[8].Value;
-                            param = match.Groups[11].Value;
-                            fich = match.Groups[14].Value;
-                            ordem = match.Groups[17].Value;
-                        }
-                    }
-                }
-                IManual m = ParseText<ManuaCode>(BEGIN_MANUAL, END_MANUAL, remainig, out remainig);
-                if (m != null)
-                {
-                    m.LocalFileName = localFileName;
-                    codeList.Add(m);
-                    ManuaCode manua = (ManuaCode)m;
-                    manua.Plataform = plat;
-                    manua.TipoRotina = tipo;
-                    manua.Modulo = modulo;
-                    manua.Parameter = param;
-                    manua.ManualFile = fich;
-                    Double.TryParse(ordem, out double tmp);
-                    manua.Order = tmp;
-                    manua.Code = FixSetCurrentIndex(manua.Code);
-                }
-            } while (remainig.Length != 0);
-
-            return codeList;
+            return match.Success;
         }
         public override void ShowSVNLog(Profile profile, string systemName)
         {
@@ -147,21 +117,21 @@ namespace CodeFlow
                 throw e;
             }
         }
-        public string FormatCode(string extension)
+        public override string FormatCode(string extension)
         {
-            string str = FormatComment(extension, BEGIN_MANUAL + this.CodeId.ToString()) + Utils.Util.NewLine;
+            string str = FormatComment(extension, GetMatchProvider().MatchBeginnig + this.CodeId.ToString()) + Utils.Util.NewLine;
             str += this.Code;
             str += Utils.Util.NewLine;
-            str += FormatComment(extension, END_MANUAL);
+            str += FormatComment(extension, GetMatchProvider().MatchEnd);
 
             return str;
         }
         public override string ToString()
         {
-            string str = BEGIN_MANUAL + this.CodeId.ToString() + Utils.Util.NewLine;
+            string str = GetMatchProvider().MatchBeginnig + this.CodeId.ToString() + Utils.Util.NewLine;
             str += this.Code;
             str += Utils.Util.NewLine;
-            str += END_MANUAL;
+            str += GetMatchProvider().MatchEnd;
 
             return str;
         }
@@ -176,7 +146,7 @@ namespace CodeFlow
             {
                 try
                 {
-                    string c = PackageOperations.ForceDOSLine ? Util.ConverToDOSLineEndings(CodeTransformKeyValue()) : Code;
+                    string c = PackageOperations.Instance.ForceDOSLine ? Util.ConverToDOSLineEndings(CodeTransformKeyValue()) : Code;
 
                     SqlCommand cmd = new SqlCommand();
                     cmd.CommandText = String.Format("UPDATE GENMANUA SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODMANUA = @CODMANUA");
@@ -201,7 +171,7 @@ namespace CodeFlow
 
             return result;
         }
-        public bool Insert(Profile profile)
+        public override bool Create(Profile profile)
         {
             bool result = false;
 
@@ -212,7 +182,7 @@ namespace CodeFlow
                     if(CodeId.Equals(Guid.Empty))
                         this.CodeId = Guid.NewGuid();
 
-                    string c = PackageOperations.ForceDOSLine ? Util.ConverToDOSLineEndings(CodeTransformValueKey()) : CodeTransformValueKey();
+                    string c = PackageOperations.Instance.ForceDOSLine ? Util.ConverToDOSLineEndings(CodeTransformValueKey()) : CodeTransformValueKey();
 
                     SqlCommand cmd = new SqlCommand();
                     cmd.CommandText = String.Format("INSERT INTO GENMANUA (CODMANUA, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, CORPO, LANG, ORDEM, CODCARAC, CODMODUL, ISSISTEM, NEGCARAC, CARAC, DATACRIA, OPERCRIA, ZZSTATE) "
@@ -249,6 +219,33 @@ namespace CodeFlow
             }
             return result;
         }
+        public override bool Delete(Profile profile)
+        {
+            bool result = false;
+
+            if (profile.GenioConfiguration.OpenConnection())
+            {
+                try
+                {
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.CommandText = String.Format("DELETE FROM GENMANUA WHERE CODMANUA = @CODMANUA");
+
+                    cmd.Parameters.AddWithValue("@CODMANUA", this.CodeId);
+                    cmd.Connection = profile.GenioConfiguration.SqlConnection;
+
+                    result = cmd.ExecuteNonQuery() != 0;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    profile.GenioConfiguration.CloseConnection();
+                }
+            }
+            return result;
+        }
         public static ManuaCode GetManual(Profile profile, Guid codmanua)
         {
             ManuaCode man = null;
@@ -265,12 +262,12 @@ namespace CodeFlow
                     cmd.Connection = profile.GenioConfiguration.SqlConnection;
 
                     reader = cmd.ExecuteReader();
-                    man = new ManuaCode("");
                     if (reader.HasRows)
                     {
                         reader.Read();
+                        man = new ManuaCode("");
                         man.CodeId = reader.SafeGetGuid(0);
-                        man.Code = PackageOperations.ForceDOSLine ? Util.ConverToDOSLineEndings(reader.SafeGetString(1)) : reader.SafeGetString(1);
+                        man.Code = PackageOperations.Instance.ForceDOSLine ? Util.ConverToDOSLineEndings(reader.SafeGetString(1)) : reader.SafeGetString(1);
                         man.Plataform = reader.SafeGetString(2);
                         man.TipoRotina = reader.SafeGetString(3);
                         man.Modulo = reader.SafeGetString(4);
@@ -346,7 +343,7 @@ namespace CodeFlow
                         Guid codmanua = reader.SafeGetGuid(0);
                         string corpo = reader.SafeGetString(1);
 
-                        ManuaCode man = new ManuaCode(codmanua, PackageOperations.ForceDOSLine ? Util.ConverToDOSLineEndings(corpo) : corpo)
+                        ManuaCode man = new ManuaCode(codmanua, PackageOperations.Instance.ForceDOSLine ? Util.ConverToDOSLineEndings(corpo) : corpo)
                         {
                             Plataform = reader.SafeGetString(2),
                             TipoRotina = reader.SafeGetString(3),

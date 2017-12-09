@@ -317,6 +317,13 @@
         </Strings>
       </Button>-->
       
+      <Button guid="CodeFlowCommandSet" id="cmdidChangeHistoryCommand" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
+        <Icon guid="changeHistory" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Change history</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
     
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -337,6 +344,7 @@
       <Bitmap guid="buttonSearchToolwindow" href="Resources\Search_16x.png" usedList="bmpPic1" />
       <Bitmap guid="buttonWholeWord" href="Resources\WholeWordMatch_16x.png" usedList="bmpPic1" />
       <Bitmap guid="buttonCaseSensitive" href="Resources\CaseSensitive_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="changeHistory" href="Resources\History_16xLG.png" usedList="bmpPic1" />
     </Bitmaps>
   </Commands>
 
@@ -387,6 +395,7 @@
       <IDSymbol name="cmdCommitSolution" value="4133" />
       <IDSymbol name="cmdidFixVS2008Solution" value="4134" />
       <IDSymbol name="cmdidRefreshSolution" value="4135" />
+      <IDSymbol name="cmdidChangeHistoryCommand" value="8200" />
     </GuidSymbol>
 
     <GuidSymbol name="guidCodeFlowContextMenuCmdSet" value="{7547EBCE-1079-4C06-8B74-BFE595D61E7E}">
@@ -404,7 +413,7 @@
       <IDSymbol name="SearchWindowToolbarGroup" value="0x1001" />
       <IDSymbol name="SearchWindowToolbarGroup2" value="0x1002" />
       <!--Commands-->
-      <IDSymbol name="cmdidSearchBox" value="0x105"/>
+      <IDSymbol name="cmdidSearchBox" value="0x105" />
       <IDSymbol name="cmdidSearchToolCommand" value="256" />
       <IDSymbol name="cmdidSearchCode" value="0x2003" />
       <IDSymbol name="cmdidWholeWord" value="0x2004" />
@@ -454,6 +463,10 @@
     </GuidSymbol>
   
     <GuidSymbol value="{716CED47-F3CC-4A16-B989-9FCCCFA38A09}" name="buttonCaseSensitive">
+      <IDSymbol name="bmpPic1" value="1" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{2a3b7c57-f98d-4f51-8d7e-08d3d93b4ee7}" name="changeHistory">
       <IDSymbol name="bmpPic1" value="1" />
     </GuidSymbol>
   </Symbols>

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlow.SolutionOperations;
 using CodeFlow.Utils;
+using CodeFlow.ManualOperations;
 
 namespace CodeFlow.Forms
 {
@@ -25,7 +26,7 @@ namespace CodeFlow.Forms
         public ProjectSelectionForm(List<GenioProjectProperties> saved)
         {
             InitializeComponent();
-            solution = GenioSolutionProperties.ParseSolution(PackageOperations.DTE, true);
+            solution = GenioSolutionProperties.ParseSolution(PackageOperations.Instance.DTE, true);
             savedFiles = saved;
         }
 

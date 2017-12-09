@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.VCProjectEngine;
 using CodeFlow.SolutionOperations;
 using EnvDTE;
 
-namespace CodeFlow
+namespace CodeFlow.Commands
 {
     /// <summary>
     /// Command handler
@@ -91,7 +91,7 @@ namespace CodeFlow
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            GenioSolutionProperties.ChangeToolset2008(PackageOperations.DTE);
+            GenioSolutionProperties.ChangeToolset2008(PackageOperations.Instance.DTE);
         }
     }
 }

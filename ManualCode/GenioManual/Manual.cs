@@ -1,4 +1,5 @@
-﻿using CodeFlow.GenioOperations;
+﻿using CodeFlow.GenioManual;
+using CodeFlow.GenioOperations;
 using CodeFlow.Utils;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace CodeFlow
+namespace CodeFlow.ManualOperations
 {
     public abstract class Manual : IManual
     {
@@ -19,7 +20,8 @@ namespace CodeFlow
         protected string changedBy = "";
         protected DateTime creationDate = DateTime.MaxValue;
         protected DateTime lastChangeDate = DateTime.MaxValue;
-        private string localFileName = "";
+        protected string localFileName = "";
+        protected ManualMatch localMatch = new ManualMatch();
         public static Dictionary<Int32, byte> SpecialChars = new Dictionary<Int32, byte>
         {
             //Unicode characters mappings to extended ASCII
@@ -52,7 +54,7 @@ namespace CodeFlow
             [0x017E] = (byte)'\x9E',
             [0x0178] = (byte)'\x9F'
         };
-        
+
         public abstract Guid CodeId { get; set; }
         
         public virtual string Code { get => corpo; set => corpo = value; }
@@ -67,7 +69,7 @@ namespace CodeFlow
 
         public string GetCodeExtension(Profile p)
         {
-            GenioPlataform plat = PackageOperations.GetActiveProfile().GenioConfiguration.Plataforms.Find(x => x.ID.Equals(Plataform));
+            GenioPlataform plat = PackageOperations.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Find(x => x.ID.Equals(Plataform));
             string extension = plat?.TipoRotina?.Find(x => x.Identifier.Equals(Tipo))?.ProgrammingLanguage;
             return extension ?? "tmp";
         }
@@ -93,16 +95,19 @@ namespace CodeFlow
             return OneLineCode.Substring(0, max);
         }
         public string ChangedBy { get => changedBy; set => changedBy = value; }
+        public static IManual GetManual(Type t, Guid g, Profile profile)
+        {
+            IManual man = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { profile, g }) as IManual;
+            return man;
+        }
         public void CompareDB(Profile profile)
         {
-            var t = this.GetType();
-            IManual bd = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { profile, this.CodeId }) as IManual;
+            IManual bd = GetManual(GetType(), CodeId, profile);
             Compare(bd, this);
         }
         public IManual MergeDB(Profile profile)
         {
-            var t = this.GetType();
-            IManual bd = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { profile, this.CodeId }) as IManual;
+            IManual bd = GetManual(GetType(), CodeId, profile);
             return MergeCompare(bd, this, true);
         }
         public static IManual Merge(IManual bd, IManual local)
@@ -138,9 +143,9 @@ namespace CodeFlow
 
 
                 Process merge = new Process();
-                if (!String.IsNullOrEmpty(PackageOperations.UseCustomTool))
+                if (!String.IsNullOrEmpty(PackageOperations.Instance.UseCustomTool))
                 {
-                    string tool = PackageOperations.UseCustomTool
+                    string tool = PackageOperations.Instance.UseCustomTool
                         .Replace("%left",   "\"" + tmpBD + "\"")
                         .Replace("%right",  "\"" + tmpCode + "\"")
                         .Replace("%result", "\"" + tmpFinal + "\"")
@@ -194,68 +199,6 @@ namespace CodeFlow
             {
                 throw e;
             }
-        }
-        protected static IManual ParseText<T>(string begin, string end, string vscode, out string remaning)
-            where T : IManual, new()
-        {
-            int b = vscode.IndexOf(begin);
-            int e = -1;
-            IManual m = null;
-            remaning = "";
-
-            if (b != -1)
-            {
-                string s = vscode.Substring(b + begin.Length);
-                int i = s.IndexOf(Util.NewLine);
-
-                if (i == -1)
-                    return m;
-
-                string guid = s.Substring(0, i).Trim();
-                guid = guid.Substring(0, 36);
-                if (Guid.TryParse(guid, out Guid g))
-                {
-                    e = s.IndexOf(end);
-                    string c = "", code = "";
-                    if (e == -1)
-                    {
-                        int anotherB = s.IndexOf(begin, i);
-                        if (anotherB != -1)
-                            return m;
-
-                        c = s.Substring(i);
-                        code = c.Substring(Util.NewLine.Length);
-                        remaning = "";
-                    }
-                    else
-                    {
-                        e = e - i;
-                        c = s.Substring(i, e);
-                        int tmp = c.LastIndexOf(Util.NewLine);
-                        if (tmp != -1)
-                            e = tmp;
-                        else
-                            e = c.Length - i - Util.NewLine.Length;
-                        code = c.Substring(Util.NewLine.Length, e - Util.NewLine.Length);
-
-                        b = vscode.IndexOf(begin, b);
-                        remaning = s.Substring(i + e);
-
-                        int anotherB = s.IndexOf(begin, i, e);
-                        if (anotherB != -1)
-                            return m;
-                    }
-
-                    m = new T
-                    {
-                        Code = PackageOperations.ForceDOSLine ? Util.ConverToDOSLineEndings(code) : code,
-                        CodeId = g
-                    };
-                    m.Code = m.CodeTransformKeyValue();
-                }
-            }
-
-            return m;
         }
         public static List<IManual> SearchDatabase(Profile profile, string texto, bool caseSensitive = false, bool wholeWord = false, string plataform = "")
         {
@@ -315,12 +258,23 @@ namespace CodeFlow
                     return "//" + str;
             }
         }
+        public ManualMatchProvider GetMatchProvider()
+        {
+            // Get instance of the attribute.
+            return Attribute.GetCustomAttribute(this.GetType(), typeof(ManualMatchProvider)) as ManualMatchProvider;
+
+        }
         public abstract void ShowSVNLog(Profile profile, string systemName);
         public abstract bool Update(Profile profile);
+        public abstract bool Create(Profile profile);
+        public abstract bool Delete(Profile profile);
+        public abstract string FormatCode(string extension);
+        public abstract bool MatchAndFix(string upperLine);
         public abstract string Lang { get; set; }
         public abstract string Tag { get; }
         public abstract string TipoCodigo { get; }
         public abstract string Tipo { get; }
-        public string LocalFileName { get => localFileName; set => localFileName = value; }
+        public string LocalFileName { get => localMatch.LocalFileName; set => localMatch.LocalFileName = value; }
+        public ManualMatch LocalMatch { get => localMatch; set => localMatch = value; }
     }
 }

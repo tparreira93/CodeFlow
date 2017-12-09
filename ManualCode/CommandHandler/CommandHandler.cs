@@ -8,15 +8,18 @@ using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Shell;
+using System.IO;
+using CodeFlow.Utils;
 
 namespace CodeFlow.CommandHandlers
 {
-    internal static class CommandHandler
+    public class CommandHandler
     {
-        public static string GetCurrentViewText(IServiceProvider serviceProvider, out int cursorPos, out IWpfTextView textView)
+        public string GetCurrentViewText(out int cursorPos, out IWpfTextView textView)
         {
-            var textManager = (IVsTextManager)serviceProvider.GetService(typeof(SVsTextManager));
-            var componentModel = (IComponentModel)serviceProvider.GetService(typeof(SComponentModel));
+            var textManager = (IVsTextManager)ServiceProvider.GlobalProvider.GetService(typeof(SVsTextManager));
+            var componentModel = (IComponentModel)ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel));
             var editor = componentModel.GetService<IVsEditorAdaptersFactoryService>();
             textManager.GetActiveView(1, null, out IVsTextView textViewCurrent);
             textView = editor.GetWpfTextView(textViewCurrent);
@@ -25,9 +28,9 @@ namespace CodeFlow.CommandHandlers
             cursorPos = caretPosition.Position;
             return textView.TextBuffer.CurrentSnapshot.GetText();
         }
-        public static string GetCurrentSelection(IServiceProvider serviceProvider)
+        public string GetCurrentSelection()
         {
-            var dte = PackageOperations.DTE;
+            var dte = PackageOperations.Instance.DTE;
             string code = "";
 
             if (dte != null && dte.ActiveDocument != null)
@@ -37,75 +40,63 @@ namespace CodeFlow.CommandHandlers
             }
             return code;
         }
-        public static List<IManual> SearchForTags(IServiceProvider serviceProvider)
+        public List<IManual> SearchForTags()
         {
-            var dte = PackageOperations.DTE;
+            var dte = PackageOperations.Instance.DTE;
             List<IManual> manual = new List<IManual>();
             string code = "";
-            string subCode = "";
-
+            int pos = -1;
             if (dte == null || dte.ActiveDocument == null)
                 return manual;
 
-            code = GetCurrentSelection(serviceProvider);
-
-            if (code != null && code.Length != 0)
+            code = GetCurrentSelection();
+            VSCodeManualMatcher vSCodeManualMatcher = null;
+            if (code == null || code.Length == 0)
             {
-                manual.AddRange(ManuaCode.GetManualCode(code, dte.ActiveDocument.Name).ToArray());
-                manual.AddRange(CustomFunction.GetManualCode(code, dte.ActiveDocument.Name).ToArray());
+                code = GetCurrentViewText(out pos, out IWpfTextView textView);
+                vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, dte.ActiveDocument.Name);
             }
             else
-            {
-                code = GetCurrentViewText(serviceProvider, out int pos, out IWpfTextView textView);
+                vSCodeManualMatcher = new VSCodeManualMatcher(code, dte.ActiveDocument.Name);
 
-                CodeSegment segment = CodeSegment.ParseFromPosition(ManuaCode.BEGIN_MANUAL, ManuaCode.END_MANUAL, code, pos);
-                if (segment.IsValid())
-                {
-                    subCode = segment.CompleteTextSegment;
-                    manual.AddRange(ManuaCode.GetManualCode(subCode, dte.ActiveDocument.Name).ToArray());
-                }
-
-                segment = CodeSegment.ParseFromPosition(CustomFunction.BEGIN_MANUAL, CustomFunction.END_MANUAL, code, pos);
-                if (segment.IsValid())
-                {
-                    subCode = segment.CompleteTextSegment;
-                    manual.AddRange(CustomFunction.GetManualCode(subCode, dte.ActiveDocument.Name).ToArray());
-                }
-            }
+            manual = vSCodeManualMatcher.Match();
 
             return manual;
         }
-        public static bool ImportAndEditCurrentTag(IServiceProvider serviceProvider)
+        public bool ImportAndEditCurrentTag()
         {
-            string code = GetCurrentViewText(serviceProvider, out int pos, out IWpfTextView textView);
-            string subCode = "";
-            CodeSegment segment = CodeSegment.ParseFromPosition(ManuaCode.BEGIN_MANUAL, ManuaCode.END_MANUAL, code, pos);
-            if (segment.IsValid())
-                subCode = segment.CompleteTextSegment;
-
-            List<IManual> codeList = ManuaCode.GetManualCode(subCode);
-            if (codeList.Count == 1 && codeList[0] is ManuaCode)
+            string code = GetCurrentViewText(out int pos, out IWpfTextView textView);
+            VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageOperations.Instance.DTE.ActiveDocument.Name);
+            List<IManual> codeList = vSCodeManualMatcher.Match();
+            if (codeList.Count == 1)
             {
-                ManuaCode bd = ManuaCode.GetManual(PackageOperations.GetActiveProfile(), codeList[0].CodeId);
+                IManual manual = codeList[0];
+                IManual bd = Manual.GetManual(manual.GetType(), manual.CodeId, PackageOperations.Instance.GetActiveProfile());
                 if (bd == null)
                     return false;
 
-                EditCodeSegment(textView.TextBuffer, segment, bd.Code);
+                EditCodeSegment(textView.TextBuffer, manual.LocalMatch, bd.Code + (manual.LocalMatch.CodeLength == 0 ? Util.NewLine : String.Empty));
             }
 
             return true;
         }
-        public static void EditCodeSegment(ITextBuffer textBuffer, CodeSegment segment, string code)
+        public void EditCodeSegment(ITextBuffer textBuffer, ManualMatch match, string code)
         {
-            EditCodeSegment(textBuffer, segment.SegmentStart, segment.SegmentLength, code);
+            EditCodeSegment(textBuffer, match.CodeStart, match.CodeLength, code);
         }
-        public static void EditCodeSegment(ITextBuffer textBuffer, int begin, int length, string code)
+        public void EditCodeSegment(ITextBuffer textBuffer, int begin, int length, string code)
         {
             using (var edit = textBuffer.CreateEdit())
             {
                 edit.Replace(begin, length, code);
                 edit.Apply();
             }
+        }
+        public void InsertCreatedCode(IManual man)
+        {
+            string ext = Path.GetExtension(PackageOperations.Instance.DTE.ActiveDocument.ProjectItem.Name);
+            var selection = (EnvDTE.TextSelection)PackageOperations.Instance.DTE.ActiveDocument.Selection;
+            selection.Insert(man.FormatCode(ext));
         }
     }
 }

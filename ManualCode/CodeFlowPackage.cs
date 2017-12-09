@@ -10,6 +10,8 @@ using CodeFlow.Properties;
 using CodeFlow.SolutionOperations;
 using System.Collections.Generic;
 using CodeFlow.Commands;
+using CodeFlow.CodeControl;
+using CodeFlow.ManualOperations;
 
 namespace CodeFlow
 {
@@ -38,7 +40,8 @@ namespace CodeFlow
     [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string)]
     [ProvideOptionPage(typeof(OptionsPageGrid), "Genio", "CodeFlow properties", 0, 0, true)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(CodeFlow.ToolWindow.SearchTool), Style = VsDockStyle.Tabbed, Orientation = ToolWindowOrientation.Bottom)]
+    [ProvideToolWindow(typeof(ToolWindow.SearchTool), Style = VsDockStyle.Tabbed, Orientation = ToolWindowOrientation.Bottom)]
+    [ProvideToolWindow(typeof(ToolWindow.ChangeHistory))]
     public sealed class CodeFlowPackage : Package, IVsSolutionEvents
     {
         /// <summary>
@@ -50,6 +53,8 @@ namespace CodeFlow
         private Events dteEvents;
         //private DteInitializer dteInitializer;
         private bool isSolution = false;
+        private uint cookie = 0;
+        private IVsSolution solution;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommitCode"/> class.
@@ -60,6 +65,16 @@ namespace CodeFlow
             // any Visual Studio service because at this point the package object is created but
             // not sited yet inside Visual Studio environment. The place to do all the other
             // initialization is the Initialize method.
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (cookie != 0)
+            {
+                solution.UnadviseSolutionEvents(cookie);
+                cookie = 0;
+            }
+            base.Dispose(disposing);
         }
 
         #region Package Members
@@ -77,16 +92,19 @@ namespace CodeFlow
             ManageProfiles.Initialize(this);
             CommitSolution.Initialize(this);
             ContextMenu.Initialize(this);
-            ToolWindow.SearchToolCommand.Initialize(this);
+            FixVS2008Solution.Initialize(this);
+            RefreshSolution.Initialize(this);
+            ChangeHistoryCommand.Initialize(this);
+            SearchToolCommand.Initialize(this);
 
             // Try to retrieve the DTE instance at this point
-            InitializeDte();
+            InitializeDTE();
             //IVsShell shellService;
             // If not retrieved, we must wait for the Visual Studio Shell to be initialized
-            if (PackageOperations.DTE == null)
+            if (PackageOperations.Instance.DTE == null)
             {
                 // Note: if targetting only VS 2015 and higher, we could use this:
-                KnownUIContexts.ShellInitializedContext.WhenActivated(() => this.InitializeDte());
+                KnownUIContexts.ShellInitializedContext.WhenActivated(() => this.InitializeDTE());
 
                 // For VS 2005 and higher, we use this:
                 /*shellService = this.GetService(typeof(Microsoft.VisualStudio.Shell.Interop.SVsShell)) as IVsShell;
@@ -95,8 +113,7 @@ namespace CodeFlow
             }
             SetupEvents();
 
-            IVsSolution solution = GetService(typeof(SVsSolution)) as IVsSolution;
-            uint cookie = 0;
+            solution = GetService(typeof(SVsSolution)) as IVsSolution;
             solution.AdviseSolutionEvents(this, out cookie);
 
             if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
@@ -116,19 +133,16 @@ namespace CodeFlow
                 MenuCommand menuGenioProfilesComboGetListCommand = new OleMenuCommand(new EventHandler(OnMenuGenioProfilesComboGetList), menuGenioProfilesComboGetListCommandID);
                 mcs.AddCommand(menuGenioProfilesComboGetListCommand);
             }
-            FixVS2008Solution.Initialize(this);
-            RefreshSolution.Initialize(this);
 
 
-            if (PackageOperations.AllProfiles.Count == 0)
+            if (PackageOperations.Instance.AllProfiles.Count == 0)
                 LoadConfig();
         }
 
 
-        private void InitializeDte()
+        private void InitializeDTE()
         {
-            PackageOperations.DTE = this.GetService(typeof(SDTE)) as EnvDTE80.DTE2;
-            //dteInitializer = null;
+            PackageOperations.Instance.DTE = this.GetService(typeof(SDTE)) as EnvDTE80.DTE2;
         }
 
     #endregion
@@ -136,7 +150,7 @@ namespace CodeFlow
         #region CustomEvents
         private void SetupEvents()
         {
-            dteEvents = PackageOperations.DTE.Events;
+            dteEvents = PackageOperations.Instance.DTE.Events;
             documentEnvents = dteEvents.DocumentEvents;
             documentEnvents.DocumentSaved += OnDocumentSave;
         }
@@ -145,15 +159,23 @@ namespace CodeFlow
         {
             string path = Document.FullName;
             Project docProject = Document.ProjectItem.ContainingProject;
-            IManual man = null;
+            List<IManual> man = null;
 
-            if(PackageOperations.AutoExportSaved)
-                man = PackageOperations.GetAutoExportIManual(path);
+            if(PackageOperations.Instance.AutoExportSaved)
+                man = PackageOperations.Instance.GetAutoExportIManual(path);
 
             // Se for diferente de null quer dizer que é um ficheiro temporário que pode ser exportado automaticamente
             if(man != null)
             {
-                man.Update(PackageOperations.GetActiveProfile());
+                // Check for changes, update and log operation
+                ChangeAnalyzer analyzer = new ChangeAnalyzer();
+                analyzer.CheckBDDifferences(man, PackageOperations.Instance.GetActiveProfile());
+                foreach (IChange diff in analyzer.Differences.AsList)
+                {
+                    IOperation operation = diff.GetOperation();
+                    if(operation != null)
+                        PackageOperations.Instance.ExecuteOperation(operation);
+                }
                 return;
             }
             else if (docProject == null)
@@ -161,10 +183,10 @@ namespace CodeFlow
 
             try
             {
-                GenioProjectProperties proj = PackageOperations.SavedFiles.Find(x => x.ProjectName == docProject.Name);
+                GenioProjectProperties proj = PackageOperations.Instance.SavedFiles.Find(x => x.ProjectName == docProject.Name);
                 GenioProjectItem item = new GenioProjectItem(Document.ProjectItem, Document.Name, Document.FullName);
                 if (proj == null)
-                    PackageOperations.SavedFiles.Add(new GenioProjectProperties(docProject, new List<GenioProjectItem>() { item }));
+                    PackageOperations.Instance.SavedFiles.Add(new GenioProjectProperties(docProject, new List<GenioProjectItem>() { item }));
                 else
                 {
                     GenioProjectItem tmp = proj.ProjectFiles.Find(x => x.ItemName == item.ItemName);
@@ -180,17 +202,18 @@ namespace CodeFlow
         #region SolutionEvents
         public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
         {
-            PackageOperations.SavedFiles.Clear();
+            PackageOperations.Instance.SavedFiles.Clear();
+            PackageOperations.Instance.ChangeLog.Clear();
             String lastActive = "";
 
-            if (PackageOperations.DTE.Solution != null
-                && PackageOperations.DTE.Solution.FullName.Length != 0)
+            if (PackageOperations.Instance.DTE.Solution != null
+                && PackageOperations.Instance.DTE.Solution.FullName.Length != 0)
             {
                 isSolution = true;
                 try
                 {
-                    string path = System.IO.Path.GetDirectoryName(PackageOperations.DTE.Solution.FullName);
-                    lastActive = PackageOperations.SearchLastActiveProfile(path);
+                    string path = System.IO.Path.GetDirectoryName(PackageOperations.Instance.DTE.Solution.FullName);
+                    lastActive = PackageOperations.Instance.SearchLastActiveProfile(path);
                 }
                 catch (Exception)
                 { }
@@ -200,13 +223,13 @@ namespace CodeFlow
             if (lastActive != null && lastActive.Length != 0)
                 OnMenuGenioProfilesCombo(this, new OleMenuCmdEventArgs(lastActive, IntPtr.Zero));
 
-            if (PackageOperations.ParseSolution && isSolution)
+            if (PackageOperations.Instance.ParseSolution && isSolution)
             {
-                PackageOperations.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.DTE);
+                PackageOperations.Instance.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.Instance.DTE);
             }
-            if (PackageOperations.AutoVCCTO2008Fix && isSolution)
+            if (PackageOperations.Instance.AutoVCCTO2008Fix && isSolution)
             {
-                GenioSolutionProperties.ChangeToolset2008(PackageOperations.DTE);
+                GenioSolutionProperties.ChangeToolset2008(PackageOperations.Instance.DTE);
             }
             return VSConstants.S_OK;
         }
@@ -249,9 +272,9 @@ namespace CodeFlow
         public int OnBeforeCloseSolution(object pUnkReserved)
         {
             if(isSolution)
-                PackageOperations.StoreLastProfile(System.IO.Path.GetDirectoryName(PackageOperations.DTE.Solution.FullName));
-            PackageOperations.GetActiveProfile().GenioConfiguration.CloseConnection();
-            PackageOperations.RemoveTempFiles();
+                PackageOperations.Instance.StoreLastProfile(System.IO.Path.GetDirectoryName(PackageOperations.Instance.DTE.Solution.FullName));
+            PackageOperations.Instance.GetActiveProfile().GenioConfiguration.CloseConnection();
+            PackageOperations.Instance.RemoveTempFiles();
             SaveConfig();
             return VSConstants.S_OK;
         }
@@ -278,11 +301,11 @@ namespace CodeFlow
                     throw (new ArgumentException("Ilegal input and output parameters!"));
 
                 else if (vOut != IntPtr.Zero)
-                    Marshal.GetNativeVariantForObject(PackageOperations.GetActiveProfile() != null ? PackageOperations.GetActiveProfile().ProfileName : "", vOut);
+                    Marshal.GetNativeVariantForObject(PackageOperations.Instance.GetActiveProfile() != null ? PackageOperations.Instance.GetActiveProfile().ProfileName : "", vOut);
 
                 else if (newChoice != null)
                 {
-                    PackageOperations.SetProfile(newChoice);
+                    PackageOperations.Instance.SetProfile(newChoice);
                 }
                 else
                     throw (new ArgumentException("Invalid input and output!"));
@@ -293,13 +316,13 @@ namespace CodeFlow
         private void OnMenuGenioProfilesComboGetList(object sender, EventArgs e)
         {
             OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
-            if (PackageOperations.AllProfiles.Count == 0)
+            if (PackageOperations.Instance.AllProfiles.Count == 0)
                 return;
 
-            string[] dropChoices = new string[PackageOperations.AllProfiles.Count];
-            for (int i = 0; i < PackageOperations.AllProfiles.Count; i++)
+            string[] dropChoices = new string[PackageOperations.Instance.AllProfiles.Count];
+            for (int i = 0; i < PackageOperations.Instance.AllProfiles.Count; i++)
             {
-                dropChoices[i] = PackageOperations.AllProfiles[i].ProfileName;
+                dropChoices[i] = PackageOperations.Instance.AllProfiles[i].ProfileName;
             }
 
             if (eventArgs != null)
@@ -337,73 +360,20 @@ namespace CodeFlow
         {
             OptionsPage.LoadSettingsFromStorage();
 
-            PackageOperations.AllProfiles = PackageOperations.LoadProfiles(Properties.Settings.Default.ConnectionStrings);
+            PackageOperations.Instance.AllProfiles = PackageOperations.Instance.LoadProfiles(Properties.Settings.Default.ConnectionStrings);
 
-            if (PackageOperations.AllProfiles.Count == 1)
-                PackageOperations.SetProfile(PackageOperations.AllProfiles[0].ProfileName);
+            if (PackageOperations.Instance.AllProfiles.Count == 1)
+                PackageOperations.Instance.SetProfile(PackageOperations.Instance.AllProfiles[0].ProfileName);
         }
 
         public void SaveConfig()
         {
-            Settings.Default.ConnectionStrings = PackageOperations.SaveProfiles(PackageOperations.AllProfiles);
+            Settings.Default.ConnectionStrings = PackageOperations.Instance.SaveProfiles(PackageOperations.Instance.AllProfiles);
             Settings.Default.Save();
 
             OptionsPage.SaveSettingsToStorage();
         }
 
         #endregion
-    }
-
-    internal class DteInitializer : IVsShellPropertyEvents
-    {
-        private IVsShell shellService;
-        private uint cookie;
-        private Action callback;
-
-        internal DteInitializer(IVsShell shellService, Action callback)
-        {
-            int hr;
-
-            this.shellService = shellService;
-            this.callback = callback;
-
-            // Set an event handler to detect when the IDE is fully initialized
-            hr = this.shellService.AdviseShellPropertyChanges(this, out this.cookie);
-
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
-        }
-        int IVsShellPropertyEvents.OnShellPropertyChange(int propid, object var)
-        {
-            int hr;
-            bool isShellInitialized = false;
-
-            switch (propid)
-            {
-                // This was for VS 2005, 2008
-                //case (int) __VSSPROPID.VSSPROPID_Zombie:
-
-                //   isShellInitialized = !(bool)var;
-                //   break;
-
-                // This is for VS 2010 and higher
-                case (int)__VSSPROPID4.VSSPROPID_ShellInitialized:
-
-                    isShellInitialized = (bool)var;
-                    break;
-            }
-
-            if (isShellInitialized)
-            {
-                // Release the event handler to detect when the IDE is fully initialized
-                hr = this.shellService.UnadviseShellPropertyChanges(this.cookie);
-
-                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
-
-                this.cookie = 0;
-
-                this.callback();
-            }
-            return VSConstants.S_OK;
-        }
     }
 }

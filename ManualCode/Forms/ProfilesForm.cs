@@ -38,10 +38,10 @@ namespace CodeFlow
         private void LoadProfiles()
         {
             lstProfiles.Items.Clear();
-            foreach (Profile p in PackageOperations.AllProfiles)
+            foreach (Profile p in PackageOperations.Instance.AllProfiles)
             {
                 ListViewItem item = new ListViewItem();
-                if (PackageOperations.GetActiveProfile().ProfileName.Equals(p.ProfileName))
+                if (PackageOperations.Instance.GetActiveProfile().ProfileName.Equals(p.ProfileName))
                     item.BackColor = Color.GreenYellow;
                 item.Text = p.ProfileName;
                 item.Tag = p;
@@ -55,7 +55,7 @@ namespace CodeFlow
             if(lstProfiles.SelectedIndices.Count > 0)
             {
                 Profile p2 = (Profile)lstProfiles.SelectedItems[0].Tag;
-                PackageOperations.RemoveProfile(p2.ProfileName);
+                PackageOperations.Instance.RemoveProfile(p2.ProfileName);
                 LoadProfiles();
             }
         }
@@ -73,7 +73,7 @@ namespace CodeFlow
 
         private void ProfilesForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            PackageOperations.SaveProfiles();
+            PackageOperations.Instance.SaveProfiles();
         }
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
 using System.Threading;
 using CodeFlow.ManualOperations;
+using CodeFlow.CommandHandlers;
 
 namespace CodeFlow.CodeUtils
 {
@@ -46,26 +47,19 @@ namespace CodeFlow.CodeUtils
             this.textView = textView;
         }
 
-        private bool TryGetManual(out IManual manua, out CodeSegment segment)
+        private bool TryGetManual(out IManual manua)
         {
-            int pos = textView.Caret.Position.BufferPosition.Position;
-            string code = textView.TextViewModel.DataBuffer.CurrentSnapshot.GetText();
             manua = null;
-            segment = null;
-
-            if (!textView.Selection.IsEmpty)
-                return false;
-
-            segment = CodeSegment.ParseFromPosition(ManuaCode.BEGIN_MANUAL, ManuaCode.END_MANUAL, code, pos);
-            if (segment.IsValid())
+            CommandHandler handler = new CommandHandler();
+            if (String.IsNullOrEmpty(handler.GetCurrentSelection()))
             {
-                code = segment.CompleteTextSegment;
+                string code = handler.GetCurrentViewText(out int pos, out IWpfTextView textView);
+                VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageOperations.Instance.DTE.ActiveDocument.Name);
+                List<IManual> codeList = vSCodeManualMatcher.Match();
 
-                List<IManual> codeList = ManuaCode.GetManualCode(code);
                 if (codeList.Count == 1)
-                    manua = codeList[0] as ManuaCode;
+                    manua = codeList[0];
             }
-
             return manua != null;
         }
 
@@ -73,7 +67,7 @@ namespace CodeFlow.CodeUtils
         {
             return Task.Factory.StartNew(() =>
             {
-                if (PackageOperations.ContinuousAnalysis && TryGetManual(out IManual man, out CodeSegment segment))
+                if (PackageOperations.Instance.ContinuousAnalysis && TryGetManual(out IManual man))
                 {
                     return true;
                 }
@@ -83,9 +77,9 @@ namespace CodeFlow.CodeUtils
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            if (PackageOperations.ContinuousAnalysis 
+            if (PackageOperations.Instance.ContinuousAnalysis 
                 && !cancellationToken.IsCancellationRequested 
-                && TryGetManual(out IManual man, out CodeSegment segment))
+                && TryGetManual(out IManual man))
             {
                 List<ISuggestedAction> actions = new List<ISuggestedAction>();
 
@@ -98,16 +92,16 @@ namespace CodeFlow.CodeUtils
                 CompareCommitBSuggestion compareExport = new CompareCommitBSuggestion(man);
                 actions.Add(compareExport);
 
-                if (segment.SegmentStart > 0 && segment.SegmentLength > 0)
+                if (man.LocalMatch.CodeStart > 0 && man.LocalMatch.CodeLength > 0)
                 {
-                    UpdateSuggestion import = new UpdateSuggestion(segment.SegmentStart, segment.SegmentLength, textView, textBuffer, man.CodeId);
+                    UpdateSuggestion import = new UpdateSuggestion(man.LocalMatch.CodeStart, man.LocalMatch.CodeLength, textView, textBuffer, man.CodeId);
                     actions.Add(import);
                 }
 
-                if (!String.IsNullOrEmpty(PackageOperations.GetActiveProfile().GenioConfiguration.CheckoutPath)
-                    && !String.IsNullOrEmpty(PackageOperations.GetActiveProfile().GenioConfiguration.SystemInitials))
+                if (!String.IsNullOrEmpty(PackageOperations.Instance.GetActiveProfile().GenioConfiguration.CheckoutPath)
+                    && !String.IsNullOrEmpty(PackageOperations.Instance.GetActiveProfile().GenioConfiguration.SystemInitials))
                 {
-                    OpenSVNSuggestion openSVNSuggestion = new OpenSVNSuggestion(man, PackageOperations.GetActiveProfile(), PackageOperations.GetActiveProfile().GenioConfiguration.SystemInitials);
+                    OpenSVNSuggestion openSVNSuggestion = new OpenSVNSuggestion(man, PackageOperations.Instance.GetActiveProfile(), PackageOperations.Instance.GetActiveProfile().GenioConfiguration.SystemInitials);
                     actions.Add(openSVNSuggestion);
                 }
                 return new SuggestedActionSet[] { new SuggestedActionSet(actions.ToArray()) };

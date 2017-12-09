@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Imaging.Interop;
+﻿using CodeFlow.ManualOperations;
+using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 using System;
 using System.Collections.Generic;
@@ -100,7 +101,7 @@ namespace CodeFlow.CodeUtils
             }
             catch(Exception ex)
             {
-                MessageBox.Show(String.Format(Properties.Resources.UnableToExecute, ex.Message),
+                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
                     Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
         }

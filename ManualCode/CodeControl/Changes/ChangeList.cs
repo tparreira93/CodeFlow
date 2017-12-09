@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace CodeFlow.CodeControl
 {
-    public class DifferenceList
+    public class ChangeList
     {
-        List<Difference> diffs = new List<Difference>();
-        public List<Difference> AsList { get => diffs; set => diffs = value; }
+        List<IChange> diffs = new List<IChange>();
+        public List<IChange> AsList { get => diffs; set => diffs = value; }
 
-        public DifferenceList(List<Difference> diffs)
+        public ChangeList(List<IChange> diffs)
         {
             AsList = diffs ?? throw new ArgumentNullException(nameof(diffs));
         }
 
-        public DifferenceList()
+        public ChangeList()
         {
         }
     }

@@ -16,9 +16,9 @@ namespace CodeFlow
 {
     public partial class CommitForm : Form
     {
-        private DifferenceList differences;
+        private ChangeList differences;
         private ConflictList conflictCode;
-        public CommitForm(DifferencesAnalyzer difs)
+        public CommitForm(ChangeAnalyzer difs)
         {
             InitializeComponent();
             differences = difs.Differences;
@@ -29,23 +29,23 @@ namespace CodeFlow
         {
             lblWarning.Visible = false;
             lblManual.Text = String.Format(Properties.Resources.CommitEntries, differences.AsList.Count, conflictCode.AsList.Count);
-            lblServer.Text = PackageOperations.GetActiveProfile().ToString();
+            lblServer.Text = PackageOperations.Instance.GetActiveProfile().ToString();
 
-            if (!String.IsNullOrEmpty(PackageOperations.SolutionProps.ClientInfo.Version)
-                && !String.IsNullOrEmpty(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion))
+            if (!String.IsNullOrEmpty(PackageOperations.Instance.SolutionProps.ClientInfo.Version)
+                && !String.IsNullOrEmpty(PackageOperations.Instance.GetActiveProfile().GenioConfiguration.BDVersion))
                 lblSolutionVersion.Text = String.Format(Properties.Resources.SolutionVersion,
-                    PackageOperations.SolutionProps.ClientInfo.Version, PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
+                    PackageOperations.Instance.SolutionProps.ClientInfo.Version, PackageOperations.Instance.GetActiveProfile().GenioConfiguration.BDVersion);
             else
-                lblSolutionVersion.Text = String.Format(Properties.Resources.ProfileVersion, PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion);
+                lblSolutionVersion.Text = String.Format(Properties.Resources.ProfileVersion, PackageOperations.Instance.GetActiveProfile().GenioConfiguration.BDVersion);
 
-            if (PackageOperations.GetActiveProfile().GenioConfiguration.ProductionSystem)
+            if (PackageOperations.Instance.GetActiveProfile().GenioConfiguration.ProductionSystem)
             {
-                lblProd.Text = String.Format(Properties.Resources.ProfileProd, PackageOperations.GetActiveProfile().GenioConfiguration.GenioVersion);
+                lblProd.Text = String.Format(Properties.Resources.ProfileProd, PackageOperations.Instance.GetActiveProfile().GenioConfiguration.GenioVersion);
                 lblProd.ForeColor = Color.DarkRed;
 
-                if (!String.IsNullOrEmpty(PackageOperations.SolutionProps.ClientInfo.Version)
-                    && !String.IsNullOrEmpty(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion)
-                    && !PackageOperations.SolutionProps.ClientInfo.Version.Equals(PackageOperations.GetActiveProfile().GenioConfiguration.BDVersion))
+                if (!String.IsNullOrEmpty(PackageOperations.Instance.SolutionProps.ClientInfo.Version)
+                    && !String.IsNullOrEmpty(PackageOperations.Instance.GetActiveProfile().GenioConfiguration.BDVersion)
+                    && !PackageOperations.Instance.SolutionProps.ClientInfo.Version.Equals(PackageOperations.Instance.GetActiveProfile().GenioConfiguration.BDVersion))
                 {
                     lblWarning.Text = String.Format(Properties.Resources.WarningProfile);
                     lblWarning.Visible = true;
@@ -53,7 +53,7 @@ namespace CodeFlow
             }
             else
             {
-                lblProd.Text = String.Format(Properties.Resources.ProfileDev, PackageOperations.GetActiveProfile().GenioConfiguration.GenioVersion);
+                lblProd.Text = String.Format(Properties.Resources.ProfileDev, PackageOperations.Instance.GetActiveProfile().GenioConfiguration.GenioVersion);
                 lblProd.ForeColor = Color.DarkGreen;
             }
             RefreshButtons();
@@ -62,7 +62,7 @@ namespace CodeFlow
         private void RefreshForm()
         {
             lstCode.Items.Clear();
-            foreach(Difference diff in differences.AsList)
+            foreach(IChange diff in differences.AsList)
                 AddListItem(diff, diff.IsMerged ? lblMerged.ForeColor : lblNotMerged.ForeColor, true);
 
             foreach (Conflict pair in conflictCode.AsList)
@@ -81,71 +81,6 @@ namespace CodeFlow
             RefreshForm();
         }
 
-        private void btnCompare_Click(object sender, EventArgs e)
-        {
-            ListView.CheckedListViewItemCollection items = lstCode.CheckedItems;
-            List<ListViewItem> itemsToRemove = new List<ListViewItem>();
-            for (int i = 0; i < items.Count; i++)
-            {
-                if (!(items[i].Tag is Difference diff))
-                    continue;
-
-                DialogResult result = CommitMergeCode(diff);
-                if (result == DialogResult.Yes)
-                {
-                    differences.AsList.Remove(diff);
-                    itemsToRemove.Add(items[i]);
-                }
-                else if (result == DialogResult.Cancel)
-                    break;
-            }
-
-            foreach (ListViewItem item in itemsToRemove)
-                lstCode.Items.Remove(item);
-
-            if (lstCode.Items.Count == 0)
-                this.Close();
-
-            RefreshControls();
-        }
-
-        private DialogResult CommitMergeCode(Difference diff)
-        {
-            DialogResult funcResult = DialogResult.Yes;
-            IManual man = null;
-            try
-            {
-                man = Manual.Merge(diff.Database, diff.Local);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                funcResult = DialogResult.Cancel;
-            }
-
-            if (funcResult != DialogResult.Yes)
-                return funcResult;
-
-            funcResult = MessageBox.Show(Properties.Resources.ExportedMerged, 
-                Properties.Resources.Export, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-
-            try
-            {
-                if (funcResult == DialogResult.Yes)
-                {
-                    man.Update(PackageOperations.GetActiveProfile());
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(String.Format(Properties.Resources.ErrorUpdating, ex.Message),
-                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                funcResult = DialogResult.Cancel;
-            }
-
-            return funcResult;
-        }
-
         private void btnCommit_Click(object sender, EventArgs e)
         {
             if (lstCode.CheckedItems.Count == 0
@@ -157,12 +92,13 @@ namespace CodeFlow
             List<ListViewItem> itemsToRemove = new List<ListViewItem>();
             for (int i = 0; i < items.Count; i++)
             {
-                if (!(items[i].Tag is Difference))
+                if (!(items[i].Tag is IChange))
                     continue;
-                Difference diff = (Difference)items[i].Tag;
+                IChange diff = (IChange)items[i].Tag;
                 try
                 {
-                    if (diff.Local.Update(PackageOperations.GetActiveProfile()))
+                    IOperation operation = diff.GetOperation();
+                    if (operation != null && PackageOperations.Instance.ExecuteOperation(operation))
                     {
                         differences.AsList.Remove(diff);
                         itemsToRemove.Add(items[i]);
@@ -187,7 +123,7 @@ namespace CodeFlow
 
         private void ExportForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            PackageOperations.GetActiveProfile().GenioConfiguration.CloseConnection();
+            PackageOperations.Instance.GetActiveProfile().GenioConfiguration.CloseConnection();
         }
 
         private void lstCode_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -199,7 +135,7 @@ namespace CodeFlow
                 if (item.Tag is Conflict conflict)
                     btnConflict_Click(sender, new EventArgs());
 
-                else if (item.Tag is Difference)
+                else if (item.Tag is IChange)
                     btnMerge_Click(sender, new EventArgs());
             }
         }
@@ -210,10 +146,10 @@ namespace CodeFlow
             bool conflict = false;
             foreach (ListViewItem item in lstCode.SelectedItems)
             {
-                if (item.Tag is Difference)
-                    diff = true;
-                else
+                if(item.Tag is Conflict)
                     conflict = true;
+                else if (!(item.Tag is CodeNotFound))
+                    diff = true;
             }
             if (diff != conflict)
             {
@@ -285,13 +221,19 @@ namespace CodeFlow
         private void btnMerge_Click(object sender, EventArgs e)
         {
             if(lstCode.SelectedItems.Count == 1
-                && lstCode.SelectedItems[0].Tag is Difference diff)
+                && lstCode.SelectedItems[0].Tag is IChange diff)
             {
-                diff.Merge();
-                if (diff.HasDifference())
+                if (diff is CodeNotFound)
+                    return;
+
+                IChange change = diff.Merge();
+                if (change.HasDifference())
                 {
-                    lstCode.SelectedItems[0].Text = diff.Local.ShortOneLineCode();
+                    lstCode.SelectedItems[0].Text = change.GetDescription();
+                    lstCode.SelectedItems[0].SubItems[1].Text = change.Merged.ShortOneLineCode();
                     lstCode.SelectedItems[0].ForeColor = lblMerged.ForeColor;
+                    lstCode.SelectedItems[0].ImageIndex = GetImageIndex(change);
+                    lstCode.SelectedItems[0].Tag = change;
                 }
                 else
                     lstCode.Items.Remove(lstCode.SelectedItems[0]);
@@ -299,10 +241,12 @@ namespace CodeFlow
             RefreshControls();
         }
 
-        private void AddListItem(Difference diff, Color c, bool chk)
+        private void AddListItem(IChange diff, Color c, bool chk)
         {
-            ListViewItem item = new ListViewItem(diff.Local.ShortOneLineCode());
-            item.SubItems.Add(diff.Local.LocalFileName);
+            ListViewItem item = new ListViewItem(diff.GetDescription());
+            item.SubItems.Add(diff.Merged.ShortOneLineCode());
+            item.SubItems.Add(diff.Merged.LocalFileName);
+            item.ImageIndex = GetImageIndex(diff);
             item.Tag = diff;
             item.Checked = chk;
             item.ForeColor = c;
@@ -311,8 +255,9 @@ namespace CodeFlow
 
         private void AddListItem(Conflict conf, Color c, bool chk)
         {
-            ListViewItem item = new ListViewItem(conf.DifferenceList.AsList[0].Local.ShortOneLineCode());
-            item.SubItems.Add(conf.DifferenceList.AsList[0].Local.LocalFileName);
+            ListViewItem item = new ListViewItem(conf.DifferenceList.AsList[0].Merged.ShortOneLineCode());
+            item.SubItems.Add(conf.DifferenceList.AsList[0].Merged.LocalFileName);
+            item.ImageIndex = GetImageIndex(conf);
             item.Tag = conf;
             item.Checked = chk;
             item.ForeColor = c;
@@ -329,7 +274,8 @@ namespace CodeFlow
             bool enable = false;
             foreach (ListViewItem item in lstCode.CheckedItems)
             {
-                if (item.Tag is Difference)
+                if (item.Tag is IChange
+                    && !(item.Tag is CodeNotFound))
                 {
                     enable = true;
                     break;
@@ -337,7 +283,6 @@ namespace CodeFlow
             }
 
             btnCommit.Enabled = enable;
-            btnCompare.Enabled = enable;
         }
 
         private void lstCode_KeyDown(object sender, KeyEventArgs e)
@@ -348,6 +293,19 @@ namespace CodeFlow
             {
                 lstCode_MouseDoubleClick(this, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
             }
+        }
+
+        private int GetImageIndex(object change)
+        {
+            if (change is CodeChange)
+                return 0;
+            else if (change is CodeNotFound)
+                return 1;
+            else if (change is CodeEmpty)
+                return 2;
+            else
+                return 0;
+
         }
     }
 }

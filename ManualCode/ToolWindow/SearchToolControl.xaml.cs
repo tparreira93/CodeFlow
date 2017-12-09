@@ -1,5 +1,6 @@
 ﻿namespace CodeFlow.ToolWindow
 {
+    using CodeFlow.ManualOperations;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -79,7 +80,8 @@
                 try
                 {
                     Type t = lstCode.SelectedItem.GetType();
-                    IManual m = t.GetMethod("GetManual", BindingFlags.Public | BindingFlags.Static)?.Invoke(null, new object[] { PackageOperations.GetActiveProfile(), (lstCode.SelectedItem as IManual).CodeId }) as IManual;
+                    IManual m = Manual.GetManual(t, (lstCode.SelectedItem as IManual).CodeId, 
+                                                    PackageOperations.Instance.GetActiveProfile());
 
                     if (m == null)
                     {
@@ -87,12 +89,12 @@
                             Properties.Resources.Search, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                         return;
                     }
-                    PackageOperations.OpenManualFile(m, true);
+                    PackageOperations.Instance.OpenManualFile(m, true);
 
                     if (String.IsNullOrEmpty(currentSearch))
                         return;
 
-                    EnvDTE.Find find = PackageOperations.DTE.Find;
+                    EnvDTE.Find find = PackageOperations.Instance.DTE.Find;
                     find.Action = EnvDTE.vsFindAction.vsFindActionFind;
                     find.MatchWholeWord = wholeWord;
                     find.MatchCase = caseSensitive;
@@ -129,45 +131,6 @@
             listViewSortAdorner = new SortAdorner(listViewSortCol, newDir);
             AdornerLayer.GetAdornerLayer(listViewSortCol).Add(listViewSortAdorner);
             lstCode.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
-        }
-
-        public class SortAdorner : Adorner
-        {
-            private static Geometry ascGeometry =
-                    Geometry.Parse("M 0 4 L 3.5 0 L 7 4 Z");
-
-            private static Geometry descGeometry =
-                    Geometry.Parse("M 0 0 L 3.5 4 L 7 0 Z");
-
-            public ListSortDirection Direction { get; private set; }
-
-            public SortAdorner(UIElement element, ListSortDirection dir)
-                    : base(element)
-            {
-                this.Direction = dir;
-            }
-
-            protected override void OnRender(DrawingContext drawingContext)
-            {
-                base.OnRender(drawingContext);
-
-                if (AdornedElement.RenderSize.Width < 20)
-                    return;
-
-                TranslateTransform transform = new TranslateTransform
-                        (
-                                AdornedElement.RenderSize.Width - 15,
-                                (AdornedElement.RenderSize.Height - 5) / 2
-                        );
-                drawingContext.PushTransform(transform);
-
-                Geometry geometry = ascGeometry;
-                if (this.Direction == ListSortDirection.Descending)
-                    geometry = descGeometry;
-                drawingContext.DrawGeometry(Brushes.Black, null, geometry);
-
-                drawingContext.Pop();
-            }
         }
 
         public void FindListViewItem(DependencyObject obj)

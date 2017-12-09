@@ -9,7 +9,7 @@ using System.IO;
 using CodeFlow.Forms;
 using CodeFlow.SolutionOperations;
 
-namespace CodeFlow
+namespace CodeFlow.Commands
 {
     /// <summary>
     /// Command handler
@@ -92,12 +92,12 @@ namespace CodeFlow
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            if(PackageOperations.DTE.Solution is null
-                || PackageOperations.DTE.Solution.Projects.Count == 0
-                || !PackageOperations.DTE.Solution.IsOpen)
+            if(PackageOperations.Instance.DTE.Solution is null
+                || PackageOperations.Instance.DTE.Solution.Projects.Count == 0
+                || !PackageOperations.Instance.DTE.Solution.IsOpen)
                 return;
 
-            ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(PackageOperations.SavedFiles);
+            ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(PackageOperations.Instance.SavedFiles);
             selectionProjectForm.ShowDialog();
 
             if(selectionProjectForm.Result)
@@ -105,6 +105,8 @@ namespace CodeFlow
                 CommitForm export = new CommitForm(selectionProjectForm.Analyzer.Differences);
                 export.Show();
             }
+            // Force collection, solution analysis might be heavy..
+            GC.Collect();
         }
     }
 }

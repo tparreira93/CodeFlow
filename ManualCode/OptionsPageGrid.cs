@@ -19,6 +19,7 @@ namespace CodeFlow
         private bool autoVCCTO2008Fix;
         private bool autoExportSaved;
         private bool forceDOSLine;
+        private bool logOperations;
 
         [Category("Solution")]
         [DefaultValue(true)]
@@ -29,7 +30,7 @@ namespace CodeFlow
             get => parseSolutionOnStartup; set
             {
                 parseSolutionOnStartup = value;
-                PackageOperations.ParseSolution = value;
+                PackageOperations.Instance.ParseSolution = value;
             }
         }
 
@@ -42,7 +43,7 @@ namespace CodeFlow
             get => autoVCCTO2008Fix; set
             {
                 autoVCCTO2008Fix = value;
-                PackageOperations.AutoVCCTO2008Fix = value;
+                PackageOperations.Instance.AutoVCCTO2008Fix = value;
             }
         }
 
@@ -55,7 +56,7 @@ namespace CodeFlow
             get => autoExportSaved; set
             {
                 autoExportSaved = value;
-                PackageOperations.AutoExportSaved = value;
+                PackageOperations.Instance.AutoExportSaved = value;
             }
         }
 
@@ -68,7 +69,7 @@ namespace CodeFlow
             get => useCustomTool; set
             {
                 useCustomTool = value;
-                PackageOperations.UseCustomTool = value;
+                PackageOperations.Instance.UseCustomTool = value;
             }
         }
 
@@ -82,7 +83,7 @@ namespace CodeFlow
             set
             {
                 forceDOSLine = value;
-                PackageOperations.ForceDOSLine = value;
+                PackageOperations.Instance.ForceDOSLine = value;
             }
         }
 
@@ -95,7 +96,7 @@ namespace CodeFlow
             get => lightbulbSuggestions; set
             {
                 lightbulbSuggestions = value;
-                PackageOperations.ContinuousAnalysis = value;
+                PackageOperations.Instance.ContinuousAnalysis = value;
             }
         }
 
@@ -111,8 +112,8 @@ namespace CodeFlow
                 extFilters = value;
                 if (value != null)
                 {
-                    PackageOperations.ExtensionFilters.Clear();
-                    PackageOperations.ExtensionFilters.AddRange(extFilters.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+                    PackageOperations.Instance.ExtensionFilters.Clear();
+                    PackageOperations.Instance.ExtensionFilters.AddRange(extFilters.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
                 }
             }
         }
@@ -128,9 +129,22 @@ namespace CodeFlow
                 ignoreFilesFilters = value;
                 if (value != null)
                 {
-                    PackageOperations.IgnoreFilesFilters.Clear();
-                    PackageOperations.IgnoreFilesFilters.AddRange(ignoreFilesFilters.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+                    PackageOperations.Instance.IgnoreFilesFilters.Clear();
+                    PackageOperations.Instance.IgnoreFilesFilters.AddRange(ignoreFilesFilters.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
                 }
+            }
+        }
+
+        [Category("Code control")]
+        [DefaultValue(true)]
+        [DisplayName("Log operations")]
+        [Description("Log all updates, commits and creates. It allows undo and redo of operations.")]
+        public bool LogOperations
+        {
+            get => logOperations; set
+            {
+                logOperations = value;
+                PackageOperations.Instance.LogOperations = value;
             }
         }
     }

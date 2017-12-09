@@ -1,4 +1,5 @@
 ﻿using CodeFlow.CommandHandlers;
+using CodeFlow.ManualOperations;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
@@ -101,15 +102,15 @@ namespace CodeFlow.CodeUtils
 
             try
             {
-                ManuaCode bd = ManuaCode.GetManual(PackageOperations.GetActiveProfile(), codmanua);
+                ManuaCode bd = ManuaCode.GetManual(PackageOperations.Instance.GetActiveProfile(), codmanua);
                 if (bd == null)
                     return;
-                
-                CommandHandler.EditCodeSegment(textView.TextBuffer, begin, end, bd.Code);
+                CommandHandler handler = new CommandHandler();
+                handler.EditCodeSegment(textView.TextBuffer, begin, end, bd.Code);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(String.Format(Properties.Resources.UnableToExecute, ex.Message),
+                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
                     Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
         }

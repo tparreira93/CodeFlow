@@ -4,8 +4,9 @@ using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
 using CodeFlow.ManualOperations;
 using CodeFlow.CodeControl;
+using CodeFlow.CommandHandlers;
 
-namespace CodeFlow
+namespace CodeFlow.Commands
 {
     /// <summary>
     /// Command handler
@@ -88,9 +89,10 @@ namespace CodeFlow
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            List<IManual> manual = CommandHandlers.CommandHandler.SearchForTags(ServiceProvider);
-            DifferencesAnalyzer diffs = new DifferencesAnalyzer();
-            diffs.CheckBDDifferences(manual, PackageOperations.GetActiveProfile());
+            CommandHandler handler = new CommandHandler();
+            List<IManual> manual = handler.SearchForTags();
+            ChangeAnalyzer diffs = new ChangeAnalyzer();
+            diffs.CheckBDDifferences(manual, PackageOperations.Instance.GetActiveProfile());
             CommitForm exportForm = new CommitForm(diffs);
             exportForm.ShowDialog();
         }

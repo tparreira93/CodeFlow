@@ -7,17 +7,19 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Imaging.Interop;
 using System.Threading;
 using System.Windows.Forms;
+using CodeFlow.CodeControl;
+using CodeFlow.ManualOperations;
 
 namespace CodeFlow.CodeUtils
 {
     internal class CompareCommitBSuggestion : ISuggestedAction
     {
-        private readonly IManual _manual;
+        private readonly IManual local;
         private readonly string _display;
 
         public CompareCommitBSuggestion(IManual manual)
         {
-            _manual = manual;
+            local = manual;
             _display = string.Format("Merge and commit manual code.");
         }
 
@@ -92,16 +94,37 @@ namespace CodeFlow.CodeUtils
 
             try
             {
-                IManual result = _manual.MergeDB(PackageOperations.GetActiveProfile());
-                if (MessageBox.Show(Properties.Resources.ExportedMerged, Properties.Resources.Export, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                ChangeAnalyzer analyzer = new ChangeAnalyzer();
+                analyzer.CheckBDDifferences(local, PackageOperations.Instance.GetActiveProfile());
+                if (analyzer.Differences.AsList.Count == 1)
                 {
-                    if(result.Update(PackageOperations.GetActiveProfile()))
-                        MessageBox.Show(Properties.Resources.Submited, Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
-                    else
-                        MessageBox.Show(Properties.Resources.NotSubmited
-                            + Environment.NewLine + Properties.Resources.VerifyProfile,
-                            Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    IChange change = analyzer.Differences.AsList[0];
+                    change = change.Merge();
+                    IOperation operation = change.GetOperation();
+                    if(operation != null)
+                    {
+                        string message = Properties.Resources.ExportedMerged;
+                        if (operation is DeleteOperation)
+                        {
+                            message = Properties.Resources.ConfirmDelete;
+                        }
+                        if (MessageBox.Show(message, Properties.Resources.Export,
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            if (PackageOperations.Instance.ExecuteOperation(operation))
+                                MessageBox.Show(Properties.Resources.Submited, Properties.Resources.Export,
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+                            else
+                                MessageBox.Show(Properties.Resources.NotSubmited
+                                    + Environment.NewLine + Properties.Resources.VerifyProfile,
+                                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                        }
+
+                    }
                 }
+                else
+                    MessageBox.Show(Properties.Resources.NoChanges, Properties.Resources.Export, 
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
             }
             catch(Exception ex)
             {

@@ -142,7 +142,7 @@ namespace CodeFlow
             bool result = false;
             try
             {
-                if (!PackageOperations.UpdateProfile(oldProfile, newProfile))
+                if (!PackageOperations.Instance.UpdateProfile(oldProfile, newProfile))
                 {
                     MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     result = false;
@@ -160,7 +160,7 @@ namespace CodeFlow
 
         private bool addProfile(Profile newProfile)
         {
-            if (!PackageOperations.AddProfile(tmpProfile.GenioConfiguration, tmpProfile.ProfileName))
+            if (!PackageOperations.Instance.AddProfile(tmpProfile.GenioConfiguration, tmpProfile.ProfileName))
             {
                 MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;

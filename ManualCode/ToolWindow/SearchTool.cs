@@ -9,6 +9,7 @@
     using System.Windows.Threading;
     using System.Windows;
     using System.Threading;
+    using CodeFlow.ManualOperations;
 
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
@@ -143,12 +144,12 @@
         private void GetPlataformList(object sender, EventArgs e)
         {
             OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
-            string[] dropChoices = new string[PackageOperations.GetActiveProfile().GenioConfiguration.Plataforms.Count + 1];
+            string[] dropChoices = new string[PackageOperations.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Count + 1];
             dropChoices[0] = "All";
 
-            for (int i = 1; i < PackageOperations.GetActiveProfile().GenioConfiguration.Plataforms.Count; i++)
+            for (int i = 1; i < PackageOperations.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Count; i++)
             {
-                dropChoices[i] = PackageOperations.GetActiveProfile().GenioConfiguration.Plataforms[i].ID;
+                dropChoices[i] = PackageOperations.Instance.GetActiveProfile().GenioConfiguration.Plataforms[i].ID;
             }
 
             if (eventArgs != null)
@@ -194,7 +195,7 @@
                     {
                         string error = "";
                         List<IManual> res = new List<IManual>();
-                        Profile p = PackageOperations.GetActiveProfile();
+                        Profile p = PackageOperations.Instance.GetActiveProfile();
                         try
                         {
                             res.AddRange(Manual.SearchDatabase(p, currentSearch, caseSensitive, wholeWord, searchPlat));

@@ -28,14 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConflictForm));
             this.lstConflicts = new System.Windows.Forms.ListView();
             this.chCode = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.btnBack = new System.Windows.Forms.Button();
             this.btnUse = new System.Windows.Forms.Button();
             this.btnViewCode = new System.Windows.Forms.Button();
             this.btnMerge = new System.Windows.Forms.Button();
+            this.clOper = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // lstConflicts
@@ -44,6 +47,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstConflicts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clOper,
             this.chCode,
             this.clFileName});
             this.lstConflicts.FullRowSelect = true;
@@ -52,6 +56,7 @@
             this.lstConflicts.MultiSelect = false;
             this.lstConflicts.Name = "lstConflicts";
             this.lstConflicts.Size = new System.Drawing.Size(781, 310);
+            this.lstConflicts.SmallImageList = this.imageList1;
             this.lstConflicts.TabIndex = 0;
             this.lstConflicts.UseCompatibleStateImageBehavior = false;
             this.lstConflicts.View = System.Windows.Forms.View.Details;
@@ -61,12 +66,20 @@
             // chCode
             // 
             this.chCode.Text = "Code";
-            this.chCode.Width = 543;
+            this.chCode.Width = 371;
             // 
             // clFileName
             // 
             this.clFileName.Text = "File name";
             this.clFileName.Width = 198;
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "Upload_gray_48x.png");
+            this.imageList1.Images.SetKeyName(1, "StatusCriticalError_48x.png");
+            this.imageList1.Images.SetKeyName(2, "VSO_Remove_16x.png");
             // 
             // btnBack
             // 
@@ -127,6 +140,11 @@
             this.btnMerge.UseVisualStyleBackColor = true;
             this.btnMerge.Click += new System.EventHandler(this.btnMerge_Click);
             // 
+            // clOper
+            // 
+            this.clOper.Text = "Operation";
+            this.clOper.Width = 187;
+            // 
             // ConflictForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -157,5 +175,7 @@
         private System.Windows.Forms.ColumnHeader chCode;
         private System.Windows.Forms.ColumnHeader clFileName;
         private System.Windows.Forms.Button btnMerge;
+        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.ColumnHeader clOper;
     }
 }

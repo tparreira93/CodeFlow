@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 using System.Windows.Forms;
+using CodeFlow.ManualOperations;
 
 namespace CodeFlow.CodeUtils
 {
@@ -90,11 +91,11 @@ namespace CodeFlow.CodeUtils
 
             try
             {
-                _manual.CompareDB(PackageOperations.GetActiveProfile());
+                _manual.CompareDB(PackageOperations.Instance.GetActiveProfile());
             }
             catch(Exception ex)
             {
-                MessageBox.Show(String.Format(Properties.Resources.UnableToExecute, ex.Message),
+                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
                     Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
 }

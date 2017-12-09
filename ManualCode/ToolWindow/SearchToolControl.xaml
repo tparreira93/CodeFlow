@@ -17,7 +17,7 @@
     </UserControl.Resources>
     
     <Grid>
-        <ListView x:Name="lstCode" MouseDoubleClick="lstFindMan_MouseDoubleClick">
+        <ListView x:Name="lstCode" MouseDoubleClick="lstFindMan_MouseDoubleClick" SelectionMode="Single">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="100"  DisplayMemberBinding="{Binding TipoCodigo}">

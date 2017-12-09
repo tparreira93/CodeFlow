@@ -9,9 +9,9 @@ namespace CodeFlow.CodeControl
     public class ConflictResolveArgs : EventArgs
     {
         private Conflict conflict;
-        private Difference difference;
+        private IChange difference;
 
         public Conflict Conflict { get => conflict; set => conflict = value; }
-        public Difference Keep { get => difference; set => difference = value; }
+        public IChange Keep { get => difference; set => difference = value; }
     }
 }

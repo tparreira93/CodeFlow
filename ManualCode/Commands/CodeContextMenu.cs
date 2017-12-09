@@ -111,16 +111,18 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void SubmitGenio(object sender, EventArgs e)
         {
-            List<IManual> manual = CommandHandler.SearchForTags(ServiceProvider);
-            DifferencesAnalyzer diffs = new DifferencesAnalyzer();
-            diffs.CheckBDDifferences(manual, PackageOperations.GetActiveProfile());
+            CommandHandler handler = new CommandHandler();
+            List<IManual> manual = handler.SearchForTags();
+            ChangeAnalyzer diffs = new ChangeAnalyzer();
+            diffs.CheckBDDifferences(manual, PackageOperations.Instance.GetActiveProfile());
             CommitForm exportForm = new CommitForm(diffs);
             exportForm.ShowDialog();
         }
 
         private void ImportGenio(object sender, EventArgs e)
         {
-            if (!CommandHandlers.CommandHandler.ImportAndEditCurrentTag(ServiceProvider))
+            CommandHandler handler = new CommandHandler();
+            if (!handler.ImportAndEditCurrentTag())
             {
                 MessageBox.Show(Properties.Resources.VerifyProfile, Properties.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -129,19 +131,17 @@ namespace CodeFlow.Commands
 
         private void CreateGenio(object sender, EventArgs e)
         {
-            string code = CommandHandlers.CommandHandler.GetCurrentSelection(ServiceProvider);
+            CommandHandler handler = new CommandHandler();
+            string code = handler.GetCurrentSelection();
 
             if (code != null && code.Length != 0)
             {
                 ManuaCode man = new ManuaCode(code);
+                man.LocalFileName = PackageOperations.Instance.DTE.ActiveDocument.Name;
                 CreateInGenioForm genioForm = new CreateInGenioForm(man);
                 genioForm.ShowDialog();
                 if(genioForm.DialogResult == DialogResult.OK)
-                {
-                    string ext = Path.GetExtension(PackageOperations.DTE.ActiveDocument.ProjectItem.Name);
-                    var selection = (EnvDTE.TextSelection)PackageOperations.DTE.ActiveDocument.Selection;
-                    selection.Insert(man.FormatCode(ext));
-                }
+                    handler.InsertCreatedCode(man);
             }
         }
     }

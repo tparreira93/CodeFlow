@@ -25,14 +25,8 @@ namespace CodeFlow
 
         private void RefreshForm()
         {
-            foreach (Difference diff in conflict.DifferenceList.AsList)
-            {
-                ListViewItem item = new ListViewItem();
-                item.Text = diff.Local.ShortOneLineCode();
-                item.SubItems.Add(diff.Local.LocalFileName);
-                item.Tag = diff;
-                lstConflicts.Items.Add(item);
-            }
+            foreach (IChange diff in conflict.DifferenceList.AsList)
+                AddListItem(diff);
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -42,7 +36,7 @@ namespace CodeFlow
 
         private void btnUse_Click(object sender, EventArgs e)
         {
-            if (lstConflicts.SelectedItems.Count == 1 && lstConflicts.Items[lstConflicts.SelectedIndices[0]].Tag is Difference diff)
+            if (lstConflicts.SelectedItems.Count == 1 && lstConflicts.Items[lstConflicts.SelectedIndices[0]].Tag is IChange diff)
             {
                 ConflictResolveArgs args = new ConflictResolveArgs();
                 args.Conflict = conflict;
@@ -57,9 +51,9 @@ namespace CodeFlow
             if (lstConflicts.SelectedItems.Count == 1)
             {
                 ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
-                Difference m = (Difference)item.Tag;
+                IChange m = (IChange)item.Tag;
 
-                PackageOperations.OpenManualFile(m.Local, false);
+                PackageOperations.Instance.OpenManualFile(m.Merged, false);
             }
         }
 
@@ -68,9 +62,9 @@ namespace CodeFlow
             if(lstConflicts.SelectedItems.Count == 1)
             {
                 ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
-                Difference m = (Difference)item.Tag;
+                IChange m = (IChange)item.Tag;
 
-                PackageOperations.OpenManualFile(m.Local, false);
+                btnMerge_Click(this, new EventArgs());
             }
         }
 
@@ -104,11 +98,36 @@ namespace CodeFlow
             if (lstConflicts.SelectedItems.Count == 1)
             {
                 ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
-                Difference diff = (Difference)item.Tag;
+                IChange diff = (IChange)item.Tag;
 
-                diff.Merge();
-                lstConflicts.SelectedItems[0].Text = diff.Local.ShortOneLineCode();
+                IChange change = diff.Merge();
+                lstConflicts.SelectedItems[0].ImageIndex = GetImageIndex(change);
+                lstConflicts.SelectedItems[0].Tag = change;
+                lstConflicts.SelectedItems[0].Text = change.GetDescription();
+                lstConflicts.SelectedItems[0].SubItems[1].Text = change.Merged.ShortOneLineCode();
             }
+        }
+        private void AddListItem(IChange diff)
+        {
+            ListViewItem item = new ListViewItem(diff.GetDescription());
+            item.SubItems.Add(diff.Merged.ShortOneLineCode());
+            item.SubItems.Add(diff.Merged.LocalFileName);
+            item.ImageIndex = GetImageIndex(diff);
+            item.Tag = diff;
+            lstConflicts.Items.Add(item);
+        }
+
+        private int GetImageIndex(object change)
+        {
+            if (change is CodeChange)
+                return 0;
+            else if (change is CodeNotFound)
+                return 1;
+            else if (change is CodeEmpty)
+                return 2;
+            else
+                return 0;
+
         }
     }
 }

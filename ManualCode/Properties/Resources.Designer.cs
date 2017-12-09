@@ -234,6 +234,15 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this manual code?.
+        /// </summary>
+        internal static string ConfirmDelete {
+            get {
+                return ResourceManager.GetString("ConfirmDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to commit this manual code?.
         /// </summary>
         internal static string ConfirmExportDirect {
@@ -510,6 +519,25 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to History.
+        /// </summary>
+        internal static string History {
+            get {
+                return ResourceManager.GetString("History", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap History_16xLG {
+            get {
+                object obj = ResourceManager.GetObject("History_16xLG", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update.
         /// </summary>
         internal static string Import {
@@ -547,11 +575,29 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to commit code!.
+        ///   Looks up a localized string similar to No changes found..
+        /// </summary>
+        internal static string NoChanges {
+            get {
+                return ResourceManager.GetString("NoChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to commit!.
         /// </summary>
         internal static string NotSubmited {
             get {
                 return ResourceManager.GetString("NotSubmited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation completed..
+        /// </summary>
+        internal static string OperationComplete {
+            get {
+                return ResourceManager.GetString("OperationComplete", resourceCulture);
             }
         }
         
@@ -710,12 +756,12 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to execute desired operation!
+        ///   Looks up a localized string similar to Unable to execute operation!
         ///{0}.
         /// </summary>
-        internal static string UnableToExecute {
+        internal static string UnableToExecuteOperation {
             get {
-                return ResourceManager.GetString("UnableToExecute", resourceCulture);
+                return ResourceManager.GetString("UnableToExecuteOperation", resourceCulture);
             }
         }
         
