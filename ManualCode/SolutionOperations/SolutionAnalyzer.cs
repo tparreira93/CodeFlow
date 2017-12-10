@@ -5,6 +5,8 @@ using System.ComponentModel;
 using CodeFlow.ManualOperations;
 using System.Text;
 using CodeFlow.CodeControl;
+using CodeFlow.CodeControl.Analyzer;
+using CodeFlow.GenioManual;
 
 namespace CodeFlow.SolutionOperations
 {
@@ -58,7 +60,7 @@ namespace CodeFlow.SolutionOperations
 
         private void AnalyzeFile(string file)
         {
-            Encoding enc = PackageOperations.Instance.DetectTextEncoding(file, out string text);
+            PackageOperations.Instance.DetectTextEncoding(file, out string text);
             //string code = File.ReadAllText(file, enc);
 
             /*Encoding unicode = Encoding.Unicode;

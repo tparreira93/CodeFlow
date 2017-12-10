@@ -2,7 +2,6 @@
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using System.Windows.Forms;
-using CodeFlow.CommandHandlers;
 
 namespace CodeFlow.Commands
 {
@@ -81,7 +80,7 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            CommandHandler handler = new CommandHandler();
+            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
             if (!handler.ImportAndEditCurrentTag())
             {
                 MessageBox.Show(Properties.Resources.VerifyProfile, Properties.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);

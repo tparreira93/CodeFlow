@@ -132,7 +132,6 @@ namespace CodeFlow.ManualOperations
                 string tmpCode = Path.GetTempFileName();
                 string tmpBD = Path.GetTempFileName();
                 string tmpFinal = Path.GetTempFileName();
-                string finalCode;
 
                 string lname = "Genio copy";
                 string rname = "Working copy";
@@ -178,7 +177,7 @@ namespace CodeFlow.ManualOperations
 
                 merge.WaitForExit();
 
-                finalCode = File.ReadAllText(tmpFinal);
+                var finalCode = File.ReadAllText(tmpFinal);
                 if (String.IsNullOrEmpty(finalCode))
                     finalCode = local.Code;
 
@@ -210,9 +209,9 @@ namespace CodeFlow.ManualOperations
         public string CodeTransformKeyValue()
         {
             string c = Code;
-            foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
+            foreach (KeyValuePair<Int32, byte> entry in SpecialChars)
             {
-                c.Replace((char)entry.Key, (char)entry.Value);
+                c = Code.Replace((char)entry.Key, (char)entry.Value);
             }
 
             return c;
@@ -220,9 +219,9 @@ namespace CodeFlow.ManualOperations
         public string CodeTransformValueKey()
         {
             string c = Code;
-            foreach (KeyValuePair<Int32, byte> entry in Manual.SpecialChars)
+            foreach (KeyValuePair<Int32, byte> entry in SpecialChars)
             {
-                c.Replace((char)entry.Value, (char)entry.Key);
+                c = Code.Replace((char)entry.Value, (char)entry.Key);
             }
 
             return c;

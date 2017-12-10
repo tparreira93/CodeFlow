@@ -180,11 +180,8 @@ namespace CodeFlow.ManualOperations
 
                 customFuncQuery = customFuncQuery.Replace("@WHERE", whr);
 
-                if (caseSensitive)
-                    customFuncQuery = customFuncQuery.Replace("@CASESENSITIVE", "COLLATE Latin1_General_BIN");
-                else
-                    customFuncQuery = customFuncQuery.Replace("@CASESENSITIVE", "");
-                    
+                customFuncQuery = customFuncQuery.Replace("@CASESENSITIVE", caseSensitive ? "COLLATE Latin1_General_BIN" : "");
+
                 if (wholeWord)
                     search = $"%[^a-z]{texto}[^a-z]%";
 

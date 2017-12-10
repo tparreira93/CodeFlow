@@ -1,5 +1,6 @@
 ﻿using CodeFlow.ManualOperations;
 using System;
+using CodeFlow.GenioManual;
 
 namespace CodeFlow.CodeControl
 {
@@ -24,7 +25,7 @@ namespace CodeFlow.CodeControl
 
         public bool Undo(Profile profile)
         {
-            bool result = false;
+            bool result;
             try
             {
                 result = OperationChanges.Theirs.Create(profile);
@@ -41,7 +42,7 @@ namespace CodeFlow.CodeControl
         }
         public bool Execute(Profile profile)
         {
-            bool result = false;
+            bool result;
             try
             {
                 result = Execute(profile, OperationChanges.Mine);
@@ -53,7 +54,8 @@ namespace CodeFlow.CodeControl
 
             return result;
         }
-        public bool Execute(Profile profile, IManual man)
+
+        private bool Execute(Profile profile, IManual man)
         {
             return man.Delete(profile);
         }

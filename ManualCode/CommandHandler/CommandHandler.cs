@@ -1,18 +1,17 @@
-﻿using CodeFlow.ManualOperations;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Windows.Documents;
-using EnvDTE;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Shell;
 using System.IO;
+using CodeFlow.GenioManual;
+using CodeFlow.ManualOperations;
 using CodeFlow.Utils;
+using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Editor;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.TextManager.Interop;
 
-namespace CodeFlow.CommandHandlers
+namespace CodeFlow.CommandHandler
 {
     public class CommandHandler
     {
@@ -44,16 +43,15 @@ namespace CodeFlow.CommandHandlers
         {
             var dte = PackageOperations.Instance.DTE;
             List<IManual> manual = new List<IManual>();
-            string code = "";
-            int pos = -1;
-            if (dte == null || dte.ActiveDocument == null)
+            if (dte?.ActiveDocument == null)
                 return manual;
 
-            code = GetCurrentSelection();
+            var code = GetCurrentSelection();
             VSCodeManualMatcher vSCodeManualMatcher = null;
-            if (code == null || code.Length == 0)
+            if (string.IsNullOrEmpty(code))
             {
-                code = GetCurrentViewText(out pos, out IWpfTextView textView);
+                var pos = -1;
+                code = GetCurrentViewText(out pos, out IWpfTextView _);
                 vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, dte.ActiveDocument.Name);
             }
             else

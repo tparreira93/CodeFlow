@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CodeFlow.CodeControl.Analyzer;
+using CodeFlow.GenioManual;
 
 namespace CodeFlow.CodeUtils
 {

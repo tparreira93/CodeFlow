@@ -54,10 +54,7 @@ namespace CodeFlow
 
         public void ParseGenioFiles()
         {
-            if (GenioPath.Length == 0)
-                Plataforms = GenioPlataform.ParseXml(Properties.Resources.ManwinInfoData);
-            else
-                Plataforms = GenioPlataform.ParseFile($"{GenioPath}\\ManwinInfoData.xml");
+            Plataforms = GenioPath.Length == 0 ? GenioPlataform.ParseXml(Properties.Resources.ManwinInfoData) : GenioPlataform.ParseFile($"{GenioPath}\\ManwinInfoData.xml");
         }
 
         private bool LockConnection()

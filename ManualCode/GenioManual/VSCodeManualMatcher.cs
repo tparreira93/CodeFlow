@@ -112,10 +112,7 @@ namespace CodeFlow.ManualOperations
                                 int length = end - match.CodeStart;
                                 c = VsCodeSnapshot.Substring(match.CodeStart, length);
                                 int tmp = c.LastIndexOf(Util.NewLine);
-                                if (tmp != -1)
-                                    length = tmp;
-                                else
-                                    length = 0;
+                                length = tmp != -1 ? tmp : 0;
 
                                 code = "";
                                 if (length > 0)

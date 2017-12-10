@@ -11,6 +11,8 @@ using CodeFlow.SolutionOperations;
 using System.Collections.Generic;
 using CodeFlow.Commands;
 using CodeFlow.CodeControl;
+using CodeFlow.CodeControl.Analyzer;
+using CodeFlow.GenioManual;
 using CodeFlow.ManualOperations;
 
 namespace CodeFlow
@@ -35,7 +37,7 @@ namespace CodeFlow
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [Guid(CodeFlowPackage.PackageGuidString)]
+    [Guid(PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string)]
     [ProvideOptionPage(typeof(OptionsPageGrid), "Genio", "CodeFlow properties", 0, 0, true)]
@@ -220,7 +222,7 @@ namespace CodeFlow
             }
 
             //Updates combo box
-            if (lastActive != null && lastActive.Length != 0)
+            if (!string.IsNullOrEmpty(lastActive))
                 OnMenuGenioProfilesCombo(this, new OleMenuCmdEventArgs(lastActive, IntPtr.Zero));
 
             if (PackageOperations.Instance.ParseSolution && isSolution)

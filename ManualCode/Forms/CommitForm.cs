@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CodeFlow.CodeControl.Analyzer;
 
 namespace CodeFlow
 {
@@ -132,7 +133,7 @@ namespace CodeFlow
             {
                 ListViewItem item = lstCode.Items[lstCode.SelectedIndices[0]];
 
-                if (item.Tag is Conflict conflict)
+                if (item.Tag is Conflict)
                     btnConflict_Click(sender, new EventArgs());
 
                 else if (item.Tag is IChange)
@@ -255,7 +256,8 @@ namespace CodeFlow
 
         private void AddListItem(Conflict conf, Color c, bool chk)
         {
-            ListViewItem item = new ListViewItem(conf.DifferenceList.AsList[0].Merged.ShortOneLineCode());
+            ListViewItem item = new ListViewItem(conf.DifferenceList.AsList[0].GetDescription());
+            item.SubItems.Add(conf.DifferenceList.AsList[0].Merged.ShortOneLineCode());
             item.SubItems.Add(conf.DifferenceList.AsList[0].Merged.LocalFileName);
             item.ImageIndex = GetImageIndex(conf);
             item.Tag = conf;

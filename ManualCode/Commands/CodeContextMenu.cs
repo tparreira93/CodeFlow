@@ -4,11 +4,12 @@ using System.Globalization;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Collections.Generic;
-using CodeFlow.CommandHandlers;
 using System.Windows.Forms;
 using System.IO;
 using CodeFlow.ManualOperations;
 using CodeFlow.CodeControl;
+using CodeFlow.CodeControl.Analyzer;
+using CodeFlow.GenioManual;
 
 namespace CodeFlow.Commands
 {
@@ -111,7 +112,7 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void SubmitGenio(object sender, EventArgs e)
         {
-            CommandHandler handler = new CommandHandler();
+            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
             List<IManual> manual = handler.SearchForTags();
             ChangeAnalyzer diffs = new ChangeAnalyzer();
             diffs.CheckBDDifferences(manual, PackageOperations.Instance.GetActiveProfile());
@@ -121,7 +122,7 @@ namespace CodeFlow.Commands
 
         private void ImportGenio(object sender, EventArgs e)
         {
-            CommandHandler handler = new CommandHandler();
+            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
             if (!handler.ImportAndEditCurrentTag())
             {
                 MessageBox.Show(Properties.Resources.VerifyProfile, Properties.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -131,10 +132,10 @@ namespace CodeFlow.Commands
 
         private void CreateGenio(object sender, EventArgs e)
         {
-            CommandHandler handler = new CommandHandler();
+            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
             string code = handler.GetCurrentSelection();
 
-            if (code != null && code.Length != 0)
+            if (!string.IsNullOrEmpty(code))
             {
                 ManuaCode man = new ManuaCode(code);
                 man.LocalFileName = PackageOperations.Instance.DTE.ActiveDocument.Name;

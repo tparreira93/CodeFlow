@@ -11,10 +11,6 @@ namespace CodeFlow.CodeControl
     {
         private ObservableCollection<IOperation> operations = new ObservableCollection<IOperation>();
 
-        public OperationLog()
-        {
-        }
-
         public ObservableCollection<IOperation> OperationList { get => operations; set => operations = value; }
 
         public void LogOperation(IOperation oper)

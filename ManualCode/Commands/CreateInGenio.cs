@@ -3,7 +3,6 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
 using System.IO;
-using CodeFlow.CommandHandlers;
 using CodeFlow.ManualOperations;
 
 namespace CodeFlow.Commands
@@ -89,10 +88,10 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            CommandHandler handler = new CommandHandler();
+            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
             string code = handler.GetCurrentSelection();
             
-            if (code != null && code.Length != 0)
+            if (!string.IsNullOrEmpty(code))
             {
                 ManuaCode man = new ManuaCode(code);
                 man.LocalFileName = PackageOperations.Instance.DTE.ActiveDocument.Name;

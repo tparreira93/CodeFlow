@@ -62,7 +62,6 @@ namespace CodeFlow
             if(lstConflicts.SelectedItems.Count == 1)
             {
                 ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
-                IChange m = (IChange)item.Tag;
 
                 btnMerge_Click(this, new EventArgs());
             }

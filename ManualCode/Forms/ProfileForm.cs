@@ -48,11 +48,11 @@ namespace CodeFlow
             {
                 string server = (string)row["ServerName"];
                 string instance = row["InstanceName"].ToString();
-                string name = "";
-                if (instance == "")
+                string name;
+                if (string.IsNullOrEmpty(instance))
                     name = server;
                 else
-                    name = server + "\\" + instance.ToString();
+                    name = server + "\\" + instance;
                 cmbServers.Items.Add(name);
             }
         }

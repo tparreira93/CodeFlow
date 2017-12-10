@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.Language.Intellisense;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +7,10 @@ using Microsoft.VisualStudio.Imaging.Interop;
 using System.Threading;
 using System.Windows.Forms;
 using CodeFlow.CodeControl;
+using CodeFlow.CodeControl.Analyzer;
+using CodeFlow.GenioManual;
 using CodeFlow.ManualOperations;
+using Microsoft.VisualStudio.Language.Intellisense;
 
 namespace CodeFlow.CodeUtils
 {

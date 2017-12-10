@@ -322,10 +322,7 @@ namespace CodeFlow.ManualOperations
                 result_line = result_line.Replace("@BEFORE_NEWLINE", before_newline).Replace("@AFTER_NEWLINE", after_newline);
                 manuaQuery = manuaQuery.Replace("@RESULT_LINE", result_line);
 
-                if (caseSensitive)
-                    manuaQuery = manuaQuery.Replace("@CASESENSITIVE", "COLLATE Latin1_General_BIN");
-                else
-                    manuaQuery = manuaQuery.Replace("@CASESENSITIVE", "");
+                manuaQuery = manuaQuery.Replace("@CASESENSITIVE", caseSensitive ? "COLLATE Latin1_General_BIN" : "");
 
                 if (wholeWord)
                     search = $"%[^a-z]{texto}[^a-z]%";

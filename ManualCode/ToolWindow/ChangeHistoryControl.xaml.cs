@@ -103,21 +103,24 @@
         private void lstHistoryColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             GridViewColumnHeader column = (sender as GridViewColumnHeader);
-            string sortBy = column.Tag.ToString();
-            if (listViewSortCol != null)
+            if (column != null)
             {
-                AdornerLayer.GetAdornerLayer(listViewSortCol).Remove(listViewSortAdorner);
-                lstHistory.Items.SortDescriptions.Clear();
+                string sortBy = column.Tag.ToString();
+                if (listViewSortCol != null)
+                {
+                    AdornerLayer.GetAdornerLayer(listViewSortCol).Remove(listViewSortAdorner);
+                    lstHistory.Items.SortDescriptions.Clear();
+                }
+
+                ListSortDirection newDir = ListSortDirection.Ascending;
+                if (listViewSortCol == column && listViewSortAdorner.Direction == newDir)
+                    newDir = ListSortDirection.Descending;
+
+                listViewSortCol = column;
+                listViewSortAdorner = new SortAdorner(listViewSortCol, newDir);
+                AdornerLayer.GetAdornerLayer(listViewSortCol).Add(listViewSortAdorner);
+                lstHistory.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
             }
-
-            ListSortDirection newDir = ListSortDirection.Ascending;
-            if (listViewSortCol == column && listViewSortAdorner.Direction == newDir)
-                newDir = ListSortDirection.Descending;
-
-            listViewSortCol = column;
-            listViewSortAdorner = new SortAdorner(listViewSortCol, newDir);
-            AdornerLayer.GetAdornerLayer(listViewSortCol).Add(listViewSortAdorner);
-            lstHistory.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
         }
         private void Compare(IOperation op)
         {

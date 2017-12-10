@@ -1,4 +1,6 @@
-﻿namespace CodeFlow.ToolWindow
+﻿using CodeFlow.GenioManual;
+
+namespace CodeFlow.ToolWindow
 {
     using CodeFlow.ManualOperations;
     using System;

@@ -14,6 +14,7 @@ using System.Reflection;
 using CodeFlow.Utils;
 using System.ComponentModel.Design;
 using CodeFlow.CodeControl;
+using CodeFlow.GenioManual;
 using CodeFlow.ManualOperations;
 
 namespace CodeFlow
@@ -185,7 +186,7 @@ namespace CodeFlow
             }
             catch(Exception)
             { }
-            return profiles ?? new List<Profile>(); ;
+            return profiles ?? new List<Profile>();
         }
         #endregion
 
@@ -253,7 +254,7 @@ namespace CodeFlow
         public List<IManual> GetAutoExportIManual(string path)
         {
             List<IManual> man = null;
-            if (AutoExportFiles.TryGetValue(path, out Type t))
+            if (AutoExportFiles.TryGetValue(path, out Type _))
             {
                 string code = File.ReadAllText(path, GetFileEncoding());
                 string fileName = Path.GetFileName(path);

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CodeFlow.GenioManual;
 using CodeFlow.SolutionOperations;
 using CodeFlow.Utils;
 using CodeFlow.ManualOperations;
@@ -124,10 +125,7 @@ namespace CodeFlow.Forms
 
         private void chkSavedFiles_CheckedChanged(object sender, EventArgs e)
         {
-            if(chkSavedFiles.Checked)
-                Refresh(savedFiles);
-            else
-                Refresh(solution.GenioProjects);
+            Refresh(chkSavedFiles.Checked ? savedFiles : solution.GenioProjects);
         }
 
         private void treeProjects_AfterCheck(object sender, TreeViewEventArgs e)

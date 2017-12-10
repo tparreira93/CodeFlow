@@ -1,5 +1,4 @@
-﻿using CodeFlow.CommandHandlers;
-using CodeFlow.ManualOperations;
+﻿using CodeFlow.ManualOperations;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
@@ -105,7 +104,7 @@ namespace CodeFlow.CodeUtils
                 ManuaCode bd = ManuaCode.GetManual(PackageOperations.Instance.GetActiveProfile(), codmanua);
                 if (bd == null)
                     return;
-                CommandHandler handler = new CommandHandler();
+                CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
                 handler.EditCodeSegment(textView.TextBuffer, begin, end, bd.Code);
             }
             catch (Exception ex)

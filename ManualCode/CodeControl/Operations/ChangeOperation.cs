@@ -1,5 +1,6 @@
 ﻿using CodeFlow.ManualOperations;
 using System;
+using CodeFlow.GenioManual;
 
 namespace CodeFlow.CodeControl
 {
@@ -24,7 +25,7 @@ namespace CodeFlow.CodeControl
 
         public bool Undo(Profile profile)
         {
-            bool result = false;
+            bool result;
             try
             {
                 result = Execute(profile, OperationChanges.Theirs);
@@ -41,7 +42,7 @@ namespace CodeFlow.CodeControl
         }
         public bool Execute(Profile profile)
         {
-            bool result = false;
+            bool result;
             try
             {
                 result = Execute(profile, OperationChanges.Merged);

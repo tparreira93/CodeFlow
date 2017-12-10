@@ -112,10 +112,7 @@ namespace CodeFlow
 
         private void chkSystem_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkSystem.Checked)
-                cmbModule.Enabled = false;
-            else
-                cmbModule.Enabled = true;
+            cmbModule.Enabled = !chkSystem.Checked;
         }
 
         private void btnCreate_Click(object sender, EventArgs e)
@@ -147,8 +144,7 @@ namespace CodeFlow
                     lang = tipo.ProgrammingLanguage;
             }
 
-            double f_order = .0f;
-            Double.TryParse(order, out f_order);
+            Double.TryParse(order, out var f_order);
 
             Guid codfeature = Guid.Empty;
             Guid codmodul = Guid.Empty;
@@ -164,8 +160,8 @@ namespace CodeFlow
             manualCode.Feature = feature ?? "";
             manualCode.Codmodul = codmodul;
             manualCode.Modulo = module != null ? (system ? PackageOperations.Instance.GetActiveProfile().GenioConfiguration.SystemInitials : module ) : ""; //Change to system of active profile
-            manualCode.Plataform = plataform ?? "";
-            manualCode.TipoRotina = type ?? "";
+            manualCode.Plataform = plataform;
+            manualCode.TipoRotina = type;
             manualCode.Parameter = param;
             manualCode.ManualFile = file;
             manualCode.Order = (float)Math.Round(f_order, 1);
@@ -202,7 +198,8 @@ namespace CodeFlow
             cmbType.Items.Clear();
             string plataform = cmbPlataform.SelectedItem?.ToString() ?? "";
             GenioPlataform plat = PackageOperations.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
-            cmbType.Items.AddRange(plat.TipoRotina.Select(x => x.Identifier).ToArray());
+            if (plat != null)
+                cmbType.Items.AddRange(plat.TipoRotina.Select(x => x.Identifier).ToArray());
         }
     }
 }

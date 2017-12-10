@@ -4,7 +4,8 @@ using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
 using CodeFlow.ManualOperations;
 using CodeFlow.CodeControl;
-using CodeFlow.CommandHandlers;
+using CodeFlow.CodeControl.Analyzer;
+using CodeFlow.GenioManual;
 
 namespace CodeFlow.Commands
 {
@@ -89,7 +90,7 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            CommandHandler handler = new CommandHandler();
+            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
             List<IManual> manual = handler.SearchForTags();
             ChangeAnalyzer diffs = new ChangeAnalyzer();
             diffs.CheckBDDifferences(manual, PackageOperations.Instance.GetActiveProfile());

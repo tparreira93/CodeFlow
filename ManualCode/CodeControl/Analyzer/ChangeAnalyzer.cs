@@ -1,12 +1,9 @@
-﻿using CodeFlow.ManualOperations;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using CodeFlow.GenioManual;
+using CodeFlow.ManualOperations;
 
-namespace CodeFlow.CodeControl
+namespace CodeFlow.CodeControl.Analyzer
 {
     public class ChangeAnalyzer
     {

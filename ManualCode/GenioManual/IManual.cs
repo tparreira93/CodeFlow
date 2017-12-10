@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using CodeFlow.ManualOperations;
 
-namespace CodeFlow.ManualOperations
+namespace CodeFlow.GenioManual
 {
     /// <summary>
     /// When using this interface, it is mandatory to use attribute <seealso cref="ManualMatchProvider"/>, 

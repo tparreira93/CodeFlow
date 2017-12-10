@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CodeFlow.GenioManual;
 
 namespace CodeFlow.CodeControl
 {
@@ -28,7 +29,7 @@ namespace CodeFlow.CodeControl
 
         public bool Undo(Profile profile)
         {
-            bool result = false;
+            bool result;
             try
             {
                 result = OperationChanges.Mine.Delete(profile);
@@ -45,7 +46,7 @@ namespace CodeFlow.CodeControl
         }
         public bool Execute(Profile profile)
         {
-            bool result = false;
+            bool result;
             try
             {
                 result = Execute(profile, OperationChanges.Mine);

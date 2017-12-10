@@ -9,8 +9,8 @@ using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
 using System.Threading;
+using CodeFlow.GenioManual;
 using CodeFlow.ManualOperations;
-using CodeFlow.CommandHandlers;
 
 namespace CodeFlow.CodeUtils
 {
@@ -50,10 +50,10 @@ namespace CodeFlow.CodeUtils
         private bool TryGetManual(out IManual manua)
         {
             manua = null;
-            CommandHandler handler = new CommandHandler();
+            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
             if (String.IsNullOrEmpty(handler.GetCurrentSelection()))
             {
-                string code = handler.GetCurrentViewText(out int pos, out IWpfTextView textView);
+                string code = handler.GetCurrentViewText(out int pos, out IWpfTextView _);
                 VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageOperations.Instance.DTE.ActiveDocument.Name);
                 List<IManual> codeList = vSCodeManualMatcher.Match();
 
@@ -67,7 +67,7 @@ namespace CodeFlow.CodeUtils
         {
             return Task.Factory.StartNew(() =>
             {
-                if (PackageOperations.Instance.ContinuousAnalysis && TryGetManual(out IManual man))
+                if (PackageOperations.Instance.ContinuousAnalysis && TryGetManual(out IManual _))
                 {
                     return true;
                 }

@@ -6,8 +6,7 @@
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
-             Name="MyToolWindow">
+             d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -16,7 +15,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <ListView x:Name="lstHistory" MouseDoubleClick="lstHistory_MouseDoubleClick" SelectionMode="Single">
+        <ListView x:Name="lstHistory" MouseDoubleClick="lstHistory_MouseDoubleClick" SelectionMode="Single"
+                  x:FieldModifier="private">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="100"  DisplayMemberBinding="{Binding OperationType}">
@@ -37,14 +37,11 @@
                 </GridView>
             </ListView.View>
             <ListView.ContextMenu>
-                <ContextMenu Name="ZoneIformationList" StaysOpen="true" Background="WhiteSmoke">
-                    <ContextMenu.BitmapEffect>
-                        <BitmapEffectGroup/>
-                    </ContextMenu.BitmapEffect>
-                    <MenuItem Header="View change" Name="ViewChangeContextMenu"  Click="ViewChangeContextMenu_OnClick"/>
-                    <MenuItem Header="Undo" Name="UndoContextMenu" Click="UndoContextMenu_OnClick"/>
-                    <MenuItem Header="Redo" Name="RedoContextMenu" Click="RedoContextMenu_OnClick"/>
-                    <MenuItem Header="Clear" Name="ClearContextMenu" Click="ClearContextMenu_OnClick"/>
+                <ContextMenu StaysOpen="true" Background="WhiteSmoke">
+                    <MenuItem Header="View change" Click="ViewChangeContextMenu_OnClick"/>
+                    <MenuItem Header="Undo" Click="UndoContextMenu_OnClick"/>
+                    <MenuItem Header="Redo" Click="RedoContextMenu_OnClick"/>
+                    <MenuItem Header="Clear" Click="ClearContextMenu_OnClick"/>
                 </ContextMenu>
             </ListView.ContextMenu>
         </ListView>
