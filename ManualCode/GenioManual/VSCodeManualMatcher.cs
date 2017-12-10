@@ -1,13 +1,13 @@
-﻿using CodeFlow.GenioManual;
-using CodeFlow.Utils;
-using System;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
+using CodeFlow.ManualOperations;
+using CodeFlow.Utils;
 
-namespace CodeFlow.ManualOperations
+namespace CodeFlow.GenioManual
 {
     public class VSCodeManualMatcher
     {
@@ -37,121 +37,115 @@ namespace CodeFlow.ManualOperations
 
         public List<IManual> Match()
         {
-            List<IManual> matches = new List<IManual>();
-            object lockObject = new object();
-            Parallel.ForEach(MatchProvider, (provider, state) =>
+            ConcurrentBag<IManual> matches = new ConcurrentBag<IManual>();
+            foreach (KeyValuePair<Type, ManualMatchProvider> manualMatchProvider in MatchProvider)
             {
-                Type currentType = provider.Key;
-                string begin_string = provider.Value.MatchBeginnig;
-                string end_string = provider.Value.MatchEnd;
-                ConstructorInfo constructor = currentType.GetConstructor(new Type[] { });
+                Type matchType = manualMatchProvider.Key;
+                ManualMatchProvider provider = manualMatchProvider.Value;
+                List<int> positions;
 
-                int begin = -1, beginUpperLine = -1;
-                int end = 0;
-                int endUpperLine = -1;
-                string upperLine = "";
-                ManualMatch match = null;
-                List<IManual> tmpMatches = new List<IManual>();
-                int max = int.MaxValue;
-
-                if (constructor == null)
-                    state.Break();
-
-                if (CursorPos != null)
-                {
-                    begin = VsCodeSnapshot.LastIndexOf(begin_string, (int)CursorPos, (int)CursorPos + 1);
-                    max = 1;
-                }
+                if (CursorPos == null)
+                    positions = AllIndexesOf(VsCodeSnapshot, provider.MatchBeginnig);
                 else
-                    begin = VsCodeSnapshot.IndexOf(begin_string);
-
-                while (begin != -1 && tmpMatches.Count < max)
                 {
-                    end = VsCodeSnapshot.IndexOf(end_string, begin);
-                    if (CursorPos == null || (begin <= CursorPos && end >= CursorPos))
+                    int tmp = VsCodeSnapshot.LastIndexOf(provider.MatchBeginnig, (int) CursorPos, (int) CursorPos + 1,
+                        StringComparison.Ordinal);
+                    positions = new List<int>();
+                    if (tmp != -1)
+                        positions.Add(tmp);
+                }
+                Parallel.ForEach(positions, (begin, state) =>
+                {
+                    string beginString = provider.MatchBeginnig;
+                    string endString = provider.MatchEnd;
+                    ConstructorInfo constructor = matchType.GetConstructor(new Type[] { });
+
+                    int beginUpperLine = -1;
+                    string upperLine = "";
+                    var end = VsCodeSnapshot.IndexOf(endString, begin, StringComparison.Ordinal);
+                    int idx = begin + beginString.Length;
+                    int i = VsCodeSnapshot.IndexOf(Util.NewLine, idx, StringComparison.Ordinal);
+
+                    string guid = VsCodeSnapshot.Substring(idx, Math.Abs(i - idx));
+                    guid = guid.Substring(0, 36);
+                    if (Guid.TryParse(guid, out Guid g))
                     {
-
-                        int idx = begin + begin_string.Length;
-                        int i = VsCodeSnapshot.IndexOf(Util.NewLine, idx);
-
-                        string guid = VsCodeSnapshot.Substring(idx, Math.Abs(i - idx));
-                        guid = guid.Substring(0, 36);
-                        if (Guid.TryParse(guid, out Guid g))
+                        var match = new ManualMatch
                         {
-                            match = new ManualMatch();
-                            match.MatchPos = begin;
-                            match.MatchLength = end;
-                            match.MatchType = currentType;
-                            match.VsCodeSnapshot = this.VsCodeSnapshot;
-                            match.LocalFileName = FileName;
-                            match.CodeStart = i + Util.NewLine.Length;
+                            MatchPos = begin,
+                            MatchLength = end,
+                            MatchType = matchType,
+                            VsCodeSnapshot = this.VsCodeSnapshot,
+                            LocalFileName = FileName,
+                            CodeStart = i + Util.NewLine.Length
+                        };
 
-                            endUpperLine = VsCodeSnapshot.LastIndexOf(Util.NewLine, begin);
-                            if (endUpperLine > -1)
+                        // Match line above begin tag
+                        var endUpperLine = VsCodeSnapshot.LastIndexOf(Util.NewLine, begin, StringComparison.Ordinal);
+                        if (endUpperLine > -1)
+                        {
+                            beginUpperLine = VsCodeSnapshot.LastIndexOf(Util.NewLine, endUpperLine, StringComparison.Ordinal) +
+                                             Util.NewLine.Length;
+                            if (beginUpperLine != -1 && endUpperLine - beginUpperLine > 0)
                             {
-                                beginUpperLine = VsCodeSnapshot.LastIndexOf(Util.NewLine, endUpperLine) + Util.NewLine.Length;
-                                if (beginUpperLine != -1 && endUpperLine - beginUpperLine > 0)
-                                {
-                                    upperLine = VsCodeSnapshot.Substring(beginUpperLine, endUpperLine - beginUpperLine);
-                                }
+                                upperLine = VsCodeSnapshot.Substring(beginUpperLine,
+                                    endUpperLine - beginUpperLine);
                             }
-
-                            end = VsCodeSnapshot.IndexOf(end_string, match.CodeStart);
-                            string c = "", code = "";
-                            if (end == -1)
-                            {
-                                int anotherB = VsCodeSnapshot.IndexOf(begin_string, i);
-                                if (anotherB != -1)
-                                    break;
-
-                                code = VsCodeSnapshot.Substring(i + Util.NewLine.Length);
-                                end = VsCodeSnapshot.Length - 1;
-                            }
-                            else
-                            {
-                                int length = end - match.CodeStart;
-                                c = VsCodeSnapshot.Substring(match.CodeStart, length);
-                                int tmp = c.LastIndexOf(Util.NewLine);
-                                length = tmp != -1 ? tmp : 0;
-
-                                code = "";
-                                if (length > 0)
-                                    code = c.Substring(0, length);
-
-                                int anotherB = VsCodeSnapshot.IndexOf(begin_string, i, length);
-                                if (anotherB != -1)
-                                    break;
-                            }
-
-                            match.CodeLength = code.Length;
-
-                            IManual man = constructor.Invoke(null) as IManual;
-                            if (man == null)
-                                state.Break();
-
-                            man.Code = PackageOperations.Instance.ForceDOSLine ? Util.ConverToDOSLineEndings(code) : code;
-                            man.CodeId = g;
-                            man.Code = man.CodeTransformKeyValue();
-                            man.LocalMatch = match;
-                            if (man.MatchAndFix(upperLine))
-                                match.MatchPos = beginUpperLine;
-
-                            tmpMatches.Add(man);
                         }
 
-                        begin = VsCodeSnapshot.IndexOf(begin_string, end);
+                        int anotherB;
+                        string code = String.Empty;
+                        if (end == -1)
+                        {
+                            anotherB = VsCodeSnapshot.IndexOf(beginString, i, StringComparison.Ordinal);
+                            code = VsCodeSnapshot.Substring(i + Util.NewLine.Length);
+                        }
+                        else
+                        {
+                            int length = end - match.CodeStart;
+                            var c = VsCodeSnapshot.Substring(match.CodeStart, length);
+                            int tmp = c.LastIndexOf(Util.NewLine, StringComparison.Ordinal);
+                            length = tmp != -1 ? tmp : 0;
+                            
+                            if (length > 0)
+                                code = c.Substring(0, length);
+
+                            anotherB = VsCodeSnapshot.IndexOf(beginString, i, length, StringComparison.Ordinal);
+                        }
+
+                        match.CodeLength = code.Length;
+                        if (anotherB == -1)
+                        {
+                            if (!(constructor?.Invoke(null) is IManual man))
+                                state.Break();
+                            else
+                            {
+                                man.Code = PackageOperations.Instance.ForceDOSLine ? Util.ConverToDOSLineEndings(code)
+                                        : code;
+                                man.CodeId = g;
+                                man.Code = man.CodeTransformKeyValue();
+                                man.LocalMatch = match;
+                                if (man.MatchAndFix(upperLine))
+                                    match.MatchPos = beginUpperLine;
+                                matches.Add(man);
+                            }
+                        }
                     }
-                    else
-                        begin = -1;
-                }
+                });
+            }
+            return matches.ToList();
+        }
 
-                lock (lockObject)
-                {
-                    matches.AddRange(tmpMatches);
-                }
-            });
-
-            return matches;
+        public List<int> AllIndexesOf(string str, string value)
+        {
+            List<int> indexes = new List<int>();
+            for (int index = 0; ; index += value.Length)
+            {
+                index = str.IndexOf(value, index, StringComparison.Ordinal);
+                if (index == -1)
+                    return indexes;
+                indexes.Add(index);
+            }
         }
         public static Dictionary<Type, ManualMatchProvider> GetManualMatchProviders()
         {
