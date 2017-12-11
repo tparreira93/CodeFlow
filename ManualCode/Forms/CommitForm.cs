@@ -22,8 +22,8 @@ namespace CodeFlow
         public CommitForm(ChangeAnalyzer difs)
         {
             InitializeComponent();
-            differences = difs.Differences;
-            conflictCode = difs.ManualConflict;
+            differences = difs.Modifications;
+            conflictCode = difs.ModifiedConflict;
         }
 
         private void RefreshControls()

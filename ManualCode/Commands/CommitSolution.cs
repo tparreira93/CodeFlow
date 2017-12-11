@@ -102,7 +102,7 @@ namespace CodeFlow.Commands
 
             if(selectionProjectForm.Result)
             {
-                CommitForm export = new CommitForm(selectionProjectForm.Analyzer.Differences);
+                CommitForm export = new CommitForm(selectionProjectForm.Analyzer.Analyzer);
                 export.Show();
             }
             // Force collection, solution analysis might be heavy..

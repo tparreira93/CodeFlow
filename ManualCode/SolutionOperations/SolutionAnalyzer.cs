@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.ComponentModel;
-using CodeFlow.ManualOperations;
-using System.Text;
-using CodeFlow.CodeControl;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using CodeFlow.CodeControl.Analyzer;
 using CodeFlow.GenioManual;
 
@@ -12,64 +13,95 @@ namespace CodeFlow.SolutionOperations
 {
     public class ProjectsAnalyzer : BackgroundWorker
     {
-        private ChangeAnalyzer differences;
-
-        public ProjectsAnalyzer()
+        public ProjectsAnalyzer(int maxNumberOfTasks = 8)
         {
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
             DoWork += Analyze;
-            Differences = new ChangeAnalyzer();
+            Analyzer = new ChangeAnalyzer();
+            _consumerCollection = new ConcurrentQueue<IManual>();
+            _runningTasks = new Queue<Task>();
+            _maxNumberOfTasks = maxNumberOfTasks;
         }
 
-        public ChangeAnalyzer Differences { get => differences; set => differences = value; }
-
+        public ChangeAnalyzer Analyzer { get; }
+        private readonly IProducerConsumerCollection<IManual> _consumerCollection;
+        private readonly Queue<Task> _runningTasks;
+        private readonly int _maxNumberOfTasks;
+        private bool _isAnalyzing;
         private void Analyze(object sender, DoWorkEventArgs e)
         {
-            if (!(e.Argument is List<GenioProjectProperties>))
+            var projectsList = e.Argument as List<GenioProjectProperties>;
+            if (projectsList == null)
                 return;
-
-            List<GenioProjectProperties>  projectsList = e.Argument as List<GenioProjectProperties>;
-
-            int count = 0, i = 1;
-            foreach (GenioProjectProperties project in projectsList)
-                count += project.ProjectFiles.Count;
-
+            
+            int progress = 1;
+            int count = 0;
+            count += projectsList.Sum(project => project.ProjectFiles.Count);
+            _isAnalyzing = true;
+            var task = Task.Factory.StartNew(CompareMatches, new CancellationToken(CancellationPending));
+            
             try
             {
                 foreach (GenioProjectProperties project in projectsList)
                 {
                     foreach (GenioProjectItem item in project.ProjectFiles)
                     {
-                        string extension = Path.GetExtension(item.ItemPath) ?? String.Empty;
+                        string extension = Path.GetExtension(item.ItemPath) ?? string.Empty;
                         if (File.Exists(item.ItemPath)
-                            && ((PackageOperations.Instance.ExtensionFilters.Contains(extension.ToLower()) || PackageOperations.Instance.ExtensionFilters.Contains("*"))
-                            && !PackageOperations.Instance.IgnoreFilesFilters.Contains(item.ItemName.ToLower())))
-                            AnalyzeFile(item.ItemPath);
+                            && (PackageOperations.Instance.ExtensionFilters.Contains(extension.ToLower()) ||
+                                PackageOperations.Instance.ExtensionFilters.Contains("*"))
+                            && !PackageOperations.Instance.IgnoreFilesFilters.Contains(item.ItemName.ToLower()))
+                        {
+                            if (_runningTasks.Count == _maxNumberOfTasks)
+                            {
+                                Task t =_runningTasks.Dequeue();
+                                t.Wait();
+                            }
+
+                            if (_runningTasks.Count < _maxNumberOfTasks)
+                            {
+                                Task t = AnalyzeFile(item.ItemPath);
+                                _runningTasks.Enqueue(t);
+                            }
+
+                        }
 
                         if (CancellationPending)
                             return;
-                        ReportProgress((i * 100) / count);
-                        i++;
+                        ReportProgress(progress * 100 / count);
+                        progress++;
                     }
                 }
             }
             catch (Exception)
-            { }
+            {
+                // ignored
+            }
+            finally
+            {
+                _isAnalyzing = false;
+                Task.WaitAll(task);
+            }
         }
 
-        private void AnalyzeFile(string file)
+        private void CompareMatches()
+        {
+            while (_isAnalyzing || _consumerCollection.Count > 0)
+            {
+                if(_consumerCollection.TryTake(out IManual item))
+                    Analyzer.CheckForDifferences(item, PackageOperations.Instance.GetActiveProfile());
+                
+            }
+        }
+
+        private Task AnalyzeFile(string file)
         {
             PackageOperations.Instance.DetectTextEncoding(file, out string text);
-            //string code = File.ReadAllText(file, enc);
-
-            /*Encoding unicode = Encoding.Unicode;
-            byte[] encBytes = enc.GetBytes(code);
-            byte[] unicodeBytes = Encoding.Convert(enc, unicode, encBytes);
-            string convertedCode = unicode.GetString(unicodeBytes);*/
-
-            List<IManual> tmp = new VSCodeManualMatcher(text, Path.GetFileName(file)).Match();
-            Differences.CheckBDDifferences(tmp, PackageOperations.Instance.GetActiveProfile());
+            VSCodeManualMatcher matcher =
+                new VSCodeManualMatcher(text, Path.GetFileName(file)) {ConcurrentMatching = false};
+            matcher.Register(_consumerCollection);
+            return Task.Factory.StartNew(() => matcher.Match());
         }
     }
 }

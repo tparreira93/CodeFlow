@@ -171,8 +171,8 @@ namespace CodeFlow
             {
                 // Check for changes, update and log operation
                 ChangeAnalyzer analyzer = new ChangeAnalyzer();
-                analyzer.CheckBDDifferences(man, PackageOperations.Instance.GetActiveProfile());
-                foreach (IChange diff in analyzer.Differences.AsList)
+                analyzer.CheckForDifferences(man, PackageOperations.Instance.GetActiveProfile());
+                foreach (IChange diff in analyzer.Modifications.AsList)
                 {
                     IOperation operation = diff.GetOperation();
                     if(operation != null)
@@ -229,7 +229,7 @@ namespace CodeFlow
             {
                 PackageOperations.Instance.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.Instance.DTE);
             }
-            if (PackageOperations.Instance.AutoVCCTO2008Fix && isSolution)
+            if (PackageOperations.Instance.AutoVccto2008Fix && isSolution)
             {
                 GenioSolutionProperties.ChangeToolset2008(PackageOperations.Instance.DTE);
             }

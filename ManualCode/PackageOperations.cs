@@ -21,45 +21,35 @@ namespace CodeFlow
 {
     public sealed class PackageOperations
     {
-        private static PackageOperations instance;
+        private static PackageOperations _instance;
 
-        private Profile activeProfile = new Profile();
-        private bool autoExportSaved;
-        private List<Profile> allProfiles = new List<Profile>();
-        private List<string> openFiles = new List<string>();
-        private Dictionary<string, Type> openManual = new Dictionary<string, Type>();
-        private Dictionary<string, Type> AutoExportFiles { get => openManual; set => openManual = value; }
-        private GenioSolutionProperties solutionProps = new GenioSolutionProperties();
-        private DTE2 dte;
-        private string useCustomTool = "";
-        private bool forceDOSLine = false;
-        private OperationLog codeLog = new OperationLog();
-        private bool logOperations = false;
+        private readonly List<string> _openFiles = new List<string>();
+        private Dictionary<string, Type> AutoExportFiles { get; } = new Dictionary<string, Type>();
 
         #region ToolOptions
-        private List<string> extensionFilters = new List<string>() { "cpp", "cs", "xml", "h" };
-        private List<string> ignoreFilesFilters = new List<string>();
-        private bool continuousAnalysis = false;
-        private bool parseSolution = false;
-        public bool AutoExportSaved { get => autoExportSaved; set => autoExportSaved = value; }
+
+        public bool AutoExportSaved { get; set; }
+        public bool LogOperations { private get; set; }
+        public List<string> ExtensionFilters { get; } = new List<string>();
+        public List<string> IgnoreFilesFilters { get; } = new List<string>();
+        public bool ParseSolution { get; set; }
+        public bool ContinuousAnalysis { get; set; }
+        public bool AutoVccto2008Fix { get; set; }
+        public string UseCustomTool { get; set; } = "";
+        public bool ForceDOSLine { get; set; }
+        public int MaxTaskSolutionCommit { get; set; }
+
         #endregion
 
         #region Properties
-        private Profile ActiveProfile { get => activeProfile; set => activeProfile = value; }
-        public List<GenioProjectProperties> SavedFiles = new List<GenioProjectProperties>();
-        public List<Profile> AllProfiles { get => allProfiles; set => allProfiles = value; }
-        public GenioSolutionProperties SolutionProps { get => solutionProps; set => solutionProps = value; }
-        public List<string> ExtensionFilters { get => extensionFilters; set => extensionFilters = value; }
-        public List<string> IgnoreFilesFilters { get => ignoreFilesFilters; set => ignoreFilesFilters = value; }
-        public bool ParseSolution { get => parseSolution; set => parseSolution = value; }
-        public bool ContinuousAnalysis { get => continuousAnalysis; set => continuousAnalysis = value; }
-        public bool AutoVCCTO2008Fix { get; internal set; }
-        public string UseCustomTool { get => useCustomTool; set => useCustomTool = value; }
-        public bool ForceDOSLine { get => forceDOSLine; set => forceDOSLine = value; }
-        public DTE2 DTE { get => dte; set => dte = value; }
-        public OperationLog ChangeLog { get => codeLog; set => codeLog = value; }
-        public bool LogOperations { get => logOperations; set => logOperations = value; }
-        public static PackageOperations Instance { get => instance ?? (instance = new PackageOperations()); }
+        private Profile ActiveProfile { get; set; } = new Profile();
+        public readonly List<GenioProjectProperties> SavedFiles = new List<GenioProjectProperties>();
+        public List<Profile> AllProfiles { get; set; } = new List<Profile>();
+        public GenioSolutionProperties SolutionProps { get; set; } = new GenioSolutionProperties();
+        public DTE2 DTE { get; set; }
+        public OperationLog ChangeLog { get; set; } = new OperationLog();
+        public static PackageOperations Instance => _instance ?? (_instance = new PackageOperations());
+
         #endregion
 
         #region ApplicationProfileManagement
@@ -191,6 +181,7 @@ namespace CodeFlow
         #endregion
 
         #region AutomationModel
+
         public DTE GetCurrentDTE(IServiceProvider provider)
         {
             /*ENVDTE. */
@@ -210,46 +201,37 @@ namespace CodeFlow
         #endregion
 
         #region FileOps
-        public void AddTempFile(string file)
+
+        private void AddTempFile(string file)
         {
-            openFiles.Add(file);
+            _openFiles.Add(file);
         }
         public void RemoveTempFile(string file)
         {
             if (File.Exists(file))
                 File.Delete(file);
-            if (openFiles.Contains(file))
-                openFiles.Remove(file);
+            if (_openFiles.Contains(file))
+                _openFiles.Remove(file);
         }
         public void RemoveTempFiles()
         {
-            foreach (string file in openFiles)
+            foreach (string file in _openFiles)
             {
                 if (File.Exists(file))
                     File.Delete(file);
             }
-            openFiles.Clear();
+            _openFiles.Clear();
         }
-        public string OpenManualFile(IManual man, bool autoExport)
+        public void OpenManualFile(IManual man, bool autoExport)
         {
-            string tmp = "";
-            try
-            {
-                tmp = Path.GetTempPath() + Guid.NewGuid().ToString() + "." + man.GetCodeExtension(ActiveProfile);
-                File.WriteAllText(tmp, man.ToString(), Encoding.UTF8);
+            var tmp = $"{Path.GetTempPath()}{Guid.NewGuid()}.{man.GetCodeExtension(ActiveProfile)}";
+            File.WriteAllText(tmp, man.ToString(), Encoding.UTF8);
 
-                if(autoExport)
-                    AutoExportFiles.Add(tmp, man.GetType());
+            if(autoExport)
+                AutoExportFiles.Add(tmp, man.GetType());
 
-                DTE.ItemOperations.OpenFile(tmp);
-                AddTempFile(tmp);
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
-
-            return tmp;
+            DTE.ItemOperations.OpenFile(tmp);
+            AddTempFile(tmp);
         }
         public List<IManual> GetAutoExportIManual(string path)
         {
@@ -262,12 +244,15 @@ namespace CodeFlow
                 {
                     man = new VSCodeManualMatcher(code, fileName).Match();
                 }
-                catch(Exception)
-                { }
+                catch (Exception)
+                {
+                    // ignored
+                }
             }
             return man;
         }
-        public Encoding GetFileEncoding()
+
+        private static Encoding GetFileEncoding()
         {
             Encoding enc = null;
             try
@@ -275,27 +260,12 @@ namespace CodeFlow
                 enc = Encoding.GetEncoding("Windows-1250");
                 //enc = Encoding.Unicode;
             }
-            catch(Exception)
-            { }
-
-            return enc;
-        }
-        public Encoding GetEncoding(string filename)
-        {
-            // Read the BOM
-            var bom = new byte[4];
-            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            catch (Exception)
             {
-                file.Read(bom, 0, 4);
+                // ignored
             }
 
-            // Analyze the BOM
-            if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76) return Encoding.UTF7;
-            if (bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf) return Encoding.UTF8;
-            if (bom[0] == 0xff && bom[1] == 0xfe) return Encoding.Unicode; //UTF-16LE
-            if (bom[0] == 0xfe && bom[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
-            if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xfe && bom[3] == 0xff) return Encoding.UTF32;
-            return Encoding.ASCII;
+            return enc;
         }
 
         // Function to detect the encoding for UTF-7, UTF-8/16/32 (bom, no bom, little
@@ -312,11 +282,11 @@ namespace CodeFlow
             //////////////// First check the low hanging fruit by checking if a
             //////////////// BOM/signature exists (sourced from http://www.unicode.org/faq/utf_bom.html#bom4)
             if (b.Length >= 4 && b[0] == 0x00 && b[1] == 0x00 && b[2] == 0xFE && b[3] == 0xFF) { text = Encoding.GetEncoding("utf-32BE").GetString(b, 4, b.Length - 4); return Encoding.GetEncoding("utf-32BE"); }  // UTF-32, big-endian 
-            else if (b.Length >= 4 && b[0] == 0xFF && b[1] == 0xFE && b[2] == 0x00 && b[3] == 0x00) { text = Encoding.UTF32.GetString(b, 4, b.Length - 4); return Encoding.UTF32; }    // UTF-32, little-endian
-            else if (b.Length >= 2 && b[0] == 0xFE && b[1] == 0xFF) { text = Encoding.BigEndianUnicode.GetString(b, 2, b.Length - 2); return Encoding.BigEndianUnicode; }     // UTF-16, big-endian
-            else if (b.Length >= 2 && b[0] == 0xFF && b[1] == 0xFE) { text = Encoding.Unicode.GetString(b, 2, b.Length - 2); return Encoding.Unicode; }              // UTF-16, little-endian
-            else if (b.Length >= 3 && b[0] == 0xEF && b[1] == 0xBB && b[2] == 0xBF) { text = Encoding.UTF8.GetString(b, 3, b.Length - 3); return Encoding.UTF8; } // UTF-8
-            else if (b.Length >= 3 && b[0] == 0x2b && b[1] == 0x2f && b[2] == 0x76) { text = Encoding.UTF7.GetString(b, 3, b.Length - 3); return Encoding.UTF7; } // UTF-7
+            if (b.Length >= 4 && b[0] == 0xFF && b[1] == 0xFE && b[2] == 0x00 && b[3] == 0x00) { text = Encoding.UTF32.GetString(b, 4, b.Length - 4); return Encoding.UTF32; }    // UTF-32, little-endian
+            if (b.Length >= 2 && b[0] == 0xFE && b[1] == 0xFF) { text = Encoding.BigEndianUnicode.GetString(b, 2, b.Length - 2); return Encoding.BigEndianUnicode; }     // UTF-16, big-endian
+            if (b.Length >= 2 && b[0] == 0xFF && b[1] == 0xFE) { text = Encoding.Unicode.GetString(b, 2, b.Length - 2); return Encoding.Unicode; }              // UTF-16, little-endian
+            if (b.Length >= 3 && b[0] == 0xEF && b[1] == 0xBB && b[2] == 0xBF) { text = Encoding.UTF8.GetString(b, 3, b.Length - 3); return Encoding.UTF8; } // UTF-8
+            if (b.Length >= 3 && b[0] == 0x2b && b[1] == 0x2f && b[2] == 0x76) { text = Encoding.UTF7.GetString(b, 3, b.Length - 3); return Encoding.UTF7; } // UTF-7
 
 
             //////////// If the code reaches here, no BOM/signature was found, so now
@@ -343,7 +313,7 @@ namespace CodeFlow
                 if (b[i] >= 0xF0 && b[i] <= 0xF4 && b[i + 1] >= 0x80 && b[i + 1] < 0xC0 && b[i + 2] >= 0x80 && b[i + 2] < 0xC0 && b[i + 3] >= 0x80 && b[i + 3] < 0xC0) { i += 4; utf8 = true; continue; }
                 utf8 = false; break;
             }
-            if (utf8 == true)
+            if (utf8)
             {
                 text = Encoding.UTF8.GetString(b);
                 return Encoding.UTF8;

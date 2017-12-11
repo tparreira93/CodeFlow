@@ -97,10 +97,10 @@ namespace CodeFlow.CodeUtils
             try
             {
                 ChangeAnalyzer analyzer = new ChangeAnalyzer();
-                analyzer.CheckBDDifferences(local, PackageOperations.Instance.GetActiveProfile());
-                if (analyzer.Differences.AsList.Count == 1)
+                analyzer.CheckForDifferences(local, PackageOperations.Instance.GetActiveProfile());
+                if (analyzer.Modifications.AsList.Count == 1)
                 {
-                    IChange change = analyzer.Differences.AsList[0];
+                    IChange change = analyzer.Modifications.AsList[0];
                     change = change.Merge();
                     IOperation operation = change.GetOperation();
                     if(operation != null)

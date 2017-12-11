@@ -16,19 +16,16 @@ namespace CodeFlow.Forms
 {
     public partial class ProjectSelectionForm : Form
     {
-        private List<GenioProjectProperties> savedFiles;
-        private GenioSolutionProperties solution;
-        private ProjectsAnalyzer analyzer = new ProjectsAnalyzer();
-        public bool Result { get; set; }
-        public List<IManual> ExportCode { get; set; }
-        public Dictionary<Guid, List<ManuaCode>> ConflictCode { get; set; }
-        public ProjectsAnalyzer Analyzer { get => analyzer; set => analyzer = value; }
+        private readonly List<GenioProjectProperties> _savedFiles;
+        private readonly GenioSolutionProperties _solution;
+        public bool Result { get; private set; }
+        public ProjectsAnalyzer Analyzer { get; private set; }
 
         public ProjectSelectionForm(List<GenioProjectProperties> saved)
         {
             InitializeComponent();
-            solution = GenioSolutionProperties.ParseSolution(PackageOperations.Instance.DTE, true);
-            savedFiles = saved;
+            _solution = GenioSolutionProperties.ParseSolution(PackageOperations.Instance.DTE, true);
+            _savedFiles = saved;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -63,9 +60,9 @@ namespace CodeFlow.Forms
         {
             toolProgress.Enabled = false;
             cancelAnal.Enabled = false;
-            if (savedFiles.Count == 0)
+            if (_savedFiles.Count == 0)
             {
-                Refresh(solution.GenioProjects);
+                Refresh(_solution.GenioProjects);
                 chkSavedFiles.Checked = false;
                 chkSavedFiles.Enabled = false;
             }
@@ -88,8 +85,8 @@ namespace CodeFlow.Forms
             {
                 if(node.Tag is GenioProjectProperties && !node.Checked)
                 {
-                    GenioProjectProperties proj = node.Tag as GenioProjectProperties;
-                    List<GenioProjectItem> items = new List<GenioProjectItem>();
+                    var proj = node.Tag as GenioProjectProperties;
+                    var items = new List<GenioProjectItem>();
 
                     foreach (TreeNode level2 in node.Nodes)
                         if (level2.Tag is GenioProjectItem && level2.Checked)
@@ -100,32 +97,32 @@ namespace CodeFlow.Forms
                 }
                 else if (node.Tag is GenioProjectProperties && node.Checked)
                 {
-                    GenioProjectProperties project = (GenioProjectProperties)node.Tag;
+                    var project = (GenioProjectProperties)node.Tag;
                     projects.Add(project);
                 }
             }
-            Analyzer = new ProjectsAnalyzer();
+            Analyzer = new ProjectsAnalyzer(PackageOperations.Instance.MaxTaskSolutionCommit);
             Analyzer.ProgressChanged += worker_ProgressChanged;
             Analyzer.RunWorkerCompleted += worker_end;
             Analyzer.RunWorkerAsync(projects);
         }
 
-        private void worker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             toolProgress.Value = e.ProgressPercentage;
         }
 
-        private void worker_end(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void worker_end(object sender, RunWorkerCompletedEventArgs e)
         {
             toolProgress.Value = 100;
             Result = true;
 
-            this.Close();
+            Close();
         }
 
         private void chkSavedFiles_CheckedChanged(object sender, EventArgs e)
         {
-            Refresh(chkSavedFiles.Checked ? savedFiles : solution.GenioProjects);
+            Refresh(chkSavedFiles.Checked ? _savedFiles : _solution.GenioProjects);
         }
 
         private void treeProjects_AfterCheck(object sender, TreeViewEventArgs e)
@@ -141,7 +138,7 @@ namespace CodeFlow.Forms
 
                 if (item.Nodes.Count > 0)
                 {
-                    this.CheckTreeViewNode(item, isChecked);
+                    CheckTreeViewNode(item, isChecked);
                 }
             }
         }

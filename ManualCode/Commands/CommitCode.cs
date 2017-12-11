@@ -93,7 +93,7 @@ namespace CodeFlow.Commands
             CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
             List<IManual> manual = handler.SearchForTags();
             ChangeAnalyzer diffs = new ChangeAnalyzer();
-            diffs.CheckBDDifferences(manual, PackageOperations.Instance.GetActiveProfile());
+            diffs.CheckForDifferences(manual, PackageOperations.Instance.GetActiveProfile());
             CommitForm exportForm = new CommitForm(diffs);
             exportForm.ShowDialog();
         }
