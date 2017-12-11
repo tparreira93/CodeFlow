@@ -48,6 +48,7 @@ namespace CodeFlow
         {
             Genio g = new Genio();
             Util.CopyFrom(typeof(Genio), this, g);
+            sqlConnection = new SqlConnection();
             obj = new object();
             return g;
         }

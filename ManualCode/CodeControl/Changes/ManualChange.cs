@@ -45,7 +45,7 @@ namespace CodeFlow.CodeControl
         }
         public virtual bool HasDifference()
         {
-            return !Mine.Code.Equals(Theirs.Code);
+            return !Merged.Code.Equals(Theirs.Code);
         }
 
         public abstract IOperation GetOperation();

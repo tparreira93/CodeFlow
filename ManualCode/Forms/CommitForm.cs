@@ -290,10 +290,22 @@ namespace CodeFlow
         private void lstCode_KeyDown(object sender, KeyEventArgs e)
         {
 
-            if (lstCode.SelectedItems.Count == 1
-                && e.KeyCode == Keys.Enter)
+            if (lstCode.SelectedItems.Count == 1)
             {
-                lstCode_MouseDoubleClick(this, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
+                if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Space)
+                    lstCode_MouseDoubleClick(this, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
+                else if (e.KeyCode == Keys.Delete)
+                {
+                    if(lstCode.SelectedItems[0].Tag is IChange change)
+                        differences.AsList.Remove(change);
+                    else if(lstCode.SelectedItems[0].Tag is Conflict conflict)
+                        conflictCode.AsList.Remove(conflict);
+                    else
+                        return;
+
+                    lstCode.Items.Remove(lstCode.SelectedItems[0]);
+                    RefreshControls();
+                }
             }
         }
 

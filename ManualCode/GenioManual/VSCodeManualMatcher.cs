@@ -79,7 +79,8 @@ namespace CodeFlow.GenioManual
                         if (manual == null)
                             state.Break();
                         else
-                            _matches.TryAdd(manual);
+                            while (!_matches.TryAdd(manual)) ;
+                        ;
                     });
                 }
                 else
