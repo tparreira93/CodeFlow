@@ -38,6 +38,7 @@ namespace CodeFlow
         public string UseCustomTool { get; set; } = "";
         public bool ForceDOSLine { get; set; }
         public int MaxTaskSolutionCommit { get; set; }
+        public bool FixIndexes { get; set; }
 
         #endregion
 

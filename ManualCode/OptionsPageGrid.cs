@@ -20,6 +20,7 @@ namespace CodeFlow
         private bool _autoExportSaved;
         private bool _forceDosLine;
         private bool _logOperations;
+        private bool _fixIndexes;
         private int _maxTaskSolutionCommit;
 
         [Category("Solution")]
@@ -159,6 +160,19 @@ namespace CodeFlow
             {
                 _logOperations = value;
                 PackageOperations.Instance.LogOperations = value;
+            }
+        }
+
+        [Category("Code control")]
+        [DefaultValue(false)]
+        [DisplayName("Fix indexes")]
+        [Description("Fix VCC++ indexes.")]
+        public bool FixIndexes
+        {
+            get => _fixIndexes; set
+            {
+                _fixIndexes = value;
+                PackageOperations.Instance.FixIndexes = value;
             }
         }
     }

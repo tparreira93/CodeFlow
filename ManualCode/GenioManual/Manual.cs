@@ -263,6 +263,12 @@ namespace CodeFlow.ManualOperations
             return Attribute.GetCustomAttribute(this.GetType(), typeof(ManualMatchProvider)) as ManualMatchProvider;
 
         }
+        public static string FixSetCurrentIndex(string code)
+        {
+            return Regex.Replace(code, "(INX_[_0-9a-zA-Z]*)(.*)\\s*(\\/\\/)(\\s*)(\\[FNTX\\s*([0-9a-zA-Z_]|\\s|->)*\\])",
+                "/$5/$2$3$4$5",
+                RegexOptions.Multiline | RegexOptions.Compiled);
+        }
         public abstract void ShowSVNLog(Profile profile, string systemName);
         public abstract bool Update(Profile profile);
         public abstract bool Create(Profile profile);

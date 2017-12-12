@@ -83,12 +83,7 @@ namespace CodeFlow.ManualOperations
 
         #region LocalOperations
         private static Regex reg = new Regex(@"(Plataforma:)\s*(\w*)\s*(\|)\s*(Tipo:)\s*(\w*)\s*(\|)\s*(Modulo:)\s*(\w*)\s*(\|)\s*(Parametro:)\s*(\w*)\s*(\|)\s*(Ficheiro:)\s*(\w*)\s*(\|)\s*(Ordem:)\s*([+-]?([0-9]*[.])?[0-9]+)", RegexOptions.Compiled);
-        public static string FixSetCurrentIndex(string code)
-        {
-            return Regex.Replace(code, "(INX_[_0-9a-zA-Z]*)(.*)\\s*(\\/\\/)(\\s*)(\\[FNTX\\s*([0-9a-zA-Z_]|\\s|->)*\\])", 
-                "/$5/$2$3$4$5", 
-                RegexOptions.Multiline | RegexOptions.Compiled);
-        }
+
         public override bool MatchAndFix(string upperLine)
         {
             Match match = reg.Match(upperLine);
@@ -102,7 +97,8 @@ namespace CodeFlow.ManualOperations
                 Double.TryParse(match.Groups[17].Value, out double tmp);
                 Order = tmp;
             }
-            Code = FixSetCurrentIndex(Code);
+            if(PackageOperations.Instance.FixIndexes)
+                Code = FixSetCurrentIndex(Code);
 
             return match.Success;
         }

@@ -235,7 +235,9 @@ namespace CodeFlow.ManualOperations
         #region LocalOperations
         public override bool MatchAndFix(string upperLine)
         {
-            return false;
+            if (PackageOperations.Instance.FixIndexes)
+                Code = FixSetCurrentIndex(Code);
+            return true;
         }
         public override void ShowSVNLog(Profile profile, string systemName)
         {
