@@ -106,5 +106,17 @@ namespace CodeFlow.Properties {
                 this["ColCodeSize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ToolVersion {
+            get {
+                return ((string)(this["ToolVersion"]));
+            }
+            set {
+                this["ToolVersion"] = value;
+            }
+        }
     }
 }

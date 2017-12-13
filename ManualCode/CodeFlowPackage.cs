@@ -13,7 +13,8 @@ using CodeFlow.Commands;
 using CodeFlow.CodeControl;
 using CodeFlow.CodeControl.Analyzer;
 using CodeFlow.GenioManual;
-using CodeFlow.ManualOperations;
+using System.Linq;
+using CodeFlow.Forms;
 
 namespace CodeFlow
 {
@@ -57,6 +58,7 @@ namespace CodeFlow
         private bool isSolution = false;
         private uint cookie = 0;
         private IVsSolution solution;
+        private CodeFlowVersions versions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommitCode"/> class.
@@ -136,11 +138,26 @@ namespace CodeFlow
                 mcs.AddCommand(menuGenioProfilesComboGetListCommand);
             }
 
+            versions = new CodeFlowVersions();
+            UpdateVersion();
+
 
             if (PackageOperations.Instance.AllProfiles.Count == 0)
                 LoadConfig();
         }
 
+        private void UpdateVersion()
+        {
+            string currentVersion = Settings.Default.ToolVersion;
+            Version newVersion = versions.Execute(currentVersion, OptionsPage);
+            Settings.Default.ToolVersion = newVersion.ToString();
+            Settings.Default.Save();
+            if(!currentVersion.Equals(newVersion.ToString()))
+            {
+                CodeFlowChangesForm changesForm = new CodeFlowChangesForm(versions);
+                changesForm.Show();
+            }
+        }
 
         private void InitializeDTE()
         {
@@ -362,10 +379,20 @@ namespace CodeFlow
         {
             OptionsPage.LoadSettingsFromStorage();
 
-            PackageOperations.Instance.AllProfiles = PackageOperations.Instance.LoadProfiles(Properties.Settings.Default.ConnectionStrings);
+            PackageOperations.Instance.AllProfiles = PackageOperations.Instance.LoadProfiles(Settings.Default.ConnectionStrings);
 
             if (PackageOperations.Instance.AllProfiles.Count == 1)
                 PackageOperations.Instance.SetProfile(PackageOperations.Instance.AllProfiles[0].ProfileName);
+        }
+
+        public void UpdateOnNewSetting()
+        {
+            OptionsPage.LoadSettingsFromStorage();
+
+            string currentVersion = Settings.Default.ToolVersion;
+
+            OptionsPage.ExtensionsFilters = "*";
+            OptionsPage.SaveSettingsToStorage();
         }
 
         public void SaveConfig()
