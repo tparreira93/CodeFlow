@@ -48,11 +48,10 @@
             this.clDescription});
             this.lstChanges.FullRowSelect = true;
             this.lstChanges.GridLines = true;
-            this.lstChanges.Location = new System.Drawing.Point(16, 38);
-            this.lstChanges.Margin = new System.Windows.Forms.Padding(4);
+            this.lstChanges.Location = new System.Drawing.Point(12, 31);
             this.lstChanges.MultiSelect = false;
             this.lstChanges.Name = "lstChanges";
-            this.lstChanges.Size = new System.Drawing.Size(932, 466);
+            this.lstChanges.Size = new System.Drawing.Size(700, 379);
             this.lstChanges.SmallImageList = this.imageList1;
             this.lstChanges.TabIndex = 0;
             this.lstChanges.UseCompatibleStateImageBehavior = false;
@@ -77,10 +76,10 @@
             // lblVersion
             // 
             this.lblVersion.AutoSize = true;
-            this.lblVersion.Location = new System.Drawing.Point(16, 15);
-            this.lblVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblVersion.Location = new System.Drawing.Point(12, 12);
             this.lblVersion.Name = "lblVersion";
-            this.lblVersion.Size = new System.Drawing.Size(69, 17);
+            this.lblVersion.Size = new System.Drawing.Size(62, 13);
             this.lblVersion.TabIndex = 1;
             this.lblVersion.Text = "VERSION";
             // 
@@ -89,10 +88,10 @@
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
-            this.btnCancel.Location = new System.Drawing.Point(849, 512);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.btnCancel.Location = new System.Drawing.Point(637, 416);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(100, 30);
+            this.btnCancel.Size = new System.Drawing.Size(75, 24);
             this.btnCancel.TabIndex = 6;
             this.btnCancel.Text = "Exit";
             this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -101,15 +100,15 @@
             // 
             // CodeFlowChangesForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(965, 554);
+            this.ClientSize = new System.Drawing.Size(724, 450);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.lstChanges);
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CodeFlowChangesForm";
-            this.Text = "Changes";
+            this.Text = "CodeFlow updates";
             this.Load += new System.EventHandler(this.CodeFlowChanges_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

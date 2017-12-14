@@ -150,6 +150,11 @@ namespace CodeFlow
             version.AddChange("Fix in plataform toolset retarget. Due to incompatibiity with project dll versions between visual studio 2015 and 2017, plataform retarget will only work for visual studio 2017 projects.");
             version.AddChange("This version breaks visual studio 2015 compatibility when visual studio 2017 is not installed because of dll incompatibility of visual studio projects.");
             _allVersions.Add(version);
+
+            version = new CodeFlowVersionInfo();
+            version.Version = new Version(2, 1, 8);
+            version.AddChange("Added missing icons to CodeFlow updates form.");
+            _allVersions.Add(version);
         }
 
         public Version Execute(Version startingVersion, OptionsPageGrid options)
