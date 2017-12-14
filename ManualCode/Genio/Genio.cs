@@ -97,8 +97,9 @@ namespace CodeFlow
         public string BDVersion { get => bdVersion; set => bdVersion = value; }
         public bool ProductionSystem { get => productionSystem; set => productionSystem = value; }
 
-        public void GetGenioInfo()
+        public bool GetGenioInfo()
         {
+            bool result = false;
             if (OpenConnection())
             {
                 SqlCommand cmd = new SqlCommand("SELECT SISTEMA, GENVERS, LOCLPATH, VERSAO FROM GENGLOB", SqlConnection);
@@ -115,11 +116,12 @@ namespace CodeFlow
                         GenioVersion = reader.SafeGetDouble(1);
                         CheckoutPath = reader.SafeGetString(2);
                         BDVersion = reader.SafeGetString(3);
+                        result = true;
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    throw new Exception(String.Format(Properties.Resources.ErrorSystemInfo, e.Message));
+                    result = false;
                 }
                 finally
                 {
@@ -128,6 +130,7 @@ namespace CodeFlow
                     CloseConnection();
                 }
             }
+            return result;
         }
 
         public string GetConnectionString()

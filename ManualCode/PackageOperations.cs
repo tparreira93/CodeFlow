@@ -63,7 +63,8 @@ namespace CodeFlow
             if (AllProfiles.Find(x => x.ProfileName.Equals(profileName) == true) == null)
             {
                 Profile profile = new Profile(profileName, connection);
-                if (profile.GenioConfiguration.ParseGenioFiles())
+                if (profile.GenioConfiguration.ParseGenioFiles()
+                        && profile.GenioConfiguration.GetGenioInfo())
                 {
                     AllProfiles.Add(profile);
                     return true;
@@ -83,10 +84,9 @@ namespace CodeFlow
                 oldProfile.ProfileName = newProfile.ProfileName;
 
                 // Load genio data
-                newProfile.GenioConfiguration.ParseGenioFiles();
-                newProfile.GenioConfiguration.GetGenioInfo();
-
-                return true;
+                if (newProfile.GenioConfiguration.ParseGenioFiles()
+                        && newProfile.GenioConfiguration.GetGenioInfo())
+                    return true;
             }
             return false;
         }
