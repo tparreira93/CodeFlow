@@ -312,11 +312,11 @@ namespace CodeFlow.ManualOperations
                 }
 
                 string search = "%" + texto + "%";
-                string result_line = "LEFT(RIGHT(LEFT(CORPO, COALESCE(NULLIF(@AFTER_NEWLINE, 0), LEN(CORPO))), COALESCE(NULLIF(@BEFORE_NEWLINE, 0), LEN(CORPO))), 400)";
-                string after_newline = "CHARINDEX(CHAR(13), CORPO, PATINDEX(@TERM, CORPO @CASESENSITIVE) + 2)";
-                string before_newline = "CHARINDEX(CHAR(13), REVERSE(LEFT(CORPO, @AFTER_NEWLINE)), 2)";
-                result_line = result_line.Replace("@BEFORE_NEWLINE", before_newline).Replace("@AFTER_NEWLINE", after_newline);
-                manuaQuery = manuaQuery.Replace("@RESULT_LINE", result_line);
+                string resultLine = "LEFT(RIGHT(LEFT(CORPO, COALESCE(NULLIF(@AFTER_NEWLINE, 0), LEN(CORPO))), COALESCE(NULLIF(@BEFORE_NEWLINE, 0), LEN(CORPO))), 400)";
+                string afterNewline = "CHARINDEX(CHAR(13), CORPO, PATINDEX(@TERM, CORPO @CASESENSITIVE) + 2)";
+                string beforeNewline = "CHARINDEX(CHAR(13), REVERSE(LEFT(CORPO, @AFTER_NEWLINE)), 2)";
+                resultLine = resultLine.Replace("@BEFORE_NEWLINE", beforeNewline).Replace("@AFTER_NEWLINE", afterNewline);
+                manuaQuery = manuaQuery.Replace("@RESULT_LINE", resultLine);
 
                 manuaQuery = manuaQuery.Replace("@CASESENSITIVE", caseSensitive ? "COLLATE Latin1_General_BIN" : "");
 

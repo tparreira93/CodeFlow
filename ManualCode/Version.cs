@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace CodeFlow
 {
-    public class Version
+    public class Version : IComparable
     {
         private int patch = 0;
         private int update = 0;
@@ -49,6 +50,19 @@ namespace CodeFlow
         public override string ToString()
         {
             return Major.ToString() + "." + Update.ToString() + "." + Patch.ToString();
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is Version ver)
+            {
+                if (IsBefore(ver))
+                    return -1;
+                if (ver.IsBefore(this))
+                    return 1;
+                return 0;
+            }
+            return -1;
         }
     }
 }

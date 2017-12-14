@@ -53,9 +53,17 @@ namespace CodeFlow
             return g;
         }
 
-        public void ParseGenioFiles()
+        public bool ParseGenioFiles()
         {
-            Plataforms = GenioPath.Length == 0 ? GenioPlataform.ParseXml(Properties.Resources.ManwinInfoData) : GenioPlataform.ParseFile($"{GenioPath}\\ManwinInfoData.xml");
+            try
+            {
+                Plataforms = GenioPath.Length == 0 ? GenioPlataform.ParseXml(Properties.Resources.ManwinInfoData) : GenioPlataform.ParseFile($"{GenioPath}\\ManwinInfoData.xml");
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         private bool LockConnection()

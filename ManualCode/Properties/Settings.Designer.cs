@@ -118,5 +118,17 @@ namespace CodeFlow.Properties {
                 this["ToolVersion"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OldVersion {
+            get {
+                return ((string)(this["OldVersion"]));
+            }
+            set {
+                this["OldVersion"] = value;
+            }
+        }
     }
 }

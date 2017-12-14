@@ -63,9 +63,11 @@ namespace CodeFlow
             if (AllProfiles.Find(x => x.ProfileName.Equals(profileName) == true) == null)
             {
                 Profile profile = new Profile(profileName, connection);
-                profile.GenioConfiguration.ParseGenioFiles();
-                AllProfiles.Add(profile);
-                return true;
+                if (profile.GenioConfiguration.ParseGenioFiles())
+                {
+                    AllProfiles.Add(profile);
+                    return true;
+                }
             }
             return false;
         }

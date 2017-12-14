@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConflictForm));
             this.lstConflicts = new System.Windows.Forms.ListView();
+            this.clOper = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.chCode = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clFileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
@@ -38,7 +39,6 @@
             this.btnUse = new System.Windows.Forms.Button();
             this.btnViewCode = new System.Windows.Forms.Button();
             this.btnMerge = new System.Windows.Forms.Button();
-            this.clOper = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // lstConflicts
@@ -51,6 +51,7 @@
             this.chCode,
             this.clFileName});
             this.lstConflicts.FullRowSelect = true;
+            this.lstConflicts.GridLines = true;
             this.lstConflicts.Location = new System.Drawing.Point(17, 16);
             this.lstConflicts.Margin = new System.Windows.Forms.Padding(4);
             this.lstConflicts.MultiSelect = false;
@@ -62,6 +63,11 @@
             this.lstConflicts.View = System.Windows.Forms.View.Details;
             this.lstConflicts.SelectedIndexChanged += new System.EventHandler(this.lstConflicts_SelectedIndexChanged);
             this.lstConflicts.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstConflicts_MouseDoubleClick);
+            // 
+            // clOper
+            // 
+            this.clOper.Text = "Operation";
+            this.clOper.Width = 187;
             // 
             // chCode
             // 
@@ -139,11 +145,6 @@
             this.btnMerge.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnMerge.UseVisualStyleBackColor = true;
             this.btnMerge.Click += new System.EventHandler(this.btnMerge_Click);
-            // 
-            // clOper
-            // 
-            this.clOper.Text = "Operation";
-            this.clOper.Width = 187;
             // 
             // ConflictForm
             // 

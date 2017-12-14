@@ -130,29 +130,39 @@ namespace CodeFlow
             _allVersions.Add(version);
 
             version = new CodeFlowVersionInfo();
-            version.Version = new Version(2, 1, 5);
+            version.Version = new Version(2, 1, 4);
             VersionChange change = new VersionChange("Added option to enable or disable index fix for VCC++ solutions.", new DefaultCommand("FixIndexes", "true"));
             version.AddChange(change);
             _allVersions.Add(version);
 
             version = new CodeFlowVersionInfo();
+            version.Version = new Version(2, 1, 5);
+            version.AddChange("Keyboard controls (Enter or Space to open and Delete to remove from list) for commit form.");
+            _allVersions.Add(version);
+
+            version = new CodeFlowVersionInfo();
             version.Version = new Version(2, 1, 6);
             version.AddChange("Fix in code search. When search had '[' or ']' it acted as if it was doing a regex search.");
-            version.AddChange("Keyboard controls (Enter or Space to open and Delete to remove from list) for commit form.");
+            _allVersions.Add(version);
+
+            version = new CodeFlowVersionInfo();
+            version.Version = new Version(2, 1, 7);
+            version.AddChange("Fix in plataform toolset retarget. Due to incompatibiity with project dll versions between visual studio 2015 and 2017, plataform retarget will only work for visual studio 2017 projects.");
+            version.AddChange("This version breaks visual studio 2015 compatibility when visual studio 2017 is not installed because of dll incompatibility of visual studio projects.");
             _allVersions.Add(version);
         }
 
-        public Version Execute(string startingVersion, OptionsPageGrid options)
+        public Version Execute(Version startingVersion, OptionsPageGrid options)
         {
-            Version ver = new Version(startingVersion);
-            Version maxVersion = ver;
+            Version maxVersion = startingVersion;
             foreach (CodeFlowVersionInfo item in _allVersions)
             {
                 foreach (VersionChange change in item.Changes)
                 {
-                    if (ver.IsBefore(item.Version) && change.Command != null)
+                    if (startingVersion.IsBefore(item.Version))
                     {
-                        change.Command.Execute(options);
+                        if(change.Command != null)
+                            change.Command.Execute(options);
                         maxVersion = item.Version;
                     }
                 }

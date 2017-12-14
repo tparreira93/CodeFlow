@@ -96,6 +96,7 @@
             this.clCode,
             this.clFile});
             this.lstCode.FullRowSelect = true;
+            this.lstCode.GridLines = true;
             this.lstCode.Location = new System.Drawing.Point(16, 15);
             this.lstCode.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.lstCode.MultiSelect = false;

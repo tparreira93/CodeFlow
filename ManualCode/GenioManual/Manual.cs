@@ -67,7 +67,7 @@ namespace CodeFlow.ManualOperations
         
         public DateTime CreationDate { get => creationDate; set => creationDate = value; }
 
-        public string GetCodeExtension(Profile p)
+        public virtual string GetCodeExtension(Profile p)
         {
             GenioPlataform plat = PackageOperations.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Find(x => x.ID.Equals(Plataform));
             string extension = plat?.TipoRotina?.Find(x => x.Identifier.Equals(Tipo))?.ProgrammingLanguage;
@@ -199,36 +199,10 @@ namespace CodeFlow.ManualOperations
                 throw e;
             }
         }
-        private static string FixSquareBrackets(string texto)
-        {
-            string searchTerms = "";
-            Regex regex = new Regex(@"(\[|\])");
-            MatchCollection matchCollection = regex.Matches(texto);
-            foreach (Match match in matchCollection)
-            {
-                if (match.Success)
-                {
-                    foreach (Group item in match.Groups)
-                    {
-                        if (item.Value.Equals("["))
-                            searchTerms += "[[";
-                        else if (item.Value.Equals("]]"))
-                            searchTerms += "]]";
-                        else
-                            searchTerms += item.Value;
-                    }
-                }
-                else
-                    searchTerms += match.Value;
-            }
-
-            return searchTerms;
-        }
         public static List<IManual> SearchDatabase(Profile profile, string texto, bool caseSensitive = false, bool wholeWord = false, string plataform = "")
         {
-            // TODO Test replace of square brackets.
             List<IManual> results = new List<IManual>();
-            string searchTerms = FixSquareBrackets(texto);
+            string searchTerms = texto.Replace("[", "[[]");
             results.AddRange(ManuaCode.Search(profile, searchTerms, caseSensitive, wholeWord, plataform));
             results.AddRange(CustomFunction.Search(profile, searchTerms, caseSensitive, wholeWord, plataform));
             return results;

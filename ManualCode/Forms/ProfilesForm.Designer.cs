@@ -46,6 +46,7 @@
             this.chProfileName,
             this.chConnection});
             this.lstProfiles.FullRowSelect = true;
+            this.lstProfiles.GridLines = true;
             this.lstProfiles.Location = new System.Drawing.Point(17, 16);
             this.lstProfiles.Margin = new System.Windows.Forms.Padding(4);
             this.lstProfiles.MultiSelect = false;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using System.Globalization;
+using System.Windows;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE80;
@@ -91,7 +92,15 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            GenioSolutionProperties.ChangeToolset2008(PackageOperations.Instance.DTE);
+            try
+            {
+                GenioSolutionProperties.ChangeToolset2008(PackageOperations.Instance.DTE);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
+                    Properties.Resources.Search, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
         }
     }
 }

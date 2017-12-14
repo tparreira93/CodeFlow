@@ -13,7 +13,6 @@ using CodeFlow.Commands;
 using CodeFlow.CodeControl;
 using CodeFlow.CodeControl.Analyzer;
 using CodeFlow.GenioManual;
-using System.Linq;
 using CodeFlow.Forms;
 
 namespace CodeFlow
@@ -52,13 +51,15 @@ namespace CodeFlow
         /// </summary>
         public const string PackageGuidString = "23ac2f2d-5778-45dd-b5b2-5186260c958c";
 
-        private DocumentEvents documentEnvents;
-        private Events dteEvents;
+        private DocumentEvents _documentEnvents;
+        private Events _dteEvents;
         //private DteInitializer dteInitializer;
-        private bool isSolution = false;
-        private uint cookie = 0;
-        private IVsSolution solution;
-        private CodeFlowVersions versions;
+        private bool _isSolution;
+        private uint _cookie;
+        private IVsSolution _solution;
+        public CodeFlowVersions Versions { get; private set; }
+        private Version _oldVersion;
+        private Version _currentVersion;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommitCode"/> class.
@@ -69,14 +70,17 @@ namespace CodeFlow
             // any Visual Studio service because at this point the package object is created but
             // not sited yet inside Visual Studio environment. The place to do all the other
             // initialization is the Initialize method.
+
+            Versions = new CodeFlowVersions();
+            CheckVersion();
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (cookie != 0)
+            if (_cookie != 0)
             {
-                solution.UnadviseSolutionEvents(cookie);
-                cookie = 0;
+                _solution.UnadviseSolutionEvents(_cookie);
+                _cookie = 0;
             }
             base.Dispose(disposing);
         }
@@ -102,13 +106,13 @@ namespace CodeFlow
             SearchToolCommand.Initialize(this);
 
             // Try to retrieve the DTE instance at this point
-            InitializeDTE();
+            InitializeDte();
             //IVsShell shellService;
             // If not retrieved, we must wait for the Visual Studio Shell to be initialized
             if (PackageOperations.Instance.DTE == null)
             {
                 // Note: if targetting only VS 2015 and higher, we could use this:
-                KnownUIContexts.ShellInitializedContext.WhenActivated(() => this.InitializeDTE());
+                KnownUIContexts.ShellInitializedContext.WhenActivated(InitializeDte);
 
                 // For VS 2005 and higher, we use this:
                 /*shellService = this.GetService(typeof(Microsoft.VisualStudio.Shell.Interop.SVsShell)) as IVsShell;
@@ -117,51 +121,50 @@ namespace CodeFlow
             }
             SetupEvents();
 
-            solution = GetService(typeof(SVsSolution)) as IVsSolution;
-            solution.AdviseSolutionEvents(this, out cookie);
+            _solution = GetService(typeof(SVsSolution)) as IVsSolution;
+            _solution?.AdviseSolutionEvents(this, out _cookie);
 
             if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
             {
                 // --- Initialize the DropDownCombo
-                CommandID menuGenioProfilesComboCommandID =
+                CommandID menuGenioProfilesComboCommandId =
                   new CommandID(PackageGuidList.guidComboBoxCmdSet,
                   (int)PackageCommandList.cmdGenioProfilesCombo);
-                OleMenuCommand menuGenioProfilesComboCommand =
-                  new OleMenuCommand(new EventHandler(OnMenuGenioProfilesCombo),
-                  menuGenioProfilesComboCommandID);
+                OleMenuCommand menuGenioProfilesComboCommand = new OleMenuCommand(OnMenuGenioProfilesCombo, menuGenioProfilesComboCommandId);
                 menuGenioProfilesComboCommand.ParametersDescription = "$";
                 mcs.AddCommand(menuGenioProfilesComboCommand);
 
 
-                CommandID menuGenioProfilesComboGetListCommandID = new CommandID(PackageGuidList.guidComboBoxCmdSet, (int)PackageCommandList.cmdGenioProfilesComboGetList);
-                MenuCommand menuGenioProfilesComboGetListCommand = new OleMenuCommand(new EventHandler(OnMenuGenioProfilesComboGetList), menuGenioProfilesComboGetListCommandID);
+                CommandID menuGenioProfilesComboGetListCommandId = new CommandID(PackageGuidList.guidComboBoxCmdSet, (int)PackageCommandList.cmdGenioProfilesComboGetList);
+                MenuCommand menuGenioProfilesComboGetListCommand = new OleMenuCommand(OnMenuGenioProfilesComboGetList, menuGenioProfilesComboGetListCommandId);
                 mcs.AddCommand(menuGenioProfilesComboGetListCommand);
             }
-
-            versions = new CodeFlowVersions();
-            UpdateVersion();
 
 
             if (PackageOperations.Instance.AllProfiles.Count == 0)
                 LoadConfig();
         }
 
-        private void UpdateVersion()
+        private void CheckVersion()
         {
-            string currentVersion = Settings.Default.ToolVersion;
-            Version newVersion = versions.Execute(currentVersion, OptionsPage);
-            Settings.Default.ToolVersion = newVersion.ToString();
-            Settings.Default.Save();
-            if(!currentVersion.Equals(newVersion.ToString()))
+            _currentVersion = new Version(Settings.Default.ToolVersion);
+            _oldVersion = new Version(Settings.Default.OldVersion);
+            Version newVersion = Versions.Execute(_currentVersion, OptionsPage);
+            if(_currentVersion.CompareTo(newVersion) != 0)
             {
-                CodeFlowChangesForm changesForm = new CodeFlowChangesForm(versions);
+                Settings.Default.OldVersion = _currentVersion.ToString();
+                Settings.Default.ToolVersion = newVersion.ToString();
+                Settings.Default.Save();
+                _oldVersion = _currentVersion;
+                _currentVersion = newVersion;
+                CodeFlowChangesForm changesForm = new CodeFlowChangesForm(Versions, _currentVersion, _oldVersion);
                 changesForm.Show();
             }
         }
 
-        private void InitializeDTE()
+        private void InitializeDte()
         {
-            PackageOperations.Instance.DTE = this.GetService(typeof(SDTE)) as EnvDTE80.DTE2;
+            PackageOperations.Instance.DTE = GetService(typeof(SDTE)) as EnvDTE80.DTE2;
         }
 
     #endregion
@@ -169,15 +172,15 @@ namespace CodeFlow
         #region CustomEvents
         private void SetupEvents()
         {
-            dteEvents = PackageOperations.Instance.DTE.Events;
-            documentEnvents = dteEvents.DocumentEvents;
-            documentEnvents.DocumentSaved += OnDocumentSave;
+            _dteEvents = PackageOperations.Instance.DTE.Events;
+            _documentEnvents = _dteEvents.DocumentEvents;
+            _documentEnvents.DocumentSaved += OnDocumentSave;
         }
 
-        private void OnDocumentSave(Document Document)
+        private void OnDocumentSave(Document document)
         {
-            string path = Document.FullName;
-            Project docProject = Document.ProjectItem.ContainingProject;
+            string path = document.FullName;
+            Project docProject = document.ProjectItem.ContainingProject;
             List<IManual> man = null;
 
             if(PackageOperations.Instance.AutoExportSaved)
@@ -203,7 +206,7 @@ namespace CodeFlow
             try
             {
                 GenioProjectProperties proj = PackageOperations.Instance.SavedFiles.Find(x => x.ProjectName == docProject.Name);
-                GenioProjectItem item = new GenioProjectItem(Document.ProjectItem, Document.Name, Document.FullName);
+                GenioProjectItem item = new GenioProjectItem(document.ProjectItem, document.Name, document.FullName);
                 if (proj == null)
                     PackageOperations.Instance.SavedFiles.Add(new GenioProjectProperties(docProject, new List<GenioProjectItem>() { item }));
                 else
@@ -214,7 +217,9 @@ namespace CodeFlow
                 }
             }
             catch (Exception)
-            { }
+            {
+                // ignored
+            }
         }
         #endregion
 
@@ -228,25 +233,27 @@ namespace CodeFlow
             if (PackageOperations.Instance.DTE.Solution != null
                 && PackageOperations.Instance.DTE.Solution.FullName.Length != 0)
             {
-                isSolution = true;
+                _isSolution = true;
                 try
                 {
                     string path = System.IO.Path.GetDirectoryName(PackageOperations.Instance.DTE.Solution.FullName);
                     lastActive = PackageOperations.Instance.SearchLastActiveProfile(path);
                 }
                 catch (Exception)
-                { }
+                {
+                    // ignored
+                }
             }
 
             //Updates combo box
             if (!string.IsNullOrEmpty(lastActive))
                 OnMenuGenioProfilesCombo(this, new OleMenuCmdEventArgs(lastActive, IntPtr.Zero));
 
-            if (PackageOperations.Instance.ParseSolution && isSolution)
+            if (PackageOperations.Instance.ParseSolution && _isSolution)
             {
                 PackageOperations.Instance.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.Instance.DTE);
             }
-            if (PackageOperations.Instance.AutoVccto2008Fix && isSolution)
+            if (PackageOperations.Instance.AutoVccto2008Fix && _isSolution)
             {
                 GenioSolutionProperties.ChangeToolset2008(PackageOperations.Instance.DTE);
             }
@@ -290,7 +297,7 @@ namespace CodeFlow
 
         public int OnBeforeCloseSolution(object pUnkReserved)
         {
-            if(isSolution)
+            if(_isSolution)
                 PackageOperations.Instance.StoreLastProfile(System.IO.Path.GetDirectoryName(PackageOperations.Instance.DTE.Solution.FullName));
             PackageOperations.Instance.GetActiveProfile().GenioConfiguration.CloseConnection();
             PackageOperations.Instance.RemoveTempFiles();
@@ -389,13 +396,11 @@ namespace CodeFlow
         {
             OptionsPage.LoadSettingsFromStorage();
 
-            string currentVersion = Settings.Default.ToolVersion;
-
             OptionsPage.ExtensionsFilters = "*";
             OptionsPage.SaveSettingsToStorage();
         }
 
-        public void SaveConfig()
+        private void SaveConfig()
         {
             Settings.Default.ConnectionStrings = PackageOperations.Instance.SaveProfiles(PackageOperations.Instance.AllProfiles);
             Settings.Default.Save();

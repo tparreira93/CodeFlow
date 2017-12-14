@@ -1,32 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace CodeFlow.Forms
 {
     public partial class CodeFlowChangesForm : Form
     {
-        private CodeFlowVersions changes;
-        public CodeFlowChangesForm(CodeFlowVersions changes)
+        private readonly CodeFlowVersions _changes;
+        private readonly Version _currentVersion;
+        private readonly Version _previousVersion;
+
+        public CodeFlowChangesForm(CodeFlowVersions changes, Version currentVersion)
         {
             InitializeComponent();
-            this.changes = changes;
+            _changes = changes;
+            _currentVersion = currentVersion;
+        }
+
+        public CodeFlowChangesForm(CodeFlowVersions changes, Version currentVersion, Version previousVersion)
+        {
+            InitializeComponent();
+            _changes = changes;
+            _currentVersion = currentVersion;
+            _previousVersion = previousVersion;
         }
 
         private void CodeFlowChanges_Load(object sender, EventArgs e)
         {
-            foreach (CodeFlowVersionInfo item in changes.Versions)
+            lblVersion.Text = $"Current version is {_currentVersion}";
+            var codeFlowVersionInfos = _changes.Versions.OrderByDescending(x => x.Version);
+            foreach (CodeFlowVersionInfo item in codeFlowVersionInfos)
             {
                 foreach (VersionChange ver in item.Changes)
                 {
                     ListViewItem viewItem = new ListViewItem(item.Version.ToString());
                     viewItem.SubItems.Add(ver.Description);
+                    if (_previousVersion != null && _previousVersion.IsBefore(item.Version))
+                    {
+                        viewItem.ForeColor = Color.DarkGreen;
+                        viewItem.ImageIndex = 0;
+                    }
                     lstChanges.Items.Add(viewItem);
                 }
             }

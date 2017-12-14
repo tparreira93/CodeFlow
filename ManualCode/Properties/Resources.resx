@@ -270,7 +270,8 @@
     <value>Commit merged code?</value>
   </data>
   <data name="ErrorAddProfile" xml:space="preserve">
-    <value>Profile name must be unique!</value>
+    <value>Unable to create to profile.
+Please make sure profile name is unique, database and server names are valid and that the genio path is correct.</value>
   </data>
   <data name="VerifyProfile" xml:space="preserve">
     <value>Manual code not found in database!

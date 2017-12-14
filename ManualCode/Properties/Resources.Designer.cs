@@ -374,7 +374,8 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Profile name must be unique!.
+        ///   Looks up a localized string similar to Unable to create to profile.
+        ///Please make sure profile name is unique, database and server names are valid and that the genio path is correct..
         /// </summary>
         internal static string ErrorAddProfile {
             get {

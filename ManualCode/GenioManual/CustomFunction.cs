@@ -269,6 +269,10 @@ namespace CodeFlow.ManualOperations
 
             return str;
         }
+        public override string GetCodeExtension(Profile p)
+        {
+            return Plataform;
+        }
         #endregion
     }
 }
