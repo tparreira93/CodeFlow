@@ -60,7 +60,7 @@
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
-            this.btnCancel.Location = new System.Drawing.Point(1021, 620);
+            this.btnCancel.Location = new System.Drawing.Point(1146, 611);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(100, 30);
@@ -75,7 +75,7 @@
             this.btnCommit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnCommit.Enabled = false;
             this.btnCommit.Image = global::CodeFlow.Properties.Resources.Upload_gray_16x;
-            this.btnCommit.Location = new System.Drawing.Point(16, 620);
+            this.btnCommit.Location = new System.Drawing.Point(16, 611);
             this.btnCommit.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnCommit.Name = "btnCommit";
             this.btnCommit.Size = new System.Drawing.Size(113, 30);
@@ -101,7 +101,7 @@
             this.lstCode.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.lstCode.MultiSelect = false;
             this.lstCode.Name = "lstCode";
-            this.lstCode.Size = new System.Drawing.Size(1101, 546);
+            this.lstCode.Size = new System.Drawing.Size(1226, 537);
             this.lstCode.SmallImageList = this.imageList1;
             this.lstCode.TabIndex = 0;
             this.lstCode.UseCompatibleStateImageBehavior = false;
@@ -142,10 +142,10 @@
             this.lblServer,
             this.toolStripStatusLabel1,
             this.lblManual});
-            this.statusStrip.Location = new System.Drawing.Point(0, 657);
+            this.statusStrip.Location = new System.Drawing.Point(0, 648);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-            this.statusStrip.Size = new System.Drawing.Size(1137, 25);
+            this.statusStrip.Size = new System.Drawing.Size(1262, 25);
             this.statusStrip.TabIndex = 8;
             this.statusStrip.Text = "status";
             // 
@@ -160,7 +160,7 @@
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(978, 20);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(1103, 20);
             this.toolStripStatusLabel1.Spring = true;
             // 
             // lblManual
@@ -176,7 +176,7 @@
             this.btnConflict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnConflict.Enabled = false;
             this.btnConflict.Image = global::CodeFlow.Properties.Resources.Conflict_16x;
-            this.btnConflict.Location = new System.Drawing.Point(243, 620);
+            this.btnConflict.Location = new System.Drawing.Point(243, 611);
             this.btnConflict.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnConflict.Name = "btnConflict";
             this.btnConflict.Size = new System.Drawing.Size(130, 30);
@@ -191,7 +191,7 @@
             this.lblSolutionVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblSolutionVersion.AutoSize = true;
             this.lblSolutionVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSolutionVersion.Location = new System.Drawing.Point(11, 565);
+            this.lblSolutionVersion.Location = new System.Drawing.Point(11, 556);
             this.lblSolutionVersion.Name = "lblSolutionVersion";
             this.lblSolutionVersion.Size = new System.Drawing.Size(132, 17);
             this.lblSolutionVersion.TabIndex = 10;
@@ -202,7 +202,7 @@
             this.lblProd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblProd.AutoSize = true;
             this.lblProd.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblProd.Location = new System.Drawing.Point(11, 590);
+            this.lblProd.Location = new System.Drawing.Point(11, 581);
             this.lblProd.Name = "lblProd";
             this.lblProd.Size = new System.Drawing.Size(151, 17);
             this.lblProd.TabIndex = 11;
@@ -213,7 +213,7 @@
             this.lblWarning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblWarning.ForeColor = System.Drawing.Color.Red;
-            this.lblWarning.Location = new System.Drawing.Point(623, 590);
+            this.lblWarning.Location = new System.Drawing.Point(748, 581);
             this.lblWarning.Name = "lblWarning";
             this.lblWarning.Size = new System.Drawing.Size(500, 18);
             this.lblWarning.TabIndex = 12;
@@ -225,7 +225,7 @@
             this.btnMerge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnMerge.Enabled = false;
             this.btnMerge.Image = global::CodeFlow.Properties.Resources.Join_16x;
-            this.btnMerge.Location = new System.Drawing.Point(139, 620);
+            this.btnMerge.Location = new System.Drawing.Point(139, 611);
             this.btnMerge.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.btnMerge.Name = "btnMerge";
             this.btnMerge.Size = new System.Drawing.Size(94, 30);
@@ -241,7 +241,7 @@
             this.lblMerged.AutoSize = true;
             this.lblMerged.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblMerged.ForeColor = System.Drawing.Color.DarkGreen;
-            this.lblMerged.Location = new System.Drawing.Point(1043, 565);
+            this.lblMerged.Location = new System.Drawing.Point(1168, 556);
             this.lblMerged.Name = "lblMerged";
             this.lblMerged.Size = new System.Drawing.Size(74, 17);
             this.lblMerged.TabIndex = 14;
@@ -253,7 +253,7 @@
             this.lblConflict.AutoSize = true;
             this.lblConflict.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblConflict.ForeColor = System.Drawing.Color.DarkRed;
-            this.lblConflict.Location = new System.Drawing.Point(954, 565);
+            this.lblConflict.Location = new System.Drawing.Point(1079, 556);
             this.lblConflict.Name = "lblConflict";
             this.lblConflict.Size = new System.Drawing.Size(83, 17);
             this.lblConflict.TabIndex = 15;
@@ -264,7 +264,7 @@
             this.lblNotMerged.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblNotMerged.AutoSize = true;
             this.lblNotMerged.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNotMerged.Location = new System.Drawing.Point(836, 565);
+            this.lblNotMerged.Location = new System.Drawing.Point(961, 556);
             this.lblNotMerged.Name = "lblNotMerged";
             this.lblNotMerged.Size = new System.Drawing.Size(112, 17);
             this.lblNotMerged.TabIndex = 16;
@@ -275,7 +275,7 @@
             this.lblColors.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblColors.AutoSize = true;
             this.lblColors.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblColors.Location = new System.Drawing.Point(711, 565);
+            this.lblColors.Location = new System.Drawing.Point(836, 556);
             this.lblColors.Name = "lblColors";
             this.lblColors.Size = new System.Drawing.Size(119, 17);
             this.lblColors.TabIndex = 17;
@@ -286,7 +286,7 @@
             this.lblDivis.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDivis.AutoSize = true;
             this.lblDivis.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDivis.Location = new System.Drawing.Point(945, 564);
+            this.lblDivis.Location = new System.Drawing.Point(1070, 555);
             this.lblDivis.Name = "lblDivis";
             this.lblDivis.Size = new System.Drawing.Size(12, 17);
             this.lblDivis.TabIndex = 18;
@@ -297,7 +297,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(1034, 564);
+            this.label1.Location = new System.Drawing.Point(1159, 555);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(12, 17);
             this.label1.TabIndex = 19;
@@ -308,7 +308,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(1137, 682);
+            this.ClientSize = new System.Drawing.Size(1262, 673);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lblDivis);
             this.Controls.Add(this.lblColors);

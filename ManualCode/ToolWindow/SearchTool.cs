@@ -205,7 +205,7 @@ namespace CodeFlow.ToolWindow
                         catch (Exception ex)
                         {
                             error = ex.Message;
-                        }                
+                        }
 
                         // Update UI 
                         control.Dispatcher.BeginInvoke(new Action(() =>

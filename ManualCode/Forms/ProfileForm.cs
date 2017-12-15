@@ -16,28 +16,28 @@ namespace CodeFlow
 {
     public partial class ProfileForm : Form
     {
-        private bool servers = false;
-        private Mode openMode;
-        private Profile tmpProfile = null;
-        private Profile oldProfile = null;
+        private bool _servers = false;
+        private Mode _openMode;
+        private Profile _tmpProfile = null;
+        private Profile _oldProfile = null;
 
         public enum Mode
         {
-            NEW,
-            EDIT
+            New,
+            Edit
         }
 
         public ProfileForm(Mode mode, Profile profile = null)
         {
             InitializeComponent();
-            openMode = mode;
-            if (profile != null && openMode == Mode.EDIT)
+            _openMode = mode;
+            if (profile != null && _openMode == Mode.Edit)
             {
-                oldProfile = profile;
-                tmpProfile = oldProfile.Clone();
+                _oldProfile = profile;
+                _tmpProfile = _oldProfile.Clone();
             }
             else
-                tmpProfile = new Profile();
+                _tmpProfile = new Profile();
             DialogResult = DialogResult.Cancel;
         }
 
@@ -59,15 +59,15 @@ namespace CodeFlow
 
         private void LoadDatabases()
         {
-            tmpProfile.GenioConfiguration.Server = cmbServers.Text ?? "";
-            if (tmpProfile.GenioConfiguration.Server.Length == 0
-                || tmpProfile.GenioConfiguration.Username.Length == 0
-                || tmpProfile.GenioConfiguration.Password.Length == 0)
+            _tmpProfile.GenioConfiguration.Server = cmbServers.Text ?? "";
+            if (_tmpProfile.GenioConfiguration.Server.Length == 0
+                || _tmpProfile.GenioConfiguration.Username.Length == 0
+                || _tmpProfile.GenioConfiguration.Password.Length == 0)
                 return;
             
-            SqlConnection sqlConnection = new SqlConnection(@"Data Source=" + tmpProfile.GenioConfiguration.Server
-                + ";Initial Catalog=master;User Id=" + tmpProfile.GenioConfiguration.Username
-                + ";Password=" + tmpProfile.GenioConfiguration.Password + ";");
+            SqlConnection sqlConnection = new SqlConnection(@"Data Source=" + _tmpProfile.GenioConfiguration.Server
+                + ";Initial Catalog=master;User Id=" + _tmpProfile.GenioConfiguration.Username
+                + ";Password=" + _tmpProfile.GenioConfiguration.Password + ";");
             try
             {
                 SqlCommand cmd = new SqlCommand();
@@ -89,7 +89,7 @@ namespace CodeFlow
             }
             catch (Exception ex)
             {
-                MessageBox.Show(String.Format(Properties.Resources.ErrorConnect, tmpProfile.GenioConfiguration.Server, ex.Message), 
+                MessageBox.Show(String.Format(Properties.Resources.ErrorConnect, _tmpProfile.GenioConfiguration.Server, ex.Message), 
                     Properties.Resources.ConnectDB, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
@@ -101,18 +101,18 @@ namespace CodeFlow
 
         private void ConnectionForm_Load(object sender, EventArgs e)
         {
-            txtConfigName.DataBindings.Add("Text", tmpProfile, "ProfileName");
-            txtUsername.DataBindings.Add("Text", tmpProfile.GenioConfiguration, "Username");
-            txtPassword.DataBindings.Add("Text", tmpProfile.GenioConfiguration, "Password");
-            txtGenioUser.DataBindings.Add("Text", tmpProfile.GenioConfiguration, "GenioUser");
-            txtGenioPath.DataBindings.Add("Text", tmpProfile.GenioConfiguration, "GenioPath");
-            chkProd.DataBindings.Add("Checked", tmpProfile.GenioConfiguration, "ProductionSystem");
+            txtConfigName.DataBindings.Add("Text", _tmpProfile, "ProfileName");
+            txtUsername.DataBindings.Add("Text", _tmpProfile.GenioConfiguration, "Username");
+            txtPassword.DataBindings.Add("Text", _tmpProfile.GenioConfiguration, "Password");
+            txtGenioUser.DataBindings.Add("Text", _tmpProfile.GenioConfiguration, "GenioUser");
+            txtGenioPath.DataBindings.Add("Text", _tmpProfile.GenioConfiguration, "GenioPath");
+            chkProd.DataBindings.Add("Checked", _tmpProfile.GenioConfiguration, "ProductionSystem");
             
-            if (tmpProfile.GenioConfiguration.Server.Length != 0 && tmpProfile.GenioConfiguration.Database.Length != 0)
+            if (_tmpProfile.GenioConfiguration.Server.Length != 0 && _tmpProfile.GenioConfiguration.Database.Length != 0)
             {
-                cmbServers.Items.Add(tmpProfile.GenioConfiguration.Server);
+                cmbServers.Items.Add(_tmpProfile.GenioConfiguration.Server);
                 cmbServers.SelectedIndex = 0;
-                cmbDb.Items.Add(tmpProfile.GenioConfiguration.Database);
+                cmbDb.Items.Add(_tmpProfile.GenioConfiguration.Database);
                 cmbDb.SelectedIndex = 0;
             }
 
@@ -125,10 +125,10 @@ namespace CodeFlow
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            tmpProfile.GenioConfiguration.Server = cmbServers.Text ?? "";
-            tmpProfile.GenioConfiguration.Database = cmbDb.Text ?? "";
+            _tmpProfile.GenioConfiguration.Server = cmbServers.Text ?? "";
+            _tmpProfile.GenioConfiguration.Database = cmbDb.Text ?? "";
 
-            if ((openMode == Mode.NEW && addProfile(tmpProfile)) || (openMode == Mode.EDIT && saveProfile(oldProfile, tmpProfile)))
+            if ((_openMode == Mode.New && AddProfile()) || (_openMode == Mode.Edit && SaveProfile(_oldProfile, _tmpProfile)))
             {
                 DialogResult = DialogResult.OK;
                 this.Close();
@@ -137,62 +137,56 @@ namespace CodeFlow
 
         }
 
-        private bool saveProfile(Profile oldProfile, Profile newProfile)
+        private bool SaveProfile(Profile oldProfile, Profile newProfile)
         {
-            bool result = false;
-            try
+            if (!PackageOperations.Instance.UpdateProfile(oldProfile, newProfile))
             {
-                if (!PackageOperations.Instance.UpdateProfile(oldProfile, newProfile))
-                {
-                    MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    result = false;
-                }
-                DialogResult = DialogResult.OK;
-                result = true;
-            }
-            catch(Exception e)
-            {
-                MessageBox.Show(e.Message, Properties.Resources.Configuration, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                result = false;
-            }
-            return result;
-        }
-
-        private bool addProfile(Profile newProfile)
-        {
-            if (!PackageOperations.Instance.AddProfile(tmpProfile.GenioConfiguration, tmpProfile.ProfileName))
-            {
-                MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration,
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
+
+            DialogResult = DialogResult.OK;
+            return true;
+        }
+
+        private bool AddProfile()
+        {
+            if (!PackageOperations.Instance.AddProfile(_tmpProfile.GenioConfiguration, _tmpProfile.ProfileName))
+            {
+                MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration,
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
             DialogResult = DialogResult.OK;
             return true;
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            servers = false;
+            _servers = false;
             LoadServers();
         }
 
         private void btnTry_Click(object sender, EventArgs e)
         {
-            tmpProfile.GenioConfiguration.Server = cmbServers.Text ?? "";
-            tmpProfile.GenioConfiguration.Database = cmbDb.Text ?? "";
-            if (tmpProfile.GenioConfiguration.OpenConnection())
+            _tmpProfile.GenioConfiguration.Server = cmbServers.Text ?? "";
+            _tmpProfile.GenioConfiguration.Database = cmbDb.Text ?? "";
+            if (_tmpProfile.GenioConfiguration.OpenConnection())
             {
-                tmpProfile.GenioConfiguration.CloseConnection();
+                _tmpProfile.GenioConfiguration.CloseConnection();
 
                 MessageBox.Show(Properties.Resources.ConnectionOpen, Properties.Resources.ConnectDB, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                if (openMode == Mode.NEW
+                if (_openMode == Mode.New
                     && MessageBox.Show(Properties.Resources.ConfirmAdd, Properties.Resources.ConnectDB, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes
-                    && addProfile(tmpProfile))
+                    && AddProfile())
                         this.Close();
 
-                else if (openMode == Mode.EDIT
+                else if (_openMode == Mode.Edit
                     && MessageBox.Show(Properties.Resources.ConfirmUpdate, Properties.Resources.ConnectDB, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes
-                    && saveProfile(oldProfile, tmpProfile))
+                    && SaveProfile(_oldProfile, _tmpProfile))
                         this.Close();
             }
         }
@@ -206,9 +200,9 @@ namespace CodeFlow
         {
             if(cmbServers.DroppedDown)
             {
-                if(!servers)
+                if(!_servers)
                     LoadServers();
-                servers = true;
+                _servers = true;
             }
         }
 

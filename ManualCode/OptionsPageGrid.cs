@@ -103,7 +103,7 @@ namespace CodeFlow
         }
 
         [Category("Code control")]
-        [DefaultValue(".cpp;.cs;.xml;.js")]
+        [DefaultValue("*")]
         [DisplayName("Extension filters")]
         [Description("Extension of files to be analyzed on solution commit. Values separeted by ';'")]
         public string ExtensionsFilters
@@ -164,7 +164,7 @@ namespace CodeFlow
         }
 
         [Category("Code control")]
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         [DisplayName("Fix indexes")]
         [Description("Fix VCC++ indexes.")]
         public bool FixIndexes

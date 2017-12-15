@@ -22,7 +22,7 @@ namespace CodeFlow.CodeUtils
         public CommitSuggestion(IManual manual)
         {
             _manual = manual;
-            _display = string.Format("Commit manual code.");
+            _display = string.Format("Commit manual code");
         }
 
         public string DisplayText

@@ -41,7 +41,7 @@ namespace CodeFlow.Forms
                 if (genioProject.ProjectFiles.Count == 0)
                     continue;
 
-                TreeNode node = new TreeNode(genioProject.ProjectName);
+                TreeNode node = new TreeNode($"{genioProject.ProjectName}({genioProject.ProjectFiles.Count} file(s))");
                 node.Tag = genioProject;
                 node.Checked = true;
                 treeProjects.Nodes.Add(node);

@@ -18,7 +18,7 @@ namespace CodeFlow.CodeUtils
         public CompareDBSuggestion(IManual manual)
         {
             _manual = manual;
-            _display = string.Format("Compare manual code.");
+            _display = string.Format("Compare manual code");
         }
 
         public string DisplayText

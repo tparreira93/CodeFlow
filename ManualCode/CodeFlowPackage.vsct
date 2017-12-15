@@ -81,6 +81,9 @@
       <Group guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbarGroup2" priority="0x0500">
         <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbar" />
       </Group>
+      <Group guid="guidCodeFlowPackageCmdSet1" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
+      </Group>
     </Groups>
     
     <Combos>
@@ -264,6 +267,13 @@
           <ButtonText>Refresh solution</ButtonText>
         </Strings>
       </Button>
+      <Button guid="CodeFlowCommandSet" id="cmdidViewVersionsCommand" priority="0x0100" type="Button">
+        <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" />
+        <Icon guid="codeFlowVersionHistoryImage" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Code Flow version history</ButtonText>
+        </Strings>
+      </Button>
 
       
       
@@ -345,6 +355,7 @@
       <Bitmap guid="buttonWholeWord" href="Resources\WholeWordMatch_16x.png" usedList="bmpPic1" />
       <Bitmap guid="buttonCaseSensitive" href="Resources\CaseSensitive_16x.png" usedList="bmpPic1" />
       <Bitmap guid="changeHistory" href="Resources\History_16xLG.png" usedList="bmpPic1" />
+      <Bitmap guid="codeFlowVersionHistoryImage" href="Resources\VSO_History_16x.png" usedList="bmpPic1" />
     </Bitmaps>
   </Commands>
 
@@ -395,6 +406,7 @@
       <IDSymbol name="cmdCommitSolution" value="4133" />
       <IDSymbol name="cmdidFixVS2008Solution" value="4134" />
       <IDSymbol name="cmdidRefreshSolution" value="4135" />
+      <IDSymbol name="cmdidViewVersionsCommand" value="4136" />
       <IDSymbol name="cmdidChangeHistoryCommand" value="8200" />
     </GuidSymbol>
 
@@ -467,6 +479,14 @@
     </GuidSymbol>
   
     <GuidSymbol value="{2a3b7c57-f98d-4f51-8d7e-08d3d93b4ee7}" name="changeHistory">
+      <IDSymbol name="bmpPic1" value="1" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{443855f7-497f-4466-888d-b45df5c86841}" name="guidCodeFlowPackageCmdSet1">
+      <IDSymbol value="4128" name="MyMenuGroup" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{4b54de07-9093-44e0-9987-6fd2e495c3db}" name="codeFlowVersionHistoryImage">
       <IDSymbol name="bmpPic1" value="1" />
     </GuidSymbol>
   </Symbols>

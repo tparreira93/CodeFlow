@@ -22,6 +22,7 @@ namespace CodeFlow
     public sealed class PackageOperations
     {
         private static PackageOperations _instance;
+        public static CodeFlowPackage Flow { get; set;  }
 
         private readonly List<string> _openFiles = new List<string>();
         private Dictionary<string, Type> AutoExportFiles { get; } = new Dictionary<string, Type>();
@@ -96,14 +97,8 @@ namespace CodeFlow
             if (p != null)
             {
                 AllProfiles.Remove(p);
-
-
-                if (AllProfiles.Count == 0 && ServiceProvider.GlobalProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
-                {
-                    OleMenuCommand cmd = commandService.FindCommand(new CommandID(PackageGuidList.guidComboBoxCmdSet, (int)PackageCommandList.cmdGenioProfilesCombo)) as OleMenuCommand;
-                    if (cmd != null)
-                        cmd.Invoke("", IntPtr.Zero);
-                }
+                if (AllProfiles.Count == 0)
+                    Flow.OnMenuGenioProfilesCombo(this, new OleMenuCmdEventArgs(String.Empty, IntPtr.Zero));
             }
         }
         public void SetProfile(string profileName)
@@ -136,7 +131,9 @@ namespace CodeFlow
                 File.WriteAllText(file, stringwriter.ToString());
             }
             catch (Exception)
-            { }
+            {
+                // ignored
+            }
         }
         public String SearchLastActiveProfile(string folder)
         {
@@ -152,7 +149,9 @@ namespace CodeFlow
                 }
             }
             catch (Exception)
-            { }
+            {
+                // ignored
+            }
 
             return p;
         }
@@ -164,8 +163,10 @@ namespace CodeFlow
                 var serializer = XmlSerializer.FromTypes(new[] { configs.GetType() })[0];
                 serializer.Serialize(stringwriter, configs);
             }
-            catch(Exception)
-            { }
+            catch (Exception)
+            {
+                // ignored
+            }
             return stringwriter.ToString();
         }
         public List<Profile> LoadProfiles(string conn)
@@ -177,8 +178,10 @@ namespace CodeFlow
                 var serializer = XmlSerializer.FromTypes(new[] { typeof(List<Profile>) })[0];
                 profiles = serializer.Deserialize(stringReader) as List<Profile>;
             }
-            catch(Exception)
-            { }
+            catch (Exception)
+            {
+                // ignored
+            }
             return profiles ?? new List<Profile>();
         }
         #endregion

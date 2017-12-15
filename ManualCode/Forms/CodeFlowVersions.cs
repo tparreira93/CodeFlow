@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
+using CodeFlow.Versions;
+using Version = CodeFlow.Versions.Version;
 
 namespace CodeFlow.Forms
 {
@@ -48,7 +50,7 @@ namespace CodeFlow.Forms
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

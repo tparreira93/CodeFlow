@@ -56,7 +56,7 @@
             this.lstConflicts.Margin = new System.Windows.Forms.Padding(4);
             this.lstConflicts.MultiSelect = false;
             this.lstConflicts.Name = "lstConflicts";
-            this.lstConflicts.Size = new System.Drawing.Size(781, 310);
+            this.lstConflicts.Size = new System.Drawing.Size(1227, 610);
             this.lstConflicts.SmallImageList = this.imageList1;
             this.lstConflicts.TabIndex = 0;
             this.lstConflicts.UseCompatibleStateImageBehavior = false;
@@ -92,7 +92,7 @@
             this.btnBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnBack.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnBack.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
-            this.btnBack.Location = new System.Drawing.Point(717, 335);
+            this.btnBack.Location = new System.Drawing.Point(1163, 635);
             this.btnBack.Margin = new System.Windows.Forms.Padding(4);
             this.btnBack.Name = "btnBack";
             this.btnBack.Size = new System.Drawing.Size(80, 30);
@@ -107,7 +107,7 @@
             this.btnUse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnUse.Image = global::CodeFlow.Properties.Resources.Checkmark_16x;
             this.btnUse.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnUse.Location = new System.Drawing.Point(575, 335);
+            this.btnUse.Location = new System.Drawing.Point(1021, 635);
             this.btnUse.Margin = new System.Windows.Forms.Padding(4);
             this.btnUse.Name = "btnUse";
             this.btnUse.Size = new System.Drawing.Size(135, 30);
@@ -121,7 +121,7 @@
             // 
             this.btnViewCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnViewCode.Image = global::CodeFlow.Properties.Resources.PreviewWebTab_16x;
-            this.btnViewCode.Location = new System.Drawing.Point(137, 334);
+            this.btnViewCode.Location = new System.Drawing.Point(137, 634);
             this.btnViewCode.Margin = new System.Windows.Forms.Padding(4);
             this.btnViewCode.Name = "btnViewCode";
             this.btnViewCode.Size = new System.Drawing.Size(120, 30);
@@ -136,7 +136,7 @@
             // 
             this.btnMerge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnMerge.Image = global::CodeFlow.Properties.Resources.PreviewWebTab_16x;
-            this.btnMerge.Location = new System.Drawing.Point(17, 334);
+            this.btnMerge.Location = new System.Drawing.Point(17, 634);
             this.btnMerge.Margin = new System.Windows.Forms.Padding(4);
             this.btnMerge.Name = "btnMerge";
             this.btnMerge.Size = new System.Drawing.Size(112, 30);
@@ -151,7 +151,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnBack;
-            this.ClientSize = new System.Drawing.Size(816, 373);
+            this.ClientSize = new System.Drawing.Size(1262, 673);
             this.Controls.Add(this.btnMerge);
             this.Controls.Add(this.btnViewCode);
             this.Controls.Add(this.btnUse);

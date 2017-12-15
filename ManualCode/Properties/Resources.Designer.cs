@@ -252,7 +252,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you wish to update this profile?.
+        ///   Looks up a localized string similar to Do you wish to minor this profile?.
         /// </summary>
         internal static string ConfirmUpdate {
             get {
@@ -525,6 +525,16 @@ namespace CodeFlow.Properties {
         internal static string History {
             get {
                 return ResourceManager.GetString("History", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap History_16x {
+            get {
+                object obj = ResourceManager.GetObject("History_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

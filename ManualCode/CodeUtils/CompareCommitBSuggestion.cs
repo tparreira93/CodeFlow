@@ -22,7 +22,7 @@ namespace CodeFlow.CodeUtils
         public CompareCommitBSuggestion(IManual manual)
         {
             local = manual;
-            _display = string.Format("Merge and commit manual code.");
+            _display = string.Format("Merge and commit manual code");
         }
 
         public string DisplayText

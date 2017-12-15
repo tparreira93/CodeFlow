@@ -14,6 +14,8 @@ using CodeFlow.CodeControl;
 using CodeFlow.CodeControl.Analyzer;
 using CodeFlow.GenioManual;
 using CodeFlow.Forms;
+using CodeFlow.Versions;
+using Version = CodeFlow.Versions.Version;
 
 namespace CodeFlow
 {
@@ -58,21 +60,19 @@ namespace CodeFlow
         private uint _cookie;
         private IVsSolution _solution;
         public CodeFlowVersions Versions { get; private set; }
-        private Version _oldVersion;
-        private Version _currentVersion;
+        public Version OldVersion { get; private set; }
+        public Version CurrentVersion { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommitCode"/> class.
         /// </summary>
         public CodeFlowPackage()
         {
+            PackageOperations.Flow = this;
             // Inside this method you can place any initialization code that does not require
             // any Visual Studio service because at this point the package object is created but
             // not sited yet inside Visual Studio environment. The place to do all the other
             // initialization is the Initialize method.
-
-            Versions = new CodeFlowVersions();
-            CheckVersion();
         }
 
         protected override void Dispose(bool disposing)
@@ -139,25 +139,28 @@ namespace CodeFlow
                 MenuCommand menuGenioProfilesComboGetListCommand = new OleMenuCommand(OnMenuGenioProfilesComboGetList, menuGenioProfilesComboGetListCommandId);
                 mcs.AddCommand(menuGenioProfilesComboGetListCommand);
             }
+            Versions = new CodeFlowVersions();
+            CheckVersion();
 
 
             if (PackageOperations.Instance.AllProfiles.Count == 0)
                 LoadConfig();
+            CodeFlow.Commands.ViewVersionsCommand.Initialize(this);
         }
 
         private void CheckVersion()
         {
-            _currentVersion = new Version(Settings.Default.ToolVersion);
-            _oldVersion = new Version(Settings.Default.OldVersion);
-            Version newVersion = Versions.Execute(_currentVersion, OptionsPage);
-            if(_currentVersion.CompareTo(newVersion) != 0)
+            CurrentVersion = new Version(Settings.Default.ToolVersion);
+            OldVersion = new Version(Settings.Default.OldVersion);
+            Version newVersion = Versions.Execute(CurrentVersion, OptionsPage);
+            if(CurrentVersion.CompareTo(newVersion) != 0)
             {
-                Settings.Default.OldVersion = _currentVersion.ToString();
+                Settings.Default.OldVersion = CurrentVersion.ToString();
                 Settings.Default.ToolVersion = newVersion.ToString();
                 Settings.Default.Save();
-                _oldVersion = _currentVersion;
-                _currentVersion = newVersion;
-                CodeFlowChangesForm changesForm = new CodeFlowChangesForm(Versions, _currentVersion, _oldVersion);
+                OldVersion = CurrentVersion;
+                CurrentVersion = newVersion;
+                CodeFlowChangesForm changesForm = new CodeFlowChangesForm(Versions, CurrentVersion, OldVersion);
                 changesForm.Show();
             }
         }
@@ -312,7 +315,7 @@ namespace CodeFlow
         #endregion
 
         #region ComboBox options
-        private void OnMenuGenioProfilesCombo(object sender, EventArgs e)
+        public void OnMenuGenioProfilesCombo(object sender, EventArgs e)
         {
             if (e == EventArgs.Empty)
             {
