@@ -252,7 +252,7 @@ namespace CodeFlow.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you wish to minor this profile?.
+        ///   Looks up a localized string similar to Do you wish to update this profile?.
         /// </summary>
         internal static string ConfirmUpdate {
             get {
