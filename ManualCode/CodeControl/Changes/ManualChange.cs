@@ -27,7 +27,7 @@ namespace CodeFlow.CodeControl
         public virtual IChange Merge()
         {
             IChange change = this;
-            Merged = Manual.Merge(Theirs, Mine);
+            Merged = Manual.Merge(Theirs, Merged);
 
             if (!String.IsNullOrWhiteSpace(Mine.Code) && String.IsNullOrWhiteSpace(Merged.Code))
                 change = new CodeEmpty(Merged, Theirs);
@@ -41,7 +41,7 @@ namespace CodeFlow.CodeControl
         }
         public virtual void Compare()
         {
-            Manual.Compare(Theirs, local);
+            Manual.Compare(Theirs, Mine);
         }
         public virtual bool HasDifference()
         {
