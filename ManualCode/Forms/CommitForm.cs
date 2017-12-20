@@ -292,7 +292,7 @@ namespace CodeFlow
 
             if (lstCode.SelectedItems.Count == 1)
             {
-                if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Space)
+                if (e.KeyCode == Keys.Enter)
                     lstCode_MouseDoubleClick(this, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
                 else if (e.KeyCode == Keys.Delete)
                 {

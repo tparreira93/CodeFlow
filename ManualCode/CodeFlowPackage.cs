@@ -145,7 +145,7 @@ namespace CodeFlow
 
             if (PackageOperations.Instance.AllProfiles.Count == 0)
                 LoadConfig();
-            CodeFlow.Commands.ViewVersionsCommand.Initialize(this);
+            ViewVersionsCommand.Initialize(this);
         }
 
         private void CheckVersion()
