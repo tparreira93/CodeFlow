@@ -208,6 +208,11 @@ namespace CodeFlow.Versions
             version.AddChange("Removed Visual Studio 2015 compatibility.");
             version.AddChange("Bug fixes.");
             _allVersions.Add(version);
+
+            version = new CodeFlowVersionInfo();
+            version.Version = new Version(3, 3, 2);
+            version.AddChange("Fix in commit form merge.");
+            _allVersions.Add(version);
         }
 
         public Version Execute(Version startingVersion, OptionsPageGrid options)

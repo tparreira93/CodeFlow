@@ -41,7 +41,7 @@ namespace CodeFlow.CodeControl
         }
         public virtual void Compare()
         {
-            Manual.Compare(Theirs, Mine);
+            Manual.Compare(Theirs, Merged);
         }
         public virtual bool HasDifference()
         {
