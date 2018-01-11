@@ -1,4 +1,5 @@
 ﻿using CodeFlow.CodeControl;
+using CodeFlow.Forms;
 using CodeFlow.GenioOperations;
 using CodeFlow.ManualOperations;
 using System;
@@ -200,6 +201,50 @@ namespace CodeFlow
             GenioPlataform plat = PackageOperations.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
             if (plat != null)
                 cmbType.Items.AddRange(plat.TipoRotina.Select(x => x.Identifier).ToArray());
+        }
+
+        private void btnSelect_Click(object sender, EventArgs e)
+        {
+            string plataform = (string)cmbPlataform.SelectedItem ?? cmbPlataform.SelectedText;
+            string type = (string)cmbType.SelectedItem ?? cmbType.SelectedText;
+
+            SelectParametersForm select = new SelectParametersForm();
+            select.Plataform = plataform;
+            select.TypeRot = type;
+
+            select.ShowDialog();
+
+            if(select.DialogResult != DialogResult.Cancel)
+                UpdateSelection(select.Plataform, select.TypeRot);
+        }
+
+        private void UpdateSelection(string plataform, string typeRot)
+        {
+            int i = 0;
+            int foundIDX = -1;
+            foreach (var item in cmbPlataform.Items)
+            {
+                if (item.Equals(plataform))
+                {
+                    foundIDX = i;
+                    break;
+                }
+                i++;
+            }
+            if (foundIDX != -1)
+                cmbPlataform.SelectedIndex = foundIDX;
+
+            foreach (var item in cmbType.Items)
+            {
+                if (item.Equals(typeRot))
+                {
+                    foundIDX = i;
+                    break;
+                }
+                i++;
+            }
+            if (foundIDX != -1)
+                cmbType.SelectedIndex = foundIDX;
         }
     }
 }

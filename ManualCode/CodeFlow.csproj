@@ -86,6 +86,12 @@
     <Compile Include="CodeControl\Operations\IOperation.cs" />
     <Compile Include="CodeControl\Operations\OperationLog.cs" />
     <Compile Include="Commands\ViewVersionsCommand.cs" />
+    <Compile Include="Forms\SelectParameters.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SelectParameters.Designer.cs">
+      <DependentUpon>SelectParameters.cs</DependentUpon>
+    </Compile>
     <Compile Include="Versions\CodeFlowVersionInfo.cs" />
     <Compile Include="Versions\CodeFlowVersions.cs" />
     <Compile Include="CodeUtils\CompareDBSuggestion.cs" />
@@ -249,6 +255,7 @@
     <None Include="Resources\Add_grey_16x.png" />
     <None Include="Resources\arrow_merge_16xLG.png" />
     <None Include="Resources\History_16x.png" />
+    <None Include="Resources\ArrangeSelection_16x.png" />
     <Content Include="Resources\ico_01.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -440,6 +447,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProjectSelectionForm.resx">
       <DependentUpon>ProjectSelectionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SelectParameters.resx">
+      <DependentUpon>SelectParameters.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

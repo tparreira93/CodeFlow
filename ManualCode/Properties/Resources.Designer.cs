@@ -103,6 +103,16 @@ namespace CodeFlow.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ArrangeSelection_16x {
+            get {
+                object obj = ResourceManager.GetObject("ArrangeSelection_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap arrow_merge_16xLG {
             get {
                 object obj = ResourceManager.GetObject("arrow_merge_16xLG", resourceCulture);

@@ -138,6 +138,8 @@ namespace CodeFlow
 
                 else if (item.Tag is IChange)
                     btnMerge_Click(sender, new EventArgs());
+
+                item.Checked = !item.Checked;
             }
         }
 

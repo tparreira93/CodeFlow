@@ -53,6 +53,7 @@
             this.lblProd = new System.Windows.Forms.Label();
             this.lblSolutionVersion = new System.Windows.Forms.Label();
             this.lblWarning = new System.Windows.Forms.Label();
+            this.btnSelect = new System.Windows.Forms.Button();
             this.status.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -203,7 +204,7 @@
             this.cmbType.Location = new System.Drawing.Point(176, 32);
             this.cmbType.Margin = new System.Windows.Forms.Padding(4);
             this.cmbType.Name = "cmbType";
-            this.cmbType.Size = new System.Drawing.Size(269, 24);
+            this.cmbType.Size = new System.Drawing.Size(222, 24);
             this.cmbType.TabIndex = 1;
             // 
             // txtParam
@@ -321,12 +322,23 @@
             this.lblWarning.Text = "WARNING";
             this.lblWarning.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // btnSelect
+            // 
+            this.btnSelect.Image = global::CodeFlow.Properties.Resources.ArrangeSelection_16x;
+            this.btnSelect.Location = new System.Drawing.Point(406, 32);
+            this.btnSelect.Name = "btnSelect";
+            this.btnSelect.Size = new System.Drawing.Size(40, 24);
+            this.btnSelect.TabIndex = 25;
+            this.btnSelect.UseVisualStyleBackColor = true;
+            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
+            // 
             // CreateInGenioForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(1354, 793);
+            this.Controls.Add(this.btnSelect);
             this.Controls.Add(this.lblWarning);
             this.Controls.Add(this.lblProd);
             this.Controls.Add(this.lblSolutionVersion);
@@ -389,5 +401,6 @@
         private System.Windows.Forms.Label lblProd;
         private System.Windows.Forms.Label lblSolutionVersion;
         private System.Windows.Forms.Label lblWarning;
+        private System.Windows.Forms.Button btnSelect;
     }
 }
