@@ -215,8 +215,13 @@ namespace CodeFlow.Versions
             _allVersions.Add(version);
 
             version = new CodeFlowVersionInfo();
-            version.Version = new Version(3, 3, 3);
+            version.Version = new Version(3, 4, 0);
             version.AddChange("Added form with help for plataform and type for code creation.");
+            _allVersions.Add(version);
+
+            version = new CodeFlowVersionInfo();
+            version.Version = new Version(3, 4, 1);
+            version.AddChange("Fix in plataform and type selection for \"Create in genio\".");
             _allVersions.Add(version);
         }
 

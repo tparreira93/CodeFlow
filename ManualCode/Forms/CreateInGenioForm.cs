@@ -240,6 +240,7 @@ namespace CodeFlow
                 cmbType.Items.AddRange(plat.TipoRotina.Select(x => x.Identifier).ToArray());
 
             foundIDX = -1;
+            i = 0;
             foreach (var item in cmbType.Items)
             {
                 if (item.Equals(typeRot))
