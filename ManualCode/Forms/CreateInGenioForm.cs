@@ -234,6 +234,12 @@ namespace CodeFlow
             if (foundIDX != -1)
                 cmbPlataform.SelectedIndex = foundIDX;
 
+            cmbType.Items.Clear();
+            GenioPlataform plat = PackageOperations.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
+            if (plat != null)
+                cmbType.Items.AddRange(plat.TipoRotina.Select(x => x.Identifier).ToArray());
+
+            foundIDX = -1;
             foreach (var item in cmbType.Items)
             {
                 if (item.Equals(typeRot))

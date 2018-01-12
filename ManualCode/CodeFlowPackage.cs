@@ -150,6 +150,7 @@ namespace CodeFlow
 
         private void CheckVersion()
         {
+            string tmp = Settings.Default.ToolVersion;
             CurrentVersion = new Version(Settings.Default.ToolVersion);
             OldVersion = new Version(Settings.Default.OldVersion);
             Version newVersion = Versions.Execute(CurrentVersion, OptionsPage);
@@ -160,8 +161,12 @@ namespace CodeFlow
                 Settings.Default.Save();
                 OldVersion = CurrentVersion;
                 CurrentVersion = newVersion;
-                CodeFlowChangesForm changesForm = new CodeFlowChangesForm(Versions, CurrentVersion, OldVersion);
-                changesForm.Show();
+
+                if (!String.IsNullOrEmpty(tmp))
+                {
+                    CodeFlowChangesForm changesForm = new CodeFlowChangesForm(Versions, CurrentVersion, OldVersion);
+                    changesForm.Show();
+                }
             }
         }
 

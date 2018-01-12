@@ -48,11 +48,10 @@
             this.clDescription});
             this.lstChanges.FullRowSelect = true;
             this.lstChanges.GridLines = true;
-            this.lstChanges.Location = new System.Drawing.Point(16, 38);
-            this.lstChanges.Margin = new System.Windows.Forms.Padding(4);
+            this.lstChanges.Location = new System.Drawing.Point(12, 31);
             this.lstChanges.MultiSelect = false;
             this.lstChanges.Name = "lstChanges";
-            this.lstChanges.Size = new System.Drawing.Size(1140, 673);
+            this.lstChanges.Size = new System.Drawing.Size(856, 548);
             this.lstChanges.SmallImageList = this.imageList1;
             this.lstChanges.TabIndex = 0;
             this.lstChanges.UseCompatibleStateImageBehavior = false;
@@ -66,7 +65,7 @@
             // clDescription
             // 
             this.clDescription.Text = "Description";
-            this.clDescription.Width = 1022;
+            this.clDescription.Width = 767;
             // 
             // imageList1
             // 
@@ -78,10 +77,9 @@
             // 
             this.lblVersion.AutoSize = true;
             this.lblVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVersion.Location = new System.Drawing.Point(16, 15);
-            this.lblVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblVersion.Location = new System.Drawing.Point(12, 12);
             this.lblVersion.Name = "lblVersion";
-            this.lblVersion.Size = new System.Drawing.Size(76, 17);
+            this.lblVersion.Size = new System.Drawing.Size(62, 13);
             this.lblVersion.TabIndex = 1;
             this.lblVersion.Text = "VERSION";
             // 
@@ -90,10 +88,10 @@
             this.btnExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnExit.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
-            this.btnExit.Location = new System.Drawing.Point(1057, 719);
-            this.btnExit.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.btnExit.Location = new System.Drawing.Point(793, 584);
+            this.btnExit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(100, 30);
+            this.btnExit.Size = new System.Drawing.Size(75, 24);
             this.btnExit.TabIndex = 6;
             this.btnExit.Text = "Exit";
             this.btnExit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -102,15 +100,14 @@
             // 
             // CodeFlowChangesForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnExit;
-            this.ClientSize = new System.Drawing.Size(1173, 761);
+            this.ClientSize = new System.Drawing.Size(880, 618);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.lstChanges);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "CodeFlowChangesForm";
             this.Text = "CodeFlow updates";
             this.Load += new System.EventHandler(this.CodeFlowChanges_Load);

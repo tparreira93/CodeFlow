@@ -213,6 +213,11 @@ namespace CodeFlow.Versions
             version.Version = new Version(3, 3, 2);
             version.AddChange("Fix in commit form merge.");
             _allVersions.Add(version);
+
+            version = new CodeFlowVersionInfo();
+            version.Version = new Version(3, 3, 3);
+            version.AddChange("Added form with help for plataform and type for code creation.");
+            _allVersions.Add(version);
         }
 
         public Version Execute(Version startingVersion, OptionsPageGrid options)
