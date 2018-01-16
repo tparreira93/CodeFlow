@@ -38,6 +38,7 @@ namespace CodeFlow.Forms
             if (foundIDX != -1)
                 cmbPlataform.SelectedIndex = foundIDX;
 
+            i = 0;
             foundIDX = -1;
             foreach (var item in cmbType.Items)
             {

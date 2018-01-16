@@ -223,6 +223,11 @@ namespace CodeFlow.Versions
             version.Version = new Version(3, 4, 1);
             version.AddChange("Fix in plataform and type selection for \"Create in genio\".");
             _allVersions.Add(version);
+
+            version = new CodeFlowVersionInfo();
+            version.Version = new Version(3, 4, 2);
+            version.AddChange("Bug fixes.");
+            _allVersions.Add(version);
         }
 
         public Version Execute(Version startingVersion, OptionsPageGrid options)
