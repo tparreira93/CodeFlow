@@ -270,7 +270,7 @@ namespace CodeFlow.ManualOperations
                 "/$5/$2$3$4$5",
                 RegexOptions.Multiline | RegexOptions.Compiled);
         }
-        public abstract void ShowSVNLog(Profile profile, string systemName);
+        public abstract void ShowSVNLog(Profile profile);
         public abstract bool Update(Profile profile);
         public abstract bool Create(Profile profile);
         public abstract bool Delete(Profile profile);

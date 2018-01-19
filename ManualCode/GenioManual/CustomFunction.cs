@@ -239,11 +239,11 @@ namespace CodeFlow.ManualOperations
                 Code = FixSetCurrentIndex(Code);
             return true;
         }
-        public override void ShowSVNLog(Profile profile, string systemName)
+        public override void ShowSVNLog(Profile profile)
         {
             try
             {
-                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "Functions." + systemName}");
+                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "Functions." + profile.GenioConfiguration.SystemInitials}");
             }
             catch (Exception e)
             {

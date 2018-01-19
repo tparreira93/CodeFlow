@@ -101,7 +101,7 @@ namespace CodeFlow.CodeUtils
                 if (!String.IsNullOrEmpty(PackageOperations.Instance.GetActiveProfile().GenioConfiguration.CheckoutPath)
                     && !String.IsNullOrEmpty(PackageOperations.Instance.GetActiveProfile().GenioConfiguration.SystemInitials))
                 {
-                    OpenSVNSuggestion openSVNSuggestion = new OpenSVNSuggestion(man, PackageOperations.Instance.GetActiveProfile(), PackageOperations.Instance.GetActiveProfile().GenioConfiguration.SystemInitials);
+                    OpenSVNSuggestion openSVNSuggestion = new OpenSVNSuggestion(man, PackageOperations.Instance.GetActiveProfile());
                     actions.Add(openSVNSuggestion);
                 }
                 return new SuggestedActionSet[] { new SuggestedActionSet(actions.ToArray()) };

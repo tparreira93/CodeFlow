@@ -102,11 +102,11 @@ namespace CodeFlow.ManualOperations
 
             return match.Success;
         }
-        public override void ShowSVNLog(Profile profile, string systemName)
+        public override void ShowSVNLog(Profile profile)
         {
             try
             {
-                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "MAN" + this.Plataform + this.ManualFile + "." + systemName}");
+                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "MAN" + this.Plataform + this.ManualFile + "." + profile.GenioConfiguration.SystemInitials}");
             }
             catch(Exception e)
             {
@@ -303,7 +303,7 @@ namespace CodeFlow.ManualOperations
             if (profile.GenioConfiguration.OpenConnection())
             {
                 string manuaQuery = String.Format("SELECT CODMANUA, @RESULT_LINE FOUND_LINE, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, LANG, ORDEM, OPERCRIA, OPERMUDA, DATACRIA, DATAMUDA "
-                                                + "FROM GENMANUA WHERE (' ' + CORPO + ' ') LIKE @TERM @CASESENSITIVE");
+                                                + "FROM GENMANUA WHERE ((' ' + CORPO + ' ') LIKE @TERM OR (' ' + PARAMETR + ' ') LIKE @TERM) @CASESENSITIVE");
 
                 if (plataform.Length != 0)
                 {

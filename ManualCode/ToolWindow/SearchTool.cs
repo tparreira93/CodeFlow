@@ -113,6 +113,8 @@ namespace CodeFlow.ToolWindow
             // as the control's handle should already be created, but unit tests can end up calling
             // this method without the control being created.
             control.InitializeComponent();
+
+            SetPlataform(this, new OleMenuCmdEventArgs("All", new IntPtr()));
         }
 
         private void SetPlataform(object sender, EventArgs e)

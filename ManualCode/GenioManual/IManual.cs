@@ -35,7 +35,7 @@ namespace CodeFlow.GenioManual
 
         string CodeTransformValueKey();
 
-        void ShowSVNLog(Profile profile, string systemName);
+        void ShowSVNLog(Profile profile);
 
         string ShortOneLineCode(int max = 100);
         void CompareDB(Profile profile);

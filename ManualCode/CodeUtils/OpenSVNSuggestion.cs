@@ -16,15 +16,13 @@ namespace CodeFlow.CodeUtils
     internal class OpenSVNSuggestion : ISuggestedAction
     {
         private readonly IManual _manual;
-        private readonly string _sysName;
         private readonly Profile _profile;
         private readonly string _display;
 
-        public OpenSVNSuggestion(IManual manual, Profile profile, string systemName)
+        public OpenSVNSuggestion(IManual manual, Profile profile)
         {
             _manual = manual;
             _profile = profile;
-            _sysName = systemName;
             _display = string.Format("Open SVN for this manual code");
         }
 
@@ -98,7 +96,7 @@ namespace CodeFlow.CodeUtils
             }
             try
             {
-                _manual.ShowSVNLog(_profile, _sysName);
+                _manual.ShowSVNLog(_profile);
             }
             catch(Exception ex)
             {

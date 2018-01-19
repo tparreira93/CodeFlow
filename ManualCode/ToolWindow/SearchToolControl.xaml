@@ -47,6 +47,12 @@
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
+            <ListView.ContextMenu>
+                <ContextMenu StaysOpen="true" Background="WhiteSmoke">
+                    <MenuItem Header="Clear" Click="ClearContextMenu_OnClick"/>
+                    <MenuItem Header="Show SVN log" Click="ShowSVNLogContextMenu_OnClick"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
         </ListView>
     </Grid>
 </UserControl>

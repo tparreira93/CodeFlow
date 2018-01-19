@@ -183,6 +183,20 @@ namespace CodeFlow.ToolWindow
             }
         }
 
+        private void ShowSVNLogContextMenu_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (lstCode.SelectedIndex >= 0)
+            {
+                IManual man = lstCode.SelectedItem as IManual;
+                man.ShowSVNLog(PackageOperations.Instance.GetActiveProfile());
+            }
+        }
+
+        private void ClearContextMenu_OnClick(object sender, RoutedEventArgs e)
+        {
+            results.Clear();
+        }
+
         private void lstColumnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             /*if(e.Source is GridViewColumnHeader column)
