@@ -389,6 +389,10 @@
     </CommandPlacement>
   </CommandPlacements>
 
+  <KeyBindings>
+    <KeyBinding guid="guidCodeFlowPackageCmdSet" id="cmdidSearchToolCommand" key1="VK_F5" mod1="Control Shift" editor="guidVSStd97" />
+  </KeyBindings>
+
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="CodeFlowPackage" value="{23ac2f2d-5778-45dd-b5b2-5186260c958c}" />

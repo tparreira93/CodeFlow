@@ -36,11 +36,14 @@ namespace CodeFlow.GenioManual
         string CodeTransformValueKey();
 
         void ShowSVNLog(Profile profile);
+        void Blame(Profile profile);
 
         string ShortOneLineCode(int max = 100);
         void CompareDB(Profile profile);
         IManual MergeDB(Profile profile);
         string FormatCode(string extension);
         bool MatchAndFix(string upperLine);
+
+        string GetFilePath(Profile profile);
     }
 }

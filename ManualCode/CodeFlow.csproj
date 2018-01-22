@@ -85,6 +85,7 @@
     <Compile Include="CodeControl\Changes\IChange.cs" />
     <Compile Include="CodeControl\Operations\IOperation.cs" />
     <Compile Include="CodeControl\Operations\OperationLog.cs" />
+    <Compile Include="CodeUtils\BlameSVNSuggestion.cs" />
     <Compile Include="Commands\ViewVersionsCommand.cs" />
     <Compile Include="Forms\SelectParameters.cs">
       <SubType>Form</SubType>

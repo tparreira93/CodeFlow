@@ -192,6 +192,15 @@ namespace CodeFlow.ToolWindow
             }
         }
 
+        private void BlameContextMenu_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (lstCode.SelectedIndex >= 0)
+            {
+                IManual man = lstCode.SelectedItem as IManual;
+                man.Blame(PackageOperations.Instance.GetActiveProfile());
+            }
+        }
+
         private void ClearContextMenu_OnClick(object sender, RoutedEventArgs e)
         {
             results.Clear();

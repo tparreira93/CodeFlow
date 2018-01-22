@@ -233,7 +233,13 @@ namespace CodeFlow.Versions
             version.Version = new Version(3, 5, 0);
             version.AddChange("It is now possible to show SVN log of search items.");
             version.AddChange("It is now possible to clear search results.");
-            version.AddChange("Code search now includes parameter form manual code.");
+            version.AddChange("Code search now includes parameter for manual code.");
+            _allVersions.Add(version);
+
+
+            version = new CodeFlowVersionInfo();
+            version.Version = new Version(3, 6, 0);
+            version.AddChange("It is now possible to SVN Blame manual code.");
             _allVersions.Add(version);
         }
 

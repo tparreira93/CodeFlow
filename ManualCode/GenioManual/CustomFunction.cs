@@ -233,23 +233,15 @@ namespace CodeFlow.ManualOperations
         #endregion
 
         #region LocalOperations
+        public override string GetFilePath(Profile profile)
+        {
+            return $"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "Functions." + profile.GenioConfiguration.SystemInitials}";
+        }
         public override bool MatchAndFix(string upperLine)
         {
             if (PackageOperations.Instance.FixIndexes)
                 Code = FixSetCurrentIndex(Code);
             return true;
-        }
-        public override void ShowSVNLog(Profile profile)
-        {
-            try
-            {
-                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "Functions." + profile.GenioConfiguration.SystemInitials}");
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-
         }
         public override string ToString()
         {

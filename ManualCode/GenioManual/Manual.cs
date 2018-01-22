@@ -227,14 +227,29 @@ namespace CodeFlow.ManualOperations
 
             return c;
         }
-        protected void OpenSVNLog(string filePath)
+
+        public void ShowSVNLog(Profile profile)
         {
             try
             {
                 Process merge = new Process();
                 merge.StartInfo.FileName = "TortoiseProc.exe ";
-                merge.StartInfo.Arguments = $"/command:log /path:{filePath}";
+                merge.StartInfo.Arguments = $"/command:log /path:{GetFilePath(profile)}";
                 merge.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
+                merge.Start();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        public void Blame(Profile profile)
+        {
+            try
+            {
+                Process merge = new Process();
+                merge.StartInfo.FileName = "TortoiseProc.exe ";
+                merge.StartInfo.Arguments = $"/command:blame /path:{GetFilePath(profile)}";
                 merge.Start();
             }
             catch (Exception e)
@@ -270,10 +285,10 @@ namespace CodeFlow.ManualOperations
                 "/$5/$2$3$4$5",
                 RegexOptions.Multiline | RegexOptions.Compiled);
         }
-        public abstract void ShowSVNLog(Profile profile);
         public abstract bool Update(Profile profile);
         public abstract bool Create(Profile profile);
         public abstract bool Delete(Profile profile);
+        public abstract string GetFilePath(Profile profile);
         public abstract string FormatCode(string extension);
         public abstract bool MatchAndFix(string upperLine);
         public abstract string Lang { get; set; }

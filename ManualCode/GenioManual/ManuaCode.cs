@@ -84,6 +84,10 @@ namespace CodeFlow.ManualOperations
         #region LocalOperations
         private static Regex reg = new Regex(@"(Plataforma:)\s*(\w*)\s*(\|)\s*(Tipo:)\s*(\w*)\s*(\|)\s*(Modulo:)\s*(\w*)\s*(\|)\s*(Parametro:)\s*(\w*)\s*(\|)\s*(Ficheiro:)\s*(\w*)\s*(\|)\s*(Ordem:)\s*([+-]?([0-9]*[.])?[0-9]+)", RegexOptions.Compiled);
 
+        public override string GetFilePath(Profile profile)
+        {
+            return $"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "MAN" + this.Plataform + this.ManualFile + "." + profile.GenioConfiguration.SystemInitials}";
+        }
         public override bool MatchAndFix(string upperLine)
         {
             Match match = reg.Match(upperLine);
@@ -101,17 +105,6 @@ namespace CodeFlow.ManualOperations
                 Code = FixSetCurrentIndex(Code);
 
             return match.Success;
-        }
-        public override void ShowSVNLog(Profile profile)
-        {
-            try
-            {
-                OpenSVNLog($"{profile.GenioConfiguration.CheckoutPath + "\\ManualCode\\" + "MAN" + this.Plataform + this.ManualFile + "." + profile.GenioConfiguration.SystemInitials}");
-            }
-            catch(Exception e)
-            {
-                throw e;
-            }
         }
         public override string FormatCode(string extension)
         {

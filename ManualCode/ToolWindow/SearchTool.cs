@@ -12,6 +12,7 @@ namespace CodeFlow.ToolWindow
     using System.Windows;
     using System.Threading;
     using CodeFlow.ManualOperations;
+    //using CommandHandler;
 
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
@@ -25,7 +26,7 @@ namespace CodeFlow.ToolWindow
     /// </para>
     /// </remarks>
     [Guid("92310e84-1d2c-4801-b3e5-63ba1f5f2d5c")]
-    public class SearchTool : ToolWindowPane
+    public class SearchTool : ToolWindowPane//, IVsWindowFrameNotify3
     {
         private const string toolWindowSet = "4f609967-bec4-4036-9038-1a779d23cc7e";
         private const int cmdidSearchToolbar = 0x101;
@@ -176,15 +177,18 @@ namespace CodeFlow.ToolWindow
             // Only one search at time
             if (Monitor.TryEnter(searchLock, 2000))
             {
+                OleMenuCommand cmd = null;
+                OleMenuCommandService commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+                if (commandService != null)
+                {
+                    cmd = commandService?.FindCommand(new CommandID(new Guid(toolWindowSet), cmdIdSearchBox)) as OleMenuCommand;
+                    //var cmdSearch = commandService.FindCommand(new CommandID(new Guid(toolWindowSet), cmdidSearchManualCode));
+                }
+                if (cmd == null /*|| cmdSearch == null*/)
+                    return;
+
                 try
                 {
-                    OleMenuCommandService commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-
-                    OleMenuCommand cmd = commandService.FindCommand(new CommandID(new Guid(toolWindowSet), cmdIdSearchBox)) as OleMenuCommand;
-                    //var cmdSearch = commandService.FindCommand(new CommandID(new Guid(toolWindowSet), cmdidSearchManualCode));
-                    if (cmd == null /*|| cmdSearch == null*/)
-                        return;
-            
                     if (String.IsNullOrEmpty(currentSearch))
                     {
                         currentSearch = cmd.Text;
@@ -212,7 +216,6 @@ namespace CodeFlow.ToolWindow
                         // Update UI 
                         control.Dispatcher.BeginInvoke(new Action(() =>
                         {
-                            cmd.Enabled = true;
                             control.RefreshteList(res, currentSearch, wholeWord, caseSensitive);
 
                             if (error.Length != 0)
@@ -225,6 +228,7 @@ namespace CodeFlow.ToolWindow
                 }
                 finally
                 {
+                    cmd.Enabled = true;
                     Monitor.Exit(searchLock);
                 }
             }
@@ -284,5 +288,37 @@ namespace CodeFlow.ToolWindow
             // with a drop-down (combo box) that needs to be initialized.
             // If that were the case, the initalization would happen here.
         }
+
+       /* public int OnShow(int fShow)
+        {
+            CommandHandler handler = new CommandHandler();
+            string selection = handler.GetCurrentSelection();
+
+            if (!string.IsNullOrEmpty(selection))
+            {
+                SearchTerm(this, new OleMenuCmdEventArgs(selection, new IntPtr(), Microsoft.VisualStudio.OLE.Interop.OLECMDEXECOPT.OLECMDEXECOPT_PROMPTUSER));
+            }
+            return 1;
+        }
+
+        public int OnMove(int x, int y, int w, int h)
+        {
+            return 1;
+        }
+
+        public int OnSize(int x, int y, int w, int h)
+        {
+            return 1;
+        }
+
+        public int OnDockableChange(int fDockable, int x, int y, int w, int h)
+        {
+            return 1;
+        }
+
+        public int OnClose(ref uint pgrfSaveOptions)
+        {
+            return 1;
+        }*/
     }
 }

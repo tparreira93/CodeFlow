@@ -51,6 +51,7 @@
                 <ContextMenu StaysOpen="true" Background="WhiteSmoke">
                     <MenuItem Header="Clear" Click="ClearContextMenu_OnClick"/>
                     <MenuItem Header="Show SVN log" Click="ShowSVNLogContextMenu_OnClick"/>
+                    <MenuItem Header="Blame" Click="BlameContextMenu_OnClick"/>
                 </ContextMenu>
             </ListView.ContextMenu>
         </ListView>

@@ -103,6 +103,9 @@ namespace CodeFlow.CodeUtils
                 {
                     OpenSVNSuggestion openSVNSuggestion = new OpenSVNSuggestion(man, PackageOperations.Instance.GetActiveProfile());
                     actions.Add(openSVNSuggestion);
+
+                    BlameSVNSuggestion blameSVNSuggestion = new BlameSVNSuggestion(man, PackageOperations.Instance.GetActiveProfile());
+                    actions.Add(blameSVNSuggestion);
                 }
                 return new SuggestedActionSet[] { new SuggestedActionSet(actions.ToArray()) };
             }
