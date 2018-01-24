@@ -95,10 +95,18 @@ namespace CodeFlow.CodeUtils
             }
             if (_manual is ManuaCode)
             {
-                ChangeAnalyzer diffs = new ChangeAnalyzer();
-                diffs.CheckForDifferences(_manual, PackageOperations.Instance.GetActiveProfile());
-                CommitForm exportForm = new CommitForm(diffs);
-                exportForm.ShowDialog();
+                try
+                {
+                    ChangeAnalyzer diffs = new ChangeAnalyzer();
+                    diffs.CheckForDifferences(_manual, PackageOperations.Instance.GetActiveProfile());
+                    CommitForm exportForm = new CommitForm(diffs);
+                    exportForm.ShowDialog();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
+                        Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                }
             }
         }
 

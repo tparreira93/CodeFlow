@@ -80,11 +80,19 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-            if (!handler.ImportAndEditCurrentTag())
+            try
             {
-                MessageBox.Show(Properties.Resources.VerifyProfile, Properties.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
+                if (!handler.ImportAndEditCurrentTag())
+                {
+                    MessageBox.Show(Properties.Resources.VerifyProfile, Properties.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
+                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
         }
     }

@@ -112,37 +112,61 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void SubmitGenio(object sender, EventArgs e)
         {
-            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-            List<IManual> manual = handler.SearchForTags();
-            ChangeAnalyzer diffs = new ChangeAnalyzer();
-            diffs.CheckForDifferences(manual, PackageOperations.Instance.GetActiveProfile());
-            CommitForm exportForm = new CommitForm(diffs);
-            exportForm.ShowDialog();
+            try
+            {
+                CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
+                List<IManual> manual = handler.SearchForTags();
+                ChangeAnalyzer diffs = new ChangeAnalyzer();
+                diffs.CheckForDifferences(manual, PackageOperations.Instance.GetActiveProfile());
+                CommitForm exportForm = new CommitForm(diffs);
+                exportForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
+                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+            }
         }
 
         private void ImportGenio(object sender, EventArgs e)
         {
-            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-            if (!handler.ImportAndEditCurrentTag())
+            try
             {
-                MessageBox.Show(Properties.Resources.VerifyProfile, Properties.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
+                if (!handler.ImportAndEditCurrentTag())
+                {
+                    MessageBox.Show(Properties.Resources.VerifyProfile, Properties.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
+                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
         }
 
         private void CreateGenio(object sender, EventArgs e)
         {
-            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-            string code = handler.GetCurrentSelection();
-
-            if (!string.IsNullOrEmpty(code))
+            try
             {
-                ManuaCode man = new ManuaCode(code);
-                man.LocalFileName = PackageOperations.Instance.DTE.ActiveDocument.Name;
-                CreateInGenioForm genioForm = new CreateInGenioForm(man);
-                genioForm.ShowDialog();
-                if(genioForm.DialogResult == DialogResult.OK)
-                    handler.InsertCreatedCode(man);
+                CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
+                string code = handler.GetCurrentSelection();
+
+                if (!string.IsNullOrEmpty(code))
+                {
+                    ManuaCode man = new ManuaCode(code);
+                    man.LocalFileName = PackageOperations.Instance.DTE.ActiveDocument.Name;
+                    CreateInGenioForm genioForm = new CreateInGenioForm(man);
+                    genioForm.ShowDialog();
+                    if (genioForm.DialogResult == DialogResult.OK)
+                        handler.InsertCreatedCode(man);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
+                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
         }
     }

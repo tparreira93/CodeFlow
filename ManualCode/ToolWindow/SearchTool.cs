@@ -217,6 +217,7 @@ namespace CodeFlow.ToolWindow
                         control.Dispatcher.BeginInvoke(new Action(() =>
                         {
                             control.RefreshteList(res, currentSearch, wholeWord, caseSensitive);
+                            cmd.Enabled = true;
 
                             if (error.Length != 0)
                             {
@@ -228,7 +229,6 @@ namespace CodeFlow.ToolWindow
                 }
                 finally
                 {
-                    cmd.Enabled = true;
                     Monitor.Exit(searchLock);
                 }
             }

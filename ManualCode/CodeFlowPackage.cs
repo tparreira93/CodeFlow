@@ -197,14 +197,22 @@ namespace CodeFlow
             // Se for diferente de null quer dizer que é um ficheiro temporário que pode ser exportado automaticamente
             if(man != null)
             {
-                // Check for changes, update and log operation
-                ChangeAnalyzer analyzer = new ChangeAnalyzer();
-                analyzer.CheckForDifferences(man, PackageOperations.Instance.GetActiveProfile());
-                foreach (IChange diff in analyzer.Modifications.AsList)
+                try
                 {
-                    IOperation operation = diff.GetOperation();
-                    if(operation != null)
-                        PackageOperations.Instance.ExecuteOperation(operation);
+                    // Check for changes, update and log operation
+                    ChangeAnalyzer analyzer = new ChangeAnalyzer();
+                    analyzer.CheckForDifferences(man, PackageOperations.Instance.GetActiveProfile());
+                    foreach (IChange diff in analyzer.Modifications.AsList)
+                    {
+                        IOperation operation = diff.GetOperation();
+                        if (operation != null)
+                            PackageOperations.Instance.ExecuteOperation(operation);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
+                        Properties.Resources.Export, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error, System.Windows.Forms.MessageBoxDefaultButton.Button1);
                 }
                 return;
             }

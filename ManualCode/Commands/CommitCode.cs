@@ -6,6 +6,7 @@ using CodeFlow.ManualOperations;
 using CodeFlow.CodeControl;
 using CodeFlow.CodeControl.Analyzer;
 using CodeFlow.GenioManual;
+using System.Windows.Forms;
 
 namespace CodeFlow.Commands
 {
@@ -90,12 +91,20 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-            List<IManual> manual = handler.SearchForTags();
-            ChangeAnalyzer diffs = new ChangeAnalyzer();
-            diffs.CheckForDifferences(manual, PackageOperations.Instance.GetActiveProfile());
-            CommitForm exportForm = new CommitForm(diffs);
-            exportForm.ShowDialog();
+            try
+            {
+                CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
+                List<IManual> manual = handler.SearchForTags();
+                ChangeAnalyzer diffs = new ChangeAnalyzer();
+                diffs.CheckForDifferences(manual, PackageOperations.Instance.GetActiveProfile());
+                CommitForm exportForm = new CommitForm(diffs);
+                exportForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
+                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+            }
         }
     }
 }
