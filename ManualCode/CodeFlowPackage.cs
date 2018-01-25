@@ -156,13 +156,13 @@ namespace CodeFlow
             Version newVersion = Versions.Execute(CurrentVersion, OptionsPage);
             if(CurrentVersion.CompareTo(newVersion) != 0)
             {
-                Settings.Default.OldVersion = CurrentVersion.ToString();
+                Settings.Default.OldVersion = String.IsNullOrEmpty(tmp) ? newVersion.ToString() :  CurrentVersion.ToString();
                 Settings.Default.ToolVersion = newVersion.ToString();
                 Settings.Default.Save();
                 OldVersion = CurrentVersion;
                 CurrentVersion = newVersion;
 
-                if (!String.IsNullOrEmpty(tmp))
+                if (!Settings.Default.OldVersion.Equals(Settings.Default.ToolVersion))
                 {
                     CodeFlowChangesForm changesForm = new CodeFlowChangesForm(Versions, CurrentVersion, OldVersion);
                     changesForm.Show();

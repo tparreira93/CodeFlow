@@ -235,11 +235,15 @@ namespace CodeFlow.Versions
             version.AddChange("It is now possible to clear search results.");
             version.AddChange("Code search now includes parameter for manual code.");
             _allVersions.Add(version);
-
-
+            
             version = new CodeFlowVersionInfo();
             version.Version = new Version(3, 6, 0);
             version.AddChange("It is now possible to SVN Blame manual code.");
+            _allVersions.Add(version);
+
+            version = new CodeFlowVersionInfo();
+            version.Version = new Version(3, 7, 0);
+            version.AddChange("Improved messages when errors occur.");
             _allVersions.Add(version);
         }
 
