@@ -16,6 +16,7 @@ using CodeFlow.GenioManual;
 using CodeFlow.Forms;
 using CodeFlow.Versions;
 using Version = CodeFlow.Versions.Version;
+using System.Windows.Threading;
 
 namespace CodeFlow
 {
@@ -347,7 +348,34 @@ namespace CodeFlow
 
                 else if (newChoice != null)
                 {
-                    PackageOperations.Instance.SetProfile(newChoice);
+                    if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
+                    {
+                        Dispatcher disp = Dispatcher.CurrentDispatcher;
+                        OleMenuCommand cmd = mcs.FindCommand(new CommandID(PackageGuidList.guidComboBoxCmdSet, (int)PackageCommandList.cmdGenioProfilesCombo)) as OleMenuCommand;
+                        cmd.Enabled = false;
+                        string error = "";
+                        System.Threading.Tasks.Task.Factory.StartNew(() =>
+                        {
+                            try
+                            {
+                                PackageOperations.Instance.SetProfile(newChoice);
+                            }
+                            catch (Exception ex)
+                            {
+                                error = ex.Message;
+                            }
+
+                            // Update UI 
+                            disp.BeginInvoke(new Action(() =>
+                            {
+                                cmd.Enabled = true;
+                                if (!string.IsNullOrEmpty(error))
+                                    System.Windows.Forms.MessageBox.Show(String.Format(Resources.UnableToExecuteOperation, error),
+                                        Resources.Export, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error, System.Windows.Forms.MessageBoxDefaultButton.Button1);
+                            }), DispatcherPriority.Background);
+                        });
+                    }
+                    
                 }
                 else
                     throw (new ArgumentException("Invalid input and output!"));

@@ -245,6 +245,11 @@ namespace CodeFlow.Versions
             version.Version = new Version(3, 7, 0);
             version.AddChange("Improved messages when errors occur.");
             _allVersions.Add(version);
+
+            version = new CodeFlowVersionInfo();
+            version.Version = new Version(3, 8, 0);
+            version.AddChange("Asynchronous profile selection. It improves system responsiveness on start-up.");
+            _allVersions.Add(version);
         }
 
         public Version Execute(Version startingVersion, OptionsPageGrid options)
