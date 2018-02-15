@@ -36,7 +36,7 @@ namespace CodeFlow.ToolWindow
             lstCode.ItemsSource = results;
             lstCode.DataContext = this;
 
-            
+
             /*if (lstCode.View is GridView grid)
             {
                 foreach (GridViewColumn item in grid.Columns)
@@ -63,12 +63,17 @@ namespace CodeFlow.ToolWindow
             }*/
         }
 
+        public void Clear()
+        {
+            results.Clear();
+        }
+
         public void RefreshteList(List<IManual> lst, string currentSearch, bool wholeWord, bool caseSensitive)
         {
             this.currentSearch = currentSearch;
             this.wholeWord = wholeWord;
             this.caseSensitive = caseSensitive;
-            results.Clear();
+            Clear();
             foreach (IManual m in lst)
                 results.Add(m);
 

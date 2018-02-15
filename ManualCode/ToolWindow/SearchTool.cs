@@ -177,6 +177,7 @@ namespace CodeFlow.ToolWindow
             // Only one search at time
             if (Monitor.TryEnter(searchLock, 2000))
             {
+                control.Clear();
                 OleMenuCommand cmd = null;
                 OleMenuCommandService commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
                 if (commandService != null)

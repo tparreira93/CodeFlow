@@ -250,6 +250,11 @@ namespace CodeFlow.Versions
             version.Version = new Version(3, 8, 0);
             version.AddChange("Asynchronous profile selection. It improves system responsiveness on start-up.");
             _allVersions.Add(version);
+
+            version = new CodeFlowVersionInfo();
+            version.Version = new Version(3, 9, 0);
+            version.AddChange("Clear of previous search results before new search.");
+            _allVersions.Add(version);
         }
 
         public Version Execute(Version startingVersion, OptionsPageGrid options)
