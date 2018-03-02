@@ -61,6 +61,7 @@
             this.cmbType.Location = new System.Drawing.Point(127, 28);
             this.cmbType.Name = "cmbType";
             this.cmbType.Size = new System.Drawing.Size(425, 21);
+            this.cmbType.Sorted = true;
             this.cmbType.TabIndex = 1;
             this.cmbType.SelectedIndexChanged += new System.EventHandler(this.cmbType_SelectedIndexChanged);
             // 
@@ -91,6 +92,7 @@
             this.cmbPlataform.Location = new System.Drawing.Point(10, 28);
             this.cmbPlataform.Name = "cmbPlataform";
             this.cmbPlataform.Size = new System.Drawing.Size(112, 21);
+            this.cmbPlataform.Sorted = true;
             this.cmbPlataform.TabIndex = 0;
             this.cmbPlataform.SelectedValueChanged += new System.EventHandler(this.cmbPlataform_SelectedValueChanged);
             // 
@@ -134,7 +136,7 @@
             this.Controls.Add(this.cmbPlataform);
             this.Controls.Add(this.btnCancel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "SelectParametersForm";
             this.Text = "Select";
             this.Load += new System.EventHandler(this.SelectParameters_Load);

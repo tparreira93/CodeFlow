@@ -160,12 +160,14 @@ namespace CodeFlow
                 {
                     btnConflict.Enabled = true;
                     btnMerge.Enabled = false;
+                    goToPositionToolStrip.Enabled = false;
                 }
                 else
                 {
                     btnConflict.Enabled = false;
+                    goToPositionToolStrip.Enabled = true;
 
-                    if(lstCode.SelectedItems.Count == 1)
+                    if (lstCode.SelectedItems.Count == 1)
                         btnMerge.Enabled = true;
                 }
             }
@@ -322,6 +324,22 @@ namespace CodeFlow
             else
                 return 0;
 
+        }
+
+        private void GoToManualCodePosition(IChange change)
+        {
+            PackageOperations.Instance.OpenOnPosition(change.Mine.LocalFileName, change.Mine.LocalMatch.CodeStart);
+        }
+
+        private void goToPositionToolStrip_Click(object sender, EventArgs e)
+        {
+            if (lstCode.SelectedItems.Count == 1)
+            {
+                ListViewItem item = lstCode.Items[lstCode.SelectedIndices[0]];
+
+                if (item.Tag is IChange)
+                    GoToManualCodePosition(item.Tag as IChange);
+            }
         }
     }
 }

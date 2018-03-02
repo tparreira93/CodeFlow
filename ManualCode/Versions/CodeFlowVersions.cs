@@ -255,6 +255,12 @@ namespace CodeFlow.Versions
             version.Version = new Version(3, 9, 0);
             version.AddChange("Clear of previous search results before new search.");
             _allVersions.Add(version);
+
+            version = new CodeFlowVersionInfo();
+            version.Version = new Version(3, 10, 0);
+            //version.AddChange("It is now possible to go to change position from commit form.");
+            version.AddChange("Tags are now ordered in creation form.");
+            _allVersions.Add(version);
         }
 
         public Version Execute(Version startingVersion, OptionsPageGrid options)

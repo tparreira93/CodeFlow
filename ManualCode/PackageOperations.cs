@@ -257,6 +257,14 @@ namespace CodeFlow
             }
             return man;
         }
+        public void OpenOnPosition(string fileName, int position)
+        {
+            Window window = DTE.ItemOperations.OpenFile(fileName);
+            window.Activate();
+
+            TextSelection textSelection = window.Document.Selection as TextSelection;
+            textSelection.MoveToLineAndOffset(position, 1);
+        }
 
         private static Encoding GetFileEncoding()
         {

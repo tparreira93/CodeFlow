@@ -64,6 +64,7 @@
             this.cmbPlataform.Location = new System.Drawing.Point(15, 26);
             this.cmbPlataform.Name = "cmbPlataform";
             this.cmbPlataform.Size = new System.Drawing.Size(112, 21);
+            this.cmbPlataform.Sorted = true;
             this.cmbPlataform.TabIndex = 0;
             this.cmbPlataform.SelectedIndexChanged += new System.EventHandler(this.cmbPlataform_SelectedIndexChanged);
             // 
@@ -87,6 +88,7 @@
             this.cmbModule.Location = new System.Drawing.Point(576, 26);
             this.cmbModule.Name = "cmbModule";
             this.cmbModule.Size = new System.Drawing.Size(88, 21);
+            this.cmbModule.Sorted = true;
             this.cmbModule.TabIndex = 4;
             // 
             // cmbFeature
@@ -97,6 +99,7 @@
             this.cmbFeature.Location = new System.Drawing.Point(669, 25);
             this.cmbFeature.Name = "cmbFeature";
             this.cmbFeature.Size = new System.Drawing.Size(121, 21);
+            this.cmbFeature.Sorted = true;
             this.cmbFeature.TabIndex = 5;
             // 
             // chkInhibt
@@ -191,6 +194,7 @@
             this.cmbType.Location = new System.Drawing.Point(132, 26);
             this.cmbType.Name = "cmbType";
             this.cmbType.Size = new System.Drawing.Size(168, 21);
+            this.cmbType.Sorted = true;
             this.cmbType.TabIndex = 1;
             // 
             // txtParam
@@ -309,7 +313,7 @@
             // 
             this.btnSelect.Image = global::CodeFlow.Properties.Resources.ArrangeSelection_16x;
             this.btnSelect.Location = new System.Drawing.Point(304, 26);
-            this.btnSelect.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnSelect.Margin = new System.Windows.Forms.Padding(2);
             this.btnSelect.Name = "btnSelect";
             this.btnSelect.Size = new System.Drawing.Size(30, 22);
             this.btnSelect.TabIndex = 25;
