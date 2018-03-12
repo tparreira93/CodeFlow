@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="ManualCode.278e3a6d-92de-47d4-8417-dd060ad9270a" Version="3.10.0" Language="en-US" Publisher="Thales Parreira" />
+        <Identity Id="ManualCode.278e3a6d-92de-47d4-8417-dd060ad9270a" Version="3.10.1" Language="en-US" Publisher="Thales Parreira" />
         <DisplayName>Code Flow</DisplayName>
         <Description xml:space="preserve">This extension enables automatic code integration with Quidgest Genio. It allows to create, merge, commit, update and search for manual code in Genio databases. It also provides light bulb suggestions when manual code is detected.</Description>
         <ReleaseNotes>index.html</ReleaseNotes>

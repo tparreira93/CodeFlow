@@ -249,8 +249,8 @@ namespace CodeFlow
         private void AddListItem(IChange diff, Color c, bool chk)
         {
             ListViewItem item = new ListViewItem(diff.GetDescription());
-            item.SubItems.Add(diff.Merged.ShortOneLineCode());
             item.SubItems.Add(diff.Merged.LocalFileName);
+            item.SubItems.Add(diff.Merged.ShortOneLineCode());
             item.ImageIndex = GetImageIndex(diff);
             item.Tag = diff;
             item.Checked = chk;
@@ -261,8 +261,8 @@ namespace CodeFlow
         private void AddListItem(Conflict conf, Color c, bool chk)
         {
             ListViewItem item = new ListViewItem(conf.DifferenceList.AsList[0].GetDescription());
-            item.SubItems.Add(conf.DifferenceList.AsList[0].Merged.ShortOneLineCode());
             item.SubItems.Add(conf.DifferenceList.AsList[0].Merged.LocalFileName);
+            item.SubItems.Add(conf.DifferenceList.AsList[0].Merged.ShortOneLineCode());
             item.ImageIndex = GetImageIndex(conf);
             item.Tag = conf;
             item.Checked = chk;
