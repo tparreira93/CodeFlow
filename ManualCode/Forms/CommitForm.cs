@@ -235,7 +235,7 @@ namespace CodeFlow
                 if (change.HasDifference())
                 {
                     lstCode.SelectedItems[0].Text = change.GetDescription();
-                    lstCode.SelectedItems[0].SubItems[1].Text = change.Merged.ShortOneLineCode();
+                    lstCode.SelectedItems[0].SubItems[2].Text = change.Merged.ShortOneLineCode();
                     lstCode.SelectedItems[0].ForeColor = lblMerged.ForeColor;
                     lstCode.SelectedItems[0].ImageIndex = GetImageIndex(change);
                     lstCode.SelectedItems[0].Tag = change;

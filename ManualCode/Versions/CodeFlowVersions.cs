@@ -266,6 +266,11 @@ namespace CodeFlow.Versions
             version.Version = new Version(3, 10, 1);
             version.AddChange("Fix in columns order of commit form.");
             _allVersions.Add(version);
+
+            version = new CodeFlowVersionInfo();
+            version.Version = new Version(3, 10, 2);
+            version.AddChange("Fix in columns of commit form after merge.");
+            _allVersions.Add(version);
         }
 
         public Version Execute(Version startingVersion, OptionsPageGrid options)
