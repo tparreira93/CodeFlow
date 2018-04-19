@@ -28,7 +28,7 @@ namespace CodeFlow.SolutionOperations
             _consumerCollection = new ConcurrentQueue<IManual>();
             _runningTasks = new Queue<Task>();
             MaxNumberOfTasks = maxNumberOfTasks;
-            if (MaxNumberOfTasks < 0)
+            if (MaxNumberOfTasks <= 0)
                 MaxNumberOfTasks = 8;
         }
 
