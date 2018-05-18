@@ -273,7 +273,7 @@ namespace CodeFlow.Versions
             _allVersions.Add(version);
 
             version = new CodeFlowVersionInfo();
-            version.Version = new Version(3, 11, 2);
+            version.Version = new Version(3, 11, 0);
             version.AddChange("Files that are opened from the search window will be deleted on close.");
             version.AddChange("First phase of the changes that will give the option to show multiple results of the search term when the term appears multiple times in the same tuple of the database.");
             _allVersions.Add(version);
