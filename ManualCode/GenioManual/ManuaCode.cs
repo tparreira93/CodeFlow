@@ -12,25 +12,15 @@ namespace CodeFlow.ManualOperations
     public class ManuaCode : Manual
     {
         private string tipo = "";
-        
         private string modulo = "";
-
         private Guid codmodul = Guid.Empty;
-        
         private string parameter = "";
-        
         private string lang = "";
-        
         private string feature = "";
-        
         private Guid codfeature = Guid.Empty;
-        
         private string file = "";
-        
         private double order = 0;
-        
         private int system = 0;
-        
         private int inhib = 0;
 
         private void init()

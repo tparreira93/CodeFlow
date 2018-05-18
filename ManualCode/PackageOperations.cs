@@ -216,6 +216,10 @@ namespace CodeFlow
         {
             if (File.Exists(file))
                 File.Delete(file);
+
+            if (IsAutoExportManual(file))
+                AutoExportFiles.Remove(file);
+
             if (_openFiles.Contains(file))
                 _openFiles.Remove(file);
         }
@@ -239,10 +243,14 @@ namespace CodeFlow
             DTE.ItemOperations.OpenFile(tmp);
             AddTempFile(tmp);
         }
+        public bool IsAutoExportManual(string path)
+        {
+            return AutoExportFiles.TryGetValue(path, out Type _);
+        }
         public List<IManual> GetAutoExportIManual(string path)
         {
             List<IManual> man = null;
-            if (AutoExportFiles.TryGetValue(path, out Type _))
+            if (IsAutoExportManual(path))
             {
                 string code = File.ReadAllText(path, GetFileEncoding());
                 string fileName = Path.GetFileName(path);

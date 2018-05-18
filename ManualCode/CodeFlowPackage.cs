@@ -184,6 +184,14 @@ namespace CodeFlow
             _dteEvents = PackageOperations.Instance.DTE.Events;
             _documentEnvents = _dteEvents.DocumentEvents;
             _documentEnvents.DocumentSaved += OnDocumentSave;
+            _documentEnvents.DocumentClosing += OnDocumentClose;
+        }
+
+        private void OnDocumentClose(Document document)
+        {
+            string path = document.FullName;
+            if (PackageOperations.Instance.IsAutoExportManual(path))
+                PackageOperations.Instance.RemoveTempFile(path);
         }
 
         private void OnDocumentSave(Document document)
