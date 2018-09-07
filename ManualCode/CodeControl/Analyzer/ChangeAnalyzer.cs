@@ -21,7 +21,7 @@ namespace CodeFlow.CodeControl.Analyzer
         public void CheckForDifferences(IManual toCheck, Profile profile)
         {
             IManual bd = Manual.GetManual(toCheck.GetType(), toCheck.CodeId, profile);
-            RulesValidator validator = new RulesValidator(profile.ProfileRules);
+            RulesValidator validator = new RulesValidator();
 
             //Compara com o que esta na BD
             if (bd == null)

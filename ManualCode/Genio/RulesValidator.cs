@@ -13,12 +13,6 @@ namespace CodeFlow.Genio
     {
         public RulesValidator()
         {
-            Rules = new List<IRule>();
-        }
-
-        public RulesValidator(List<IRule> rules)
-        {
-            this.Rules = rules;
         }
         
         public IRule ValidateRules(Profile profile, IChange change)
