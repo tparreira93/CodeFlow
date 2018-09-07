@@ -28,7 +28,7 @@ namespace CodeFlow
             ProfileForm profileForm = new ProfileForm(p);
             if (profileForm.ShowDialog() == DialogResult.OK)
             {
-                if (!PackageOperations.Instance.AddProfile(profileForm.ProfileResult.GenioConfiguration, profileForm.ProfileResult.ProfileName))
+                if (!PackageOperations.Instance.AddProfile(profileForm.ProfileResult))
                 {
                     MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration,
                         MessageBoxButtons.OK, MessageBoxIcon.Error);

@@ -49,6 +49,7 @@
             this.lblGenioPath = new System.Windows.Forms.Label();
             this.chkProd = new System.Windows.Forms.CheckBox();
             this.btnRules = new System.Windows.Forms.Button();
+            this.btnSelectFolder = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblServerName
@@ -238,7 +239,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtGenioPath.Location = new System.Drawing.Point(15, 261);
             this.txtGenioPath.Name = "txtGenioPath";
-            this.txtGenioPath.Size = new System.Drawing.Size(503, 20);
+            this.txtGenioPath.Size = new System.Drawing.Size(423, 20);
             this.txtGenioPath.TabIndex = 6;
             // 
             // lblGenioPath
@@ -275,12 +276,23 @@
             this.btnRules.UseVisualStyleBackColor = true;
             this.btnRules.Click += new System.EventHandler(this.btnRules_Click);
             // 
+            // btnSelectFolder
+            // 
+            this.btnSelectFolder.Location = new System.Drawing.Point(443, 259);
+            this.btnSelectFolder.Name = "btnSelectFolder";
+            this.btnSelectFolder.Size = new System.Drawing.Size(75, 23);
+            this.btnSelectFolder.TabIndex = 14;
+            this.btnSelectFolder.Text = "Select";
+            this.btnSelectFolder.UseVisualStyleBackColor = true;
+            this.btnSelectFolder.Click += new System.EventHandler(this.btnSelectFolder_Click);
+            // 
             // ProfileForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(527, 343);
+            this.Controls.Add(this.btnSelectFolder);
             this.Controls.Add(this.btnRules);
             this.Controls.Add(this.chkProd);
             this.Controls.Add(this.txtGenioPath);
@@ -334,5 +346,6 @@
         private System.Windows.Forms.Label lblGenioPath;
         private System.Windows.Forms.CheckBox chkProd;
         private System.Windows.Forms.Button btnRules;
+        private System.Windows.Forms.Button btnSelectFolder;
     }
 }

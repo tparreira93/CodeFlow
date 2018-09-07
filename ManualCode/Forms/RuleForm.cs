@@ -40,7 +40,7 @@ namespace CodeFlow.Forms
         {
             Dictionary<RuleProvider, Type> providers = Util.GetAtrributes<RuleProvider>();
             string selectedItem = cmbType.Items[cmbType.SelectedIndex].ToString();
-            Type t = providers.Where(entry => entry.Key.RuleName.Equals(selectedItem) && !entry.Key.IsDefaultType).Select(entry => entry.Value).ToList().First();
+            Type t = providers.Where(entry => entry.Key.RuleName.Equals(selectedItem)).Select(entry => entry.Value).ToList().First();
             
             if (t != null)
             {
@@ -74,7 +74,8 @@ namespace CodeFlow.Forms
             Dictionary<RuleProvider, Type> providers = Util.GetAtrributes<RuleProvider>();
             foreach (var item in providers)
             {
-                cmbType.Items.Add(item.Key.RuleName);
+                if(!item.Key.IsDefaultType)
+                    cmbType.Items.Add(item.Key.RuleName);
             }
 
             if (R != null)

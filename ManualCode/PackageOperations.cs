@@ -59,11 +59,10 @@ namespace CodeFlow
         {
             return ActiveProfile;
         }
-        public bool AddProfile(GenioCheckout connection, string profileName)
+        public bool AddProfile(Profile profile)
         {
-            if (AllProfiles.Find(x => x.ProfileName.Equals(profileName) == true) == null)
+            if (AllProfiles.Find(x => x.ProfileName.Equals(profile.ProfileName) == true) == null)
             {
-                Profile profile = new Profile(profileName, connection);
                 if (profile.GenioConfiguration.ParseGenioFiles()
                         && profile.GenioConfiguration.GetGenioInfo())
                 {

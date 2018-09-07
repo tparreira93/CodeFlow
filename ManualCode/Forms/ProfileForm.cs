@@ -174,5 +174,13 @@ namespace CodeFlow
             ProfileRules form = new ProfileRules(ProfileResult);
             form.ShowDialog();
         }
+
+        private void btnSelectFolder_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            if (folderDialog.ShowDialog() == DialogResult.OK)
+                ProfileResult.GenioConfiguration.GenioPath = folderDialog.SelectedPath;
+
+        }
     }
 }
