@@ -12,7 +12,7 @@ using System.Threading;
 namespace CodeFlow
 {
     [Serializable]
-    public class Genio
+    public class GenioCheckout
     {
         private string server = "";
         private string database = "";
@@ -25,17 +25,18 @@ namespace CodeFlow
         private string bdVersion = "";
         private bool productionSystem = false;
         private List<GenioPlataform> plataforms = new List<GenioPlataform>();
+        [NonSerialized]
         private Object obj = new Object();
         [NonSerialized]
         private SqlConnection sqlConnection = new SqlConnection();
         private string geniouser = "";
 
-        public Genio()
+        public GenioCheckout()
         {
             GenioUser = Environment.UserName;
         }
 
-        public Genio(string server, string database, string username, string password, string genioUser)
+        public GenioCheckout(string server, string database, string username, string password, string genioUser)
         {
             Server = server;
             Database = database;
@@ -44,10 +45,10 @@ namespace CodeFlow
             GenioUser = genioUser;
         }
 
-        public Genio Clone()
+        public GenioCheckout Clone()
         {
-            Genio g = new Genio();
-            Util.CopyFrom(typeof(Genio), this, g);
+            GenioCheckout g = new GenioCheckout();
+            Util.CopyFrom(typeof(GenioCheckout), this, g);
             sqlConnection = new SqlConnection();
             obj = new object();
             return g;

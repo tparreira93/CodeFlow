@@ -87,12 +87,30 @@
     <Compile Include="CodeControl\Operations\OperationLog.cs" />
     <Compile Include="CodeUtils\BlameSVNSuggestion.cs" />
     <Compile Include="Commands\ViewVersionsCommand.cs" />
-    <Compile Include="Forms\SelectParameters.cs">
+    <Compile Include="Forms\ProfileRules.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SelectParameters.Designer.cs">
-      <DependentUpon>SelectParameters.cs</DependentUpon>
+    <Compile Include="Forms\ProfileRules.Designer.cs">
+      <DependentUpon>ProfileRules.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\RuleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\RuleForm.Designer.cs">
+      <DependentUpon>RuleForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SelectParametersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SelectParametersForm.Designer.cs">
+      <DependentUpon>SelectParametersForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Genio\MatchPatternRule.cs" />
+    <Compile Include="Genio\IgnoreCodeRule.cs" />
+    <Compile Include="Genio\IRule.cs" />
+    <Compile Include="Genio\Rule.cs" />
+    <Compile Include="Genio\RuleProvider.cs" />
+    <Compile Include="Genio\RulesValidator.cs" />
     <Compile Include="Versions\CodeFlowVersionInfo.cs" />
     <Compile Include="Versions\CodeFlowVersions.cs" />
     <Compile Include="CodeUtils\CompareDBSuggestion.cs" />
@@ -105,11 +123,11 @@
     <Compile Include="Commands\FixVS2008Solution.cs" />
     <Compile Include="Commands\CodeContextMenu.cs" />
     <Compile Include="Commands\RefreshSolution.cs" />
-    <Compile Include="Forms\CodeFlowVersions.cs">
+    <Compile Include="Forms\CodeFlowVersionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CodeFlowVersions.Designer.cs">
-      <DependentUpon>CodeFlowVersions.cs</DependentUpon>
+    <Compile Include="Forms\CodeFlowVersionsForm.Designer.cs">
+      <DependentUpon>CodeFlowVersionsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GenioManual\ManualMatchProvider.cs" />
     <Compile Include="Genio\GenioPlataform.cs" />
@@ -179,7 +197,7 @@
       <DependentUpon>CommitForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Commands\CommitSolution.cs" />
-    <Compile Include="Genio\Genio.cs" />
+    <Compile Include="Genio\GenioCheckout.cs" />
     <Compile Include="Commands\UpdateCode.cs" />
     <Compile Include="Commands\CommitCode.cs" />
     <Compile Include="Commands\ManageProfiles.cs" />
@@ -281,6 +299,7 @@
     <None Include="Resources\Synchronize_16x.png" />
     <None Include="Resources\Join_16x.png" />
     <None Include="Resources\VSO_History_16x.png" />
+    <None Include="Resources\Rule_16x.png" />
     <Content Include="stylesheet.css" />
   </ItemGroup>
   <ItemGroup>
@@ -428,8 +447,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\CodeFlowVersions.resx">
-      <DependentUpon>CodeFlowVersions.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\CodeFlowVersionsForm.resx">
+      <DependentUpon>CodeFlowVersionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ConflictForm.resx">
       <DependentUpon>ConflictForm.cs</DependentUpon>
@@ -443,14 +462,20 @@
     <EmbeddedResource Include="Forms\CommitForm.resx">
       <DependentUpon>CommitForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ProfileRules.resx">
+      <DependentUpon>ProfileRules.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProfilesForm.resx">
       <DependentUpon>ProfilesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProjectSelectionForm.resx">
       <DependentUpon>ProjectSelectionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SelectParameters.resx">
-      <DependentUpon>SelectParameters.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\RuleForm.resx">
+      <DependentUpon>RuleForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SelectParametersForm.resx">
+      <DependentUpon>SelectParametersForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

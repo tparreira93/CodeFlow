@@ -81,7 +81,7 @@ namespace CodeFlow.Utils
         {
             const byte CR = 0x0D;
             const byte LF = 0x0A;
-            byte[] DOS_LINE_ENDING = new byte[] { CR, LF };
+            byte[] DOS_LINE_ENDING = { CR, LF };
             byte[] data = File.ReadAllBytes(fileName);
             using (FileStream fileStream = File.OpenWrite(fileName))
             {
@@ -137,6 +137,29 @@ namespace CodeFlow.Utils
                 bw.Write(data, position, data.Length - position);
                 fileStream.SetLength(fileStream.Position);
             }
+        }
+
+        public static Dictionary<T, Type> GetAtrributes<T>()
+        {
+            return GetTypeAttribute<T>(Assembly.GetExecutingAssembly());
+        }
+
+        public static Dictionary<T, Type> GetTypeAttribute<T>(Assembly assembly)
+        {
+            var providers = new Dictionary<T, Type>();
+
+            foreach (Type type in assembly.GetTypes())
+            {
+                if (GetAttribute<T>(type) is T provider)
+                    providers.Add(provider, type);
+            }
+
+            return providers;
+        }
+
+        public static object GetAttribute<T>(Type t)
+        {
+            return t.GetCustomAttributes(typeof(T), true).FirstOrDefault();
         }
     }
 }

@@ -64,7 +64,7 @@ namespace CodeFlow
         {
             lstCode.Items.Clear();
             foreach(IChange diff in differences.AsList)
-                AddListItem(diff, diff.IsMerged ? lblMerged.ForeColor : lblNotMerged.ForeColor, true);
+                AddListItem(diff, diff.IsMerged ? lblMerged.ForeColor : lblNotMerged.ForeColor, diff.FlagedRule != null ? diff.FlagedRule.CommitDefault : true);
 
             foreach (Conflict pair in conflictCode.AsList)
                 AddListItem(pair, lblConflict.ForeColor, false);
@@ -251,6 +251,8 @@ namespace CodeFlow
             ListViewItem item = new ListViewItem(diff.GetDescription());
             item.SubItems.Add(diff.Merged.LocalFileName);
             item.SubItems.Add(diff.Merged.ShortOneLineCode());
+            if (diff.FlagedRule != null)
+                item.SubItems.Add(diff.FlagedRule.GetRuleName());
             item.ImageIndex = GetImageIndex(diff);
             item.Tag = diff;
             item.Checked = chk;
@@ -333,13 +335,16 @@ namespace CodeFlow
 
         private void goToPositionToolStrip_Click(object sender, EventArgs e)
         {
-            if (lstCode.SelectedItems.Count == 1)
-            {
-                ListViewItem item = lstCode.Items[lstCode.SelectedIndices[0]];
+            object item = GetSelectedItem();
+            if (item != null && item is IChange)
+                GoToManualCodePosition(item as IChange);
+        }
 
-                if (item.Tag is IChange)
-                    GoToManualCodePosition(item.Tag as IChange);
-            }
+        private object GetSelectedItem()
+        {
+            if (lstCode.SelectedItems.Count == 1)
+                return lstCode.Items[lstCode.SelectedIndices[0]].Tag;
+            return null;
         }
     }
 }

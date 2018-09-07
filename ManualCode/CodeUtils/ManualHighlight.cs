@@ -35,9 +35,21 @@ namespace CodeFlow.CodeUtils
         /// </summary>
         private readonly Pen pen;
 
-        List<string> matchFields;
+        class HighlightOptions
+        {
+            Brush brush;
+            Pen pen;
+            string match;
 
-        public List<string> MatchFields { get => matchFields; set => matchFields = value; }
+            public HighlightOptions(Brush brush, Pen pen, string match)
+            {
+                this.brush = brush;
+                this.pen = pen;
+                this.match = match;
+            }
+        }
+
+        public List<string> MatchFields { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ManualHighlight"/> class.

@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+using CodeFlow.Genio;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -12,8 +14,9 @@ namespace CodeFlow
     public class Profile
     {
         private Guid profileID = Guid.NewGuid();
-        private Genio genioConfiguration = new Genio();
+        private GenioCheckout genioConfiguration = new GenioCheckout();
         private String profileName = "";
+        private List<IRule> profileRules = new List<IRule>();
         public Profile()
         {
         }
@@ -24,29 +27,21 @@ namespace CodeFlow
             p.ProfileID = this.ProfileID;
             p.ProfileName = this.ProfileName;
             p.GenioConfiguration = this.GenioConfiguration.Clone();
+            p.profileRules.AddRange(this.ProfileRules);
             return p;
         }
 
-        public Profile(string profileName, Genio connection)
+        public Profile(string profileName, GenioCheckout connection)
         {
             GenioConfiguration = connection;
             ProfileName = profileName;
         }
 
-        public SqlDataReader ExecuteReader(SqlCommand command)
-        {
-            command.Connection = GenioConfiguration.SqlConnection;
-            return command.ExecuteReader();
-        }
-
-        public bool ExecuteUpdate(SqlCommand command)
-        {
-            command.Connection = GenioConfiguration.SqlConnection;
-            return command.ExecuteNonQuery() != 0;
-        }
-        public Genio GenioConfiguration { get => genioConfiguration; set => genioConfiguration = value; }
+        public GenioCheckout GenioConfiguration { get => genioConfiguration; set => genioConfiguration = value; }
         public string ProfileName { get => profileName; set => profileName = value; }
         public Guid ProfileID { get => profileID; set => profileID = value; }
+
+        public List<IRule> ProfileRules => profileRules;
 
         public override string ToString()
         {

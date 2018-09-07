@@ -105,6 +105,7 @@ namespace CodeFlow
             RefreshSolution.Initialize(this);
             ChangeHistoryCommand.Initialize(this);
             SearchToolCommand.Initialize(this);
+            ViewVersionsCommand.Initialize(this);
 
             // Try to retrieve the DTE instance at this point
             InitializeDte();
@@ -146,7 +147,6 @@ namespace CodeFlow
 
             if (PackageOperations.Instance.AllProfiles.Count == 0)
                 LoadConfig();
-            ViewVersionsCommand.Initialize(this);
         }
 
         private void CheckVersion()

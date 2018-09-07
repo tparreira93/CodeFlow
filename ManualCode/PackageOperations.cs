@@ -59,7 +59,7 @@ namespace CodeFlow
         {
             return ActiveProfile;
         }
-        public bool AddProfile(Genio connection, string profileName)
+        public bool AddProfile(GenioCheckout connection, string profileName)
         {
             if (AllProfiles.Find(x => x.ProfileName.Equals(profileName) == true) == null)
             {
@@ -81,8 +81,10 @@ namespace CodeFlow
             {
                 //Copy stuff
                 oldProfile.GenioConfiguration.CloseConnection();
-                Util.CopyFrom(typeof(Genio), newProfile.GenioConfiguration, oldProfile.GenioConfiguration);
+                Util.CopyFrom(typeof(GenioCheckout), newProfile.GenioConfiguration, oldProfile.GenioConfiguration);
                 oldProfile.ProfileName = newProfile.ProfileName;
+                oldProfile.ProfileRules.Clear();
+                oldProfile.ProfileRules.AddRange(newProfile.ProfileRules);
 
                 // Load genio data
                 if (newProfile.GenioConfiguration.ParseGenioFiles()
@@ -90,6 +92,10 @@ namespace CodeFlow
                     return true;
             }
             return false;
+        }
+        public Profile FindProfile(string profileName)
+        {
+            return AllProfiles.Find(x => x.ProfileName.Equals(profileName));
         }
         public void RemoveProfile(string profileName)
         {

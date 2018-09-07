@@ -54,6 +54,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.contextLstCode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.goToPositionToolStrip = new System.Windows.Forms.ToolStripMenuItem();
+            this.chRule = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.statusStrip.SuspendLayout();
             this.contextLstCode.SuspendLayout();
             this.SuspendLayout();
@@ -97,7 +98,8 @@
             this.lstCode.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.clOperation,
             this.clFile,
-            this.clCode});
+            this.clCode,
+            this.chRule});
             this.lstCode.FullRowSelect = true;
             this.lstCode.GridLines = true;
             this.lstCode.Location = new System.Drawing.Point(12, 12);
@@ -128,7 +130,7 @@
             // 
             this.clCode.Tag = "clCode";
             this.clCode.Text = "Code";
-            this.clCode.Width = 493;
+            this.clCode.Width = 424;
             // 
             // imageList1
             // 
@@ -324,9 +326,14 @@
             // goToPositionToolStrip
             // 
             this.goToPositionToolStrip.Name = "goToPositionToolStrip";
-            this.goToPositionToolStrip.Size = new System.Drawing.Size(152, 22);
+            this.goToPositionToolStrip.Size = new System.Drawing.Size(149, 22);
             this.goToPositionToolStrip.Text = "Go to position";
             this.goToPositionToolStrip.Click += new System.EventHandler(this.goToPositionToolStrip_Click);
+            // 
+            // chRule
+            // 
+            this.chRule.Text = "Flagged rule";
+            this.chRule.Width = 91;
             // 
             // CommitForm
             // 
@@ -389,5 +396,6 @@
         private System.Windows.Forms.ColumnHeader clOperation;
         private System.Windows.Forms.ContextMenuStrip contextLstCode;
         private System.Windows.Forms.ToolStripMenuItem goToPositionToolStrip;
+        private System.Windows.Forms.ColumnHeader chRule;
     }
 }

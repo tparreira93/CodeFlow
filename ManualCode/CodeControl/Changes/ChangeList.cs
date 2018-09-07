@@ -8,8 +8,7 @@ namespace CodeFlow.CodeControl
 {
     public class ChangeList
     {
-        List<IChange> diffs = new List<IChange>();
-        public List<IChange> AsList { get => diffs; set => diffs = value; }
+        public List<IChange> AsList { get; set; } = new List<IChange>();
 
         public ChangeList(List<IChange> diffs)
         {

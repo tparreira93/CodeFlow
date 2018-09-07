@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CodeFlow.GenioManual;
+using CodeFlow.Genio;
 
 namespace CodeFlow.CodeControl
 {
@@ -14,6 +15,7 @@ namespace CodeFlow.CodeControl
         IManual bd;
         IManual merged;
         bool isMerged = false;
+        IRule rule;
 
         /*
         * Merged defaults to mine
@@ -23,6 +25,7 @@ namespace CodeFlow.CodeControl
             Mine = mine ?? throw new ArgumentNullException(nameof(mine));
             Theirs = theirs;
             Merged = Mine;
+            rule = null;
         }
         public virtual IChange Merge()
         {
@@ -55,5 +58,6 @@ namespace CodeFlow.CodeControl
         public IManual Theirs { get => bd; set => bd = value; }
         public bool IsMerged { get => isMerged; set => isMerged = value; }
         public IManual Merged { get => merged; set => merged = value; }
+        IRule IChange.FlagedRule { get => rule; set => rule = value; }
     }
 }

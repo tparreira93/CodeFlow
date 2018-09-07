@@ -25,9 +25,17 @@ namespace CodeFlow
         private void btnAddProf_Click(object sender, EventArgs e)
         {
             Profile p = new Profile();
-            ProfileForm connection = new ProfileForm(ProfileForm.Mode.New, p);
-            connection.ShowDialog();
-            LoadProfiles();
+            ProfileForm profileForm = new ProfileForm(p);
+            if (profileForm.ShowDialog() == DialogResult.OK)
+            {
+                if (!PackageOperations.Instance.AddProfile(profileForm.ProfileResult.GenioConfiguration, profileForm.ProfileResult.ProfileName))
+                {
+                    MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration,
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                    LoadProfiles();
+            }
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -52,9 +60,9 @@ namespace CodeFlow
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
-            if(lstProfiles.SelectedIndices.Count > 0)
+            Profile p2 = GetSelectedItem();
+            if (p2 != null)
             {
-                Profile p2 = (Profile)lstProfiles.SelectedItems[0].Tag;
                 PackageOperations.Instance.RemoveProfile(p2.ProfileName);
                 LoadProfiles();
             }
@@ -62,18 +70,33 @@ namespace CodeFlow
 
         private void lstProfiles_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if(lstProfiles.SelectedItems.Count == 1)
+            Profile p = GetSelectedItem();
+            if(p != null)
             {
-                Profile p = lstProfiles.Items[lstProfiles.SelectedIndices[0]].Tag as Profile;
-                ProfileForm connectionForm = new ProfileForm(ProfileForm.Mode.Edit, p);
-                connectionForm.ShowDialog();
-                LoadProfiles();
+                ProfileForm profileForm = new ProfileForm(p);
+                if (profileForm.ShowDialog() == DialogResult.OK)
+                {
+                    if (!PackageOperations.Instance.UpdateProfile(p, profileForm.ProfileResult))
+                    {
+                        MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration,
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                        LoadProfiles();
+                }
             }
         }
 
         private void ProfilesForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             PackageOperations.Instance.SaveProfiles();
+        }
+
+        private Profile GetSelectedItem()
+        {
+            if (lstProfiles.SelectedItems.Count == 1)
+                return lstProfiles.SelectedItems[0].Tag as Profile;
+            return null;
         }
     }
 }

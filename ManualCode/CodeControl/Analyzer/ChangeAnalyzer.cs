@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CodeFlow.Genio;
 using CodeFlow.GenioManual;
 using CodeFlow.ManualOperations;
 
@@ -20,12 +21,14 @@ namespace CodeFlow.CodeControl.Analyzer
         public void CheckForDifferences(IManual toCheck, Profile profile)
         {
             IManual bd = Manual.GetManual(toCheck.GetType(), toCheck.CodeId, profile);
+            RulesValidator validator = new RulesValidator(profile.ProfileRules);
 
             //Compara com o que esta na BD
             if (bd == null)
             {
                 // Codigo foi apagado por isso criamos um vazio
-                CodeNotFound diff = new CodeNotFound(toCheck);
+                IChange diff = new CodeNotFound(toCheck);
+                IRule rule = validator.ValidateRules(profile, diff);
                 Modifications.AsList.Add(diff);
             }
             else
@@ -39,6 +42,7 @@ namespace CodeFlow.CodeControl.Analyzer
                 else
                     return;
 
+                change.FlagedRule = validator.ValidateRules(profile, change);
                 IChange diff = Modifications.AsList.Find(x => x.Mine.CodeId.Equals(toCheck.CodeId));
 
                 if (diff != null)

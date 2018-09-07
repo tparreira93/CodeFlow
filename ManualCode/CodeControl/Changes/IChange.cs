@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CodeFlow.GenioManual;
+using CodeFlow.Genio;
 
 namespace CodeFlow.CodeControl
 {
@@ -19,5 +20,6 @@ namespace CodeFlow.CodeControl
         IChange Merge();
         void Compare();
         string GetDescription();
+        IRule FlagedRule { get; set; }
     }
 }
