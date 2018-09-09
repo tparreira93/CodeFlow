@@ -275,6 +275,7 @@
     <None Include="Resources\arrow_merge_16xLG.png" />
     <None Include="Resources\History_16x.png" />
     <None Include="Resources\ArrangeSelection_16x.png" />
+    <None Include="Resources\folder_Open_16xLG.png" />
     <Content Include="Resources\ico_01.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

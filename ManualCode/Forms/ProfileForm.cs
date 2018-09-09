@@ -179,8 +179,7 @@ namespace CodeFlow
         {
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
             if (folderDialog.ShowDialog() == DialogResult.OK)
-                ProfileResult.GenioConfiguration.GenioPath = folderDialog.SelectedPath;
-
+                txtGenioPath.Text = folderDialog.SelectedPath;
         }
     }
 }
