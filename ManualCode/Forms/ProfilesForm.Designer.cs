@@ -1,4 +1,4 @@
-﻿namespace CodeFlow
+﻿namespace CodeFlow.Forms
 {
     partial class ProfilesForm
     {

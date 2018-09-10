@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlow.CodeControl.Analyzer;
 
-namespace CodeFlow
+namespace CodeFlow.Forms
 {
-    public partial class CommitForm : Form
+    public partial class CommitForm : CodeFlowForm
     {
         private ChangeList differences;
         private ConflictList conflictCode;

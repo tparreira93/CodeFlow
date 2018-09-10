@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace CodeFlow
+namespace CodeFlow.Forms
 {
-    public partial class ProfileForm : Form
+    public partial class ProfileForm : CodeFlowForm
     {
         private bool _servers = false;
         private Profile _oldProfile = null;

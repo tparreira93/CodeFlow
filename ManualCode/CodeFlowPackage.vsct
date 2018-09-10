@@ -391,6 +391,7 @@
 
   <KeyBindings>
     <KeyBinding guid="guidCodeFlowPackageCmdSet" id="cmdidSearchToolCommand" key1="VK_F5" mod1="Control Shift" editor="guidVSStd97" />
+    <KeyBinding guid="CodeFlowCommandSet" id="cmdCommitCode" key1="C" mod1="Control Shift" key2="C" mod2="Control Shift" editor="guidVSStd97" />
   </KeyBindings>
 
   <Symbols>

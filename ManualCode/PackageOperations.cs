@@ -5,17 +5,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using CodeFlow.SolutionOperations;
-using System.Windows.Forms;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Xml.Serialization;
 using System.Text;
-using System.Reflection;
 using CodeFlow.Utils;
-using System.ComponentModel.Design;
 using CodeFlow.CodeControl;
 using CodeFlow.GenioManual;
-using CodeFlow.ManualOperations;
 
 namespace CodeFlow
 {
@@ -26,6 +22,8 @@ namespace CodeFlow
 
         private readonly List<string> _openFiles = new List<string>();
         private Dictionary<string, Type> AutoExportFiles { get; } = new Dictionary<string, Type>();
+
+        private Dictionary<Type, object> openForms = new Dictionary<Type, object>();
 
         #region ToolOptions
 
@@ -416,6 +414,10 @@ namespace CodeFlow
                 ChangeLog.LogOperation(operation);
 
             return result;
+        }
+
+        public void FormIsOpen(Type t)
+        {                
         }
 
         #endregion

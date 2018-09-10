@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CodeFlow
+namespace CodeFlow.Forms
 {
-    public partial class ProfilesForm : Form
+    public partial class ProfilesForm : CodeFlowForm
     {
         public ProfilesForm()
         {

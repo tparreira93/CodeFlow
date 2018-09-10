@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace CodeFlow.Forms
 {
-    public partial class RuleForm : Form
+    public partial class RuleForm : CodeFlowForm
     {
         public ICodeRule R { get; private set; }
         public RuleForm(ICodeRule r)

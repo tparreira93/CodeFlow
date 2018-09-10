@@ -10,6 +10,7 @@ using CodeFlow.ManualOperations;
 using CodeFlow.CodeControl;
 using CodeFlow.CodeControl.Analyzer;
 using CodeFlow.GenioManual;
+using CodeFlow.Forms;
 
 namespace CodeFlow.Commands
 {
@@ -118,8 +119,8 @@ namespace CodeFlow.Commands
                 List<IManual> manual = handler.SearchForTags();
                 ChangeAnalyzer diffs = new ChangeAnalyzer();
                 diffs.CheckForDifferences(manual, PackageOperations.Instance.GetActiveProfile());
-                CommitForm exportForm = new CommitForm(diffs);
-                exportForm.Show();
+                CommitForm commitForm = new CommitForm(diffs);
+                commitForm.Open();
             }
             catch (Exception ex)
             {

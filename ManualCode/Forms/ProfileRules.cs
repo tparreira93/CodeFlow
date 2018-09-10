@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace CodeFlow.Forms
 {
-    public partial class ProfileRules : Form
+    public partial class ProfileRules : CodeFlowForm
     {
         Profile profile;
         public ProfileRules(Profile p)

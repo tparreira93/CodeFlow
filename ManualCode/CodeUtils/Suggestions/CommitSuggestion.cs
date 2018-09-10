@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlow.CodeControl.Analyzer;
 using CodeFlow.GenioManual;
+using CodeFlow.Forms;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {
@@ -99,8 +100,8 @@ namespace CodeFlow.CodeUtils.Suggestions
                 {
                     ChangeAnalyzer diffs = new ChangeAnalyzer();
                     diffs.CheckForDifferences(_manual, PackageOperations.Instance.GetActiveProfile());
-                    CommitForm exportForm = new CommitForm(diffs);
-                    exportForm.Show();
+                    CommitForm commitForm = new CommitForm(diffs);
+                    commitForm.Open();
                 }
                 catch (Exception ex)
                 {

@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace CodeFlow
+namespace CodeFlow.Forms
 {
-    public partial class CreateInGenioForm : Form
+    public partial class CreateInGenioForm : CodeFlowForm
     {
         private ManuaCode manualCode;
         private Dictionary<string, Guid> features;

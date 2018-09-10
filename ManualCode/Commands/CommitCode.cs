@@ -7,6 +7,7 @@ using CodeFlow.CodeControl;
 using CodeFlow.CodeControl.Analyzer;
 using CodeFlow.GenioManual;
 using System.Windows.Forms;
+using CodeFlow.Forms;
 
 namespace CodeFlow.Commands
 {
@@ -98,7 +99,7 @@ namespace CodeFlow.Commands
                 ChangeAnalyzer diffs = new ChangeAnalyzer();
                 diffs.CheckForDifferences(manual, PackageOperations.Instance.GetActiveProfile());
                 CommitForm exportForm = new CommitForm(diffs);
-                exportForm.Show();
+                exportForm.Open();
             }
             catch (Exception ex)
             {

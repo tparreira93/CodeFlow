@@ -89,7 +89,7 @@ namespace CodeFlow.Commands
         private void MenuItemCallback(object sender, EventArgs e)
         {
             CodeFlowChangesForm changesForm = new CodeFlowChangesForm(PackageOperations.Flow.Versions, PackageOperations.Flow.CurrentVersion, PackageOperations.Flow.OldVersion);
-            changesForm.Show();
+            changesForm.Open();
         }
     }
 }

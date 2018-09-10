@@ -10,9 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CodeFlow
+namespace CodeFlow.Forms
 {
-    public partial class ConflictForm : Form
+    public partial class ConflictForm : CodeFlowForm
     {
         private Conflict conflict;
         public event EventHandler<ConflictResolveArgs> UpdateForm;

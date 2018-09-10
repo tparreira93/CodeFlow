@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
 using System.IO;
 using CodeFlow.ManualOperations;
+using CodeFlow.Forms;
 
 namespace CodeFlow.Commands
 {

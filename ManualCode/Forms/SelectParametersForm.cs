@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace CodeFlow.Forms
 {
-    public partial class SelectParametersForm : Form
+    public partial class SelectParametersForm : CodeFlowForm
     {
         public string Plataform { get; set; }
         public string TypeRot { get; set; }
