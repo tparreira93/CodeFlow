@@ -295,7 +295,8 @@ namespace CodeFlow.ManualOperations
         public abstract string Tag { get; }
         public abstract string TipoCodigo { get; }
         public abstract string Tipo { get; }
-        public string LocalFileName { get => localMatch.LocalFileName; set => localMatch.LocalFileName = value; }
+        public string LocalFileName { get => localMatch.LocalFileName; }
         public ManualMatch LocalMatch { get => localMatch; set => localMatch = value; }
+        public string FullFileName { get => localMatch.FullFileName; }
     }
 }

@@ -57,10 +57,9 @@
             this.lblServerName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblServerName.AutoSize = true;
-            this.lblServerName.Location = new System.Drawing.Point(17, 59);
-            this.lblServerName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblServerName.Location = new System.Drawing.Point(13, 48);
             this.lblServerName.Name = "lblServerName";
-            this.lblServerName.Size = new System.Drawing.Size(50, 17);
+            this.lblServerName.Size = new System.Drawing.Size(38, 13);
             this.lblServerName.TabIndex = 2;
             this.lblServerName.Text = "Server";
             // 
@@ -69,10 +68,9 @@
             this.lblDb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDb.AutoSize = true;
-            this.lblDb.Location = new System.Drawing.Point(17, 206);
-            this.lblDb.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblDb.Location = new System.Drawing.Point(13, 167);
             this.lblDb.Name = "lblDb";
-            this.lblDb.Size = new System.Drawing.Size(69, 17);
+            this.lblDb.Size = new System.Drawing.Size(53, 13);
             this.lblDb.TabIndex = 8;
             this.lblDb.Text = "Database";
             // 
@@ -81,10 +79,9 @@
             this.lblUser.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblUser.AutoSize = true;
-            this.lblUser.Location = new System.Drawing.Point(17, 110);
-            this.lblUser.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblUser.Location = new System.Drawing.Point(13, 89);
             this.lblUser.Name = "lblUser";
-            this.lblUser.Size = new System.Drawing.Size(73, 17);
+            this.lblUser.Size = new System.Drawing.Size(55, 13);
             this.lblUser.TabIndex = 4;
             this.lblUser.Text = "Username";
             // 
@@ -92,10 +89,9 @@
             // 
             this.txtUsername.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtUsername.Location = new System.Drawing.Point(20, 130);
-            this.txtUsername.Margin = new System.Windows.Forms.Padding(4);
+            this.txtUsername.Location = new System.Drawing.Point(15, 106);
             this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(669, 22);
+            this.txtUsername.Size = new System.Drawing.Size(503, 20);
             this.txtUsername.TabIndex = 2;
             // 
             // lblPass
@@ -103,10 +99,9 @@
             this.lblPass.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblPass.AutoSize = true;
-            this.lblPass.Location = new System.Drawing.Point(17, 158);
-            this.lblPass.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblPass.Location = new System.Drawing.Point(13, 128);
             this.lblPass.Name = "lblPass";
-            this.lblPass.Size = new System.Drawing.Size(69, 17);
+            this.lblPass.Size = new System.Drawing.Size(53, 13);
             this.lblPass.TabIndex = 6;
             this.lblPass.Text = "Password";
             // 
@@ -114,11 +109,10 @@
             // 
             this.txtPassword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPassword.Location = new System.Drawing.Point(20, 178);
-            this.txtPassword.Margin = new System.Windows.Forms.Padding(4);
+            this.txtPassword.Location = new System.Drawing.Point(15, 145);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '*';
-            this.txtPassword.Size = new System.Drawing.Size(669, 22);
+            this.txtPassword.Size = new System.Drawing.Size(503, 20);
             this.txtPassword.TabIndex = 3;
             this.txtPassword.UseSystemPasswordChar = true;
             // 
@@ -127,10 +121,9 @@
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
-            this.btnCancel.Location = new System.Drawing.Point(592, 382);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
+            this.btnCancel.Location = new System.Drawing.Point(444, 310);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(100, 30);
+            this.btnCancel.Size = new System.Drawing.Size(75, 24);
             this.btnCancel.TabIndex = 11;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -140,12 +133,10 @@
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnSave.Image = global::CodeFlow.Properties.Resources.save_16xLG;
-            this.btnSave.Location = new System.Drawing.Point(484, 382);
-            this.btnSave.Margin = new System.Windows.Forms.Padding(4);
+            this.btnSave.Location = new System.Drawing.Point(363, 310);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(100, 30);
+            this.btnSave.Size = new System.Drawing.Size(75, 24);
             this.btnSave.TabIndex = 10;
             this.btnSave.Text = "Save";
             this.btnSave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -157,10 +148,9 @@
             this.cmbServers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbServers.FormattingEnabled = true;
-            this.cmbServers.Location = new System.Drawing.Point(20, 79);
-            this.cmbServers.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbServers.Location = new System.Drawing.Point(15, 64);
             this.cmbServers.Name = "cmbServers";
-            this.cmbServers.Size = new System.Drawing.Size(669, 24);
+            this.cmbServers.Size = new System.Drawing.Size(503, 21);
             this.cmbServers.TabIndex = 1;
             this.cmbServers.SelectedIndexChanged += new System.EventHandler(this.cmbServers_SelectedIndexChanged);
             this.cmbServers.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cmbServers_MouseClick);
@@ -170,10 +160,9 @@
             this.cmbDb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbDb.FormattingEnabled = true;
-            this.cmbDb.Location = new System.Drawing.Point(21, 226);
-            this.cmbDb.Margin = new System.Windows.Forms.Padding(4);
+            this.cmbDb.Location = new System.Drawing.Point(16, 184);
             this.cmbDb.Name = "cmbDb";
-            this.cmbDb.Size = new System.Drawing.Size(669, 24);
+            this.cmbDb.Size = new System.Drawing.Size(503, 21);
             this.cmbDb.TabIndex = 4;
             this.cmbDb.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cmbDb_MouseClick);
             // 
@@ -181,10 +170,9 @@
             // 
             this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRefresh.Image = global::CodeFlow.Properties.Resources.refresh_16xLG;
-            this.btnRefresh.Location = new System.Drawing.Point(376, 382);
-            this.btnRefresh.Margin = new System.Windows.Forms.Padding(4);
+            this.btnRefresh.Location = new System.Drawing.Point(282, 310);
             this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(100, 30);
+            this.btnRefresh.Size = new System.Drawing.Size(75, 24);
             this.btnRefresh.TabIndex = 9;
             this.btnRefresh.Text = "Refresh";
             this.btnRefresh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -195,10 +183,9 @@
             // 
             this.btnTry.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnTry.Image = global::CodeFlow.Properties.Resources.UserTrigger_16x;
-            this.btnTry.Location = new System.Drawing.Point(20, 382);
-            this.btnTry.Margin = new System.Windows.Forms.Padding(4);
+            this.btnTry.Location = new System.Drawing.Point(15, 310);
             this.btnTry.Name = "btnTry";
-            this.btnTry.Size = new System.Drawing.Size(96, 30);
+            this.btnTry.Size = new System.Drawing.Size(72, 24);
             this.btnTry.TabIndex = 8;
             this.btnTry.Text = "Try it!";
             this.btnTry.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -209,10 +196,9 @@
             // 
             this.txtGenioUser.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtGenioUser.Location = new System.Drawing.Point(20, 273);
-            this.txtGenioUser.Margin = new System.Windows.Forms.Padding(4);
+            this.txtGenioUser.Location = new System.Drawing.Point(15, 222);
             this.txtGenioUser.Name = "txtGenioUser";
-            this.txtGenioUser.Size = new System.Drawing.Size(669, 22);
+            this.txtGenioUser.Size = new System.Drawing.Size(503, 20);
             this.txtGenioUser.TabIndex = 5;
             // 
             // lblGenioUser
@@ -220,10 +206,9 @@
             this.lblGenioUser.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblGenioUser.AutoSize = true;
-            this.lblGenioUser.Location = new System.Drawing.Point(17, 254);
-            this.lblGenioUser.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblGenioUser.Location = new System.Drawing.Point(13, 206);
             this.lblGenioUser.Name = "lblGenioUser";
-            this.lblGenioUser.Size = new System.Drawing.Size(80, 17);
+            this.lblGenioUser.Size = new System.Drawing.Size(60, 13);
             this.lblGenioUser.TabIndex = 10;
             this.lblGenioUser.Text = "User Genio";
             // 
@@ -231,10 +216,9 @@
             // 
             this.txtConfigName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtConfigName.Location = new System.Drawing.Point(21, 31);
-            this.txtConfigName.Margin = new System.Windows.Forms.Padding(4);
+            this.txtConfigName.Location = new System.Drawing.Point(16, 25);
             this.txtConfigName.Name = "txtConfigName";
-            this.txtConfigName.Size = new System.Drawing.Size(669, 22);
+            this.txtConfigName.Size = new System.Drawing.Size(503, 20);
             this.txtConfigName.TabIndex = 0;
             // 
             // lblConfigName
@@ -242,10 +226,9 @@
             this.lblConfigName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblConfigName.AutoSize = true;
-            this.lblConfigName.Location = new System.Drawing.Point(17, 11);
-            this.lblConfigName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblConfigName.Location = new System.Drawing.Point(13, 9);
             this.lblConfigName.Name = "lblConfigName";
-            this.lblConfigName.Size = new System.Drawing.Size(131, 17);
+            this.lblConfigName.Size = new System.Drawing.Size(98, 13);
             this.lblConfigName.TabIndex = 0;
             this.lblConfigName.Text = "Configuration name";
             // 
@@ -253,10 +236,9 @@
             // 
             this.txtGenioPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtGenioPath.Location = new System.Drawing.Point(20, 321);
-            this.txtGenioPath.Margin = new System.Windows.Forms.Padding(4);
+            this.txtGenioPath.Location = new System.Drawing.Point(15, 261);
             this.txtGenioPath.Name = "txtGenioPath";
-            this.txtGenioPath.Size = new System.Drawing.Size(561, 22);
+            this.txtGenioPath.Size = new System.Drawing.Size(422, 20);
             this.txtGenioPath.TabIndex = 6;
             // 
             // lblGenioPath
@@ -264,20 +246,18 @@
             this.lblGenioPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblGenioPath.AutoSize = true;
-            this.lblGenioPath.Location = new System.Drawing.Point(17, 302);
-            this.lblGenioPath.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblGenioPath.Location = new System.Drawing.Point(13, 245);
             this.lblGenioPath.Name = "lblGenioPath";
-            this.lblGenioPath.Size = new System.Drawing.Size(78, 17);
+            this.lblGenioPath.Size = new System.Drawing.Size(59, 13);
             this.lblGenioPath.TabIndex = 12;
             this.lblGenioPath.Text = "Genio path";
             // 
             // chkProd
             // 
             this.chkProd.AutoSize = true;
-            this.chkProd.Location = new System.Drawing.Point(21, 353);
-            this.chkProd.Margin = new System.Windows.Forms.Padding(4);
+            this.chkProd.Location = new System.Drawing.Point(16, 287);
             this.chkProd.Name = "chkProd";
-            this.chkProd.Size = new System.Drawing.Size(146, 21);
+            this.chkProd.Size = new System.Drawing.Size(112, 17);
             this.chkProd.TabIndex = 7;
             this.chkProd.Text = "Production system";
             this.chkProd.UseVisualStyleBackColor = true;
@@ -286,10 +266,9 @@
             // 
             this.btnRules.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnRules.Image = global::CodeFlow.Properties.Resources.Rule_16x;
-            this.btnRules.Location = new System.Drawing.Point(124, 382);
-            this.btnRules.Margin = new System.Windows.Forms.Padding(4);
+            this.btnRules.Location = new System.Drawing.Point(93, 310);
             this.btnRules.Name = "btnRules";
-            this.btnRules.Size = new System.Drawing.Size(115, 30);
+            this.btnRules.Size = new System.Drawing.Size(86, 24);
             this.btnRules.TabIndex = 13;
             this.btnRules.Text = "Rules";
             this.btnRules.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -299,10 +278,9 @@
             // btnSelectFolder
             // 
             this.btnSelectFolder.Image = global::CodeFlow.Properties.Resources.folder_Open_16xLG;
-            this.btnSelectFolder.Location = new System.Drawing.Point(589, 317);
-            this.btnSelectFolder.Margin = new System.Windows.Forms.Padding(4);
+            this.btnSelectFolder.Location = new System.Drawing.Point(442, 258);
             this.btnSelectFolder.Name = "btnSelectFolder";
-            this.btnSelectFolder.Size = new System.Drawing.Size(100, 30);
+            this.btnSelectFolder.Size = new System.Drawing.Size(75, 24);
             this.btnSelectFolder.TabIndex = 14;
             this.btnSelectFolder.Text = "Select";
             this.btnSelectFolder.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -311,10 +289,10 @@
             // 
             // ProfileForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(703, 422);
+            this.ClientSize = new System.Drawing.Size(527, 343);
             this.Controls.Add(this.btnSelectFolder);
             this.Controls.Add(this.btnRules);
             this.Controls.Add(this.chkProd);
@@ -338,7 +316,6 @@
             this.Controls.Add(this.lblServerName);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ProfileForm";

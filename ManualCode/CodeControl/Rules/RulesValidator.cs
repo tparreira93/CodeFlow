@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CodeFlow.Genio
+namespace CodeFlow.CodeControl.Rules
 {
     public class RulesValidator
     {
@@ -15,31 +15,31 @@ namespace CodeFlow.Genio
         {
         }
         
-        public IRule ValidateRules(Profile profile, IChange change)
+        public ICodeRule ValidateRules(Profile profile, IChange change)
         {
-            List<IRule> rulesToValidate = new List<IRule>();
+            List<ICodeRule> rulesToValidate = new List<ICodeRule>();
             rulesToValidate.AddRange(profile.ProfileRules);
             rulesToValidate.AddRange(GetDefaultRules());
 
             foreach (var rule in rulesToValidate)
             {
-                if (!rule.Validate(change))
+                if (rule.Validate(change))
                     return rule;
             }
 
             return null;
         }
 
-        public List<IRule> GetDefaultRules()
+        public List<ICodeRule> GetDefaultRules()
         {
             Dictionary<RuleProvider, Type> providers = Util.GetAtrributes<RuleProvider>();
             List<Type> types = providers.Where(entry => entry.Key.IsDefaultType).Select(entry => entry.Value).ToList();
-            List<IRule> rules = new List<IRule>();
+            List<ICodeRule> rules = new List<ICodeRule>();
 
             foreach (var item in types)
             {
                 ConstructorInfo constructor = item.GetConstructor(new Type[] { });
-                IRule r = constructor?.Invoke(null) as IRule;
+                ICodeRule r = constructor?.Invoke(null) as ICodeRule;
                 rules.Add(r);
             }
 

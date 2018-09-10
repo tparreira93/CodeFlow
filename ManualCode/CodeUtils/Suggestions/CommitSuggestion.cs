@@ -1,24 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using CodeFlow.CodeControl;
+using CodeFlow.ManualOperations;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using CodeFlow.CodeControl.Analyzer;
 using CodeFlow.GenioManual;
-using CodeFlow.ManualOperations;
 
-namespace CodeFlow.CodeUtils
+namespace CodeFlow.CodeUtils.Suggestions
 {
-    internal class CompareDBSuggestion : ISuggestedAction
+    internal class CommitSuggestion : ISuggestedAction
     {
         private readonly IManual _manual;
         private readonly string _display;
 
-        public CompareDBSuggestion(IManual manual)
+        public CommitSuggestion(IManual manual)
         {
             _manual = manual;
-            _display = string.Format("Compare manual code");
+            _display = string.Format("Commit manual code");
         }
 
         public string DisplayText
@@ -89,17 +93,22 @@ namespace CodeFlow.CodeUtils
             {
                 return;
             }
-
-            try
+            if (_manual is ManuaCode)
             {
-                _manual.CompareDB(PackageOperations.Instance.GetActiveProfile());
+                try
+                {
+                    ChangeAnalyzer diffs = new ChangeAnalyzer();
+                    diffs.CheckForDifferences(_manual, PackageOperations.Instance.GetActiveProfile());
+                    CommitForm exportForm = new CommitForm(diffs);
+                    exportForm.Show();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
+                        Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                }
             }
-            catch(Exception ex)
-            {
-                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
-                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-            }
-}
+        }
 
         public bool TryGetTelemetryId(out Guid telemetryId)
         {

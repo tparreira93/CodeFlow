@@ -94,7 +94,9 @@ namespace CodeFlow.Commands
             if (!string.IsNullOrEmpty(code))
             {
                 ManuaCode man = new ManuaCode(code);
-                man.LocalFileName = PackageOperations.Instance.DTE.ActiveDocument.Name;
+                ManualMatch manualMatch = new ManualMatch();
+                manualMatch.FullFileName = PackageOperations.Instance.DTE.ActiveDocument.FullName;
+                man.LocalMatch = manualMatch;
                 CreateInGenioForm genioForm = new CreateInGenioForm(man);
                 genioForm.ShowDialog();
                 if(genioForm.DialogResult == System.Windows.Forms.DialogResult.OK)

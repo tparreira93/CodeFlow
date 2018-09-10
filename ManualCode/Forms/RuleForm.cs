@@ -1,4 +1,4 @@
-﻿using CodeFlow.Genio;
+﻿using CodeFlow.CodeControl.Rules;
 using CodeFlow.Utils;
 using System;
 using System.Collections.Generic;
@@ -15,14 +15,12 @@ namespace CodeFlow.Forms
 {
     public partial class RuleForm : Form
     {
-        public IRule R { get; private set; }
-        public RuleForm(IRule r)
+        public ICodeRule R { get; private set; }
+        public RuleForm(ICodeRule r)
         {
             InitializeComponent();
-            ConstructorInfo constructor = r.GetType().GetConstructor(new Type[] { });
-            R = constructor.Invoke(null) as IRule;
-
-            Util.CopyFrom(r.GetType(), r, R);
+            if(r is CodeRule rule)
+                R = (CodeRule)rule.Clone();
         }
         public RuleForm()
         {
@@ -47,8 +45,9 @@ namespace CodeFlow.Forms
                 ConstructorInfo constructor = t.GetConstructor(new Type[] { });
                 if (constructor != null)
                 {
-                    R = constructor.Invoke(null) as IRule;
+                    R = constructor.Invoke(null) as ICodeRule;
                     R.Pattern = txtPattern.Text;
+                    R.CommitDefault = chkCommit.Checked;
                 }
             }
             this.Close();
@@ -84,6 +83,7 @@ namespace CodeFlow.Forms
                 int pos = FindType(provider.RuleName);
                 if (pos != -1)
                     cmbType.SelectedIndex = pos;
+                txtPattern.Text = R.Pattern;
             }
         }
     }

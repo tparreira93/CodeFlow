@@ -120,7 +120,7 @@ namespace CodeFlow.GenioManual
                     MatchLength = end,
                     MatchType = matchType,
                     VsCodeSnapshot = this.VsCodeSnapshot,
-                    LocalFileName = FileName,
+                    FullFileName = FileName,
                     CodeStart = i + Util.NewLine.Length
                 };
 

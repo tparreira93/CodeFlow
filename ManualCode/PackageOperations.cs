@@ -239,7 +239,7 @@ namespace CodeFlow
         }
         public void OpenManualFile(IManual man, bool autoExport)
         {
-            var tmp = $"{Path.GetTempPath()}{Guid.NewGuid()}.{man.GetCodeExtension(ActiveProfile)}";
+            var tmp = $"{Path.GetTempPath()}{man.CodeId}.{man.GetCodeExtension(ActiveProfile)}";
             File.WriteAllText(tmp, man.ToString(), Encoding.UTF8);
 
             if(autoExport)
@@ -270,13 +270,25 @@ namespace CodeFlow
             }
             return man;
         }
-        public void OpenOnPosition(string fileName, int position)
+        public bool OpenOnPosition(string fileName, int position)
         {
-            Window window = DTE.ItemOperations.OpenFile(fileName);
-            window.Activate();
+            try
+            {
+                Window window = DTE.ItemOperations.OpenFile(fileName);
+                window.Activate();
 
-            TextSelection textSelection = window.Document.Selection as TextSelection;
-            textSelection.MoveToLineAndOffset(position, 1);
+                CommandHandler.CommandHandler command = new CommandHandler.CommandHandler();
+                command.GetCurrentViewText(out int pos, out Microsoft.VisualStudio.Text.Editor.IWpfTextView textView);
+                int linePos = textView.TextSnapshot.GetLineNumberFromPosition(position);
+
+                TextSelection textSelection = window.Document.Selection as TextSelection;
+                textSelection.MoveToLineAndOffset(linePos, 1);
+            }
+            catch (Exception) {
+                return false;
+            }
+
+            return true;
         }
 
         private static Encoding GetFileEncoding()

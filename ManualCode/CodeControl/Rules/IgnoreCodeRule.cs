@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CodeFlow.Genio
+namespace CodeFlow.CodeControl.Rules
 {
     [RuleProvider("IgnoreCodeRule", true)]
     class IgnoreCodeRule : MatchPatternRule
     {
-        public const string IGORE_STRING = "INGNORE_THIS_CODE";
+        public const string IGNORE_STRING = "INGNORE_THIS_CODE";
 
-        public IgnoreCodeRule() : base(IGORE_STRING)
+        public IgnoreCodeRule() : base(IGNORE_STRING, false)
         {
         }
 

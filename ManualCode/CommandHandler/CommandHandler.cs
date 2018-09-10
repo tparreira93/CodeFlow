@@ -52,10 +52,10 @@ namespace CodeFlow.CommandHandler
             {
                 var pos = -1;
                 code = GetCurrentViewText(out pos, out IWpfTextView _);
-                vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, dte.ActiveDocument.Name);
+                vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, dte.ActiveDocument.FullName);
             }
             else
-                vSCodeManualMatcher = new VSCodeManualMatcher(code, dte.ActiveDocument.Name);
+                vSCodeManualMatcher = new VSCodeManualMatcher(code, dte.ActiveDocument.FullName);
 
             manual = vSCodeManualMatcher.Match();
 
@@ -64,7 +64,7 @@ namespace CodeFlow.CommandHandler
         public bool ImportAndEditCurrentTag()
         {
             string code = GetCurrentViewText(out int pos, out IWpfTextView textView);
-            VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageOperations.Instance.DTE.ActiveDocument.Name);
+            VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageOperations.Instance.DTE.ActiveDocument.FullName);
             List<IManual> codeList = vSCodeManualMatcher.Match();
             if (codeList.Count == 1)
             {

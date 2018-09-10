@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlow.GenioManual;
 
-namespace CodeFlow.CodeUtils
+namespace CodeFlow.CodeUtils.Suggestions
 {
 
     internal class OpenSVNSuggestion : ISuggestedAction

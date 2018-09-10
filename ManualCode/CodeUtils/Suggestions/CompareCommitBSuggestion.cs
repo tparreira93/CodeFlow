@@ -12,7 +12,7 @@ using CodeFlow.GenioManual;
 using CodeFlow.ManualOperations;
 using Microsoft.VisualStudio.Language.Intellisense;
 
-namespace CodeFlow.CodeUtils
+namespace CodeFlow.CodeUtils.Suggestions
 {
     internal class CompareCommitBSuggestion : ISuggestedAction
     {

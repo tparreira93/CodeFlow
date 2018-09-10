@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CodeFlow.Genio
+namespace CodeFlow.CodeControl.Rules
 {
     public class RuleProvider : Attribute
     {

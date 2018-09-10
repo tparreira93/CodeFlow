@@ -248,11 +248,11 @@ namespace CodeFlow
 
         private void AddListItem(IChange diff, Color c, bool chk)
         {
+            string ruleName = diff.FlagedRule != null ? diff.FlagedRule.GetRuleName() : "";
             ListViewItem item = new ListViewItem(diff.GetDescription());
             item.SubItems.Add(diff.Merged.LocalFileName);
+            item.SubItems.Add(ruleName);
             item.SubItems.Add(diff.Merged.ShortOneLineCode());
-            if (diff.FlagedRule != null)
-                item.SubItems.Add(diff.FlagedRule.GetRuleName());
             item.ImageIndex = GetImageIndex(diff);
             item.Tag = diff;
             item.Checked = chk;
@@ -264,6 +264,7 @@ namespace CodeFlow
         {
             ListViewItem item = new ListViewItem(conf.DifferenceList.AsList[0].GetDescription());
             item.SubItems.Add(conf.DifferenceList.AsList[0].Merged.LocalFileName);
+            item.SubItems.Add("");
             item.SubItems.Add(conf.DifferenceList.AsList[0].Merged.ShortOneLineCode());
             item.ImageIndex = GetImageIndex(conf);
             item.Tag = conf;
@@ -330,7 +331,7 @@ namespace CodeFlow
 
         private void GoToManualCodePosition(IChange change)
         {
-            PackageOperations.Instance.OpenOnPosition(change.Mine.LocalFileName, change.Mine.LocalMatch.CodeStart);
+            PackageOperations.Instance.OpenOnPosition(change.Mine.FullFileName, change.Mine.LocalMatch.CodeStart);
         }
 
         private void goToPositionToolStrip_Click(object sender, EventArgs e)

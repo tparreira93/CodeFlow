@@ -85,6 +85,7 @@
             this.lstRules.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.chType,
             this.chRule});
+            this.lstRules.FullRowSelect = true;
             this.lstRules.GridLines = true;
             this.lstRules.Location = new System.Drawing.Point(13, 13);
             this.lstRules.Name = "lstRules";
@@ -104,7 +105,7 @@
             this.chRule.Text = "Rule";
             this.chRule.Width = 408;
             // 
-            // ProfileRule
+            // ProfileRules
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -114,7 +115,7 @@
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.btnExit);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "ProfileRule";
+            this.Name = "ProfileRules";
             this.Text = "Rules";
             this.Load += new System.EventHandler(this.ProfileRule_Load);
             this.ResumeLayout(false);

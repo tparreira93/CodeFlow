@@ -20,7 +20,8 @@ namespace CodeFlow.GenioManual
         string ChangedBy { get; set; }
         string TipoCodigo { get; }
         string Tipo { get; }
-        string LocalFileName { get; set; }
+        string LocalFileName { get; }
+        string FullFileName { get; }
         string GetCodeExtension(Profile p);
         string OneLineCode { get; }
         ManualMatch LocalMatch { get; set; }

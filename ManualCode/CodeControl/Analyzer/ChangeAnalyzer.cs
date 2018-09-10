@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using CodeFlow.Genio;
+using CodeFlow.CodeControl.Rules;
 using CodeFlow.GenioManual;
 using CodeFlow.ManualOperations;
 
@@ -28,7 +28,7 @@ namespace CodeFlow.CodeControl.Analyzer
             {
                 // Codigo foi apagado por isso criamos um vazio
                 IChange diff = new CodeNotFound(toCheck);
-                IRule rule = validator.ValidateRules(profile, diff);
+                ICodeRule rule = validator.ValidateRules(profile, diff);
                 Modifications.AsList.Add(diff);
             }
             else

@@ -1,40 +1,37 @@
-﻿using CodeFlow.ManualOperations;
+﻿using CodeFlow.CodeControl;
+using CodeFlow.ManualOperations;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CodeFlow.CodeControl.Analyzer;
+using CodeFlow.GenioManual;
 
-namespace CodeFlow.CodeUtils
+namespace CodeFlow.CodeUtils.Suggestions
 {
-    internal class UpdateSuggestion : ISuggestedAction
+    internal class BlameSVNSuggestion : ISuggestedAction
     {
-        private readonly Guid codmanua;
-        private readonly string display;
-        private readonly ITextBuffer textBuffer;
-        private readonly ITextView textView;
-        private readonly int begin;
-        private readonly int end;
+        private readonly IManual _manual;
+        private readonly Profile _profile;
+        private readonly string _display;
 
-        public UpdateSuggestion(int begin, int end, ITextView textView, ITextBuffer textBuffer, Guid codmanua)
+        public BlameSVNSuggestion(IManual manual, Profile profile)
         {
-            this.textBuffer = textBuffer;
-            this.textView = textView;
-            this.codmanua = codmanua;
-            this.begin = begin;
-            this.end = end;
-            this.display = string.Format("Update manual code.");
+            _manual = manual;
+            _profile = profile;
+            _display = string.Format("Open SVN and blame manual file for current code.");
         }
 
         public string DisplayText
         {
             get
             {
-                return display;
+                return _display;
             }
         }
 
@@ -98,14 +95,9 @@ namespace CodeFlow.CodeUtils
             {
                 return;
             }
-
             try
             {
-                ManuaCode bd = ManuaCode.GetManual(PackageOperations.Instance.GetActiveProfile(), codmanua);
-                if (bd == null)
-                    return;
-                CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-                handler.EditCodeSegment(textView.TextBuffer, begin, end, bd.Code);
+                _manual.Blame(_profile);
             }
             catch (Exception ex)
             {

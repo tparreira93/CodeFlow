@@ -6,21 +6,25 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CodeFlow.CodeControl;
 
-namespace CodeFlow.Genio
+namespace CodeFlow.CodeControl.Rules
 {
     [RuleProvider("MatchPatternRule", false)]
-    public class MatchPatternRule : Rule
+    public class MatchPatternRule : CodeRule
     {
         public MatchPatternRule() : base()
         {
         }
 
-        public MatchPatternRule(string pattern) : base(pattern)
+        public MatchPatternRule(string pattern, bool commitDefault) : base(pattern, commitDefault)
         {
         }
         public override string Description { get => string.Format("Matches code with the following pattern {0}", Pattern); }
-
-        public override bool CommitDefault => false;
+        
+        public override object Clone()
+        {
+            MatchPatternRule rule = new MatchPatternRule(this.Pattern, this.CommitDefault);
+            return rule;
+        }
 
         public override bool Validate(IChange modification)
         {

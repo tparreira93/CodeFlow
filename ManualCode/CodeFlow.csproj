@@ -85,7 +85,7 @@
     <Compile Include="CodeControl\Changes\IChange.cs" />
     <Compile Include="CodeControl\Operations\IOperation.cs" />
     <Compile Include="CodeControl\Operations\OperationLog.cs" />
-    <Compile Include="CodeUtils\BlameSVNSuggestion.cs" />
+    <Compile Include="CodeUtils\Suggestions\BlameSVNSuggestion.cs" />
     <Compile Include="Commands\ViewVersionsCommand.cs" />
     <Compile Include="Forms\ProfileRules.cs">
       <SubType>Form</SubType>
@@ -105,20 +105,20 @@
     <Compile Include="Forms\SelectParametersForm.Designer.cs">
       <DependentUpon>SelectParametersForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Genio\MatchPatternRule.cs" />
-    <Compile Include="Genio\IgnoreCodeRule.cs" />
-    <Compile Include="Genio\IRule.cs" />
-    <Compile Include="Genio\Rule.cs" />
-    <Compile Include="Genio\RuleProvider.cs" />
-    <Compile Include="Genio\RulesValidator.cs" />
+    <Compile Include="CodeControl\Rules\MatchPatternRule.cs" />
+    <Compile Include="CodeControl\Rules\IgnoreCodeRule.cs" />
+    <Compile Include="CodeControl\Rules\ICodeRule.cs" />
+    <Compile Include="CodeControl\Rules\CodeRule.cs" />
+    <Compile Include="CodeControl\Rules\RuleProvider.cs" />
+    <Compile Include="CodeControl\Rules\RulesValidator.cs" />
     <Compile Include="Versions\CodeFlowVersionInfo.cs" />
     <Compile Include="Versions\CodeFlowVersions.cs" />
-    <Compile Include="CodeUtils\CompareDBSuggestion.cs" />
-    <Compile Include="CodeUtils\CompareCommitBSuggestion.cs" />
-    <Compile Include="CodeUtils\CommitSuggestion.cs" />
-    <Compile Include="CodeUtils\UpdateSuggestion.cs" />
-    <Compile Include="CodeUtils\LightBulbUtils.cs" />
-    <Compile Include="CodeUtils\OpenSVNSuggestion.cs" />
+    <Compile Include="CodeUtils\Suggestions\CompareDBSuggestion.cs" />
+    <Compile Include="CodeUtils\Suggestions\CompareCommitBSuggestion.cs" />
+    <Compile Include="CodeUtils\Suggestions\CommitSuggestion.cs" />
+    <Compile Include="CodeUtils\Suggestions\UpdateSuggestion.cs" />
+    <Compile Include="CodeUtils\Suggestions\LightBulbUtils.cs" />
+    <Compile Include="CodeUtils\Suggestions\OpenSVNSuggestion.cs" />
     <Compile Include="CommandHandler\CommandHandler.cs" />
     <Compile Include="Commands\FixVS2008Solution.cs" />
     <Compile Include="Commands\CodeContextMenu.cs" />
@@ -203,8 +203,8 @@
     <Compile Include="Commands\ManageProfiles.cs" />
     <Compile Include="CodeFlowPackage.cs" />
     <Compile Include="GenioManual\Manual.cs" />
-    <Compile Include="CodeUtils\ManualHighlight.cs" />
-    <Compile Include="CodeUtils\ManualHighlightTextViewCreationListener.cs" />
+    <Compile Include="CodeUtils\Highlighter\ManualHighlight.cs" />
+    <Compile Include="CodeUtils\Highlighter\ManualHighlightTextViewCreationListener.cs" />
     <Compile Include="Genio\Profile.cs" />
     <Compile Include="Forms\ProfilesForm.cs">
       <SubType>Form</SubType>

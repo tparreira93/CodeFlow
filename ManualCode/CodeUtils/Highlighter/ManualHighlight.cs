@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using CodeFlow.ManualOperations;
 using CodeFlow.GenioManual;
 
-namespace CodeFlow.CodeUtils
+namespace CodeFlow.CodeUtils.Highlighter
 {
     /// <summary>
     /// ManualHighlight places red boxes behind all the "a"s in the editor window

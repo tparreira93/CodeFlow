@@ -36,6 +36,9 @@
             this.clOperation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clFile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clCode = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chRule = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.contextLstCode = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.goToPositionToolStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.lblServer = new System.Windows.Forms.ToolStripStatusLabel();
@@ -52,11 +55,8 @@
             this.lblColors = new System.Windows.Forms.Label();
             this.lblDivis = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.contextLstCode = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.goToPositionToolStrip = new System.Windows.Forms.ToolStripMenuItem();
-            this.chRule = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.statusStrip.SuspendLayout();
             this.contextLstCode.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -98,8 +98,9 @@
             this.lstCode.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.clOperation,
             this.clFile,
-            this.clCode,
-            this.chRule});
+            this.chRule,
+            this.clCode});
+            this.lstCode.ContextMenuStrip = this.contextLstCode;
             this.lstCode.FullRowSelect = true;
             this.lstCode.GridLines = true;
             this.lstCode.Location = new System.Drawing.Point(12, 12);
@@ -131,6 +132,25 @@
             this.clCode.Tag = "clCode";
             this.clCode.Text = "Code";
             this.clCode.Width = 424;
+            // 
+            // chRule
+            // 
+            this.chRule.Text = "Flagged rule";
+            this.chRule.Width = 91;
+            // 
+            // contextLstCode
+            // 
+            this.contextLstCode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.goToPositionToolStrip});
+            this.contextLstCode.Name = "contextLstCode";
+            this.contextLstCode.Size = new System.Drawing.Size(150, 26);
+            // 
+            // goToPositionToolStrip
+            // 
+            this.goToPositionToolStrip.Name = "goToPositionToolStrip";
+            this.goToPositionToolStrip.Size = new System.Drawing.Size(149, 22);
+            this.goToPositionToolStrip.Text = "Go to position";
+            this.goToPositionToolStrip.Click += new System.EventHandler(this.goToPositionToolStrip_Click);
             // 
             // imageList1
             // 
@@ -316,25 +336,6 @@
             this.label1.TabIndex = 19;
             this.label1.Text = "|";
             // 
-            // contextLstCode
-            // 
-            this.contextLstCode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.goToPositionToolStrip});
-            this.contextLstCode.Name = "contextLstCode";
-            this.contextLstCode.Size = new System.Drawing.Size(150, 26);
-            // 
-            // goToPositionToolStrip
-            // 
-            this.goToPositionToolStrip.Name = "goToPositionToolStrip";
-            this.goToPositionToolStrip.Size = new System.Drawing.Size(149, 22);
-            this.goToPositionToolStrip.Text = "Go to position";
-            this.goToPositionToolStrip.Click += new System.EventHandler(this.goToPositionToolStrip_Click);
-            // 
-            // chRule
-            // 
-            this.chRule.Text = "Flagged rule";
-            this.chRule.Width = 91;
-            // 
             // CommitForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -362,9 +363,9 @@
             this.Text = "Commit";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExportForm_FormClosing);
             this.Load += new System.EventHandler(this.ExportForm_Load);
+            this.contextLstCode.ResumeLayout(false);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
-            this.contextLstCode.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

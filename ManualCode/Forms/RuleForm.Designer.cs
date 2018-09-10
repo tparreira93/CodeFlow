@@ -34,6 +34,7 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.cmbType = new System.Windows.Forms.ComboBox();
+            this.chkCommit = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblType
@@ -101,11 +102,22 @@
             this.cmbType.Size = new System.Drawing.Size(499, 21);
             this.cmbType.TabIndex = 15;
             // 
+            // chkCommit
+            // 
+            this.chkCommit.AutoSize = true;
+            this.chkCommit.Location = new System.Drawing.Point(10, 88);
+            this.chkCommit.Name = "chkCommit";
+            this.chkCommit.Size = new System.Drawing.Size(109, 17);
+            this.chkCommit.TabIndex = 16;
+            this.chkCommit.Text = "Commit by default";
+            this.chkCommit.UseVisualStyleBackColor = true;
+            // 
             // RuleForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(522, 124);
+            this.Controls.Add(this.chkCommit);
             this.Controls.Add(this.cmbType);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnCancel);
@@ -127,5 +139,6 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ComboBox cmbType;
+        private System.Windows.Forms.CheckBox chkCommit;
     }
 }

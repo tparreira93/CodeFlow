@@ -12,7 +12,7 @@ using System.Threading;
 using CodeFlow.GenioManual;
 using CodeFlow.ManualOperations;
 
-namespace CodeFlow.CodeUtils
+namespace CodeFlow.CodeUtils.Suggestions
 {
     [Export(typeof(ISuggestedActionsSourceProvider))]
     [Name("Code flow suggestions")]
@@ -54,7 +54,7 @@ namespace CodeFlow.CodeUtils
             if (String.IsNullOrEmpty(handler.GetCurrentSelection()))
             {
                 string code = handler.GetCurrentViewText(out int pos, out IWpfTextView _);
-                VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageOperations.Instance.DTE.ActiveDocument.Name);
+                VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageOperations.Instance.DTE.ActiveDocument.FullName);
                 List<IManual> codeList = vSCodeManualMatcher.Match();
 
                 if (codeList.Count == 1)

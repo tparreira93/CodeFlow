@@ -1,4 +1,4 @@
-﻿using CodeFlow.Genio;
+﻿using CodeFlow.CodeControl.Rules;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,7 +38,7 @@ namespace CodeFlow.Forms
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
-            IRule rule = GetSelectedItem();
+            ICodeRule rule = GetSelectedItem();
             if (rule == null)
                 return;
 
@@ -53,7 +53,7 @@ namespace CodeFlow.Forms
 
         private void lstRules_DoubleClick(object sender, EventArgs e)
         {
-            IRule rule = GetSelectedItem();
+            ICodeRule rule = GetSelectedItem();
             if (rule != null)
             {
                 RuleForm form = new RuleForm(rule);
@@ -78,15 +78,16 @@ namespace CodeFlow.Forms
                 {
                     ListViewItem item = new ListViewItem(provider.RuleName);
                     item.SubItems.Add(rule.Description);
+                    item.Tag = rule;
                     lstRules.Items.Add(item);
                 }
             }
         }
 
-        private IRule GetSelectedItem()
+        private ICodeRule GetSelectedItem()
         {
             if (lstRules.SelectedItems.Count == 1)
-                return lstRules.SelectedItems[0].Tag as IRule;
+                return lstRules.SelectedItems[0].Tag as ICodeRule;
             return null;
         }
     }

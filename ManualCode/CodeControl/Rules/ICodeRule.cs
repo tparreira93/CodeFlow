@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CodeFlow.Genio
+namespace CodeFlow.CodeControl.Rules
 {
-    public interface IRule
+    public interface ICodeRule
     {
         bool Validate(IChange modification);
 
         string Description { get; }
 
-        bool CommitDefault { get; }
+        bool CommitDefault { get; set; }
 
         string Pattern { get; set; }
 

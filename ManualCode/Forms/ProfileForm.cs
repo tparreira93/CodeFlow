@@ -122,11 +122,14 @@ namespace CodeFlow
             ProfileResult.GenioConfiguration.Database = cmbDb.Text ?? "";
             Profile p = PackageOperations.Instance.FindProfile(ProfileResult.ProfileName);
 
-            if (_oldProfile != null && p != null && p.ProfileID.Equals(_oldProfile.ProfileID))
+            if (_oldProfile != null && p != null && !p.ProfileID.Equals(_oldProfile.ProfileID))
                 MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration,
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
+            {
+                DialogResult = DialogResult.OK;
                 this.Close();
+            }
 
         }
 
@@ -179,7 +182,10 @@ namespace CodeFlow
         {
             FolderBrowserDialog folderDialog = new FolderBrowserDialog();
             if (folderDialog.ShowDialog() == DialogResult.OK)
+            {
                 txtGenioPath.Text = folderDialog.SelectedPath;
+                ProfileResult.GenioConfiguration.GenioPath = folderDialog.SelectedPath;
+            }
         }
     }
 }

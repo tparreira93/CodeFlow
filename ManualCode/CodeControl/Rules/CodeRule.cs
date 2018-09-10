@@ -5,27 +5,32 @@ using System.Text;
 using System.Threading.Tasks;
 using CodeFlow.CodeControl;
 
-namespace CodeFlow.Genio
+namespace CodeFlow.CodeControl.Rules
 {
-    public abstract class Rule : IRule
+    public abstract class CodeRule : ICodeRule, ICloneable
     {
-        protected Rule()
+        private string pattern;
+        protected bool commitDefault;
+
+        protected CodeRule()
         {
             Pattern = "";
+            commitDefault = false;
         }
 
-        protected Rule(string pattern)
+        protected CodeRule(string pattern, bool commitDefault)
         {
             Pattern = pattern;
+            this.commitDefault = commitDefault;
         }
 
         public abstract string Description { get; }
 
         public abstract bool Validate(IChange modification);
 
-        public abstract bool CommitDefault { get; }
+        public bool CommitDefault { get => commitDefault; set => commitDefault = value; }
 
-        public string Pattern { get; set; }
+        public string Pattern { get => pattern; set => pattern = value; }
 
         public string GetRuleName()
         {
@@ -34,5 +39,7 @@ namespace CodeFlow.Genio
                 return provider.RuleName;
             return "";
         }
+
+        public abstract object Clone();
     }
 }
