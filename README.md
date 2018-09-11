@@ -1,4 +1,6 @@
 # Code Flow
+[![Build status](https://ci.appveyor.com/api/projects/status/euofrovmpm2v7ecd?svg=true)](https://ci.appveyor.com/project/tparreira93/codeflow)
+
 ## Known issues
 
 *   Nothing
