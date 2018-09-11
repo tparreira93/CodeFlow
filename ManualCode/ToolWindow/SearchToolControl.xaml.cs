@@ -82,6 +82,7 @@ namespace CodeFlow.ToolWindow
 
         private void lstFindMan_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            Dispatcher.VerifyAccess();
             if (lstCode.SelectedIndex >= 0)
             {
                 try

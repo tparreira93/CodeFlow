@@ -2,12 +2,11 @@
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
-using CodeFlow.ManualOperations;
-using CodeFlow.CodeControl;
 using CodeFlow.CodeControl.Analyzer;
 using CodeFlow.GenioManual;
 using System.Windows.Forms;
 using CodeFlow.Forms;
+using Task = System.Threading.Tasks.Task;
 
 namespace CodeFlow.Commands
 {
@@ -29,14 +28,14 @@ namespace CodeFlow.Commands
         /// <summary>
         /// VS Package that provides this command, not null.
         /// </summary>
-        private readonly Package package;
+        private readonly AsyncPackage package;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommitCode"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private CommitCode(Package package)
+        private CommitCode(AsyncPackage package, OleMenuCommandService commandService)
         {
             if (package == null)
             {
@@ -44,8 +43,7 @@ namespace CodeFlow.Commands
             }
 
             this.package = package;
-
-            OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            
             if (commandService != null)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
@@ -66,7 +64,7 @@ namespace CodeFlow.Commands
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private IServiceProvider ServiceProvider
+        private IAsyncServiceProvider ServiceProvider
         {
             get
             {
@@ -78,9 +76,14 @@ namespace CodeFlow.Commands
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        public static void Initialize(Package package)
+        public static async Task InitializeAsync(AsyncPackage package)
         {
-            Instance = new CommitCode(package);
+            // Switch to the main thread - the call to AddCommand in Command1's constructor requires
+            // the UI thread.
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
+
+            OleMenuCommandService commandService = await package.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
+            Instance = new CommitCode(package, commandService);
         }
 
         /// <summary>
@@ -92,6 +95,7 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();

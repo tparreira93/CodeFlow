@@ -101,7 +101,7 @@ namespace CodeFlow
             {
                 AllProfiles.Remove(p);
                 if (AllProfiles.Count == 0)
-                    Flow.OnMenuGenioProfilesCombo(this, new OleMenuCmdEventArgs(String.Empty, IntPtr.Zero));
+                    Flow.SetProfile(String.Empty);
             }
         }
         public void SetProfile(string profileName)
@@ -189,26 +189,6 @@ namespace CodeFlow
         }
         #endregion
 
-        #region AutomationModel
-
-        public DTE GetCurrentDTE(IServiceProvider provider)
-        {
-            /*ENVDTE. */
-            DTE vs = (DTE)provider.GetService(typeof(DTE));
-            return vs;
-        }
-        public DTE GetCurrentDTE()
-        {
-            return GetCurrentDTE(/* Microsoft.VisualStudio.Shell. */ServiceProvider.GlobalProvider);
-        }
-        public DTE2 GetCurrentDTE2()
-        {
-            DTE2 dte = (DTE2)Package.GetGlobalService(typeof(SDTE));
-
-            return dte;
-        }
-        #endregion
-
         #region FileOps
 
         private void AddTempFile(string file)
@@ -267,26 +247,6 @@ namespace CodeFlow
                 }
             }
             return man;
-        }
-        public bool OpenOnPosition(string fileName, int position)
-        {
-            try
-            {
-                Window window = DTE.ItemOperations.OpenFile(fileName);
-                window.Activate();
-
-                CommandHandler.CommandHandler command = new CommandHandler.CommandHandler();
-                command.GetCurrentViewText(out int pos, out Microsoft.VisualStudio.Text.Editor.IWpfTextView textView);
-                int linePos = textView.TextSnapshot.GetLineNumberFromPosition(position);
-
-                TextSelection textSelection = window.Document.Selection as TextSelection;
-                textSelection.MoveToLineAndOffset(linePos, 1);
-            }
-            catch (Exception) {
-                return false;
-            }
-
-            return true;
         }
 
         private static Encoding GetFileEncoding()

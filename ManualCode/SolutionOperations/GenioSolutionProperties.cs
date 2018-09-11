@@ -29,6 +29,7 @@ namespace CodeFlow.SolutionOperations
 
         public static GenioSolutionProperties ParseSolution(DTE2 dte, bool loadFiles = false)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             GenioSolutionProperties properties = new GenioSolutionProperties();
 
             properties.GenioProjects = GetProjects(dte, loadFiles);
@@ -47,6 +48,7 @@ namespace CodeFlow.SolutionOperations
 
         public static void ChangeToolset2008(DTE2 dte)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             foreach (Project project in dte.Solution.Projects)
             {
                 if (project.Object != null
@@ -84,6 +86,7 @@ namespace CodeFlow.SolutionOperations
 
         private static List<GenioProjectProperties> GetProjects(DTE2 dte, bool loadFiles)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             List<GenioProjectProperties> projects = new List<GenioProjectProperties>();
             var project = dte.Solution.Projects.GetEnumerator();
 
@@ -102,6 +105,7 @@ namespace CodeFlow.SolutionOperations
         }
         private static List<GenioProjectProperties> GetProjects(DTE2 dte, Project solution, bool loadFiles)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             List<GenioProjectProperties> projs = new List<GenioProjectProperties>();
 
             for(int i = 1; i <= solution.ProjectItems.Count; i++)

@@ -331,7 +331,7 @@ namespace CodeFlow.Forms
 
         private void GoToManualCodePosition(IChange change)
         {
-            PackageOperations.Instance.OpenOnPosition(change.Mine.FullFileName, change.Mine.LocalMatch.CodeStart);
+            PackageOperations.Flow.OpenOnPosition(change.Mine.FullFileName, change.Mine.LocalMatch.CodeStart);
         }
 
         private void goToPositionToolStrip_Click(object sender, EventArgs e)

@@ -4,6 +4,8 @@ using System.IO;
 using CodeFlow.GenioManual;
 using CodeFlow.ManualOperations;
 using CodeFlow.Utils;
+using EnvDTE;
+using Microsoft;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Shell;
@@ -17,8 +19,11 @@ namespace CodeFlow.CommandHandler
     {
         public string GetCurrentViewText(out int cursorPos, out IWpfTextView textView)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var textManager = (IVsTextManager)ServiceProvider.GlobalProvider.GetService(typeof(SVsTextManager));
+            Assumes.Present(textManager);
             var componentModel = (IComponentModel)ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel));
+            Assumes.Present(componentModel);
             var editor = componentModel.GetService<IVsEditorAdaptersFactoryService>();
             textManager.GetActiveView(1, null, out IVsTextView textViewCurrent);
             textView = editor.GetWpfTextView(textViewCurrent);
@@ -29,18 +34,20 @@ namespace CodeFlow.CommandHandler
         }
         public string GetCurrentSelection()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var dte = PackageOperations.Instance.DTE;
             string code = "";
 
             if (dte != null && dte.ActiveDocument != null)
             {
-                var selection = (EnvDTE.TextSelection)dte.ActiveDocument.Selection;
+                var selection = (TextSelection)dte.ActiveDocument.Selection;
                 code = selection.Text;
             }
             return code;
         }
         public List<IManual> SearchForTags()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var dte = PackageOperations.Instance.DTE;
             List<IManual> manual = new List<IManual>();
             if (dte?.ActiveDocument == null)
@@ -63,6 +70,7 @@ namespace CodeFlow.CommandHandler
         }
         public bool ImportAndEditCurrentTag()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             string code = GetCurrentViewText(out int pos, out IWpfTextView textView);
             VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageOperations.Instance.DTE.ActiveDocument.FullName);
             List<IManual> codeList = vSCodeManualMatcher.Match();
@@ -92,8 +100,9 @@ namespace CodeFlow.CommandHandler
         }
         public void InsertCreatedCode(IManual man)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             string ext = Path.GetExtension(PackageOperations.Instance.DTE.ActiveDocument.ProjectItem.Name);
-            var selection = (EnvDTE.TextSelection)PackageOperations.Instance.DTE.ActiveDocument.Selection;
+            var selection = (TextSelection)PackageOperations.Instance.DTE.ActiveDocument.Selection;
             selection.Insert(man.FormatCode(ext));
         }
     }

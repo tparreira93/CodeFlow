@@ -17,6 +17,12 @@ using CodeFlow.Forms;
 using CodeFlow.Versions;
 using Version = CodeFlow.Versions.Version;
 using System.Windows.Threading;
+using CodeFlow.ToolWindow;
+using Microsoft;
+using EnvDTE80;
+using System.Windows.Forms;
+using System.IO;
+using System.Threading;
 
 namespace CodeFlow
 {
@@ -37,17 +43,18 @@ namespace CodeFlow
     /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
     /// </para>
     /// </remarks>
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    [ProvideService(typeof(CodeFlowPackage), IsAsyncQueryable = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
-    [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string)]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideOptionPage(typeof(OptionsPageGrid), "Genio", "CodeFlow properties", 0, 0, true)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(ToolWindow.SearchTool), Style = VsDockStyle.Tabbed, Orientation = ToolWindowOrientation.Bottom)]
-    [ProvideToolWindow(typeof(ToolWindow.ChangeHistory))]
-    public sealed class CodeFlowPackage : Package, IVsSolutionEvents
+    [ProvideToolWindow(typeof(SearchTool), Style = VsDockStyle.Tabbed, Orientation = ToolWindowOrientation.Bottom)]
+    [ProvideToolWindow(typeof(ChangeHistory))]
+    public sealed class CodeFlowPackage : AsyncPackage, IVsSolutionEvents
     {
         /// <summary>
         /// InvokeCommandPackage GUID string.
@@ -58,8 +65,6 @@ namespace CodeFlow
         private Events _dteEvents;
         //private DteInitializer dteInitializer;
         private bool _isSolution;
-        private uint _cookie;
-        private IVsSolution _solution;
         public CodeFlowVersions Versions { get; private set; }
         public Version OldVersion { get; private set; }
         public Version CurrentVersion { get; private set; }
@@ -76,36 +81,36 @@ namespace CodeFlow
             // initialization is the Initialize method.
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (_cookie != 0)
-            {
-                _solution.UnadviseSolutionEvents(_cookie);
-                _cookie = 0;
-            }
-            base.Dispose(disposing);
-        }
-
         #region Package Members
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
-        protected override void Initialize()
+        
+        protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
+            await base.InitializeAsync(cancellationToken, progress);
+
+            // When initialized asynchronously, we *may* be on a background thread at this point.
+            // Do any initialization that requires the UI thread after switching to the UI thread.
+            // Otherwise, remove the switch to the UI thread if you don't need it.
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+
+            await ContextMenuCommand.InitializeAsync(this);
+            await ChangeHistoryCommand.InitializeAsync(this);
+            await CommitCode.InitializeAsync(this);
+            await UpdateCode.InitializeAsync(this);
+            await CreateInGenio.InitializeAsync(this);
+            await ManageProfiles.InitializeAsync(this);
+            await CommitSolution.InitializeAsync(this);
+            await FixVS2008Solution.InitializeAsync(this);
+            await RefreshSolution.InitializeAsync(this);
+            await SearchToolCommand.InitializeAsync(this);
+            await ViewVersionsCommand.InitializeAsync(this);
+            await GenioProfilesCommand.InitializeAsync(this); 
+
             base.Initialize();
-            CommitCode.Initialize(this);
-            UpdateCode.Initialize(this);
-            CreateInGenio.Initialize(this);
-            ManageProfiles.Initialize(this);
-            CommitSolution.Initialize(this);
-            ContextMenu.Initialize(this);
-            FixVS2008Solution.Initialize(this);
-            RefreshSolution.Initialize(this);
-            ChangeHistoryCommand.Initialize(this);
-            SearchToolCommand.Initialize(this);
-            ViewVersionsCommand.Initialize(this);
 
             // Try to retrieve the DTE instance at this point
             InitializeDte();
@@ -122,29 +127,8 @@ namespace CodeFlow
                 dteInitializer = new DteInitializer(shellService, this.InitializeDte);*/
             }
             SetupEvents();
-
-            _solution = GetService(typeof(SVsSolution)) as IVsSolution;
-            _solution?.AdviseSolutionEvents(this, out _cookie);
-
-            if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
-            {
-                // --- Initialize the DropDownCombo
-                CommandID menuGenioProfilesComboCommandId =
-                  new CommandID(PackageGuidList.guidComboBoxCmdSet,
-                  (int)PackageCommandList.cmdGenioProfilesCombo);
-                OleMenuCommand menuGenioProfilesComboCommand = new OleMenuCommand(OnMenuGenioProfilesCombo, menuGenioProfilesComboCommandId);
-                menuGenioProfilesComboCommand.ParametersDescription = "$";
-                mcs.AddCommand(menuGenioProfilesComboCommand);
-
-
-                CommandID menuGenioProfilesComboGetListCommandId = new CommandID(PackageGuidList.guidComboBoxCmdSet, (int)PackageCommandList.cmdGenioProfilesComboGetList);
-                MenuCommand menuGenioProfilesComboGetListCommand = new OleMenuCommand(OnMenuGenioProfilesComboGetList, menuGenioProfilesComboGetListCommandId);
-                mcs.AddCommand(menuGenioProfilesComboGetListCommand);
-            }
             Versions = new CodeFlowVersions();
             CheckVersion();
-
-
             if (PackageOperations.Instance.AllProfiles.Count == 0)
                 LoadConfig();
         }
@@ -173,14 +157,13 @@ namespace CodeFlow
 
         private void InitializeDte()
         {
-            PackageOperations.Instance.DTE = GetService(typeof(SDTE)) as EnvDTE80.DTE2;
+            PackageOperations.Instance.DTE = GetService(typeof(SDTE)) as DTE2;
         }
-
-    #endregion
 
         #region CustomEvents
         private void SetupEvents()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             _dteEvents = PackageOperations.Instance.DTE.Events;
             _documentEnvents = _dteEvents.DocumentEvents;
             _documentEnvents.DocumentSaved += OnDocumentSave;
@@ -189,6 +172,7 @@ namespace CodeFlow
 
         private void OnDocumentClose(Document document)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             string path = document.FullName;
             if (PackageOperations.Instance.IsAutoExportManual(path))
                 PackageOperations.Instance.RemoveTempFile(path);
@@ -196,6 +180,7 @@ namespace CodeFlow
 
         private void OnDocumentSave(Document document)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             string path = document.FullName;
             Project docProject = document.ProjectItem.ContainingProject;
             List<IManual> man = null;
@@ -220,8 +205,8 @@ namespace CodeFlow
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.Forms.MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
-                        Properties.Resources.Export, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error, System.Windows.Forms.MessageBoxDefaultButton.Button1);
+                    MessageBox.Show(String.Format(Resources.UnableToExecuteOperation, ex.Message),
+                        Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
                 }
                 return;
             }
@@ -230,7 +215,7 @@ namespace CodeFlow
 
             try
             {
-                GenioProjectProperties proj = PackageOperations.Instance.SavedFiles.Find(x => x.ProjectName == docProject.Name);
+                GenioProjectProperties proj = PackageOperations.Instance.SavedFiles.Find(x => { Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread(); return x.ProjectName == docProject.Name; });
                 GenioProjectItem item = new GenioProjectItem(document.ProjectItem, document.Name, document.FullName);
                 if (proj == null)
                     PackageOperations.Instance.SavedFiles.Add(new GenioProjectProperties(docProject, new List<GenioProjectItem>() { item }));
@@ -251,6 +236,7 @@ namespace CodeFlow
         #region SolutionEvents
         public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             PackageOperations.Instance.SavedFiles.Clear();
             PackageOperations.Instance.ChangeLog.Clear();
             String lastActive = "";
@@ -261,7 +247,7 @@ namespace CodeFlow
                 _isSolution = true;
                 try
                 {
-                    string path = System.IO.Path.GetDirectoryName(PackageOperations.Instance.DTE.Solution.FullName);
+                    string path = Path.GetDirectoryName(PackageOperations.Instance.DTE.Solution.FullName);
                     lastActive = PackageOperations.Instance.SearchLastActiveProfile(path);
                 }
                 catch (Exception)
@@ -272,7 +258,7 @@ namespace CodeFlow
 
             //Updates combo box
             if (!string.IsNullOrEmpty(lastActive))
-                OnMenuGenioProfilesCombo(this, new OleMenuCmdEventArgs(lastActive, IntPtr.Zero));
+                SetProfile(lastActive);
 
             if (PackageOperations.Instance.ParseSolution && _isSolution)
             {
@@ -322,8 +308,9 @@ namespace CodeFlow
 
         public int OnBeforeCloseSolution(object pUnkReserved)
         {
-            if(_isSolution)
-                PackageOperations.Instance.StoreLastProfile(System.IO.Path.GetDirectoryName(PackageOperations.Instance.DTE.Solution.FullName));
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (_isSolution)
+                PackageOperations.Instance.StoreLastProfile(Path.GetDirectoryName(PackageOperations.Instance.DTE.Solution.FullName));
             PackageOperations.Instance.GetActiveProfile().GenioConfiguration.CloseConnection();
             PackageOperations.Instance.RemoveTempFiles();
             SaveConfig();
@@ -333,91 +320,6 @@ namespace CodeFlow
         public int OnAfterCloseSolution(object pUnkReserved)
         {
             return VSConstants.S_OK;
-        }
-        #endregion
-
-        #region ComboBox options
-        public void OnMenuGenioProfilesCombo(object sender, EventArgs e)
-        {
-            if (e == EventArgs.Empty)
-            {
-                throw (new ArgumentException("No event args"));
-            }
-            OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
-            if (eventArgs != null)
-            {
-                string newChoice = eventArgs.InValue as string;
-                IntPtr vOut = eventArgs.OutValue;
-                if (vOut != IntPtr.Zero && newChoice != null)
-                    throw (new ArgumentException("Ilegal input and output parameters!"));
-
-                else if (vOut != IntPtr.Zero)
-                    Marshal.GetNativeVariantForObject(PackageOperations.Instance.GetActiveProfile() != null ? PackageOperations.Instance.GetActiveProfile().ProfileName : "", vOut);
-
-                else if (newChoice != null)
-                {
-                    if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
-                    {
-                        Dispatcher disp = Dispatcher.CurrentDispatcher;
-                        OleMenuCommand cmd = mcs.FindCommand(new CommandID(PackageGuidList.guidComboBoxCmdSet, (int)PackageCommandList.cmdGenioProfilesCombo)) as OleMenuCommand;
-                        cmd.Enabled = false;
-                        string error = "";
-                        System.Threading.Tasks.Task.Factory.StartNew(() =>
-                        {
-                            try
-                            {
-                                PackageOperations.Instance.SetProfile(newChoice);
-                            }
-                            catch (Exception ex)
-                            {
-                                error = ex.Message;
-                            }
-
-                            // Update UI 
-                            disp.BeginInvoke(new Action(() =>
-                            {
-                                cmd.Enabled = true;
-                                if (!string.IsNullOrEmpty(error))
-                                    System.Windows.Forms.MessageBox.Show(String.Format(Resources.UnableToExecuteOperation, error),
-                                        Resources.Export, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error, System.Windows.Forms.MessageBoxDefaultButton.Button1);
-                            }), DispatcherPriority.Background);
-                        });
-                    }
-                    
-                }
-                else
-                    throw (new ArgumentException("Invalid input and output!"));
-            }
-            else
-                throw (new ArgumentException("Invalid combo box call!"));
-        }
-        private void OnMenuGenioProfilesComboGetList(object sender, EventArgs e)
-        {
-            OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
-            if (PackageOperations.Instance.AllProfiles.Count == 0)
-                return;
-
-            string[] dropChoices = new string[PackageOperations.Instance.AllProfiles.Count];
-            for (int i = 0; i < PackageOperations.Instance.AllProfiles.Count; i++)
-            {
-                dropChoices[i] = PackageOperations.Instance.AllProfiles[i].ProfileName;
-            }
-
-            if (eventArgs != null)
-            {
-                object inParam = eventArgs.InValue;
-                IntPtr vOut = eventArgs.OutValue;
-
-                if (inParam != null)
-                    throw (new ArgumentException("Ilegal input parameter!"));
-
-                else if (vOut != IntPtr.Zero)
-                    Marshal.GetNativeVariantForObject(dropChoices, vOut);
-
-                else
-                    throw (new ArgumentException("Output parameter required!"));
-            }
-
         }
         #endregion
 
@@ -458,6 +360,36 @@ namespace CodeFlow
             Settings.Default.Save();
 
             OptionsPage.SaveSettingsToStorage();
+        }
+
+        #endregion
+
+        public bool OpenOnPosition(string fileName, int position)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            try
+            {
+                Window window = PackageOperations.Instance.DTE.ItemOperations.OpenFile(fileName);
+                window.Activate();
+
+                CommandHandler.CommandHandler command = new CommandHandler.CommandHandler();
+                command.GetCurrentViewText(out int pos, out Microsoft.VisualStudio.Text.Editor.IWpfTextView textView);
+                int linePos = textView.TextSnapshot.GetLineNumberFromPosition(position);
+
+                TextSelection textSelection = window.Document.Selection as TextSelection;
+                textSelection.MoveToLineAndOffset(linePos, 1);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public void SetProfile(string profileName)
+        {
+            GenioProfilesCommand.Instance.OnMenuGenioProfilesCombo(this, new OleMenuCmdEventArgs(profileName, IntPtr.Zero));
         }
 
         #endregion

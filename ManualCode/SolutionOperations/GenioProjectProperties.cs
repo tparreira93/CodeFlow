@@ -28,6 +28,7 @@ namespace CodeFlow.SolutionOperations
 
         public GenioProjectProperties(Project project, bool loadFiles)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             GenioProject = project;
             ProjectName = project.Name;
             ProjectLang = GetProjectLanguage(GenioProject);
@@ -37,6 +38,7 @@ namespace CodeFlow.SolutionOperations
 
         public GenioProjectProperties(Project genioProject, List<GenioProjectItem> projectFiles)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             ProjectName = genioProject.Name;
             GenioProject = genioProject;
             ProjectFiles = projectFiles;
@@ -45,6 +47,7 @@ namespace CodeFlow.SolutionOperations
 
         public static ProjectLanguage GetProjectLanguage(Project proj)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             ProjectLanguage lang;
             CodeModel model = proj.CodeModel;
             if (model == null)
@@ -71,6 +74,7 @@ namespace CodeFlow.SolutionOperations
         }
         private static List<GenioProjectItem> GetProjectItems(Project project)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             List<GenioProjectItem> projectItems = new List<GenioProjectItem>();
             if (project.ProjectItems == null)
                 return projectItems;
@@ -86,6 +90,7 @@ namespace CodeFlow.SolutionOperations
         }
         private static GenioProjectItem GetFiles(List<GenioProjectItem> projectItems, ProjectItem item)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (item.ProjectItems == null)
             {
                 string path = "";

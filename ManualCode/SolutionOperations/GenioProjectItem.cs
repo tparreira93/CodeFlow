@@ -25,6 +25,7 @@ namespace CodeFlow.SolutionOperations
 
         public GenioProjectItem(ProjectItem item)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             Item = item;
             try
             {
