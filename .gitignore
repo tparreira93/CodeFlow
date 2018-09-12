@@ -260,3 +260,6 @@ paket-files/
 __pycache__/
 *.pyc
 /ManualCode/Apresentacao/CodeFlow.zip
+
+# Ignore extension file
+LastActiveProfile.xml

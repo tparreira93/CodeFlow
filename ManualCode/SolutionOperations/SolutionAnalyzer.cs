@@ -69,7 +69,7 @@ namespace CodeFlow.SolutionOperations
 
                             if (_runningTasks.Count < MaxNumberOfTasks)
                             {
-                                Task t = AnalyzeFile(item.ItemPath);
+                                Task t = AnalyzeFileAsync(item.ItemPath);
                                 _runningTasks.Enqueue(t);
                             }
 
@@ -117,12 +117,12 @@ namespace CodeFlow.SolutionOperations
         /*
          * Producer of matches
          */
-        private Task AnalyzeFile(string file)
+        private Task AnalyzeFileAsync(string file)
         {
             PackageOperations.Instance.DetectTextEncoding(file, out string text);
-            VSCodeManualMatcher matcher = new VSCodeManualMatcher(text, Path.GetFileName(file)) {ConcurrentMatching = false};
+            VSCodeManualMatcher matcher = new VSCodeManualMatcher(text, file) {ConcurrentMatching = false};
             matcher.Register(_consumerCollection);
-            return Task.Factory.StartNew(() => matcher.Match());
+            return Task.Factory.StartNew(matcher.Match);
         }
     }
 }
