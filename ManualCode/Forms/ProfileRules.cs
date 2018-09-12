@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace CodeFlow.Forms
 {
-    public partial class ProfileRules : CodeFlowForm
+    public partial class ProfileRules : Form
     {
         Profile profile;
         public ProfileRules(Profile p)
@@ -38,7 +38,7 @@ namespace CodeFlow.Forms
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
-            ICodeRule rule = GetSelectedItem();
+            CodeRule rule = GetSelectedItem();
             if (rule == null)
                 return;
 
@@ -53,7 +53,7 @@ namespace CodeFlow.Forms
 
         private void lstRules_DoubleClick(object sender, EventArgs e)
         {
-            ICodeRule rule = GetSelectedItem();
+            CodeRule rule = GetSelectedItem();
             if (rule != null)
             {
                 RuleForm form = new RuleForm(rule);
@@ -84,10 +84,10 @@ namespace CodeFlow.Forms
             }
         }
 
-        private ICodeRule GetSelectedItem()
+        private CodeRule GetSelectedItem()
         {
             if (lstRules.SelectedItems.Count == 1)
-                return lstRules.SelectedItems[0].Tag as ICodeRule;
+                return lstRules.SelectedItems[0].Tag as CodeRule;
             return null;
         }
     }

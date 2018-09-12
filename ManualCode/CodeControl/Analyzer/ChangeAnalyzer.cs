@@ -28,7 +28,7 @@ namespace CodeFlow.CodeControl.Analyzer
             {
                 // Codigo foi apagado por isso criamos um vazio
                 IChange diff = new CodeNotFound(toCheck);
-                ICodeRule rule = validator.ValidateRules(profile, diff);
+                CodeRule rule = validator.ValidateRules(profile, diff);
                 Modifications.AsList.Add(diff);
             }
             else

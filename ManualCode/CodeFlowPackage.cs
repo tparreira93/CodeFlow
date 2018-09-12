@@ -150,7 +150,7 @@ namespace CodeFlow
                 if (!Settings.Default.OldVersion.Equals(Settings.Default.ToolVersion))
                 {
                     CodeFlowChangesForm changesForm = new CodeFlowChangesForm(Versions, CurrentVersion, OldVersion);
-                    changesForm.Open();
+                    CodeFlowFormManager.Open(changesForm);
                 }
             }
         }

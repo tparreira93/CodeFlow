@@ -15,7 +15,7 @@ namespace CodeFlow.CodeControl
         IManual bd;
         IManual merged;
         bool isMerged = false;
-        ICodeRule rule;
+        CodeRule rule;
 
         /*
         * Merged defaults to mine
@@ -58,6 +58,6 @@ namespace CodeFlow.CodeControl
         public IManual Theirs { get => bd; set => bd = value; }
         public bool IsMerged { get => isMerged; set => isMerged = value; }
         public IManual Merged { get => merged; set => merged = value; }
-        ICodeRule IChange.FlagedRule { get => rule; set => rule = value; }
+        CodeRule IChange.FlagedRule { get => rule; set => rule = value; }
     }
 }

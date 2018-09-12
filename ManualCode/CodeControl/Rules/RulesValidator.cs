@@ -15,9 +15,9 @@ namespace CodeFlow.CodeControl.Rules
         {
         }
         
-        public ICodeRule ValidateRules(Profile profile, IChange change)
+        public CodeRule ValidateRules(Profile profile, IChange change)
         {
-            List<ICodeRule> rulesToValidate = new List<ICodeRule>();
+            List<CodeRule> rulesToValidate = new List<CodeRule>();
             rulesToValidate.AddRange(profile.ProfileRules);
             rulesToValidate.AddRange(GetDefaultRules());
 
@@ -30,16 +30,16 @@ namespace CodeFlow.CodeControl.Rules
             return null;
         }
 
-        public List<ICodeRule> GetDefaultRules()
+        public List<CodeRule> GetDefaultRules()
         {
             Dictionary<RuleProvider, Type> providers = Util.GetAtrributes<RuleProvider>();
             List<Type> types = providers.Where(entry => entry.Key.IsDefaultType).Select(entry => entry.Value).ToList();
-            List<ICodeRule> rules = new List<ICodeRule>();
+            List<CodeRule> rules = new List<CodeRule>();
 
             foreach (var item in types)
             {
                 ConstructorInfo constructor = item.GetConstructor(new Type[] { });
-                ICodeRule r = constructor?.Invoke(null) as ICodeRule;
+                CodeRule r = constructor?.Invoke(null) as CodeRule;
                 rules.Add(r);
             }
 

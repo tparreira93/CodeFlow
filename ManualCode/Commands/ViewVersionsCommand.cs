@@ -93,7 +93,7 @@ namespace CodeFlow.Commands
             ThreadHelper.ThrowIfNotOnUIThread();
 
             CodeFlowChangesForm changesForm = new CodeFlowChangesForm(PackageOperations.Flow.Versions, PackageOperations.Flow.CurrentVersion, PackageOperations.Flow.OldVersion);
-            changesForm.Open();
+            CodeFlowFormManager.Open(changesForm);
         }
     }
 }

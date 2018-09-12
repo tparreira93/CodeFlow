@@ -8,51 +8,57 @@ using System.Windows.Forms;
 
 namespace CodeFlow.Forms
 {
-    public abstract class CodeFlowForm : Form, ICodeFlowForm
+    public class CodeFlowFormManager
     {
         private static Dictionary<Type, object> openForms = new Dictionary<Type, object>();
-        private object lockObject = new object();
+        private static object lockObject = new object();
 
-        private bool Lock()
+        public CodeFlowFormManager()
+        {
+
+        }
+
+        private static bool Lock()
         {
             bool lockWasTaken = false;
             Monitor.Enter(lockObject, ref lockWasTaken);
 
             return lockWasTaken;
         }
-        private void ReleaseLock()
+        private static void ReleaseLock()
         {
             Monitor.Exit(lockObject);
         }
 
-        public void Open()
+        public static void Open(Form form)
         {
             if (Lock())
             {
-                Type t = this.GetType();
+                Type t = form.GetType();
                 object obj = null;
                 if (openForms.ContainsKey(t))
                     obj = openForms[t];
 
-                Form form = obj as Form;
-                if (form != null && !form.IsDisposed)
-                    form.Focus();
-                else
+                Form f2 = obj as Form;
+                if (f2 == null || f2.IsDisposed)
                 {
-                    openForms.Add(t, this);
-                    this.FormClosing += CloseForm;
-                    this.Show();
+                    Close(form.GetType());
+                    openForms.Add(t, form);
+                    form.Show();
                 }
+                else
+                    f2.Focus();
+
                 ReleaseLock();
             }
         }
 
-        public void CloseForm(object sender, FormClosingEventArgs e)
+        private static void Close(Type t)
         {
             if(Lock())
             {
-                if (openForms.ContainsKey(this.GetType()))
-                    openForms.Remove(this.GetType());
+                if (openForms.ContainsKey(t))
+                    openForms.Remove(t);
                 ReleaseLock();
             }
         }

@@ -17,7 +17,7 @@ using System.Xml;
 
 namespace CodeFlow.Forms
 {
-    public partial class CreateInGenioForm : CodeFlowForm
+    public partial class CreateInGenioForm : Form
     {
         private ManuaCode manualCode;
         private Dictionary<string, Guid> features;

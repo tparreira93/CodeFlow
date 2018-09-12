@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using CodeFlow.CodeControl;
 
 namespace CodeFlow.CodeControl.Rules
 {
+    [Serializable]
+    [XmlInclude(typeof(MatchPatternRule))]
+    [XmlInclude(typeof(IgnoreCodeRule))]
     public abstract class CodeRule : ICodeRule, ICloneable
     {
         private string pattern;

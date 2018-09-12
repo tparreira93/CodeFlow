@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace CodeFlow.CodeControl.Rules
 {
     [RuleProvider("IgnoreCodeRule", true)]
-    class IgnoreCodeRule : MatchPatternRule
+    public class IgnoreCodeRule : MatchPatternRule
     {
         public const string IGNORE_STRING = "INGNORE_THIS_CODE";
 

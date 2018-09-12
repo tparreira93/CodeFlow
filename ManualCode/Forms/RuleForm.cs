@@ -13,10 +13,10 @@ using System.Windows.Forms;
 
 namespace CodeFlow.Forms
 {
-    public partial class RuleForm : CodeFlowForm
+    public partial class RuleForm : Form
     {
-        public ICodeRule R { get; private set; }
-        public RuleForm(ICodeRule r)
+        public CodeRule R { get; private set; }
+        public RuleForm(CodeRule r)
         {
             InitializeComponent();
             if(r is CodeRule rule)
@@ -45,7 +45,7 @@ namespace CodeFlow.Forms
                 ConstructorInfo constructor = t.GetConstructor(new Type[] { });
                 if (constructor != null)
                 {
-                    R = constructor.Invoke(null) as ICodeRule;
+                    R = constructor.Invoke(null) as CodeRule;
                     R.Pattern = txtPattern.Text;
                     R.CommitDefault = chkCommit.Checked;
                 }

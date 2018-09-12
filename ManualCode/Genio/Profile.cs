@@ -16,7 +16,7 @@ namespace CodeFlow
         private Guid profileID = Guid.NewGuid();
         private GenioCheckout genioConfiguration = new GenioCheckout();
         private String profileName = "";
-        private List<ICodeRule> profileRules = new List<ICodeRule>();
+        private List<CodeRule> profileRules = new List<CodeRule>();
         public Profile()
         {
         }
@@ -41,7 +41,7 @@ namespace CodeFlow
         public string ProfileName { get => profileName; set => profileName = value; }
         public Guid ProfileID { get => profileID; set => profileID = value; }
 
-        public List<ICodeRule> ProfileRules => profileRules;
+        public List<CodeRule> ProfileRules => profileRules;
 
         public override string ToString()
         {

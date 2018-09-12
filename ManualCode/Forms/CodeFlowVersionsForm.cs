@@ -7,7 +7,7 @@ using Version = CodeFlow.Versions.Version;
 
 namespace CodeFlow.Forms
 {
-    public partial class CodeFlowChangesForm : CodeFlowForm
+    public partial class CodeFlowChangesForm : Form
     {
         private readonly CodeFlowVersions _changes;
         private readonly Version _currentVersion;

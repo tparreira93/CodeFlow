@@ -15,7 +15,7 @@ using CodeFlow.CodeControl.Analyzer;
 
 namespace CodeFlow.Forms
 {
-    public partial class CommitForm : CodeFlowForm
+    public partial class CommitForm : Form
     {
         private ChangeList differences;
         private ConflictList conflictCode;

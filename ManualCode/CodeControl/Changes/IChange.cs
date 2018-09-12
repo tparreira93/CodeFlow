@@ -20,6 +20,6 @@ namespace CodeFlow.CodeControl
         IChange Merge();
         void Compare();
         string GetDescription();
-        ICodeRule FlagedRule { get; set; }
+        CodeRule FlagedRule { get; set; }
     }
 }

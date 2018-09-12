@@ -15,7 +15,7 @@ using System.Xml;
 
 namespace CodeFlow.Forms
 {
-    public partial class ProfileForm : CodeFlowForm
+    public partial class ProfileForm : Form
     {
         private bool _servers = false;
         private Profile _oldProfile = null;

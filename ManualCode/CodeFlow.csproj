@@ -91,7 +91,6 @@
     <Compile Include="Forms\CodeFlowForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ICodeFlowForm.cs" />
     <Compile Include="Forms\ProfileRules.cs">
       <SubType>Form</SubType>
     </Compile>
