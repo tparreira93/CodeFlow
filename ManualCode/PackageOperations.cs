@@ -193,18 +193,24 @@ namespace CodeFlow
 
         private void AddTempFile(string file)
         {
-            _openFiles.Add(file);
+            if (!_openFiles.Contains(file))
+                _openFiles.Add(file);
         }
         public void RemoveTempFile(string file)
         {
-            if (File.Exists(file))
-                File.Delete(file);
-
             if (IsAutoExportManual(file))
                 AutoExportFiles.Remove(file);
 
             if (_openFiles.Contains(file))
+            {
                 _openFiles.Remove(file);
+                if (File.Exists(file))
+                    File.Delete(file);
+            }
+        }
+        public bool IsTempFile(string file)
+        {
+            return _openFiles.Contains(file);
         }
         public void RemoveTempFiles()
         {
@@ -220,8 +226,13 @@ namespace CodeFlow
             var tmp = $"{Path.GetTempPath()}{man.CodeId}.{man.GetCodeExtension(ActiveProfile)}";
             File.WriteAllText(tmp, man.ToString(), Encoding.UTF8);
 
-            if(autoExport)
-                AutoExportFiles.Add(tmp, man.GetType());
+            if (autoExport)
+            {
+                if (!AutoExportFiles.ContainsKey(tmp))
+                    AutoExportFiles.Add(tmp, man.GetType());
+                else
+                    AutoExportFiles[tmp] = man.GetType();
+            }
 
             DTE.ItemOperations.OpenFile(tmp);
             AddTempFile(tmp);
@@ -375,11 +386,6 @@ namespace CodeFlow
 
             return result;
         }
-
-        public void FormIsOpen(Type t)
-        {                
-        }
-
         #endregion
     }
 }

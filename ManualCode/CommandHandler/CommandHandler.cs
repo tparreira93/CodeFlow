@@ -34,7 +34,6 @@ namespace CodeFlow.CommandHandler
         }
         public string GetCurrentSelection()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             var dte = PackageOperations.Instance.DTE;
             string code = "";
 

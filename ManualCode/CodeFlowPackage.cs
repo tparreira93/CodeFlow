@@ -174,7 +174,7 @@ namespace CodeFlow
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             string path = document.FullName;
-            if (PackageOperations.Instance.IsAutoExportManual(path))
+            if (PackageOperations.Instance.IsTempFile(path))
                 PackageOperations.Instance.RemoveTempFile(path);
         }
 
