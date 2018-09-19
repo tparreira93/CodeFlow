@@ -1,4 +1,7 @@
 # Code Flow
+[![Build status](https://travis-ci.org/tparreira93/CodeFlow.svg?branch=master)](https://travis-ci.org/tparreira93/CodeFlow)
+
+
 [![Build status](https://ci.appveyor.com/api/projects/status/euofrovmpm2v7ecd?svg=true)](https://ci.appveyor.com/project/tparreira93/codeflow)
 
 # What is CodeFlow?
