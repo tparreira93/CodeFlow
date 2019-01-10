@@ -313,6 +313,7 @@ namespace CodeFlow
                 PackageOperations.Instance.StoreLastProfile(Path.GetDirectoryName(PackageOperations.Instance.DTE.Solution.FullName));
             PackageOperations.Instance.GetActiveProfile().GenioConfiguration.CloseConnection();
             PackageOperations.Instance.RemoveTempFiles();
+            PackageOperations.Instance.SavedFiles.Clear();
             SaveConfig();
             return VSConstants.S_OK;
         }
