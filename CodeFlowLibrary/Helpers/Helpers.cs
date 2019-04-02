@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace CodeFlowLibrary
+namespace CodeFlowLibrary.Helpers
 {
     public static class Helpers
     {

@@ -6,6 +6,7 @@ using System.Text;
 using CodeFlowLibrary;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.Helpers;
 
 namespace CodeFlowLibrary.GenioCode
 {

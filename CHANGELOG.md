@@ -5,7 +5,7 @@
 
 Features that have a checkmark are complete and available for
 download in the
-[CI build](http://vsixgallery.com/extension/ManualCode.278e3a6d-92de-47d4-8417-dd060ad9270a/).
+[CI build](http://vsixgallery.com/extension/CodeFlow.278e3a6d-92de-47d4-8417-dd060ad9270a/).
 
 # Change log
 

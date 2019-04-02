@@ -93,8 +93,6 @@
       <DependentUpon>SelectParametersForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Versions\CodeFlowVersionInfo.cs" />
-    <Compile Include="Versions\CodeFlowVersions.cs" />
     <Compile Include="CodeUtils\Suggestions\CompareDBSuggestion.cs" />
     <Compile Include="CodeUtils\Suggestions\CompareCommitBSuggestion.cs" />
     <Compile Include="CodeUtils\Suggestions\CommitSuggestion.cs" />
@@ -191,8 +189,6 @@
     <Compile Include="SolutionOperations\SolutionConstants.cs" />
     <Compile Include="SolutionOperations\GenioSolutionProperties.cs" />
     <Compile Include="ToolWindow\SortAdorner.cs" />
-    <Compile Include="Versions\Version.cs" />
-    <Compile Include="Versions\VersionChange.cs" />
     <Compile Include="VSPackage.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

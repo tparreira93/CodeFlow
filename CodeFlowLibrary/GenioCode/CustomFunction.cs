@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.Helpers;
 
 namespace CodeFlowLibrary.GenioCode
 {

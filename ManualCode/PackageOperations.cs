@@ -10,13 +10,16 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System.Xml.Serialization;
 using System.Text;
 using CodeFlowLibrary;
+using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.CodeControl.Operations;
+using CodeFlowLibrary.Helpers;
 
 namespace CodeFlow
 {
     public sealed class PackageOperations
     {
         private static PackageOperations _instance;
-        public static CodeFlowPackage Flow { get; set;  }
+        public static ICodeFlowPackage Flow { get; set;  }
 
         private readonly List<string> _openFiles = new List<string>();
         private Dictionary<string, Type> AutoExportFiles { get; } = new Dictionary<string, Type>();

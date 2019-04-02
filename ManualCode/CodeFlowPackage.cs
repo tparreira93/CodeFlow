@@ -10,9 +10,6 @@ using CodeFlow.Properties;
 using CodeFlow.SolutionOperations;
 using System.Collections.Generic;
 using CodeFlow.Commands;
-using CodeFlow.CodeControl;
-using CodeFlow.CodeControl.Analyzer;
-using CodeFlow.GenioManual;
 using CodeFlow.Forms;
 using CodeFlow.Versions;
 using Version = CodeFlow.Versions.Version;
@@ -23,6 +20,7 @@ using EnvDTE80;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
+using CodeFlowLibrary.Helpers;
 
 namespace CodeFlow
 {
@@ -54,7 +52,7 @@ namespace CodeFlow
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(SearchTool), Style = VsDockStyle.Tabbed, Orientation = ToolWindowOrientation.Bottom)]
     [ProvideToolWindow(typeof(ChangeHistory))]
-    public sealed class CodeFlowPackage : AsyncPackage, IVsSolutionEvents
+    public sealed class CodeFlowPackage : AsyncPackage, IVsSolutionEvents, ICodeFlowPackage
     {
         /// <summary>
         /// InvokeCommandPackage GUID string.
@@ -68,6 +66,8 @@ namespace CodeFlow
         public CodeFlowVersions Versions { get; private set; }
         public Version OldVersion { get; private set; }
         public Version CurrentVersion { get; private set; }
+
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommitCode"/> class.

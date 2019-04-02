@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.Helpers;
 using CodeFlowLibrary.CodeControl.Changes;
 
 namespace CodeFlowLibrary.CodeControl.Rules
