@@ -7,6 +7,8 @@ using CodeFlow.GenioManual;
 using System.Windows.Forms;
 using CodeFlow.Forms;
 using Task = System.Threading.Tasks.Task;
+using CodeFlowLibrary.GenioCode;
+using CodeFlowLibrary.CodeControl.Analyzer;
 
 namespace CodeFlow.Commands
 {

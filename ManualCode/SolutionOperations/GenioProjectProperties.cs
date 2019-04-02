@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using CodeFlowLibrary;
 
 namespace CodeFlow.SolutionOperations
 {
@@ -115,7 +116,7 @@ namespace CodeFlow.SolutionOperations
 
         public override string ToString()
         {
-            return ProjectName + " - " + Utils.Util.GetDescription(ProjectLang);
+            return ProjectName + " - " + Helpers.GetDescription(ProjectLang);
         }
 
         public enum ProjectLanguage

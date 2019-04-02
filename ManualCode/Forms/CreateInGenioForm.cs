@@ -1,7 +1,5 @@
-﻿using CodeFlow.CodeControl;
-using CodeFlow.Forms;
-using CodeFlow.GenioOperations;
-using CodeFlow.ManualOperations;
+﻿using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.GenioCode;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

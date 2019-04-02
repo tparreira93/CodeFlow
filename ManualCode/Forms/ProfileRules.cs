@@ -1,4 +1,6 @@
-﻿using CodeFlow.CodeControl.Rules;
+﻿using CodeFlowLibrary.CodeControl.Rules;
+using CodeFlowLibrary.Genio;
+using CodeFlowLibrary;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -73,7 +75,7 @@ namespace CodeFlow.Forms
             lstRules.Items.Clear();
             foreach (var rule in profile.ProfileRules)
             {
-                RuleProvider provider = Utils.Util.GetAttribute<RuleProvider> (rule.GetType()) as RuleProvider;
+                RuleProvider provider = Helpers.GetAttribute<RuleProvider> (rule.GetType()) as RuleProvider;
                 if (!provider.IsDefaultType)
                 {
                     ListViewItem item = new ListViewItem(provider.RuleName);

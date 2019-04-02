@@ -1,5 +1,4 @@
-﻿using CodeFlow.CodeControl.Rules;
-using CodeFlow.Utils;
+﻿using CodeFlowLibrary.CodeControl.Rules;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CodeFlowLibrary;
 
 namespace CodeFlow.Forms
 {
@@ -36,7 +36,7 @@ namespace CodeFlow.Forms
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            Dictionary<RuleProvider, Type> providers = Util.GetAtrributes<RuleProvider>();
+            Dictionary<RuleProvider, Type> providers = Helpers.GetAtrributes<RuleProvider>();
             string selectedItem = cmbType.Items[cmbType.SelectedIndex].ToString();
             Type t = providers.Where(entry => entry.Key.RuleName.Equals(selectedItem)).Select(entry => entry.Value).ToList().First();
             
@@ -70,7 +70,7 @@ namespace CodeFlow.Forms
 
         private void RefreshData()
         {
-            Dictionary<RuleProvider, Type> providers = Util.GetAtrributes<RuleProvider>();
+            Dictionary<RuleProvider, Type> providers = Helpers.GetAtrributes<RuleProvider>();
             foreach (var item in providers)
             {
                 if(!item.Key.IsDefaultType)
@@ -79,7 +79,7 @@ namespace CodeFlow.Forms
 
             if (R != null)
             {
-                RuleProvider provider = Util.GetAttribute<RuleProvider>(R.GetType()) as RuleProvider;
+                RuleProvider provider = Helpers.GetAttribute<RuleProvider>(R.GetType()) as RuleProvider;
                 int pos = FindType(provider.RuleName);
                 if (pos != -1)
                     cmbType.SelectedIndex = pos;

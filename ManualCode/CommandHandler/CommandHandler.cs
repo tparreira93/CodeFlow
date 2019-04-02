@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using CodeFlow.GenioManual;
-using CodeFlow.ManualOperations;
-using CodeFlow.Utils;
 using EnvDTE;
 using Microsoft;
 using Microsoft.VisualStudio.ComponentModelHost;
@@ -12,6 +9,8 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
+using CodeFlowLibrary.GenioCode;
+using CodeFlowLibrary;
 
 namespace CodeFlow.CommandHandler
 {
@@ -80,7 +79,7 @@ namespace CodeFlow.CommandHandler
                 if (bd == null)
                     return false;
 
-                EditCodeSegment(textView.TextBuffer, manual.LocalMatch, bd.Code + (manual.LocalMatch.CodeLength == 0 ? Util.NewLine : String.Empty));
+                EditCodeSegment(textView.TextBuffer, manual.LocalMatch, bd.Code + (manual.LocalMatch.CodeLength == 0 ? Helpers.NewLine : String.Empty));
             }
 
             return true;

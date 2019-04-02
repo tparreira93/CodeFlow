@@ -1,10 +1,10 @@
-﻿using CodeFlow.Utils;
-using EnvDTE;
+﻿using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.VCProjectEngine;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CodeFlowLibrary;
 
 namespace CodeFlow.SolutionOperations
 {
@@ -76,9 +76,9 @@ namespace CodeFlow.SolutionOperations
                 string path = fileList[0].FullName;
                 if (File.Exists(path))
                 {
-                    client.Version = Util.MatchCodeDeclaration("(<Versao>)([0-9]*)(</Versao>)", 2, path);
-                    client.Client = Util.MatchCodeDeclaration("(<Cliente>)([0-9a-zA-Z]*)(</Cliente>)", 2, path);
-                    client.System = Util.MatchCodeDeclaration("(<Sistema>)([0-9a-zA-Z]*)(</Sistema>)", 2, path);
+                    client.Version = Helpers.MatchCodeDeclaration("(<Versao>)([0-9]*)(</Versao>)", 2, path);
+                    client.Client = Helpers.MatchCodeDeclaration("(<Cliente>)([0-9a-zA-Z]*)(</Cliente>)", 2, path);
+                    client.System = Helpers.MatchCodeDeclaration("(<Sistema>)([0-9a-zA-Z]*)(</Sistema>)", 2, path);
                 }
             }
             return client;

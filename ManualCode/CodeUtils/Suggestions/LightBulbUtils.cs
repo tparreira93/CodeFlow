@@ -9,8 +9,8 @@ using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
 using System.Threading;
-using CodeFlow.GenioManual;
-using CodeFlow.ManualOperations;
+using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.GenioCode;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {

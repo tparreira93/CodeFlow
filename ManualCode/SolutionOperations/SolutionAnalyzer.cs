@@ -6,9 +6,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CodeFlow.CodeControl.Analyzer;
-using CodeFlow.GenioManual;
 using EnvDTE;
+using CodeFlowLibrary.GenioCode;
+using CodeFlowLibrary.CodeControl.Analyzer;
 
 namespace CodeFlow.SolutionOperations
 {

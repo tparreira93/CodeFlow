@@ -7,10 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CodeFlow.GenioManual;
 using CodeFlow.SolutionOperations;
-using CodeFlow.Utils;
-using CodeFlow.ManualOperations;
 
 namespace CodeFlow.Forms
 {

@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 using System.Windows.Forms;
-using CodeFlow.GenioManual;
-using CodeFlow.ManualOperations;
+using CodeFlowLibrary.GenioCode;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {

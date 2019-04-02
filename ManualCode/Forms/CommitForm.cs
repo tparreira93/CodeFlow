@@ -1,6 +1,4 @@
-﻿using CodeFlow.CodeControl;
-using CodeFlow.ManualOperations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,7 +9,10 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CodeFlow.CodeControl.Analyzer;
+using CodeFlowLibrary.CodeControl.Analyzer;
+using CodeFlowLibrary.CodeControl.Changes;
+using CodeFlowLibrary.CodeControl.Conflicts;
+using CodeFlowLibrary.CodeControl.Operations;
 
 namespace CodeFlow.Forms
 {

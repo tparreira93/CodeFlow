@@ -9,9 +9,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Xml.Serialization;
 using System.Text;
-using CodeFlow.Utils;
-using CodeFlow.CodeControl;
-using CodeFlow.GenioManual;
+using CodeFlowLibrary;
 
 namespace CodeFlow
 {
@@ -78,7 +76,7 @@ namespace CodeFlow
             {
                 //Copy stuff
                 oldProfile.GenioConfiguration.CloseConnection();
-                Util.CopyFrom(typeof(GenioCheckout), newProfile.GenioConfiguration, oldProfile.GenioConfiguration);
+                Helpers.CopyFrom(typeof(GenioCheckout), newProfile.GenioConfiguration, oldProfile.GenioConfiguration);
                 oldProfile.ProfileName = newProfile.ProfileName;
                 oldProfile.ProfileRules.Clear();
                 oldProfile.ProfileRules.AddRange(newProfile.ProfileRules);

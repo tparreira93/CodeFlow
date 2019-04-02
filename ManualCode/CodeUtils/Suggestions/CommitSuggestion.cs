@@ -1,6 +1,4 @@
-﻿using CodeFlow.CodeControl;
-using CodeFlow.ManualOperations;
-using Microsoft.VisualStudio.Imaging.Interop;
+﻿using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 using System;
 using System.Collections.Generic;
@@ -9,9 +7,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CodeFlow.CodeControl.Analyzer;
-using CodeFlow.GenioManual;
 using CodeFlow.Forms;
+using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.GenioCode;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {

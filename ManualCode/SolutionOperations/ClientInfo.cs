@@ -1,5 +1,4 @@
-﻿using CodeFlow.Utils;
-using EnvDTE;
+﻿using EnvDTE;
 using System;
 using System.Collections.Generic;
 using System.IO;

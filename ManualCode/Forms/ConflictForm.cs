@@ -1,4 +1,5 @@
-﻿using CodeFlow.CodeControl;
+﻿using CodeFlowLibrary.CodeControl.Changes;
+using CodeFlowLibrary.CodeControl.Conflicts;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

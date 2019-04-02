@@ -1,4 +1,5 @@
-﻿using CodeFlow.GenioOperations;
+﻿using CodeFlowLibrary.Genio;
+using CodeFlowLibrary;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -73,9 +74,9 @@ namespace CodeFlow.Forms
             string type = cmbType.SelectedItem?.ToString() ?? "";
             GenioPlataform plat = PackageOperations.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
             TipoRotina tipoRotina = plat.TipoRotina.Find(x => x.Identifier.Equals(type));
-            txtHelp.Text = (tipoRotina?.Description?.Replace("\\r\\n", Utils.Util.NewLine) ?? "") + Utils.Util.NewLine+ Utils.Util.NewLine
-                + (tipoRotina?.Destination?.Replace("\\r\\n", Utils.Util.NewLine) ?? "") + Utils.Util.NewLine + Utils.Util.NewLine
-                + (tipoRotina?.Example?.Replace("\\r\\n", Utils.Util.NewLine) ?? "");
+            txtHelp.Text = (tipoRotina?.Description?.Replace("\\r\\n", Helpers.NewLine) ?? "") + Helpers.NewLine+ Helpers.NewLine
+                + (tipoRotina?.Destination?.Replace("\\r\\n", Helpers.NewLine) ?? "") + Helpers.NewLine + Helpers.NewLine
+                + (tipoRotina?.Example?.Replace("\\r\\n", Helpers.NewLine) ?? "");
         }
 
         private void btnSelect_Click(object sender, EventArgs e)
