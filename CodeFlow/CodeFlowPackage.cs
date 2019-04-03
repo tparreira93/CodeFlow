@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using CodeFlow.Commands;
 using CodeFlow.Forms;
 using CodeFlow.Versions;
-using Version = CodeFlow.Versions.Version;
+using Version = CodeFlowLibrary.Versions.Version;
 using System.Windows.Threading;
 using CodeFlow.ToolWindow;
 using Microsoft;
@@ -21,6 +21,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading;
 using CodeFlowLibrary.Helpers;
+using CodeFlowLibrary.Versions;
 
 namespace CodeFlow
 {
@@ -63,7 +64,6 @@ namespace CodeFlow
         private Events _dteEvents;
         //private DteInitializer dteInitializer;
         private bool _isSolution;
-        public CodeFlowVersions Versions { get; private set; }
         public Version OldVersion { get; private set; }
         public Version CurrentVersion { get; private set; }
 
@@ -127,7 +127,6 @@ namespace CodeFlow
                 dteInitializer = new DteInitializer(shellService, this.InitializeDte);*/
             }
             SetupEvents();
-            Versions = new CodeFlowVersions();
             CheckVersion();
             if (PackageOperations.Instance.AllProfiles.Count == 0)
                 LoadConfig();
@@ -135,10 +134,11 @@ namespace CodeFlow
 
         private void CheckVersion()
         {
+            CodeFlowUpdater updater = new CodeFlowUpdater(VersionUpdates.LoadChangeList(this));
             string tmp = Settings.Default.ToolVersion;
             CurrentVersion = new Version(Settings.Default.ToolVersion);
             OldVersion = new Version(Settings.Default.OldVersion);
-            Version newVersion = Versions.Execute(CurrentVersion, OptionsPage);
+            Version newVersion = updater.Update(CurrentVersion);
             if(CurrentVersion.CompareTo(newVersion) != 0)
             {
                 Settings.Default.OldVersion = String.IsNullOrEmpty(tmp) ? newVersion.ToString() :  CurrentVersion.ToString();
@@ -149,7 +149,7 @@ namespace CodeFlow
 
                 if (!Settings.Default.OldVersion.Equals(Settings.Default.ToolVersion))
                 {
-                    CodeFlowChangesForm changesForm = new CodeFlowChangesForm(Versions, CurrentVersion, OldVersion);
+                    CodeFlowChangesForm changesForm = new CodeFlowChangesForm(updater, CurrentVersion, OldVersion);
                     CodeFlowFormManager.Open(changesForm);
                 }
             }

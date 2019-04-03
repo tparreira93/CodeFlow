@@ -189,11 +189,13 @@
     <Compile Include="SolutionOperations\SolutionConstants.cs" />
     <Compile Include="SolutionOperations\GenioSolutionProperties.cs" />
     <Compile Include="ToolWindow\SortAdorner.cs" />
+    <Compile Include="Versions\VersionUpdates.cs" />
     <Compile Include="VSPackage.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>VSPackage.resx</DependentUpon>
     </Compile>
+    <Compile Include="Versions\CodeFlowOptionsCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CodeFlowLibrary.Helpers
+namespace CodeFlowLibrary.Versions
 {
-    public interface ICodeFlowPackage
+    public interface ICodeFlowChangeCommand
     {
-        bool OpenOnPosition(string fileName, int position);
+        bool Execute();
     }
 }

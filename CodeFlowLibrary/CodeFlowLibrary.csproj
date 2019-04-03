@@ -77,10 +77,12 @@
     <Compile Include="CodeControl\Rules\RuleProvider.cs" />
     <Compile Include="CodeControl\Rules\RulesValidator.cs" />
     <Compile Include="CodeControl\Analyzer\ChangeAnalyzer.cs" />
-    <Compile Include="Versions\CodeFlowVersionInfo.cs" />
-    <Compile Include="Versions\CodeFlowVersions.cs" />
+    <Compile Include="Versions\CodeFlowChange.cs" />
+    <Compile Include="Versions\CodeFlowVersion.cs" />
+    <Compile Include="Versions\CodeFlowUpdater.cs" />
+    <Compile Include="Versions\ICodeFlowChange.cs" />
+    <Compile Include="Versions\ICodeFlowChangeCommand.cs" />
     <Compile Include="Versions\Version.cs" />
-    <Compile Include="Versions\VersionChange.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

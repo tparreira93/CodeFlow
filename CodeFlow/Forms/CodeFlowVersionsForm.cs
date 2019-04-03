@@ -3,24 +3,25 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
 using CodeFlow.Versions;
-using Version = CodeFlow.Versions.Version;
+using Version = CodeFlowLibrary.Versions.Version;
+using CodeFlowLibrary.Versions;
 
 namespace CodeFlow.Forms
 {
     public partial class CodeFlowChangesForm : Form
     {
-        private readonly CodeFlowVersions _changes;
+        private readonly CodeFlowUpdater _changes;
         private readonly Version _currentVersion;
         private readonly Version _previousVersion;
 
-        public CodeFlowChangesForm(CodeFlowVersions changes, Version currentVersion)
+        public CodeFlowChangesForm(CodeFlowUpdater changes, Version currentVersion)
         {
             InitializeComponent();
             _changes = changes;
             _currentVersion = currentVersion;
         }
 
-        public CodeFlowChangesForm(CodeFlowVersions changes, Version currentVersion, Version previousVersion)
+        public CodeFlowChangesForm(CodeFlowUpdater changes, Version currentVersion, Version previousVersion)
         {
             InitializeComponent();
             _changes = changes;
@@ -32,9 +33,9 @@ namespace CodeFlow.Forms
         {
             lblVersion.Text = $"Current version is {_currentVersion}";
             var codeFlowVersionInfos = _changes.Versions.OrderByDescending(x => x.Version);
-            foreach (CodeFlowVersionInfo item in codeFlowVersionInfos)
+            foreach (CodeFlowVersion item in codeFlowVersionInfos)
             {
-                foreach (VersionChange ver in item.Changes)
+                foreach (CodeFlowOptionsCommand ver in item.Changes)
                 {
                     ListViewItem viewItem = new ListViewItem(item.Version.ToString());
                     viewItem.SubItems.Add(ver.Description);

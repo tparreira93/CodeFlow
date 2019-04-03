@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CodeFlow.Versions
+namespace CodeFlowLibrary.Versions
 {
     public class Version : IComparable
     {
