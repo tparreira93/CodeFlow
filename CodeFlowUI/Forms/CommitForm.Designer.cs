@@ -63,7 +63,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
+            this.btnCancel.Image = global::CodeFlowUI.Properties.Resources.Close_16xLG;
             this.btnCancel.Location = new System.Drawing.Point(838, 524);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnCancel.Name = "btnCancel";
@@ -78,7 +78,7 @@
             // 
             this.btnCommit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnCommit.Enabled = false;
-            this.btnCommit.Image = global::CodeFlow.Properties.Resources.Upload_gray_16x;
+            this.btnCommit.Image = global::CodeFlowUI.Properties.Resources.Upload_gray_16x;
             this.btnCommit.Location = new System.Drawing.Point(12, 524);
             this.btnCommit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnCommit.Name = "btnCommit";
@@ -199,7 +199,7 @@
             // 
             this.btnConflict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnConflict.Enabled = false;
-            this.btnConflict.Image = global::CodeFlow.Properties.Resources.Conflict_16x;
+            this.btnConflict.Image = global::CodeFlowUI.Properties.Resources.Conflict_16x;
             this.btnConflict.Location = new System.Drawing.Point(182, 524);
             this.btnConflict.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnConflict.Name = "btnConflict";
@@ -251,7 +251,7 @@
             // 
             this.btnMerge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnMerge.Enabled = false;
-            this.btnMerge.Image = global::CodeFlow.Properties.Resources.Join_16x;
+            this.btnMerge.Image = global::CodeFlowUI.Properties.Resources.Join_16x;
             this.btnMerge.Location = new System.Drawing.Point(104, 524);
             this.btnMerge.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnMerge.Name = "btnMerge";

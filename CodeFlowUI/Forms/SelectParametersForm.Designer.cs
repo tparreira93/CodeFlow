@@ -42,7 +42,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
+            this.btnCancel.Image = global::CodeFlowUI.Properties.Resources.Close_16xLG;
             this.btnCancel.Location = new System.Drawing.Point(475, 460);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnCancel.Name = "btnCancel";
@@ -99,7 +99,7 @@
             // btnSelect
             // 
             this.btnSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSelect.Image = global::CodeFlow.Properties.Resources.ArrangeSelection_16x;
+            this.btnSelect.Image = global::CodeFlowUI.Properties.Resources.ArrangeSelection_16x;
             this.btnSelect.Location = new System.Drawing.Point(389, 460);
             this.btnSelect.Name = "btnSelect";
             this.btnSelect.Size = new System.Drawing.Size(79, 24);

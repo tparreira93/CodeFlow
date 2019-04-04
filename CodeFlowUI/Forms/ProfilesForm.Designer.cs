@@ -70,7 +70,7 @@
             // 
             this.btnExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnExit.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
+            this.btnExit.Image = global::CodeFlowUI.Properties.Resources.Close_16xLG;
             this.btnExit.Location = new System.Drawing.Point(731, 449);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(62, 24);
@@ -83,7 +83,7 @@
             // btnAddProf
             // 
             this.btnAddProf.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAddProf.Image = global::CodeFlow.Properties.Resources.AddUser_16x;
+            this.btnAddProf.Image = global::CodeFlowUI.Properties.Resources.AddUser_16x;
             this.btnAddProf.Location = new System.Drawing.Point(13, 448);
             this.btnAddProf.Name = "btnAddProf";
             this.btnAddProf.Size = new System.Drawing.Size(71, 24);
@@ -96,7 +96,7 @@
             // btnRemove
             // 
             this.btnRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRemove.Image = global::CodeFlow.Properties.Resources.DeleteUser_16x;
+            this.btnRemove.Image = global::CodeFlowUI.Properties.Resources.DeleteUser_16x;
             this.btnRemove.Location = new System.Drawing.Point(90, 448);
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size(86, 24);

@@ -91,7 +91,7 @@
             // 
             this.btnBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnBack.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnBack.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
+            this.btnBack.Image = global::CodeFlowUI.Properties.Resources.Close_16xLG;
             this.btnBack.Location = new System.Drawing.Point(1163, 635);
             this.btnBack.Margin = new System.Windows.Forms.Padding(4);
             this.btnBack.Name = "btnBack";
@@ -105,7 +105,7 @@
             // btnUse
             // 
             this.btnUse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUse.Image = global::CodeFlow.Properties.Resources.Checkmark_16x;
+            this.btnUse.Image = global::CodeFlowUI.Properties.Resources.Checkmark_16x;
             this.btnUse.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnUse.Location = new System.Drawing.Point(1021, 635);
             this.btnUse.Margin = new System.Windows.Forms.Padding(4);
@@ -120,7 +120,7 @@
             // btnViewCode
             // 
             this.btnViewCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnViewCode.Image = global::CodeFlow.Properties.Resources.PreviewWebTab_16x;
+            this.btnViewCode.Image = global::CodeFlowUI.Properties.Resources.PreviewWebTab_16x;
             this.btnViewCode.Location = new System.Drawing.Point(137, 634);
             this.btnViewCode.Margin = new System.Windows.Forms.Padding(4);
             this.btnViewCode.Name = "btnViewCode";
@@ -135,7 +135,7 @@
             // btnMerge
             // 
             this.btnMerge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnMerge.Image = global::CodeFlow.Properties.Resources.PreviewWebTab_16x;
+            this.btnMerge.Image = global::CodeFlowUI.Properties.Resources.PreviewWebTab_16x;
             this.btnMerge.Location = new System.Drawing.Point(17, 634);
             this.btnMerge.Margin = new System.Windows.Forms.Padding(4);
             this.btnMerge.Name = "btnMerge";

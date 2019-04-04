@@ -343,19 +343,19 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="commitCodeImage" href="Resources\Upload_gray_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="updateCodeImage" href="Resources\Download_grey_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="createGenioImage" href="Resources\Add_grey_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="searchGenioImage" href="Resources\Search_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="manageGenioProfilesImage" href="Resources\Team_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="commitSolutionImage" href="Resources\Synchronize_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="fixPlataformImage" href="Resources\Event_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="refreshSolutionImage" href="Resources\Refresh_grey_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="buttonSearchToolwindow" href="Resources\Search_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="buttonWholeWord" href="Resources\WholeWordMatch_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="buttonCaseSensitive" href="Resources\CaseSensitive_16x.png" usedList="bmpPic1" />
-      <Bitmap guid="changeHistory" href="Resources\History_16xLG.png" usedList="bmpPic1" />
-      <Bitmap guid="codeFlowVersionHistoryImage" href="Resources\VSO_History_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="commitCodeImage" href="..\CodeFlowUI\Resources\Upload_gray_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="updateCodeImage" href="..\CodeFlowUI\Resources\Download_grey_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="createGenioImage" href="..\CodeFlowUI\Resources\Add_grey_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="searchGenioImage" href="..\CodeFlowUI\Resources\Search_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="manageGenioProfilesImage" href="..\CodeFlowUI\Resources\Team_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="commitSolutionImage" href="..\CodeFlowUI\Resources\Synchronize_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="fixPlataformImage" href="..\CodeFlowUI\Resources\Event_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="refreshSolutionImage" href="..\CodeFlowUI\Resources\Refresh_grey_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="buttonSearchToolwindow" href="..\CodeFlowUI\Resources\Search_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="buttonWholeWord" href="..\CodeFlowUI\Resources\WholeWordMatch_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="buttonCaseSensitive" href="..\CodeFlowUI\Resources\CaseSensitive_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="changeHistory" href="..\CodeFlowUI\Resources\History_16xLG.png" usedList="bmpPic1" />
+      <Bitmap guid="codeFlowVersionHistoryImage" href="..\CodeFlowUI\Resources\VSO_History_16x.png" usedList="bmpPic1" />
     </Bitmaps>
   </Commands>
 

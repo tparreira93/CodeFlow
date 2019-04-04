@@ -11,7 +11,10 @@ namespace CodeFlow.ToolWindow
     using System.Windows.Threading;
     using System.Windows;
     using System.Threading;
-    using CodeFlow.ManualOperations;
+    using CodeFlowUI.Controls;
+    using CodeFlowLibrary.GenioCode;
+    using CodeFlowLibrary.Genio;
+
     //using CommandHandler;
 
     /// <summary>
@@ -234,6 +237,7 @@ namespace CodeFlow.ToolWindow
                 }
             }
         }
+
         private void SearchTerm(object sender, EventArgs e)
         {
             if (e == EventArgs.Empty)
@@ -268,58 +272,19 @@ namespace CodeFlow.ToolWindow
             else
                 throw (new ArgumentException("Invalid combo box call!"));
         }
+
         private void CheckWholeWord(object sender, EventArgs e)
         {
             var command = sender as MenuCommand;
             command.Checked = !command.Checked;
             wholeWord = command.Checked;
         }
+
         private void CheckCaseSensitive(object sender, EventArgs e)
         {
             var command = sender as MenuCommand;
             command.Checked = !command.Checked;
             caseSensitive = command.Checked;
         }
-        public override void OnToolBarAdded()
-        {
-            base.OnToolBarAdded();
-
-            // In general it is not useful to override this method,
-            // but it is useful when the tool window hosts a toolbar
-            // with a drop-down (combo box) that needs to be initialized.
-            // If that were the case, the initalization would happen here.
-        }
-
-       /* public int OnShow(int fShow)
-        {
-            CommandHandler handler = new CommandHandler();
-            string selection = handler.GetCurrentSelection();
-
-            if (!string.IsNullOrEmpty(selection))
-            {
-                SearchTerm(this, new OleMenuCmdEventArgs(selection, new IntPtr(), Microsoft.VisualStudio.OLE.Interop.OLECMDEXECOPT.OLECMDEXECOPT_PROMPTUSER));
-            }
-            return 1;
-        }
-
-        public int OnMove(int x, int y, int w, int h)
-        {
-            return 1;
-        }
-
-        public int OnSize(int x, int y, int w, int h)
-        {
-            return 1;
-        }
-
-        public int OnDockableChange(int fDockable, int x, int y, int w, int h)
-        {
-            return 1;
-        }
-
-        public int OnClose(ref uint pgrfSaveOptions)
-        {
-            return 1;
-        }*/
     }
 }

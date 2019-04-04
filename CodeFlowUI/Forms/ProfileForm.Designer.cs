@@ -120,7 +120,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
+            this.btnCancel.Image = global::CodeFlowUI.Properties.Resources.Close_16xLG;
             this.btnCancel.Location = new System.Drawing.Point(444, 310);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 24);
@@ -133,7 +133,7 @@
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Image = global::CodeFlow.Properties.Resources.save_16xLG;
+            this.btnSave.Image = global::CodeFlowUI.Properties.Resources.save_16xLG;
             this.btnSave.Location = new System.Drawing.Point(363, 310);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 24);
@@ -169,7 +169,7 @@
             // btnRefresh
             // 
             this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefresh.Image = global::CodeFlow.Properties.Resources.refresh_16xLG;
+            this.btnRefresh.Image = global::CodeFlowUI.Properties.Resources.refresh_16xLG;
             this.btnRefresh.Location = new System.Drawing.Point(282, 310);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(75, 24);
@@ -182,7 +182,7 @@
             // btnTry
             // 
             this.btnTry.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnTry.Image = global::CodeFlow.Properties.Resources.UserTrigger_16x;
+            this.btnTry.Image = global::CodeFlowUI.Properties.Resources.UserTrigger_16x;
             this.btnTry.Location = new System.Drawing.Point(15, 310);
             this.btnTry.Name = "btnTry";
             this.btnTry.Size = new System.Drawing.Size(72, 24);
@@ -265,7 +265,7 @@
             // btnRules
             // 
             this.btnRules.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRules.Image = global::CodeFlow.Properties.Resources.Rule_16x;
+            this.btnRules.Image = global::CodeFlowUI.Properties.Resources.Rule_16x;
             this.btnRules.Location = new System.Drawing.Point(93, 310);
             this.btnRules.Name = "btnRules";
             this.btnRules.Size = new System.Drawing.Size(86, 24);
@@ -277,7 +277,7 @@
             // 
             // btnSelectFolder
             // 
-            this.btnSelectFolder.Image = global::CodeFlow.Properties.Resources.folder_Open_16xLG;
+            this.btnSelectFolder.Image = global::CodeFlowUI.Properties.Resources.folder_Open_16xLG;
             this.btnSelectFolder.Location = new System.Drawing.Point(442, 258);
             this.btnSelectFolder.Name = "btnSelectFolder";
             this.btnSelectFolder.Size = new System.Drawing.Size(75, 24);

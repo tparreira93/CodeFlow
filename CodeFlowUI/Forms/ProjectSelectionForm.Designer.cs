@@ -43,7 +43,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
+            this.btnCancel.Image = global::CodeFlowUI.Properties.Resources.Close_16xLG;
             this.btnCancel.Location = new System.Drawing.Point(538, 469);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnCancel.Name = "btnCancel";
@@ -57,7 +57,7 @@
             // btnAnalyze
             // 
             this.btnAnalyze.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAnalyze.Image = global::CodeFlow.Properties.Resources.StartupProject_16x;
+            this.btnAnalyze.Image = global::CodeFlowUI.Properties.Resources.StartupProject_16x;
             this.btnAnalyze.Location = new System.Drawing.Point(454, 469);
             this.btnAnalyze.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnAnalyze.Name = "btnAnalyze";
@@ -111,7 +111,7 @@
             // cancelAnal
             // 
             this.cancelAnal.Enabled = false;
-            this.cancelAnal.Image = global::CodeFlow.Properties.Resources.Cancel_16x;
+            this.cancelAnal.Image = global::CodeFlowUI.Properties.Resources.Cancel_16x;
             this.cancelAnal.Name = "cancelAnal";
             this.cancelAnal.Size = new System.Drawing.Size(20, 20);
             this.cancelAnal.Click += new System.EventHandler(this.cancelAnal_Click);

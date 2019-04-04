@@ -94,6 +94,54 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\History_16xLG.png" />
+    <None Include="Resources\WholeWordMatch_16x.png" />
+    <None Include="Resources\CaseSensitive_16x.png" />
+    <None Include="Resources\Refresh_grey.ico" />
+    <None Include="Resources\Search.ico" />
+    <None Include="Resources\UploadFile_16x.png" />
+    <None Include="Resources\PreviewWebTab_16x.png" />
+    <None Include="Resources\refresh_16xLG.png" />
+    <None Include="Resources\save_16xLG.png" />
+    <None Include="Resources\UserTrigger_16x.png" />
+    <None Include="Resources\Upload_gray_16x.png" />
+    <None Include="Resources\StartupProject_16x.png" />
+    <None Include="Resources\Search_16x.png" />
+    <None Include="Resources\Team_16x.png" />
+    <None Include="Resources\Refresh_grey_16x.png" />
+    <None Include="Resources\VSO_Add_16x.png" />
+    <None Include="Resources\Synchronize_16x.png" />
+    <None Include="Resources\Join_16x.png" />
+    <None Include="Resources\VSO_History_16x.png" />
+    <None Include="Resources\Rule_16x.png" />
+    <None Include="Resources\Download_grey.ico" />
+    <None Include="Resources\Event.ico" />
+    <None Include="Resources\Compare_16x.png" />
+    <None Include="Resources\DownloadFile_16x.png" />
+    <None Include="Resources\AddFile_16x.png" />
+    <None Include="Resources\Checkmark_16x.png" />
+    <None Include="Resources\Close_16xLG.png" />
+    <None Include="Resources\Conflict_16x.png" />
+    <None Include="Resources\Compare_16x1.png" />
+    <None Include="Resources\DeleteUser_16x.png" />
+    <None Include="Resources\AddUser_16x.png" />
+    <None Include="Resources\Cancel_16x.png" />
+    <None Include="Resources\CodeActivity_16x.png" />
+    <None Include="Resources\Event_16x.png" />
+    <None Include="Resources\Download_grey_16x.png" />
+    <None Include="Resources\action_add_16xLG.png" />
+    <None Include="Resources\Add_grey_16x.png" />
+    <None Include="Resources\arrow_merge_16xLG.png" />
+    <None Include="Resources\History_16x.png" />
+    <None Include="Resources\ArrangeSelection_16x.png" />
+    <None Include="Resources\folder_Open_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Forms\CodeFlowVersionsForm.resx">
       <DependentUpon>CodeFlowVersionsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -192,6 +240,10 @@
     <Compile Include="Forms\ProfilesForm.Designer.cs">
       <DependentUpon>ProfilesForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

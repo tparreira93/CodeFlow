@@ -87,7 +87,7 @@
             // 
             this.btnExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnExit.Image = global::CodeFlow.Properties.Resources.Close_16xLG;
+            this.btnExit.Image = global::CodeFlowUI.Properties.Resources.Close_16xLG;
             this.btnExit.Location = new System.Drawing.Point(793, 584);
             this.btnExit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnExit.Name = "btnExit";
