@@ -47,13 +47,14 @@ namespace CodeFlow.CodeUtils.Suggestions
             this.textView = textView;
         }
 
-        private bool TryGetManual(out IManual manua)
+        private bool TryGetManual(SnapshotSpan range, out IManual manua)
         {
             manua = null;
             CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
             if (String.IsNullOrEmpty(handler.GetCurrentSelection()))
             {
-                string code = handler.GetCurrentViewText(out int pos, out IWpfTextView _);
+                string code = range.Snapshot.GetText();
+                int pos = range.Start;
                 VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageOperations.Instance.DTE.ActiveDocument.FullName);
                 List<IManual> codeList = vSCodeManualMatcher.Match();
 
@@ -65,21 +66,23 @@ namespace CodeFlow.CodeUtils.Suggestions
 
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                if (PackageOperations.Instance.ContinuousAnalysis && TryGetManual(out IManual _))
+            TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
+            return Task.Factory.StartNew(
+                () =>
                 {
-                    return true;
-                }
-                return false;
-            });
+                    return PackageOperations.Instance.ContinuousAnalysis && TryGetManual(range, out IManual _);
+                },
+                CancellationToken.None,
+                TaskCreationOptions.None,
+                uiScheduler);
         }
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
             if (PackageOperations.Instance.ContinuousAnalysis 
                 && !cancellationToken.IsCancellationRequested 
-                && TryGetManual(out IManual man))
+                && TryGetManual(range, out IManual man))
             {
                 List<ISuggestedAction> actions = new List<ISuggestedAction>();
 

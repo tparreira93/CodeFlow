@@ -35,8 +35,8 @@
             this.lstCode = new System.Windows.Forms.ListView();
             this.clOperation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clFile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.clCode = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.chRule = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clCode = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextLstCode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.goToPositionToolStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
@@ -55,6 +55,7 @@
             this.lblColors = new System.Windows.Forms.Label();
             this.lblDivis = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.chProfile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextLstCode.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -99,7 +100,8 @@
             this.clOperation,
             this.clFile,
             this.chRule,
-            this.clCode});
+            this.clCode,
+            this.chProfile});
             this.lstCode.ContextMenuStrip = this.contextLstCode;
             this.lstCode.FullRowSelect = true;
             this.lstCode.GridLines = true;
@@ -125,18 +127,18 @@
             // clFile
             // 
             this.clFile.Text = "File name";
-            this.clFile.Width = 200;
-            // 
-            // clCode
-            // 
-            this.clCode.Tag = "clCode";
-            this.clCode.Text = "Code";
-            this.clCode.Width = 424;
+            this.clFile.Width = 180;
             // 
             // chRule
             // 
             this.chRule.Text = "Flagged rule";
             this.chRule.Width = 91;
+            // 
+            // clCode
+            // 
+            this.clCode.Tag = "clCode";
+            this.clCode.Text = "Code";
+            this.clCode.Width = 373;
             // 
             // contextLstCode
             // 
@@ -336,6 +338,11 @@
             this.label1.TabIndex = 19;
             this.label1.Text = "|";
             // 
+            // chProfile
+            // 
+            this.chProfile.Text = "Profile";
+            this.chProfile.Width = 70;
+            // 
             // CommitForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -398,5 +405,6 @@
         private System.Windows.Forms.ContextMenuStrip contextLstCode;
         private System.Windows.Forms.ToolStripMenuItem goToPositionToolStrip;
         private System.Windows.Forms.ColumnHeader chRule;
+        private System.Windows.Forms.ColumnHeader chProfile;
     }
 }

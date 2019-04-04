@@ -21,5 +21,6 @@ namespace CodeFlow.CodeControl
         void Compare();
         string GetDescription();
         CodeRule FlagedRule { get; set; }
+        Profile ChangeProfile { get; }
     }
 }

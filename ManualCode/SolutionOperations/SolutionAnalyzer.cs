@@ -48,7 +48,8 @@ namespace CodeFlow.SolutionOperations
             int count = 0;
             count += projectsList.Sum(project => project.ProjectFiles.Count);
             _isAnalyzing = true;
-            var task = Task.Factory.StartNew(CompareMatches, new CancellationToken(CancellationPending));
+            TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            var task = Task.Factory.StartNew(CompareMatches, new CancellationToken(CancellationPending), TaskCreationOptions.None, uiScheduler);
             try
             {
                 foreach (GenioProjectProperties project in projectsList)
@@ -119,10 +120,11 @@ namespace CodeFlow.SolutionOperations
          */
         private Task AnalyzeFileAsync(string file)
         {
+            TaskScheduler uiScheduler = TaskScheduler.Default;
             PackageOperations.Instance.DetectTextEncoding(file, out string text);
             VSCodeManualMatcher matcher = new VSCodeManualMatcher(text, file) {ConcurrentMatching = false};
             matcher.Register(_consumerCollection);
-            return Task.Factory.StartNew(matcher.Match);
+            return Task.Factory.StartNew(matcher.Match, CancellationToken.None, TaskCreationOptions.None, uiScheduler);
         }
     }
 }

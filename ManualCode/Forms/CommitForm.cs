@@ -253,6 +253,7 @@ namespace CodeFlow.Forms
             item.SubItems.Add(diff.Merged.LocalFileName);
             item.SubItems.Add(ruleName);
             item.SubItems.Add(diff.Merged.ShortOneLineCode());
+            item.SubItems.Add(diff.ChangeProfile.ProfileName);
             item.ImageIndex = GetImageIndex(diff);
             item.Tag = diff;
             item.Checked = chk;
@@ -266,6 +267,7 @@ namespace CodeFlow.Forms
             item.SubItems.Add(conf.DifferenceList.AsList[0].Merged.LocalFileName);
             item.SubItems.Add("");
             item.SubItems.Add(conf.DifferenceList.AsList[0].Merged.ShortOneLineCode());
+            item.SubItems.Add(conf.DifferenceList.AsList[0].ChangeProfile.ProfileName);
             item.ImageIndex = GetImageIndex(conf);
             item.Tag = conf;
             item.Checked = chk;

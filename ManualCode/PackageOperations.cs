@@ -380,7 +380,7 @@ namespace CodeFlow
 
         public bool ExecuteOperation(IOperation operation)
         {
-            bool result = operation.Execute(GetActiveProfile());
+            bool result = operation.Execute();
             if (result && LogOperations)
                 ChangeLog.LogOperation(operation);
 

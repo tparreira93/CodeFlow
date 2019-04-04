@@ -16,16 +16,18 @@ namespace CodeFlow.CodeControl
         IManual merged;
         bool isMerged = false;
         CodeRule rule;
+        Profile changeProfile;
 
         /*
         * Merged defaults to mine
         */
-        public ManualChange(IManual mine, IManual theirs)
+        public ManualChange(IManual mine, IManual theirs, Profile profile)
         {
             Mine = mine ?? throw new ArgumentNullException(nameof(mine));
             Theirs = theirs;
             Merged = Mine;
             rule = null;
+            changeProfile = profile;
         }
         public virtual IChange Merge()
         {
@@ -33,10 +35,10 @@ namespace CodeFlow.CodeControl
             Merged = Manual.Merge(Theirs, Merged);
 
             if (!String.IsNullOrWhiteSpace(Mine.Code) && String.IsNullOrWhiteSpace(Merged.Code))
-                change = new CodeEmpty(Merged, Theirs);
+                change = new CodeEmpty(Merged, Theirs, ChangeProfile);
 
             else if (String.IsNullOrWhiteSpace(Mine.Code) && !String.IsNullOrWhiteSpace(Merged.Code))
-                change = new CodeChange(Merged, Theirs);
+                change = new CodeChange(Merged, Theirs, ChangeProfile);
 
             change.IsMerged = true;
 
@@ -59,5 +61,6 @@ namespace CodeFlow.CodeControl
         public bool IsMerged { get => isMerged; set => isMerged = value; }
         public IManual Merged { get => merged; set => merged = value; }
         CodeRule IChange.FlagedRule { get => rule; set => rule = value; }
+        public Profile ChangeProfile => changeProfile;
     }
 }

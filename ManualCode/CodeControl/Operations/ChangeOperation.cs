@@ -8,27 +8,32 @@ namespace CodeFlow.CodeControl
     {
         private IChange operationData;
         private DateTime operationTime;
+        private Profile operationProfile;
+
         public ChangeOperation()
         {
 
         }
 
-        public ChangeOperation(IChange data)
+        public ChangeOperation(IChange data, Profile operationProfile)
         {
-            OperationChanges = data ?? throw new ArgumentNullException(nameof(data));
-            OperationTime = DateTime.Now;
+            this.operationData = data ?? throw new ArgumentNullException(nameof(data));
+            this.operationTime = DateTime.Now;
+            this.operationProfile = operationProfile;
         }
-        public IChange OperationChanges { get => operationData; set => operationData = value; }
-        public DateTime OperationTime { get => operationTime; set => operationTime = value; }
-        public string LocalFileName { get => operationData?.Mine?.LocalFileName ?? ""; }
+        public IChange OperationChanges => operationData;
+        public DateTime OperationTime => operationTime;
+        public Profile OperationProfile => operationProfile;
+        public string LocalFileName => operationData?.Mine?.LocalFileName ?? "";
+        public string FullFileName => operationData?.Mine?.FullFileName ?? "";
         public string OperationType => "Modified";
 
-        public bool Undo(Profile profile)
+        public bool Undo()
         {
             bool result;
             try
             {
-                result = Execute(profile, OperationChanges.Theirs);
+                result = Execute(OperationChanges.Theirs);
             }
             catch (Exception e)
             {
@@ -36,16 +41,16 @@ namespace CodeFlow.CodeControl
             }
             return result;
         }
-        public bool Redo(Profile profile)
+        public bool Redo()
         {
-            return Execute(profile);
+            return Execute();
         }
-        public bool Execute(Profile profile)
+        public bool Execute()
         {
             bool result;
             try
             {
-                result = Execute(profile, OperationChanges.Merged);
+                result = Execute(OperationChanges.Merged);
             }
             catch (Exception e)
             {
@@ -54,9 +59,9 @@ namespace CodeFlow.CodeControl
 
             return result;
         }
-        private bool Execute(Profile profile, IManual man)
+        private bool Execute(IManual man)
         {
-            return man.Update(profile);
+            return man.Update(OperationProfile);
         }
     }
 }

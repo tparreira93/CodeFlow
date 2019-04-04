@@ -95,21 +95,23 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            try
-            {
-                CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-                List<IManual> manual = handler.SearchForTags();
-                ChangeAnalyzer diffs = new ChangeAnalyzer();
-                diffs.CheckForDifferences(manual, PackageOperations.Instance.GetActiveProfile());
-                CommitForm exportForm = new CommitForm(diffs);
-                CodeFlowFormManager.Open(exportForm);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
+            var t = Task.Run(async () => await CommitCodeAsync());
+
+           if(t.Exception != null) 
+                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, t.Exception.Message),
                     Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-            }
+        }
+        
+        private async Task CommitCodeAsync()
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
+            List<IManual> manual = handler.SearchForTags();
+            ChangeAnalyzer diffs = new ChangeAnalyzer();
+            diffs.CheckForDifferences(manual, PackageOperations.Instance.GetActiveProfile());
+            CommitForm exportForm = new CommitForm(diffs);
+            CodeFlowFormManager.Open(exportForm);
         }
     }
 }

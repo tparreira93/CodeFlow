@@ -172,7 +172,7 @@ namespace CodeFlow.Forms
 
             try
             {
-                IOperation operation = new CodeCreate(manualCode).GetOperation();
+                IOperation operation = new CodeCreate(manualCode, PackageOperations.Instance.GetActiveProfile()).GetOperation();
                 if (operation != null && PackageOperations.Instance.ExecuteOperation(operation))
                 {
                     MessageBox.Show(Properties.Resources.CodeCreated, Properties.Resources.Create, MessageBoxButtons.OK, MessageBoxIcon.Information);

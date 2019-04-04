@@ -10,7 +10,7 @@ namespace CodeFlow.CodeControl
 {
     public class CodeChange : ManualChange
     {
-        public CodeChange(IManual mine, IManual theirs) : base(mine, theirs)
+        public CodeChange(IManual mine, IManual theirs, Profile profile) : base(mine, theirs, profile)
         {
 
         }
@@ -22,7 +22,7 @@ namespace CodeFlow.CodeControl
 
         public override IOperation GetOperation()
         {
-            return new ChangeOperation(this);
+            return new ChangeOperation(this, ChangeProfile);
         }
     }
 }

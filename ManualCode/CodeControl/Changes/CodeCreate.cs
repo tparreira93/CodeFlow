@@ -10,13 +10,13 @@ namespace CodeFlow.CodeControl
 {
     public class CodeCreate : ManualChange
     {
-        public CodeCreate(IManual mine) : base(mine, null)
+        public CodeCreate(IManual mine, Profile profile) : base(mine, null, profile)
         {
         }
 
         public override IOperation GetOperation()
         {
-            return new CreateOperation(this);
+            return new CreateOperation(this, ChangeProfile);
         }
         public override string GetDescription()
         {
