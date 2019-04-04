@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlowLibrary;
 
-namespace CodeFlow.Forms
+namespace CodeFlowUI
 {
     public partial class RuleForm : Form
     {

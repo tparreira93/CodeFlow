@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlow.SolutionOperations;
 
-namespace CodeFlow.Forms
+namespace CodeFlowUI
 {
     public partial class ProjectSelectionForm : Form
     {

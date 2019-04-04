@@ -1,6 +1,6 @@
-﻿namespace CodeFlow.ToolWindow
+﻿namespace CodeFlowUI.Controls
 {
-    using CodeFlow.CodeControl;
+    using CodeFlowLibrary.CodeControl.Operations;
     using System;
     using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
@@ -98,7 +98,7 @@
         {
             PackageOperations.Instance.ChangeLog.Clear();
             // Force collection, we might have to many changes and stuff might get heavy
-            System.GC.Collect();
+            GC.Collect();
         }
         private void lstHistoryColumnHeader_Click(object sender, RoutedEventArgs e)
         {

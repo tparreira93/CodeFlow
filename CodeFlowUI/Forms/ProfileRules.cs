@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CodeFlow.Forms
+namespace CodeFlowUI
 {
     public partial class ProfileRules : Form
     {

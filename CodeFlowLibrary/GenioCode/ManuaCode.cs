@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using System.Text;
-using CodeFlowLibrary;
-using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.Helpers;
 
@@ -100,18 +98,18 @@ namespace CodeFlowLibrary.GenioCode
         }
         public override string FormatCode(string extension)
         {
-            string str = FormatComment(extension, GetMatchProvider().MatchBeginnig + this.CodeId.ToString()) + Helpers.NewLine;
+            string str = FormatComment(extension, GetMatchProvider().MatchBeginnig + this.CodeId.ToString()) + Helpers.Helpers.NewLine;
             str += this.Code;
-            str += Helpers.NewLine;
+            str += Helpers.Helpers.NewLine;
             str += FormatComment(extension, GetMatchProvider().MatchEnd);
 
             return str;
         }
         public override string ToString()
         {
-            string str = GetMatchProvider().MatchBeginnig + this.CodeId.ToString() + Helpers.NewLine;
+            string str = GetMatchProvider().MatchBeginnig + this.CodeId.ToString() + Helpers.Helpers.NewLine;
             str += this.Code;
-            str += Helpers.NewLine;
+            str += Helpers.Helpers.NewLine;
             str += GetMatchProvider().MatchEnd;
 
             return str;
@@ -127,7 +125,7 @@ namespace CodeFlowLibrary.GenioCode
             {
                 try
                 {
-                    string c = PackageOperations.Instance.ForceDOSLine ? Helpers.ConverToDOSLineEndings(CodeTransformKeyValue()) : Code;
+                    string c = PackageOperations.Instance.ForceDOSLine ? Helpers.Helpers.ConverToDOSLineEndings(CodeTransformKeyValue()) : Code;
 
                     SqlCommand cmd = new SqlCommand();
                     cmd.CommandText = String.Format("UPDATE GENMANUA SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODMANUA = @CODMANUA");
@@ -163,7 +161,7 @@ namespace CodeFlowLibrary.GenioCode
                     if(CodeId.Equals(Guid.Empty))
                         this.CodeId = Guid.NewGuid();
 
-                    string c = PackageOperations.Instance.ForceDOSLine ? Helpers.ConverToDOSLineEndings(CodeTransformValueKey()) : CodeTransformValueKey();
+                    string c = PackageOperations.Instance.ForceDOSLine ? Helpers.Helpers.ConverToDOSLineEndings(CodeTransformValueKey()) : CodeTransformValueKey();
 
                     SqlCommand cmd = new SqlCommand();
                     cmd.CommandText = String.Format("INSERT INTO GENMANUA (CODMANUA, PLATAFOR, TIPO, MODULO, PARAMETR, FICHEIRO, CORPO, LANG, ORDEM, CODCARAC, CODMODUL, ISSISTEM, NEGCARAC, CARAC, DATACRIA, OPERCRIA, ZZSTATE) "
@@ -248,7 +246,7 @@ namespace CodeFlowLibrary.GenioCode
                         reader.Read();
                         man = new ManuaCode("");
                         man.CodeId = reader.SafeGetGuid(0);
-                        man.Code = PackageOperations.Instance.ForceDOSLine ? Helpers.ConverToDOSLineEndings(reader.SafeGetString(1)) : reader.SafeGetString(1);
+                        man.Code = PackageOperations.Instance.ForceDOSLine ? Helpers.Helpers.ConverToDOSLineEndings(reader.SafeGetString(1)) : reader.SafeGetString(1);
                         man.Plataform = reader.SafeGetString(2);
                         man.TipoRotina = reader.SafeGetString(3);
                         man.Modulo = reader.SafeGetString(4);
@@ -321,7 +319,7 @@ namespace CodeFlowLibrary.GenioCode
                         Guid codmanua = reader.SafeGetGuid(0);
                         string corpo = reader.SafeGetString(1);
 
-                        ManuaCode man = new ManuaCode(codmanua, PackageOperations.Instance.ForceDOSLine ? Helpers.ConverToDOSLineEndings(corpo) : corpo)
+                        ManuaCode man = new ManuaCode(codmanua, PackageOperations.Instance.ForceDOSLine ? Helpers.Helpers.ConverToDOSLineEndings(corpo) : corpo)
                         {
                             Plataform = reader.SafeGetString(2),
                             TipoRotina = reader.SafeGetString(3),

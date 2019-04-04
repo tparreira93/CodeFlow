@@ -65,7 +65,7 @@ namespace CodeFlowLibrary.GenioCode
             {
                 try
                 {
-                    string c = PackageOperations.Instance.ForceDOSLine ? Helpers.ConverToDOSLineEndings(CodeTransformKeyValue()) : CodeTransformKeyValue();
+                    string c = PackageOperations.Instance.ForceDOSLine ? Helpers.Helpers.ConverToDOSLineEndings(CodeTransformKeyValue()) : CodeTransformKeyValue();
 
                     SqlCommand cmd = new SqlCommand();
                     cmd.CommandText = String.Format("UPDATE GENIMPLS SET CORPO = @CORPO, DATAMUDA = GETDATE(), OPERMUDA = @OPERMUDA WHERE CODIMPLS = @CODIMPLS");
@@ -120,7 +120,7 @@ namespace CodeFlowLibrary.GenioCode
                         custom.Codfuncs = reader.SafeGetGuid(0);
                         custom.CodeId = reader.SafeGetGuid(1);
                         custom.Nome = reader.SafeGetString(2);
-                        custom.Code = PackageOperations.Instance.ForceDOSLine ? Helpers.ConverToDOSLineEndings(reader.SafeGetString(3)) : reader.SafeGetString(3);
+                        custom.Code = PackageOperations.Instance.ForceDOSLine ? Helpers.Helpers.ConverToDOSLineEndings(reader.SafeGetString(3)) : reader.SafeGetString(3);
                         custom.Plataform = reader.SafeGetString(4);
                         custom.Tiportn = reader.SafeGetString(5);
                         custom.Ordem = reader.SafeGetDouble(6);
@@ -198,7 +198,7 @@ namespace CodeFlowLibrary.GenioCode
                         Guid codmanua = reader.SafeGetGuid(0);
                         string corpo = reader.SafeGetString(1);
 
-                        CustomFunction custom = new CustomFunction(codmanua, PackageOperations.Instance.ForceDOSLine ? Helpers.ConverToDOSLineEndings(corpo) : corpo);
+                        CustomFunction custom = new CustomFunction(codmanua, PackageOperations.Instance.ForceDOSLine ? Helpers.Helpers.ConverToDOSLineEndings(corpo) : corpo);
                         custom.Plataform = reader.SafeGetString(2);
                         custom.Nome = reader.SafeGetString(3);
                         custom.Codfuncs = reader.SafeGetGuid(4);
@@ -245,18 +245,18 @@ namespace CodeFlowLibrary.GenioCode
         }
         public override string ToString()
         {
-            string str = GetMatchProvider().MatchBeginnig + this.CodeId.ToString() + Helpers.NewLine;
+            string str = GetMatchProvider().MatchBeginnig + this.CodeId.ToString() + Helpers.Helpers.NewLine;
             str += this.Code;
-            str += Helpers.NewLine;
+            str += Helpers.Helpers.NewLine;
             str += GetMatchProvider().MatchEnd;
 
             return str;
         }
         public override string FormatCode(string extension)
         {
-            string str = FormatComment(extension, GetMatchProvider().MatchBeginnig + this.CodeId.ToString()) + Helpers.NewLine;
+            string str = FormatComment(extension, GetMatchProvider().MatchBeginnig + this.CodeId.ToString()) + Helpers.Helpers.NewLine;
             str += this.Code;
-            str += Helpers.NewLine;
+            str += Helpers.Helpers.NewLine;
             str += FormatComment(extension, GetMatchProvider().MatchEnd);
 
             return str;

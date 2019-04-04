@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace CodeFlow.Forms
+namespace CodeFlowUI
 {
     public partial class CreateInGenioForm : Form
     {

@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CodeFlowLibrary;
+using CodeFlowLibrary.Helpers;
 
 namespace CodeFlow.SolutionOperations
 {

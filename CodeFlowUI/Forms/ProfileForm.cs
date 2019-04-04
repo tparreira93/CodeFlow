@@ -1,5 +1,4 @@
-﻿using CodeFlow.Forms;
-using CodeFlowLibrary.Genio;
+﻿using CodeFlowLibrary.Genio;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace CodeFlow.Forms
+namespace CodeFlowUI
 {
     public partial class ProfileForm : Form
     {

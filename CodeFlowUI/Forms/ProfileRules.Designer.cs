@@ -1,4 +1,4 @@
-﻿namespace CodeFlow.Forms
+﻿namespace CodeFlowUI
 {
     partial class ProfileRules
     {

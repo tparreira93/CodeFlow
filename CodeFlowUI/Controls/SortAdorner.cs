@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace CodeFlow.ToolWindow
+namespace CodeFlowUI.Controls
 {
     public class SortAdorner : Adorner
     {

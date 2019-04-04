@@ -33,7 +33,7 @@ namespace CodeFlowLibrary.CodeControl.Rules
 
         public List<CodeRule> GetDefaultRules()
         {
-            Dictionary<RuleProvider, Type> providers = Helpers.GetAtrributes<RuleProvider>();
+            Dictionary<RuleProvider, Type> providers = Helpers.Helpers.GetAtrributes<RuleProvider>();
             List<Type> types = providers.Where(entry => entry.Key.IsDefaultType).Select(entry => entry.Value).ToList();
             List<CodeRule> rules = new List<CodeRule>();
 

@@ -22,6 +22,10 @@ using System.IO;
 using System.Threading;
 using CodeFlowLibrary.Helpers;
 using CodeFlowLibrary.Versions;
+using CodeFlowLibrary.CodeControl.Analyzer;
+using CodeFlowLibrary.CodeControl.Changes;
+using CodeFlowLibrary.CodeControl.Operations;
+using CodeFlowLibrary.GenioCode;
 
 namespace CodeFlow
 {

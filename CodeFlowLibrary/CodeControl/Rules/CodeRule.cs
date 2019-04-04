@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using CodeFlowLibrary.CodeControl.Changes;
+using CodeFlowLibrary.Helpers;
 
 namespace CodeFlowLibrary.CodeControl.Rules
 {
@@ -38,7 +39,7 @@ namespace CodeFlowLibrary.CodeControl.Rules
 
         public string GetRuleName()
         {
-            RuleProvider provider = Helpers.GetAttribute<RuleProvider>(this.GetType()) as RuleProvider;
+            RuleProvider provider = Helpers.Helpers.GetAttribute<RuleProvider>(this.GetType()) as RuleProvider;
             if (provider != null)
                 return provider.RuleName;
             return "";

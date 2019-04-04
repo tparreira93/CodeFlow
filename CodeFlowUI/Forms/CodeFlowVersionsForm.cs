@@ -2,11 +2,10 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
-using CodeFlow.Versions;
 using Version = CodeFlowLibrary.Versions.Version;
 using CodeFlowLibrary.Versions;
 
-namespace CodeFlow.Forms
+namespace CodeFlowUI
 {
     public partial class CodeFlowChangesForm : Form
     {
@@ -35,7 +34,7 @@ namespace CodeFlow.Forms
             var codeFlowVersionInfos = _changes.Versions.OrderByDescending(x => x.Version);
             foreach (CodeFlowVersion item in codeFlowVersionInfos)
             {
-                foreach (CodeFlowOptionsCommand ver in item.Changes)
+                foreach (ICodeFlowChange ver in item.Changes)
                 {
                     ListViewItem viewItem = new ListViewItem(item.Version.ToString());
                     viewItem.SubItems.Add(ver.Description);

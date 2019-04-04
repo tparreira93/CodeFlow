@@ -14,7 +14,7 @@ using CodeFlowLibrary.CodeControl.Changes;
 using CodeFlowLibrary.CodeControl.Conflicts;
 using CodeFlowLibrary.CodeControl.Operations;
 
-namespace CodeFlow.Forms
+namespace CodeFlowUI
 {
     public partial class CommitForm : Form
     {

@@ -186,7 +186,7 @@ namespace CodeFlowLibrary.GenioCode
 
                 ConstructorInfo ctor = local.GetType().GetConstructor(new Type[] { });
                 IManual m = ctor.Invoke(new object[] { }) as IManual;
-                Helpers.CopyFrom(local.GetType(), local, m);
+                Helpers.Helpers.CopyFrom(local.GetType(), local, m);
                 m.Code = finalCode;
                 m.Code = m.CodeTransformValueKey();
 

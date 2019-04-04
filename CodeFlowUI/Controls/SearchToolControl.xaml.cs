@@ -1,20 +1,15 @@
-﻿using CodeFlow.GenioManual;
-
-namespace CodeFlow.ToolWindow
+﻿namespace CodeFlowUI.Controls
 {
-    using CodeFlow.ManualOperations;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Reflection;
     using System.Text.RegularExpressions;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Data;
     using System.Windows.Documents;
     using System.Windows.Media;
+    using CodeFlowLibrary.GenioCode;
 
     /// <summary>
     /// Interaction logic for SearchToolControl.
@@ -35,32 +30,6 @@ namespace CodeFlow.ToolWindow
             this.InitializeComponent();
             lstCode.ItemsSource = results;
             lstCode.DataContext = this;
-
-
-            /*if (lstCode.View is GridView grid)
-            {
-                foreach (GridViewColumn item in grid.Columns)
-                {
-                    GridViewColumnHeader column = item.Header as GridViewColumnHeader;
-                    if (column == null)
-                        continue;
-
-                    if (column.Tag.Equals("Type"))
-                        column.Width = Properties.Settings.Default.ColTypeSize;
-
-                    else if (column.Tag.Equals("Tag"))
-                        column.Width = Properties.Settings.Default.ColTagSize;
-
-                    else if (column.Tag.Equals("Tipo"))
-                        column.Width = Properties.Settings.Default.ColTipoSize;
-
-                    else if (column.Tag.Equals("Plataform"))
-                        column.Width = Properties.Settings.Default.ColPlatSize;
-
-                    else if (column.Tag.Equals("OneLineCode"))
-                        column.Width = Properties.Settings.Default.ColCodeSize;
-                }
-            }*/
         }
 
         public void Clear()

@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.VCProjectEngine;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using CodeFlowLibrary;
+using CodeFlowLibrary.Helpers;
 
 namespace CodeFlow.SolutionOperations
 {

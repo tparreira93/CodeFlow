@@ -3,6 +3,7 @@
     using System;
     using System.Runtime.InteropServices;
     using Microsoft.VisualStudio.Shell;
+    using CodeFlowUI.Controls;
 
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
