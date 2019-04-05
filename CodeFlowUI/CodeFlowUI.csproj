@@ -179,7 +179,7 @@
       <DependentUpon>SearchToolControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\SortAdorner.cs" />
-    <Compile Include="Helpers\CodeFlowForm.cs" />
+    <Compile Include="Helpers\CodeFlowUIManager.cs" />
     <Compile Include="Forms\ProfileRules.cs">
       <SubType>Form</SubType>
     </Compile>

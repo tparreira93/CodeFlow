@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
@@ -10,7 +9,6 @@ using CodeFlow.Properties;
 using CodeFlow.SolutionOperations;
 using System.Collections.Generic;
 using CodeFlow.Commands;
-using CodeFlow.Forms;
 using CodeFlow.Versions;
 using Version = CodeFlowLibrary.Versions.Version;
 using System.Windows.Threading;
@@ -26,6 +24,8 @@ using CodeFlowLibrary.CodeControl.Analyzer;
 using CodeFlowLibrary.CodeControl.Changes;
 using CodeFlowLibrary.CodeControl.Operations;
 using CodeFlowLibrary.GenioCode;
+using CodeFlowUI;
+using CodeFlowUI.Helpers;
 
 namespace CodeFlow
 {
@@ -70,6 +70,7 @@ namespace CodeFlow
         private bool _isSolution;
         public Version OldVersion { get; private set; }
         public Version CurrentVersion { get; private set; }
+        public DTE2 DTE { get; set; }
 
 
 
@@ -154,7 +155,7 @@ namespace CodeFlow
                 if (!Settings.Default.OldVersion.Equals(Settings.Default.ToolVersion))
                 {
                     CodeFlowChangesForm changesForm = new CodeFlowChangesForm(updater, CurrentVersion, OldVersion);
-                    CodeFlowFormManager.Open(changesForm);
+                    CodeFlowUIManager.Open(changesForm);
                 }
             }
         }
@@ -394,6 +395,21 @@ namespace CodeFlow
         public void SetProfile(string profileName)
         {
             GenioProfilesCommand.Instance.OnMenuGenioProfilesCombo(this, new OleMenuCmdEventArgs(profileName, IntPtr.Zero));
+        }
+
+
+        public async System.Threading.Tasks.Task<bool> OpenFileAsync(string fileName)
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+            
+            try
+            {
+                DTE.ItemOperations.OpenFile(fileName);
+
+                return true;
+            }
+            catch
+            { return false; }
         }
 
         #endregion

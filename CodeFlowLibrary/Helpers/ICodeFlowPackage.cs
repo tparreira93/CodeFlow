@@ -9,5 +9,7 @@ namespace CodeFlowLibrary.Helpers
     public interface ICodeFlowPackage
     {
         bool OpenOnPosition(string fileName, int position);
+        void SetProfile(string profileName);
+        System.Threading.Tasks.Task<bool> OpenFileAsync(string fileName);
     }
 }

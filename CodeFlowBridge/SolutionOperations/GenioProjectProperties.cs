@@ -102,7 +102,7 @@ namespace CodeFlow.SolutionOperations
                 }
                 catch(Exception)
                 { }
-                return new GenioProjectItem(item, item.Name, path);
+                return new GenioProjectItem(item.Name, path);
             }
 
             var items = item.ProjectItems.GetEnumerator();
@@ -112,7 +112,7 @@ namespace CodeFlow.SolutionOperations
                 projectItems.Add(GetFiles(projectItems, currentItem));
             }
 
-            return new GenioProjectItem(item, item.Name, item.FileNames[0]);
+            return new GenioProjectItem(item.Name, item.FileNames[0]);
         }
 
         public override string ToString()

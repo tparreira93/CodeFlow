@@ -1,17 +1,13 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Globalization;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using CodeFlow.ToolWindow;
 using Task = System.Threading.Tasks.Task;
-using CodeFlow.GenioManual;
 using System.Collections.Generic;
-using CodeFlow.CodeControl.Analyzer;
-using CodeFlow.Forms;
 using System.Windows.Forms;
-using CodeFlow.ManualOperations;
+using CodeFlowUI.Helpers;
 using CodeFlowLibrary.GenioCode;
+using CodeFlowUI;
+using CodeFlowLibrary.CodeControl.Analyzer;
 
 namespace CodeFlow.Commands
 {
@@ -126,7 +122,7 @@ namespace CodeFlow.Commands
                 ChangeAnalyzer diffs = new ChangeAnalyzer();
                 diffs.CheckForDifferences(manual, PackageOperations.Instance.GetActiveProfile());
                 CommitForm commitForm = new CommitForm(diffs);
-                CodeFlowFormManager.Open(commitForm);
+                CodeFlowUIManager.Open(commitForm);
             }
             catch (Exception ex)
             {

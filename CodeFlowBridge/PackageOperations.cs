@@ -1,21 +1,14 @@
-﻿using EnvDTE;
-using Microsoft.VisualStudio.Shell;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml;
-using CodeFlow.SolutionOperations;
-using EnvDTE80;
-using Microsoft.VisualStudio.Shell.Interop;
 using System.Xml.Serialization;
 using System.Text;
-using CodeFlowLibrary;
 using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.CodeControl.Operations;
 using CodeFlowLibrary.Helpers;
 using CodeFlowLibrary.GenioCode;
 
-namespace CodeFlow
+namespace CodeFlowBridge
 {
     public sealed class PackageOperations
     {
@@ -236,8 +229,8 @@ namespace CodeFlow
                     AutoExportFiles[tmp] = man.GetType();
             }
 
-            DTE.ItemOperations.OpenFile(tmp);
-            AddTempFile(tmp);
+            if (Flow.OpenFileAsync(tmp).Result)
+                AddTempFile(tmp);
         }
         public bool IsAutoExportManual(string path)
         {

@@ -3,7 +3,6 @@
     using CodeFlowLibrary.CodeControl.Operations;
     using System;
     using System.ComponentModel;
-    using System.Diagnostics.CodeAnalysis;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Documents;

@@ -8,12 +8,12 @@ using System.Windows.Forms;
 
 namespace CodeFlowUI.Helpers
 {
-    public class CodeFlowFormManager
+    public class CodeFlowUIManager
     {
         private static Dictionary<Type, object> openForms = new Dictionary<Type, object>();
         private static object lockObject = new object();
 
-        public CodeFlowFormManager()
+        public CodeFlowUIManager()
         {
 
         }
