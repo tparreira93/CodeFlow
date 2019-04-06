@@ -11,6 +11,8 @@ using System.ComponentModel.Composition;
 using System.Threading;
 using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.GenioCode;
+using CodeFlowLibrary.Settings;
+using CodeFlowBridge;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {
@@ -54,7 +56,7 @@ namespace CodeFlow.CodeUtils.Suggestions
             if (String.IsNullOrEmpty(handler.GetCurrentSelection()))
             {
                 string code = handler.GetCurrentViewText(out int pos, out IWpfTextView _);
-                VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageOperations.Instance.DTE.ActiveDocument.FullName);
+                VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageBridge.Instance.DTE.ActiveDocument.FullName);
                 List<IManual> codeList = vSCodeManualMatcher.Match();
 
                 if (codeList.Count == 1)
@@ -67,7 +69,7 @@ namespace CodeFlow.CodeUtils.Suggestions
         {
             return Task.Factory.StartNew(() =>
             {
-                if (PackageOperations.Instance.ContinuousAnalysis && TryGetManual(out IManual _))
+                if (PackageOptions.ContinuousAnalysis && TryGetManual(out IManual _))
                 {
                     return true;
                 }
@@ -77,7 +79,7 @@ namespace CodeFlow.CodeUtils.Suggestions
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            if (PackageOperations.Instance.ContinuousAnalysis 
+            if (PackageOptions.ContinuousAnalysis 
                 && !cancellationToken.IsCancellationRequested 
                 && TryGetManual(out IManual man))
             {
@@ -98,13 +100,13 @@ namespace CodeFlow.CodeUtils.Suggestions
                     actions.Add(import);
                 }
 
-                if (!String.IsNullOrEmpty(PackageOperations.Instance.GetActiveProfile().GenioConfiguration.CheckoutPath)
-                    && !String.IsNullOrEmpty(PackageOperations.Instance.GetActiveProfile().GenioConfiguration.SystemInitials))
+                if (!String.IsNullOrEmpty(PackageBridge.Instance.GetActiveProfile().GenioConfiguration.CheckoutPath)
+                    && !String.IsNullOrEmpty(PackageBridge.Instance.GetActiveProfile().GenioConfiguration.SystemInitials))
                 {
-                    OpenSVNSuggestion openSVNSuggestion = new OpenSVNSuggestion(man, PackageOperations.Instance.GetActiveProfile());
+                    OpenSVNSuggestion openSVNSuggestion = new OpenSVNSuggestion(man, PackageBridge.Instance.GetActiveProfile());
                     actions.Add(openSVNSuggestion);
 
-                    BlameSVNSuggestion blameSVNSuggestion = new BlameSVNSuggestion(man, PackageOperations.Instance.GetActiveProfile());
+                    BlameSVNSuggestion blameSVNSuggestion = new BlameSVNSuggestion(man, PackageBridge.Instance.GetActiveProfile());
                     actions.Add(blameSVNSuggestion);
                 }
                 return new SuggestedActionSet[] { new SuggestedActionSet(actions.ToArray()) };

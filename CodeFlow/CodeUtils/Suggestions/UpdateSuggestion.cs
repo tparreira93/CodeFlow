@@ -102,7 +102,7 @@ namespace CodeFlow.CodeUtils.Suggestions
 
             try
             {
-                ManuaCode bd = ManuaCode.GetManual(PackageOperations.Instance.GetActiveProfile(), codmanua);
+                ManuaCode bd = ManuaCode.GetManual(PackageBridge.Instance.GetActiveProfile(), codmanua);
                 if (bd == null)
                     return;
                 CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
@@ -110,8 +110,8 @@ namespace CodeFlow.CodeUtils.Suggestions
             }
             catch (Exception ex)
             {
-                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
-                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
+                    CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
         }
 

@@ -4,10 +4,12 @@ using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using CodeFlowUI.Helpers;
+using CodeFlowUI.Manager;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowUI;
 using CodeFlowLibrary.CodeControl.Analyzer;
+using CodeFlowBridge;
+using CodeFlowLibrary.Genio;
 
 namespace CodeFlow.Commands
 {
@@ -119,15 +121,16 @@ namespace CodeFlow.Commands
             {
                 CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
                 List<IManual> manual = handler.SearchForTags();
+                Profile profile = PackageBridge.Instance.GetActiveProfile();
                 ChangeAnalyzer diffs = new ChangeAnalyzer();
-                diffs.CheckForDifferences(manual, PackageOperations.Instance.GetActiveProfile());
-                CommitForm commitForm = new CommitForm(diffs);
+                diffs.CheckForDifferences(manual, profile);
+                CommitForm commitForm = new CommitForm(profile, diffs);
                 CodeFlowUIManager.Open(commitForm);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
-                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
+                    CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
         }
 
@@ -139,14 +142,14 @@ namespace CodeFlow.Commands
                 CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
                 if (!handler.ImportAndEditCurrentTag())
                 {
-                    MessageBox.Show(Properties.Resources.VerifyProfile, Properties.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(CodeFlowResources.Resources.VerifyProfile, CodeFlowResources.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
-                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
+                    CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
         }
 
@@ -162,7 +165,7 @@ namespace CodeFlow.Commands
                 {
                     ManuaCode man = new ManuaCode(code);
                     ManualMatch manualMatch = new ManualMatch();
-                    manualMatch.FullFileName = PackageOperations.Instance.DTE.ActiveDocument.FullName;
+                    manualMatch.FullFileName = PackageBridge.Instance.DTE.ActiveDocument.FullName;
                     man.LocalMatch = manualMatch;
                     CreateInGenioForm genioForm = new CreateInGenioForm(man);
                     genioForm.ShowDialog();
@@ -172,8 +175,8 @@ namespace CodeFlow.Commands
             }
             catch (Exception ex)
             {
-                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
-                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
+                    CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
         }
     }

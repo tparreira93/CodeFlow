@@ -59,469 +59,382 @@ namespace CodeFlowUI.Properties {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap action_add_16xLG
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap action_add_16xLG {
+            get {
                 object obj = ResourceManager.GetObject("action_add_16xLG", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Add_grey_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Add_grey_16x {
+            get {
                 object obj = ResourceManager.GetObject("Add_grey_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap AddFile_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap AddFile_16x {
+            get {
                 object obj = ResourceManager.GetObject("AddFile_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap AddUser_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap AddUser_16x {
+            get {
                 object obj = ResourceManager.GetObject("AddUser_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ArrangeSelection_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap ArrangeSelection_16x {
+            get {
                 object obj = ResourceManager.GetObject("ArrangeSelection_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap arrow_merge_16xLG
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap arrow_merge_16xLG {
+            get {
                 object obj = ResourceManager.GetObject("arrow_merge_16xLG", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Cancel_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Cancel_16x {
+            get {
                 object obj = ResourceManager.GetObject("Cancel_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap CaseSensitive_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap CaseSensitive_16x {
+            get {
                 object obj = ResourceManager.GetObject("CaseSensitive_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Checkmark_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Checkmark_16x {
+            get {
                 object obj = ResourceManager.GetObject("Checkmark_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Close_16xLG
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Close_16xLG {
+            get {
                 object obj = ResourceManager.GetObject("Close_16xLG", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap CodeActivity_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap CodeActivity_16x {
+            get {
                 object obj = ResourceManager.GetObject("CodeActivity_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Compare_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Compare_16x {
+            get {
                 object obj = ResourceManager.GetObject("Compare_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Conflict_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Conflict_16x {
+            get {
                 object obj = ResourceManager.GetObject("Conflict_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap DeleteUser_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap DeleteUser_16x {
+            get {
                 object obj = ResourceManager.GetObject("DeleteUser_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon Download_grey
-        {
-            get
-            {
+        internal static System.Drawing.Icon Download_grey {
+            get {
                 object obj = ResourceManager.GetObject("Download_grey", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Download_grey_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Download_grey_16x {
+            get {
                 object obj = ResourceManager.GetObject("Download_grey_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap DownloadFile_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap DownloadFile_16x {
+            get {
                 object obj = ResourceManager.GetObject("DownloadFile_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon Event
-        {
-            get
-            {
+        internal static System.Drawing.Icon Event {
+            get {
                 object obj = ResourceManager.GetObject("Event", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Event_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Event_16x {
+            get {
                 object obj = ResourceManager.GetObject("Event_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap folder_Open_16xLG
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap folder_Open_16xLG {
+            get {
                 object obj = ResourceManager.GetObject("folder_Open_16xLG", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon genio
-        {
-            get
-            {
-                object obj = ResourceManager.GetObject("genio", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap History_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap History_16x {
+            get {
                 object obj = ResourceManager.GetObject("History_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap History_16xLG
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap History_16xLG {
+            get {
                 object obj = ResourceManager.GetObject("History_16xLG", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Join_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Join_16x {
+            get {
                 object obj = ResourceManager.GetObject("Join_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PreviewWebTab_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap PreviewWebTab_16x {
+            get {
                 object obj = ResourceManager.GetObject("PreviewWebTab_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap refresh_16xLG
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap refresh_16xLG {
+            get {
                 object obj = ResourceManager.GetObject("refresh_16xLG", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon Refresh_grey
-        {
-            get
-            {
+        internal static System.Drawing.Icon Refresh_grey {
+            get {
                 object obj = ResourceManager.GetObject("Refresh_grey", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Refresh_grey_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Refresh_grey_16x {
+            get {
                 object obj = ResourceManager.GetObject("Refresh_grey_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Rule_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Rule_16x {
+            get {
                 object obj = ResourceManager.GetObject("Rule_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap save_16xLG
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap save_16xLG {
+            get {
                 object obj = ResourceManager.GetObject("save_16xLG", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Search_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Search_16x {
+            get {
                 object obj = ResourceManager.GetObject("Search_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon Search1
-        {
-            get
-            {
+        internal static System.Drawing.Icon Search1 {
+            get {
                 object obj = ResourceManager.GetObject("Search1", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap StartupProject_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap StartupProject_16x {
+            get {
                 object obj = ResourceManager.GetObject("StartupProject_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Synchronize_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Synchronize_16x {
+            get {
                 object obj = ResourceManager.GetObject("Synchronize_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Team_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Team_16x {
+            get {
                 object obj = ResourceManager.GetObject("Team_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Upload_gray_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap Upload_gray_16x {
+            get {
                 object obj = ResourceManager.GetObject("Upload_gray_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap UploadFile_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap UploadFile_16x {
+            get {
                 object obj = ResourceManager.GetObject("UploadFile_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap UserTrigger_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap UserTrigger_16x {
+            get {
                 object obj = ResourceManager.GetObject("UserTrigger_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap WholeWordMatch_16x
-        {
-            get
-            {
+        internal static System.Drawing.Bitmap WholeWordMatch_16x {
+            get {
                 object obj = ResourceManager.GetObject("WholeWordMatch_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }

@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 using CodeFlowLibrary.GenioCode;
-using CodeFlowLibrary.Helpers;
+using CodeFlowLibrary.Util;
 
 namespace CodeFlow.CommandHandler
 {
@@ -33,7 +33,7 @@ namespace CodeFlow.CommandHandler
         }
         public string GetCurrentSelection()
         {
-            var dte = PackageOperations.Instance.DTE;
+            var dte = PackageBridge.Instance.DTE;
             string code = "";
 
             if (dte != null && dte.ActiveDocument != null)
@@ -46,7 +46,7 @@ namespace CodeFlow.CommandHandler
         public List<IManual> SearchForTags()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            var dte = PackageOperations.Instance.DTE;
+            var dte = PackageBridge.Instance.DTE;
             List<IManual> manual = new List<IManual>();
             if (dte?.ActiveDocument == null)
                 return manual;
@@ -70,12 +70,12 @@ namespace CodeFlow.CommandHandler
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             string code = GetCurrentViewText(out int pos, out IWpfTextView textView);
-            VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageOperations.Instance.DTE.ActiveDocument.FullName);
+            VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageBridge.Instance.DTE.ActiveDocument.FullName);
             List<IManual> codeList = vSCodeManualMatcher.Match();
             if (codeList.Count == 1)
             {
                 IManual manual = codeList[0];
-                IManual bd = Manual.GetManual(manual.GetType(), manual.CodeId, PackageOperations.Instance.GetActiveProfile());
+                IManual bd = Manual.GetManual(manual.GetType(), manual.CodeId, PackageBridge.Instance.GetActiveProfile());
                 if (bd == null)
                     return false;
 
@@ -99,8 +99,8 @@ namespace CodeFlow.CommandHandler
         public void InsertCreatedCode(IManual man)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            string ext = Path.GetExtension(PackageOperations.Instance.DTE.ActiveDocument.ProjectItem.Name);
-            var selection = (TextSelection)PackageOperations.Instance.DTE.ActiveDocument.Selection;
+            string ext = Path.GetExtension(PackageBridge.Instance.DTE.ActiveDocument.ProjectItem.Name);
+            var selection = (TextSelection)PackageBridge.Instance.DTE.ActiveDocument.Selection;
             selection.Insert(man.FormatCode(ext));
         }
     }

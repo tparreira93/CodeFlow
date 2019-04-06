@@ -1,4 +1,5 @@
-﻿using CodeFlowLibrary.CodeControl.Changes;
+﻿using CodeFlowBridge;
+using CodeFlowLibrary.CodeControl.Changes;
 using CodeFlowLibrary.CodeControl.Conflicts;
 using System;
 using System.Collections.Generic;
@@ -54,7 +55,7 @@ namespace CodeFlowUI
                 ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
                 IChange m = (IChange)item.Tag;
 
-                PackageOperations.Instance.OpenManualFile(m.Merged, false);
+                PackageBridge.Instance.OpenManualFile(m.Merged, false);
             }
         }
 

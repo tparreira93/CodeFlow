@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Imaging.Interop;
 using System.Threading;
 using System.Windows.Forms;
-using CodeFlow.CodeControl;
-using CodeFlow.CodeControl.Analyzer;
-using CodeFlow.GenioManual;
-using CodeFlow.ManualOperations;
 using Microsoft.VisualStudio.Language.Intellisense;
+using CodeFlowLibrary.CodeControl.Operations;
+using CodeFlowBridge;
+using CodeFlowLibrary.CodeControl.Analyzer;
+using CodeFlowLibrary.GenioCode;
+using CodeFlowLibrary.CodeControl.Changes;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {
@@ -97,7 +98,7 @@ namespace CodeFlow.CodeUtils.Suggestions
             try
             {
                 ChangeAnalyzer analyzer = new ChangeAnalyzer();
-                analyzer.CheckForDifferences(local, PackageOperations.Instance.GetActiveProfile());
+                analyzer.CheckForDifferences(local, PackageBridge.Instance.GetActiveProfile());
                 if (analyzer.Modifications.AsList.Count == 1)
                 {
                     IChange change = analyzer.Modifications.AsList[0];
@@ -105,33 +106,33 @@ namespace CodeFlow.CodeUtils.Suggestions
                     IOperation operation = change.GetOperation();
                     if(operation != null)
                     {
-                        string message = Properties.Resources.ExportedMerged;
+                        string message = CodeFlowResources.Resources.ExportedMerged;
                         if (operation is DeleteOperation)
                         {
-                            message = Properties.Resources.ConfirmDelete;
+                            message = CodeFlowResources.Resources.ConfirmDelete;
                         }
-                        if (MessageBox.Show(message, Properties.Resources.Export,
+                        if (MessageBox.Show(message, CodeFlowResources.Resources.Export,
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            if (PackageOperations.Instance.ExecuteOperation(operation))
-                                MessageBox.Show(Properties.Resources.Submited, Properties.Resources.Export,
+                            if (PackageBridge.Instance.ExecuteOperation(operation))
+                                MessageBox.Show(CodeFlowResources.Resources.Submited, CodeFlowResources.Resources.Export,
                                     MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
                             else
-                                MessageBox.Show(Properties.Resources.NotSubmited
-                                    + Environment.NewLine + Properties.Resources.VerifyProfile,
-                                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                                MessageBox.Show(CodeFlowResources.Resources.NotSubmited
+                                    + Environment.NewLine + CodeFlowResources.Resources.VerifyProfile,
+                                    CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
                         }
 
                     }
                 }
                 else
-                    MessageBox.Show(Properties.Resources.NoChanges, Properties.Resources.Export, 
+                    MessageBox.Show(CodeFlowResources.Resources.NoChanges, CodeFlowResources.Resources.Export, 
                         MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
             }
             catch(Exception ex)
             {
-                MessageBox.Show(String.Format(Properties.Resources.ErrorUpdating, ex.Message),
-                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorUpdating, ex.Message),
+                    CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

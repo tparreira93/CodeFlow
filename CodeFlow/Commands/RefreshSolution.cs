@@ -89,7 +89,7 @@ namespace CodeFlow.Commands
         private void MenuItemCallback(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            PackageOperations.Instance.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.Instance.DTE);
+            PackageBridge.Instance.SolutionProps = GenioSolutionProperties.ParseSolution(PackageBridge.Instance.DTE);
         }
     }
 }

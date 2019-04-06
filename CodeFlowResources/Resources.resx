@@ -117,60 +117,147 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="imageList1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <data name="imageList1.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
-    <value>
-        AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
-        LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
-        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAADQ
-        BAAAAk1TRnQBSQFMAwEBAAFAAQABQAEAARABAAEQAQAE/wEhAQAI/wFCAU0BNgcAATYDAAEoAwABQAMA
-        ARADAAEBAQABIAYAARAiAAMkATUDUAGaA24B3wPQAfoD0AH6A24B3wNQAZoDJAE12AADCgEOA1IBpAHo
-        AfIB6AH/AY8BvgGRAf8BSQGbAU0B/wEwAYwBNAH/ATABjAE0Af8BSQGbAU0B/wGPAb4BkQH/AegB8gHo
-        Af8DUgGkAwoBDswAAwoBDgNfAckBsgHSAbMB/wE+AZUBQQH/AbwB2AG9Af8B9gH6AfYJ/wH2AfoB9gH/
-        AbwB2AG9Af8BPgGVAUEB/wGyAdIBswH/A18ByQMKAQ7IAANSAaQBsgHSAbMB/wFWAaIBWgH/AfgB+wH4
-        Gf8B+AH7AfgB/wFWAaIBWgH/AbIB0gGzAf8DUgGkxAADJAE1AegB8gHoAf8BPgGVAUEB/wH4AfsB+A3/
-        ASwBigEwAf8BLAGKATAN/wH4AfsB+AH/AT4BlQFBAf8B6AHyAegB/wMkATXAAANQAZoBjwG+AZEB/wG8
-        AdgBvRH/ASwBigEwAf8BLAGKATAR/wG8AdgBvQH/AY8BvgGRAf8DUAGawAADbgHfAUkBmwFNAf8B9gH6
-        AfYR/wEsAYoBMAH/ASwBigEwEf8B9gH6AfYB/wFJAZsBTQH/A24B38AAA9AB+gEwAYwBNAn/ASwBigEw
-        Af8BLAGKATAB/wEsAYoBMAH/ASwBigEwAf8BLAGKATAB/wEsAYoBMAH/ASwBigEwAf8BLAGKATAJ/wEw
-        AYwBNAH/A9AB+sAAA9AB+gEwAYwBNAn/ASwBigEwAf8BLAGKATAB/wEsAYoBMAH/ASwBigEwAf8BLAGK
-        ATAB/wEsAYoBMAH/ASwBigEwAf8BLAGKATAJ/wEwAYwBNAH/A9AB+sAAA24B3wFJAZsBTQH/AfYB+gH2
-        Ef8BLAGKATAB/wEsAYoBMBH/AfYB+gH2Af8BSQGbAU0B/wNuAd/AAANQAZoBjwG+AZEB/wG8AdgBvRH/
-        ASwBigEwAf8BLAGKATAR/wG8AdgBvQH/AY8BvgGRAf8DUAGawAADJAE1AegB8gHoAf8BPgGVAUEB/wH4
-        AfsB+A3/ASwBigEwAf8BLAGKATAN/wH4AfsB+AH/AT4BlQFBAf8B6AHyAegB/wMkATXEAANSAaQBsgHS
-        AbMB/wFWAaIBWgH/AfgB+wH4Gf8B+AH7AfgB/wFWAaIBWgH/AbIB0gGzAf8DUgGkyAADCgEOA18ByQGy
-        AdIBswH/AT4BlQFBAf8BvAHYAb0B/wH2AfoB9gn/AfYB+gH2Af8BvAHYAb0B/wE+AZUBQQH/AbIB0gGz
-        Af8DXwHJAwoBDswAAwoBDgNSAaQB6AHyAegB/wGPAb4BkQH/AUkBmwFNAf8BMAGMATQB/wEwAYwBNAH/
-        AUkBmwFNAf8BjwG+AZEB/wHoAfIB6AH/A1IBpAMKAQ7YAAMkATUDUAGaA24B3wPQAfoD0AH6A24B3wNQ
-        AZoDJAE10AABQgFNAT4HAAE+AwABKAMAAUADAAEQAwABAQEAAQEFAAGAFwAD/wEAAfABDwYAAcABAwYA
-        AYABAQYAAYABAUYAAYABAQYAAYABAQYAAcABAwYAAfABDwYACw==
-</value>
+  <data name="CodeCreated" xml:space="preserve">
+    <value>Code created!</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        AAABAAEAEBAAAAAAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAA
-        AAD///8B////Af///wH///8B9fX1Nfb29pn19fXX9fX19/X19fn19fXX9vb2lfPz8y////8B////Af//
-        /wH///8B////Af///wHu7u4P9fX1p9vp2/+HwYf/UKdQ/zabNv87nTv/W6xb/5rKmv/r8ev/9vb2lf//
-        /wn///8B////Af///wHw8PAT9vb206HOof9BoEH/kseS/9Tm1P/w8/D/7PHs/8bfxv97vHv/R6JH/8Xe
-        xf/19fW/////Cf///wH///8B9vb2t5zLnP9TqFP/3uve//b29v/29vb/9vb2//b29v/29vb/9vb2/8Ld
-        wv9DoEP/yeDJ//b29pX///8B9fX1T9Ll0v9EoUT/4ezh//b29v/29vb/9vb2//b29v/29vb/4+Pj//b2
-        9v/29vb/v9y//0ukS//v8u//8/PzL/b29rd2uXb/oM2g//b29v/29vb/9vb2//b29v/29vb/1dXV/1FR
-        Uf/f39//9vb2//b29v9utW7/qdKp//b29pX19fX5yuHK/+nw6f/29vb/9vb2//b29v/29vb/39/f/1VV
-        Vf+7u7v/9vb2//b29v/29vb/tNe0/261bv/19fXX9vb2//b29v/29vb/9vb2//b29v/29vb/9vb2/1xc
-        XP+tra3/9vb2//b29v/29vb/9vb2/9Xm1f9RqFH/9fX1+fb29v/29vb/9vb2//b29v/29vb/9vb2//b2
-        9v9CQkL/9vb2//b29v/29vb/9vb2//b29v/V5tX/UahR//X19fn29vb/9vb2//b29v/29vb/9vb2//b2
-        9v/29vb/QkJC//b29v/29vb/9vb2//b29v/29vb/tde1/261bv/19fXZ9vb2/zOZM/8zmTP/M5kz/zOZ
-        M//29vb/9vb2/0JCQv/29vb/9vb2//b29v/29vb/9vb2/2+2b/+o0aj/9vb2l/b29v8zmTP/RKFE/+Hs
-        4f/29vb/9vb2//b29v9CQkL/9vb2//b29v/29vb/9vb2/8DdwP9JpEn/7vLu//T09DH29vb/M5kz/6LO
-        ov9UqVT/3uve//b29v/29vb/9vb2//b29v/29vb/9vb2/8Xexf9DoEP/xt/G//b29pn///8B9vb2/zOZ
-        M//29vb/pM+k/0OgQ/+Tx5P/1ebV//Dz8P/t8u3/yODI/369fv9FokX/wt3C//X19cH///8J////Afb2
-        9v/29vb/9vb2//b29q/c6dz/h8GH/1CnUP82mzb/OZw5/1mrWf+YyZj/6fDp//b29pn///8J////Af//
-        /wH///8B////Af///wH///8B9vb2P/X19aH19fXd9fX1/fX19fv19fXb9vb2mfT09DH///8B////Af//
-        /wH///8BAAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA
-        //8AAP//AAD//w==
-</value>
+  <data name="CodeSearch" xml:space="preserve">
+    <value>Code search</value>
+  </data>
+  <data name="CommitEntries" xml:space="preserve">
+    <value>{0} Manual code entrie(s) | {1} Conflicts</value>
+  </data>
+  <data name="Compare" xml:space="preserve">
+    <value>Compare</value>
+  </data>
+  <data name="Configuration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="ConfirmAdd" xml:space="preserve">
+    <value>Do you wish to add this profile?</value>
+  </data>
+  <data name="ConfirmationExport" xml:space="preserve">
+    <value>Are you sure you want to commit all selected non conflict code in the list to Genio?</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Are you sure you want to delete this manual code?</value>
+  </data>
+  <data name="ConfirmExportDirect" xml:space="preserve">
+    <value>Are you sure you want to commit this manual code?</value>
+  </data>
+  <data name="ConfirmUpdate" xml:space="preserve">
+    <value>Do you wish to update this profile?</value>
+  </data>
+  <data name="Conflict" xml:space="preserve">
+    <value>Conflict</value>
+  </data>
+  <data name="ConnectDB" xml:space="preserve">
+    <value>Genio profile</value>
+  </data>
+  <data name="ConnectionOpen" xml:space="preserve">
+    <value>Connection open!</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="CreateError" xml:space="preserve">
+    <value>You are missing some options in your manual code!</value>
+  </data>
+  <data name="CreateInGenio" xml:space="preserve">
+    <value>Create in genio</value>
+  </data>
+  <data name="CustomToolError" xml:space="preserve">
+    <value>Unable to use desired tool. Please check your custom tool options.</value>
+  </data>
+  <data name="ErrorAddProfile" xml:space="preserve">
+    <value>Unable to create to profile.
+Please make sure profile name is unique, database and server names are valid and that the genio path is correct.</value>
+  </data>
+  <data name="ErrorComparing" xml:space="preserve">
+    <value>An error occurred while comparing code!</value>
+  </data>
+  <data name="ErrorConnect" xml:space="preserve">
+    <value>Unable to connect to server {0}!
+{1}</value>
+  </data>
+  <data name="ErrorCreate" xml:space="preserve">
+    <value>Unable to create code in Genio!
+{0}</value>
+  </data>
+  <data name="ErrorRequest" xml:space="preserve">
+    <value>Unable to complete your request!
+{0}</value>
+  </data>
+  <data name="ErrorResolvingConflict" xml:space="preserve">
+    <value>An error occurred while resolving conflict!
+{0}</value>
+  </data>
+  <data name="ErrorSearch" xml:space="preserve">
+    <value>Unable to search for given terms!
+{0}</value>
+  </data>
+  <data name="ErrorSelectDB" xml:space="preserve">
+    <value>A server and database must be selected!</value>
+  </data>
+  <data name="ErrorSystemInfo" xml:space="preserve">
+    <value>Unable to parse system info.
+{0}</value>
+  </data>
+  <data name="ErrorUpdating" xml:space="preserve">
+    <value>An error occurred while updating manual code!
+{0}</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Commit</value>
+  </data>
+  <data name="ExportedMerged" xml:space="preserve">
+    <value>Commit merged code?</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>History</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="NoChanges" xml:space="preserve">
+    <value>No changes found.</value>
+  </data>
+  <data name="NotSubmited" xml:space="preserve">
+    <value>Unable to commit!</value>
+  </data>
+  <data name="OperationComplete" xml:space="preserve">
+    <value>Operation completed.</value>
+  </data>
+  <data name="ProfileDev" xml:space="preserve">
+    <value>Selected profile is a development environment and its Genio version is {0}.</value>
+  </data>
+  <data name="ProfileProd" xml:space="preserve">
+    <value>Selected profile is a production environment and its Genio version is {0}.</value>
+  </data>
+  <data name="ProfileVersion" xml:space="preserve">
+    <value>Database version from selected profile is {0}</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SolutionVersion" xml:space="preserve">
+    <value>The solution version is {0} and the version of the selected profile is {1}.</value>
+  </data>
+  <data name="Submited" xml:space="preserve">
+    <value>Code commited</value>
+  </data>
+  <data name="UnableToExecuteOperation" xml:space="preserve">
+    <value>Unable to execute operation!
+{0}</value>
+  </data>
+  <data name="VerifyProfile" xml:space="preserve">
+    <value>Manual code not found in database!
+Verify your profile</value>
+  </data>
+  <data name="WarningProfile" xml:space="preserve">
+    <value>WARNING: Solution version is different from the selected profile!</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ManwinInfoData" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ManwinInfoData.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

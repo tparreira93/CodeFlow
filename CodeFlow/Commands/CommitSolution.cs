@@ -89,12 +89,12 @@ namespace CodeFlow.Commands
         private void MenuItemCallback(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            if (PackageOperations.Instance.DTE.Solution is null
-                || PackageOperations.Instance.DTE.Solution.Projects.Count == 0
-                || !PackageOperations.Instance.DTE.Solution.IsOpen)
+            if (PackageBridge.Instance.DTE.Solution is null
+                || PackageBridge.Instance.DTE.Solution.Projects.Count == 0
+                || !PackageBridge.Instance.DTE.Solution.IsOpen)
                 return;
 
-            ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(PackageOperations.Instance.SavedFiles);
+            ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(PackageBridge.Instance.SavedFiles);
             selectionProjectForm.ShowDialog();
 
             if(selectionProjectForm.Result)

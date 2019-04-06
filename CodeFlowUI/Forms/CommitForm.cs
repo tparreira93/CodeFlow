@@ -9,10 +9,12 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CodeFlowBridge;
 using CodeFlowLibrary.CodeControl.Analyzer;
 using CodeFlowLibrary.CodeControl.Changes;
 using CodeFlowLibrary.CodeControl.Conflicts;
 using CodeFlowLibrary.CodeControl.Operations;
+using CodeFlowLibrary.Genio;
 
 namespace CodeFlowUI
 {
@@ -20,42 +22,44 @@ namespace CodeFlowUI
     {
         private ChangeList differences;
         private ConflictList conflictCode;
-        public CommitForm(ChangeAnalyzer difs)
+        private Profile profile;
+        public CommitForm(Profile profile, ChangeAnalyzer difs)
         {
             InitializeComponent();
             differences = difs.Modifications;
             conflictCode = difs.ModifiedConflict;
+            profile = this.profile;
         }
 
         private void RefreshControls()
         {
             lblWarning.Visible = false;
-            lblManual.Text = String.Format(Properties.Resources.CommitEntries, differences.AsList.Count, conflictCode.AsList.Count);
-            lblServer.Text = PackageOperations.Instance.GetActiveProfile().ToString();
+            lblManual.Text = String.Format(CodeFlowResources.Resources.CommitEntries, differences.AsList.Count, conflictCode.AsList.Count);
+            lblServer.Text = profile.ToString();
 
-            if (!String.IsNullOrEmpty(PackageOperations.Instance.SolutionProps.ClientInfo.Version)
-                && !String.IsNullOrEmpty(PackageOperations.Instance.GetActiveProfile().GenioConfiguration.BDVersion))
-                lblSolutionVersion.Text = String.Format(Properties.Resources.SolutionVersion,
-                    PackageOperations.Instance.SolutionProps.ClientInfo.Version, PackageOperations.Instance.GetActiveProfile().GenioConfiguration.BDVersion);
+            if (!String.IsNullOrEmpty(PackageBridge.Instance.SolutionProps.ClientInfo.Version)
+                && !String.IsNullOrEmpty(profile.GenioConfiguration.BDVersion))
+                lblSolutionVersion.Text = String.Format(CodeFlowResources.Resources.SolutionVersion,
+                    PackageBridge.Instance.SolutionProps.ClientInfo.Version, profile.GenioConfiguration.BDVersion);
             else
-                lblSolutionVersion.Text = String.Format(Properties.Resources.ProfileVersion, PackageOperations.Instance.GetActiveProfile().GenioConfiguration.BDVersion);
+                lblSolutionVersion.Text = String.Format(CodeFlowResources.Resources.ProfileVersion, profile.GenioConfiguration.BDVersion);
 
-            if (PackageOperations.Instance.GetActiveProfile().GenioConfiguration.ProductionSystem)
+            if (profile.GenioConfiguration.ProductionSystem)
             {
-                lblProd.Text = String.Format(Properties.Resources.ProfileProd, PackageOperations.Instance.GetActiveProfile().GenioConfiguration.GenioVersion);
+                lblProd.Text = String.Format(CodeFlowResources.Resources.ProfileProd, profile.GenioConfiguration.GenioVersion);
                 lblProd.ForeColor = Color.DarkRed;
 
-                if (!String.IsNullOrEmpty(PackageOperations.Instance.SolutionProps.ClientInfo.Version)
-                    && !String.IsNullOrEmpty(PackageOperations.Instance.GetActiveProfile().GenioConfiguration.BDVersion)
-                    && !PackageOperations.Instance.SolutionProps.ClientInfo.Version.Equals(PackageOperations.Instance.GetActiveProfile().GenioConfiguration.BDVersion))
+                if (!String.IsNullOrEmpty(PackageBridge.Instance.SolutionProps.ClientInfo.Version)
+                    && !String.IsNullOrEmpty(profile.GenioConfiguration.BDVersion)
+                    && !PackageBridge.Instance.SolutionProps.ClientInfo.Version.Equals(profile.GenioConfiguration.BDVersion))
                 {
-                    lblWarning.Text = String.Format(Properties.Resources.WarningProfile);
+                    lblWarning.Text = String.Format(CodeFlowResources.Resources.WarningProfile);
                     lblWarning.Visible = true;
                 }
             }
             else
             {
-                lblProd.Text = String.Format(Properties.Resources.ProfileDev, PackageOperations.Instance.GetActiveProfile().GenioConfiguration.GenioVersion);
+                lblProd.Text = String.Format(CodeFlowResources.Resources.ProfileDev, profile.GenioConfiguration.GenioVersion);
                 lblProd.ForeColor = Color.DarkGreen;
             }
             RefreshButtons();
@@ -86,8 +90,8 @@ namespace CodeFlowUI
         private void btnCommit_Click(object sender, EventArgs e)
         {
             if (lstCode.CheckedItems.Count == 0
-                || MessageBox.Show(Properties.Resources.ConfirmationExport, 
-                    Properties.Resources.Export, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                || MessageBox.Show(CodeFlowResources.Resources.ConfirmationExport, 
+                    CodeFlowResources.Resources.Export, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                 return;
 
             ListView.CheckedListViewItemCollection items = lstCode.CheckedItems;
@@ -100,7 +104,7 @@ namespace CodeFlowUI
                 try
                 {
                     IOperation operation = diff.GetOperation();
-                    if (operation != null && PackageOperations.Instance.ExecuteOperation(operation))
+                    if (operation != null && PackageBridge.Instance.ExecuteOperation(operation))
                     {
                         differences.AsList.Remove(diff);
                         itemsToRemove.Add(items[i]);
@@ -108,8 +112,8 @@ namespace CodeFlowUI
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(String.Format(Properties.Resources.ErrorUpdating, ex.Message),
-                        Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorUpdating, ex.Message),
+                        CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     break;
                 }
             }
@@ -125,7 +129,7 @@ namespace CodeFlowUI
 
         private void ExportForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            PackageOperations.Instance.GetActiveProfile().GenioConfiguration.CloseConnection();
+            profile.GenioConfiguration.CloseConnection();
         }
 
         private void lstCode_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -332,7 +336,7 @@ namespace CodeFlowUI
 
         private void GoToManualCodePosition(IChange change)
         {
-            PackageOperations.Flow.OpenOnPosition(change.Mine.FullFileName, change.Mine.LocalMatch.CodeStart);
+            PackageBridge.Flow.OpenOnPosition(change.Mine.FullFileName, change.Mine.LocalMatch.CodeStart);
         }
 
         private void goToPositionToolStrip_Click(object sender, EventArgs e)

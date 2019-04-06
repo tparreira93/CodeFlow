@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 using System.Reflection;
 using System.Threading;
 using CodeFlowLibrary;
-using CodeFlowLibrary.Helpers;
+using CodeFlowLibrary.Util;
 
 namespace CodeFlowLibrary.Genio
 {
@@ -48,7 +48,7 @@ namespace CodeFlowLibrary.Genio
         public GenioCheckout Clone()
         {
             GenioCheckout g = new GenioCheckout();
-            Helpers.Helpers.CopyFrom(typeof(GenioCheckout), this, g);
+            Util.CopyFrom(typeof(GenioCheckout), this, g);
             sqlConnection = new SqlConnection();
             obj = new object();
             return g;
@@ -58,7 +58,7 @@ namespace CodeFlowLibrary.Genio
         {
             try
             {
-                Plataforms = GenioPath.Length == 0 ? GenioPlataform.ParseXml(Properties.Resources.ManwinInfoData) : GenioPlataform.ParseFile($"{GenioPath}\\ManwinInfoData.xml");
+                Plataforms = GenioPath.Length == 0 ? GenioPlataform.ParseXml(CodeFlowResources.Resources.ManwinInfoData) : GenioPlataform.ParseFile($"{GenioPath}\\ManwinInfoData.xml");
                 return true;
             }
             catch (Exception)

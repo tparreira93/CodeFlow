@@ -1,4 +1,5 @@
-﻿using CodeFlowLibrary.Genio;
+﻿using CodeFlowBridge;
+using CodeFlowLibrary.Genio;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,9 +30,9 @@ namespace CodeFlowUI
             ProfileForm profileForm = new ProfileForm(p);
             if (profileForm.ShowDialog() == DialogResult.OK)
             {
-                if (!PackageOperations.Instance.AddProfile(profileForm.ProfileResult))
+                if (!PackageBridge.Instance.AddProfile(profileForm.ProfileResult))
                 {
-                    MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration,
+                    MessageBox.Show(CodeFlowResources.Resources.ErrorAddProfile, CodeFlowResources.Resources.Configuration,
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
@@ -47,10 +48,10 @@ namespace CodeFlowUI
         private void LoadProfiles()
         {
             lstProfiles.Items.Clear();
-            foreach (Profile p in PackageOperations.Instance.AllProfiles)
+            foreach (Profile p in PackageBridge.Instance.AllProfiles)
             {
                 ListViewItem item = new ListViewItem();
-                if (PackageOperations.Instance.GetActiveProfile().ProfileName.Equals(p.ProfileName))
+                if (PackageBridge.Instance.GetActiveProfile().ProfileName.Equals(p.ProfileName))
                     item.BackColor = Color.GreenYellow;
                 item.Text = p.ProfileName;
                 item.Tag = p;
@@ -64,7 +65,7 @@ namespace CodeFlowUI
             Profile p2 = GetSelectedItem();
             if (p2 != null)
             {
-                PackageOperations.Instance.RemoveProfile(p2.ProfileName);
+                PackageBridge.Instance.RemoveProfile(p2.ProfileName);
                 LoadProfiles();
             }
         }
@@ -77,9 +78,9 @@ namespace CodeFlowUI
                 ProfileForm profileForm = new ProfileForm(p);
                 if (profileForm.ShowDialog() == DialogResult.OK)
                 {
-                    if (!PackageOperations.Instance.UpdateProfile(p, profileForm.ProfileResult))
+                    if (!PackageBridge.Instance.UpdateProfile(p, profileForm.ProfileResult))
                     {
-                        MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration,
+                        MessageBox.Show(CodeFlowResources.Resources.ErrorAddProfile, CodeFlowResources.Resources.Configuration,
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     else
@@ -90,7 +91,7 @@ namespace CodeFlowUI
 
         private void ProfilesForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            PackageOperations.Instance.SaveProfiles();
+            PackageBridge.Instance.SaveProfiles();
         }
 
         private Profile GetSelectedItem()

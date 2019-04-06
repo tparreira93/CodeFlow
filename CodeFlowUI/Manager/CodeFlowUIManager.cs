@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CodeFlowResources;
 
-namespace CodeFlowUI.Helpers
+namespace CodeFlowUI.Manager
 {
     public class CodeFlowUIManager
     {

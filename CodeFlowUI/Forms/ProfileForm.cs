@@ -1,4 +1,5 @@
-﻿using CodeFlowLibrary.Genio;
+﻿using CodeFlowBridge;
+using CodeFlowLibrary.Genio;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -82,8 +83,8 @@ namespace CodeFlowUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(String.Format(Properties.Resources.ErrorConnect, ProfileResult.GenioConfiguration.Server, ex.Message), 
-                    Properties.Resources.ConnectDB, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorConnect, ProfileResult.GenioConfiguration.Server, ex.Message), 
+                    CodeFlowResources.Resources.ConnectDB, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -120,10 +121,10 @@ namespace CodeFlowUI
         {
             ProfileResult.GenioConfiguration.Server = cmbServers.Text ?? "";
             ProfileResult.GenioConfiguration.Database = cmbDb.Text ?? "";
-            Profile p = PackageOperations.Instance.FindProfile(ProfileResult.ProfileName);
+            Profile p = PackageBridge.Instance.FindProfile(ProfileResult.ProfileName);
 
             if (_oldProfile != null && p != null && !p.ProfileID.Equals(_oldProfile.ProfileID))
-                MessageBox.Show(Properties.Resources.ErrorAddProfile, Properties.Resources.Configuration,
+                MessageBox.Show(CodeFlowResources.Resources.ErrorAddProfile, CodeFlowResources.Resources.Configuration,
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
             {
@@ -147,7 +148,7 @@ namespace CodeFlowUI
             {
                 ProfileResult.GenioConfiguration.CloseConnection();
 
-                MessageBox.Show(Properties.Resources.ConnectionOpen, Properties.Resources.ConnectDB, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(CodeFlowResources.Resources.ConnectionOpen, CodeFlowResources.Resources.ConnectDB, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 

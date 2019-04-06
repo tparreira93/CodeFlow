@@ -6,9 +6,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using EnvDTE;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.CodeControl.Analyzer;
+using CodeFlowLibrary.Util;
+using CodeFlowLibrary.Solution;
+using CodeFlowLibrary.Settings;
+using CodeFlowBridge;
 
 namespace CodeFlow.SolutionOperations
 {
@@ -57,9 +60,9 @@ namespace CodeFlow.SolutionOperations
                     {
                         string extension = Path.GetExtension(item.ItemPath) ?? string.Empty;
                         if (File.Exists(item.ItemPath)
-                            && (PackageOperations.Instance.ExtensionFilters.Contains(extension.ToLower()) ||
-                                PackageOperations.Instance.ExtensionFilters.Contains("*"))
-                            && !PackageOperations.Instance.IgnoreFilesFilters.Contains(item.ItemName.ToLower()))
+                            && (PackageOptions.ExtensionFilters.Contains(extension.ToLower()) ||
+                                PackageOptions.ExtensionFilters.Contains("*"))
+                            && !PackageOptions.IgnoreFilesFilters.Contains(item.ItemName.ToLower()))
                         {
                             if (_runningTasks.Count == MaxNumberOfTasks)
                             {
@@ -109,7 +112,7 @@ namespace CodeFlow.SolutionOperations
                     max = tmp;
                 }
                 if(_consumerCollection.TryTake(out IManual item))
-                    Analyzer.CheckForDifferences(item, PackageOperations.Instance.GetActiveProfile());
+                    Analyzer.CheckForDifferences(item, PackageBridge.Instance.GetActiveProfile());
                 
             }
         }
@@ -119,7 +122,7 @@ namespace CodeFlow.SolutionOperations
          */
         private Task AnalyzeFileAsync(string file)
         {
-            PackageOperations.Instance.DetectTextEncoding(file, out string text);
+            Helpers.DetectTextEncoding(file, out string text);
             VSCodeManualMatcher matcher = new VSCodeManualMatcher(text, file) {ConcurrentMatching = false};
             matcher.Register(_consumerCollection);
             return Task.Factory.StartNew(matcher.Match);

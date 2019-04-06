@@ -7,9 +7,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CodeFlow.Forms;
+using CodeFlowUI;
 using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.GenioCode;
+using CodeFlowLibrary.CodeControl.Analyzer;
+using CodeFlowBridge;
+using CodeFlowUI.Manager;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {
@@ -96,16 +99,16 @@ namespace CodeFlow.CodeUtils.Suggestions
             {
                 try
                 {
+                    Profile profile = PackageBridge.Instance.GetActiveProfile();
                     ChangeAnalyzer diffs = new ChangeAnalyzer();
-                    diffs.CheckForDifferences(_manual, PackageOperations.Instance.GetActiveProfile());
-                    CommitForm commitForm = new CommitForm(diffs);
-                    CodeFlowFormManager.Open(commitForm);
+                    diffs.CheckForDifferences(_manual, profile);
+                    CodeFlowUIManager.Open(new CommitForm(profile, diffs));
                     
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
-                        Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
+                        CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
                 }
             }
         }

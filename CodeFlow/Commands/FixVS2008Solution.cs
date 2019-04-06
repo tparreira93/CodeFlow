@@ -91,12 +91,12 @@ namespace CodeFlow.Commands
             ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
-                GenioSolutionProperties.ChangeToolset2008(PackageOperations.Instance.DTE);
+                GenioSolutionProperties.ChangeToolset2008(PackageBridge.Instance.DTE);
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
-                    Properties.Resources.Search, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                System.Windows.Forms.MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
+                    CodeFlowResources.Resources.Search, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
     }

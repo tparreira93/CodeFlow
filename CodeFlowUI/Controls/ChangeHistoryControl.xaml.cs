@@ -1,5 +1,6 @@
 ﻿namespace CodeFlowUI.Controls
 {
+    using CodeFlowBridge;
     using CodeFlowLibrary.CodeControl.Operations;
     using System;
     using System.ComponentModel;
@@ -20,7 +21,7 @@
         public ChangeHistoryControl()
         {
             this.InitializeComponent();
-            lstHistory.ItemsSource = PackageOperations.Instance.ChangeLog.OperationList;
+            lstHistory.ItemsSource = PackageBridge.Instance.ChangeLog.OperationList;
             lstHistory.DataContext = this;
         }
         private void lstHistory_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -35,7 +36,7 @@
                 catch(Exception ex)
                 {
                     System.Windows.Forms.MessageBox.Show(ex.Message,
-                        Properties.Resources.History, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                        CodeFlowResources.Resources.History, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 }
             }
         }
@@ -51,7 +52,7 @@
                     catch (Exception ex)
                 {
                     System.Windows.Forms.MessageBox.Show(ex.Message,
-                        Properties.Resources.History, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                        CodeFlowResources.Resources.History, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 }
             }
         }
@@ -62,15 +63,15 @@
                 try
                 {
                     IOperation op = lstHistory.SelectedItem as IOperation;
-                    if(op.Undo(PackageOperations.Instance.GetActiveProfile()))
-                        System.Windows.Forms.MessageBox.Show(Properties.Resources.OperationComplete,
-                            Properties.Resources.History, System.Windows.Forms.MessageBoxButtons.OK, 
+                    if(op.Undo(PackageBridge.Instance.GetActiveProfile()))
+                        System.Windows.Forms.MessageBox.Show(CodeFlowResources.Resources.OperationComplete,
+                            CodeFlowResources.Resources.History, System.Windows.Forms.MessageBoxButtons.OK, 
                             System.Windows.Forms.MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
                     System.Windows.Forms.MessageBox.Show(ex.Message,
-                        Properties.Resources.History, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                        CodeFlowResources.Resources.History, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 }
             }
         }
@@ -81,21 +82,21 @@
                 try
                 {
                     IOperation op = lstHistory.SelectedItem as IOperation;
-                    if (op.Redo(PackageOperations.Instance.GetActiveProfile()))
-                        System.Windows.Forms.MessageBox.Show(Properties.Resources.OperationComplete,
-                            Properties.Resources.History, System.Windows.Forms.MessageBoxButtons.OK,
+                    if (op.Redo(PackageBridge.Instance.GetActiveProfile()))
+                        System.Windows.Forms.MessageBox.Show(CodeFlowResources.Resources.OperationComplete,
+                            CodeFlowResources.Resources.History, System.Windows.Forms.MessageBoxButtons.OK,
                             System.Windows.Forms.MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
                     System.Windows.Forms.MessageBox.Show(ex.Message,
-                        Properties.Resources.History, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                        CodeFlowResources.Resources.History, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 }
             }
         }
         private void ClearContextMenu_OnClick(object sender, RoutedEventArgs e)
         {
-            PackageOperations.Instance.ChangeLog.Clear();
+            PackageBridge.Instance.ChangeLog.Clear();
             // Force collection, we might have to many changes and stuff might get heavy
             GC.Collect();
         }

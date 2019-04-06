@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlow.SolutionOperations;
+using CodeFlowBridge;
+using CodeFlowLibrary.Settings;
+using CodeFlowLibrary.Solution;
 
 namespace CodeFlowUI
 {
@@ -21,7 +24,7 @@ namespace CodeFlowUI
         public ProjectSelectionForm(List<GenioProjectProperties> saved)
         {
             InitializeComponent();
-            _solution = GenioSolutionProperties.ParseSolution(PackageOperations.Instance.DTE, true);
+            _solution = GenioSolutionProperties.ParseSolution(PackageBridge.Instance.DTE, true);
             _savedFiles = saved;
         }
 
@@ -98,7 +101,7 @@ namespace CodeFlowUI
                     projects.Add(project);
                 }
             }
-            Analyzer = new ProjectsAnalyzer(PackageOperations.Instance.MaxTaskSolutionCommit);
+            Analyzer = new ProjectsAnalyzer(PackageOptions.MaxTaskSolutionCommit);
             Analyzer.ProgressChanged += worker_ProgressChanged;
             Analyzer.RunWorkerCompleted += worker_end;
             Analyzer.RunWorkerAsync(projects);

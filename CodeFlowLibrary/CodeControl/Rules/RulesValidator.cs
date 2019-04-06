@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CodeFlowLibrary.Genio;
-using CodeFlowLibrary.Helpers;
+using CodeFlowLibrary.Util;
 using CodeFlowLibrary.CodeControl.Changes;
 
 namespace CodeFlowLibrary.CodeControl.Rules
@@ -33,7 +33,7 @@ namespace CodeFlowLibrary.CodeControl.Rules
 
         public List<CodeRule> GetDefaultRules()
         {
-            Dictionary<RuleProvider, Type> providers = Helpers.Helpers.GetAtrributes<RuleProvider>();
+            Dictionary<RuleProvider, Type> providers = Util.GetAtrributes<RuleProvider>();
             List<Type> types = providers.Where(entry => entry.Key.IsDefaultType).Select(entry => entry.Value).ToList();
             List<CodeRule> rules = new List<CodeRule>();
 

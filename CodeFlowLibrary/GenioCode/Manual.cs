@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.Util;
+using CodeFlowLibrary.Settings;
 
 namespace CodeFlowLibrary.GenioCode
 {
@@ -123,7 +125,7 @@ namespace CodeFlowLibrary.GenioCode
                 if (local == null 
                     || database == null)
                 {
-                    throw new Exception(Properties.Resources.ErrorComparing);
+                    throw new Exception(CodeFlowResources.Resources.ErrorComparing);
                 }
 
                 string tmpOld = Path.GetTempFileName();
@@ -140,9 +142,9 @@ namespace CodeFlowLibrary.GenioCode
 
 
                 Process merge = new Process();
-                if (!String.IsNullOrEmpty(PackageOperations.Instance.UseCustomTool))
+                if (!String.IsNullOrEmpty(PackageOptions.UseCustomTool))
                 {
-                    string tool = PackageOperations.Instance.UseCustomTool
+                    string tool = PackageOptions.UseCustomTool
                         .Replace("%left",   "\"" + tmpBD + "\"")
                         .Replace("%right",  "\"" + tmpCode + "\"")
                         .Replace("%result", "\"" + tmpFinal + "\"")
@@ -155,7 +157,7 @@ namespace CodeFlowLibrary.GenioCode
                                     .ToList();
 
                     if (parts.Count < 2)
-                        throw new Exception(Properties.Resources.CustomToolError);
+                        throw new Exception(CodeFlowResources.Resources.CustomToolError);
 
                     merge.StartInfo.FileName = parts[0];
                     merge.StartInfo.Arguments = tool.Substring(parts[0].Length);
@@ -186,7 +188,7 @@ namespace CodeFlowLibrary.GenioCode
 
                 ConstructorInfo ctor = local.GetType().GetConstructor(new Type[] { });
                 IManual m = ctor.Invoke(new object[] { }) as IManual;
-                Helpers.Helpers.CopyFrom(local.GetType(), local, m);
+                Util.Helpers.CopyFrom(local.GetType(), local, m);
                 m.Code = finalCode;
                 m.Code = m.CodeTransformValueKey();
 
@@ -225,7 +227,10 @@ namespace CodeFlowLibrary.GenioCode
 
             return c;
         }
-
+        public static string LoadCode(string code)
+        {
+            return ManualCodeOptions.ForceDOSLine ? Util.Helpers.ConverToDOSLineEndings(code) : code;
+        }
         public void ShowSVNLog(Profile profile)
         {
             try

@@ -37,7 +37,7 @@ namespace CodeFlowLibrary.CodeControl.Operations
             }
             catch (Exception e)
             {
-                throw new Exception(String.Format(Properties.Resources.UnableToExecuteOperation, e.Message));
+                throw new Exception(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, e.Message));
             }
             return result;
         }
@@ -54,7 +54,7 @@ namespace CodeFlowLibrary.CodeControl.Operations
             }
             catch (Exception e)
             {
-                throw new Exception(String.Format(Properties.Resources.UnableToExecuteOperation, e.Message));
+                throw new Exception(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, e.Message));
             }
 
             return result;

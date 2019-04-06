@@ -41,9 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\ICodeFlowPackage.cs" />
+    <Compile Include="Settings\SearchOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Helpers\Helpers.cs" />
+    <Compile Include="Package\ICodeFlowPackage.cs" />
+    <Compile Include="Util\Helpers.cs" />
+    <Compile Include="Settings\ManualOptions.cs" />
     <Compile Include="Genio\GenioPlataform.cs" />
     <Compile Include="Genio\TipoRotina.cs" />
     <Compile Include="Genio\GenioCheckout.cs" />
@@ -77,12 +79,30 @@
     <Compile Include="CodeControl\Rules\RuleProvider.cs" />
     <Compile Include="CodeControl\Rules\RulesValidator.cs" />
     <Compile Include="CodeControl\Analyzer\ChangeAnalyzer.cs" />
+    <Compile Include="CodeControl\Analyzer\SolutionAnalyzer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Solution\ClientInfo.cs" />
+    <Compile Include="Solution\GenioProjectItem.cs" />
+    <Compile Include="Solution\GenioProjectProperties.cs" />
+    <Compile Include="Solution\ISolutionParser.cs" />
+    <Compile Include="Solution\ProjectLanguage.cs" />
+    <Compile Include="Solution\GenioSolutionProperties.cs" />
     <Compile Include="Versions\CodeFlowChange.cs" />
     <Compile Include="Versions\CodeFlowVersion.cs" />
     <Compile Include="Versions\CodeFlowUpdater.cs" />
     <Compile Include="Versions\ICodeFlowChange.cs" />
     <Compile Include="Versions\ICodeFlowChangeCommand.cs" />
     <Compile Include="Versions\Version.cs" />
+    <Compile Include="PackageBridge.cs" />
+    <Compile Include="Settings\PackageOptions.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CodeFlowResources\CodeFlowResources.csproj">
+      <Project>{4cbd51d0-7cdb-49ee-9932-5a4f55b4db4b}</Project>
+      <Name>CodeFlowResources</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -103,14 +103,14 @@ namespace CodeFlow.Commands
                 CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
                 List<IManual> manual = handler.SearchForTags();
                 ChangeAnalyzer diffs = new ChangeAnalyzer();
-                diffs.CheckForDifferences(manual, PackageOperations.Instance.GetActiveProfile());
+                diffs.CheckForDifferences(manual, PackageBridge.Instance.GetActiveProfile());
                 CommitForm exportForm = new CommitForm(diffs);
                 CodeFlowFormManager.Open(exportForm);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
-                    Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
+                    CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
         }
     }

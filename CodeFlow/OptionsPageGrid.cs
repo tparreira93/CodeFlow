@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using Microsoft.VisualStudio.Shell;
-using CodeFlow.SolutionOperations;
+using CodeFlowBridge;
 
 namespace CodeFlow
 {
@@ -32,7 +28,7 @@ namespace CodeFlow
             get => _parseSolutionOnStartup; set
             {
                 _parseSolutionOnStartup = value;
-                PackageOperations.Instance.ParseSolution = value;
+                PackageOptions.ParseSolution = value;
             }
         }
 
@@ -45,7 +41,7 @@ namespace CodeFlow
             get => _autoVccto2008Fix; set
             {
                 _autoVccto2008Fix = value;
-                PackageOperations.Instance.AutoVccto2008Fix = value;
+                PackageOptions.AutoVccto2008Fix = value;
             }
         }
 
@@ -58,7 +54,7 @@ namespace CodeFlow
             get => _autoExportSaved; set
             {
                 _autoExportSaved = value;
-                PackageOperations.Instance.AutoExportSaved = value;
+                PackageOptions.AutoExportSaved = value;
             }
         }
 
@@ -71,7 +67,7 @@ namespace CodeFlow
             get => _useCustomTool; set
             {
                 _useCustomTool = value;
-                PackageOperations.Instance.UseCustomTool = value;
+                PackageOptions.UseCustomTool = value;
             }
         }
 
@@ -85,7 +81,7 @@ namespace CodeFlow
             set
             {
                 _forceDosLine = value;
-                PackageOperations.Instance.ForceDOSLine = value;
+                ManualCodeOptions.ForceDOSLine = value;
             }
         }
 
@@ -98,7 +94,7 @@ namespace CodeFlow
             get => _lightbulbSuggestions; set
             {
                 _lightbulbSuggestions = value;
-                PackageOperations.Instance.ContinuousAnalysis = value;
+                PackageOptions.ContinuousAnalysis = value;
             }
         }
 
@@ -114,8 +110,8 @@ namespace CodeFlow
                 _extFilters = value;
                 if (value != null)
                 {
-                    PackageOperations.Instance.ExtensionFilters.Clear();
-                    PackageOperations.Instance.ExtensionFilters.AddRange(_extFilters.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+                    PackageOptions.ExtensionFilters.Clear();
+                    PackageOptions.ExtensionFilters.AddRange(_extFilters.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
                 }
             }
         }
@@ -131,8 +127,8 @@ namespace CodeFlow
                 _ignoreFilesFilters = value;
                 if (value != null)
                 {
-                    PackageOperations.Instance.IgnoreFilesFilters.Clear();
-                    PackageOperations.Instance.IgnoreFilesFilters.AddRange(_ignoreFilesFilters.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+                    PackageOptions.IgnoreFilesFilters.Clear();
+                    PackageOptions.IgnoreFilesFilters.AddRange(_ignoreFilesFilters.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
                 }
             }
         }
@@ -146,7 +142,7 @@ namespace CodeFlow
             get => _maxTaskSolutionCommit; set
             {
                 _maxTaskSolutionCommit = value;
-                PackageOperations.Instance.MaxTaskSolutionCommit = value;
+                PackageOptions.MaxTaskSolutionCommit = value;
             }
         }
 
@@ -159,7 +155,7 @@ namespace CodeFlow
             get => _logOperations; set
             {
                 _logOperations = value;
-                PackageOperations.Instance.LogOperations = value;
+                PackageOptions.LogOperations = value;
             }
         }
 
@@ -172,7 +168,7 @@ namespace CodeFlow
             get => _fixIndexes; set
             {
                 _fixIndexes = value;
-                PackageOperations.Instance.FixIndexes = value;
+                ManualCodeOptions.FixIndexes = value;
             }
         }
     }

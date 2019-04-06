@@ -80,7 +80,7 @@ namespace CodeFlow.ToolWindow
             // Note that because we need access to the package for localization,
             // we have to wait to do this here. If we used a constant string,
             // we could do this in the consturctor.
-            this.Caption = Properties.Resources.CodeSearch;
+            this.Caption = CodeFlowResources.Resources.CodeSearch;
 
             OleMenuCommandService commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
@@ -152,12 +152,12 @@ namespace CodeFlow.ToolWindow
         private void GetPlataformList(object sender, EventArgs e)
         {
             OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
-            string[] dropChoices = new string[PackageOperations.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Count + 1];
+            string[] dropChoices = new string[PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Count + 1];
             dropChoices[0] = "All";
 
-            for (int i = 1; i < PackageOperations.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Count; i++)
+            for (int i = 1; i < PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Count; i++)
             {
-                dropChoices[i] = PackageOperations.Instance.GetActiveProfile().GenioConfiguration.Plataforms[i].ID;
+                dropChoices[i] = PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms[i].ID;
             }
 
             if (eventArgs != null)
@@ -207,7 +207,7 @@ namespace CodeFlow.ToolWindow
                     {
                         string error = "";
                         List<IManual> res = new List<IManual>();
-                        Profile p = PackageOperations.Instance.GetActiveProfile();
+                        Profile p = PackageBridge.Instance.GetActiveProfile();
                         try
                         {
                             res.AddRange(Manual.SearchDatabase(p, currentSearch, caseSensitive, wholeWord, searchPlat));
@@ -225,7 +225,7 @@ namespace CodeFlow.ToolWindow
 
                             if (error.Length != 0)
                             {
-                                MessageBox.Show(String.Format(Properties.Resources.ErrorSearch, error), Properties.Resources.Search,
+                                MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, error), CodeFlowResources.Resources.Search,
                                     MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }), DispatcherPriority.Background);

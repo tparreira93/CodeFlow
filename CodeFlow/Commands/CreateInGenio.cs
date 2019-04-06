@@ -100,7 +100,7 @@ namespace CodeFlow.Commands
             {
                 ManuaCode man = new ManuaCode(code);
                 ManualMatch manualMatch = new ManualMatch();
-                manualMatch.FullFileName = PackageOperations.Instance.DTE.ActiveDocument.FullName;
+                manualMatch.FullFileName = PackageBridge.Instance.DTE.ActiveDocument.FullName;
                 man.LocalMatch = manualMatch;
                 CreateInGenioForm genioForm = new CreateInGenioForm(man);
                 genioForm.ShowDialog();

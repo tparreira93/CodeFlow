@@ -18,14 +18,22 @@ using EnvDTE80;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
-using CodeFlowLibrary.Helpers;
 using CodeFlowLibrary.Versions;
 using CodeFlowLibrary.CodeControl.Analyzer;
 using CodeFlowLibrary.CodeControl.Changes;
 using CodeFlowLibrary.CodeControl.Operations;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowUI;
-using CodeFlowUI.Helpers;
+using CodeFlowUI.Manager;
+using CodeFlowLibrary.Solution;
+using CodeFlowBridge;
+using CodeFlow.SolutionAnalyzer;
+using Microsoft.VisualStudio.Shell.Settings;
+using Microsoft.VisualStudio.Settings;
+using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.Settings;
+using System.Threading.Tasks;
+using CodeFlowLibrary.Package;
 
 namespace CodeFlow
 {
@@ -72,14 +80,12 @@ namespace CodeFlow
         public Version CurrentVersion { get; private set; }
         public DTE2 DTE { get; set; }
 
-
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CommitCode"/> class.
         /// </summary>
         public CodeFlowPackage()
         {
-            PackageOperations.Flow = this;
+            PackageBridge.Flow = this;
             // Inside this method you can place any initialization code that does not require
             // any Visual Studio service because at this point the package object is created but
             // not sited yet inside Visual Studio environment. The place to do all the other
@@ -113,15 +119,15 @@ namespace CodeFlow
             await RefreshSolution.InitializeAsync(this);
             await SearchToolCommand.InitializeAsync(this);
             await ViewVersionsCommand.InitializeAsync(this);
-            await GenioProfilesCommand.InitializeAsync(this); 
-
+            await GenioProfilesCommand.InitializeAsync(this);
+            
             base.Initialize();
 
             // Try to retrieve the DTE instance at this point
             InitializeDte();
             //IVsShell shellService;
             // If not retrieved, we must wait for the Visual Studio Shell to be initialized
-            if (PackageOperations.Instance.DTE == null)
+            if (DTE == null)
             {
                 // Note: if targetting only VS 2015 and higher, we could use this:
                 KnownUIContexts.ShellInitializedContext.WhenActivated(InitializeDte);
@@ -131,9 +137,12 @@ namespace CodeFlow
 
                 dteInitializer = new DteInitializer(shellService, this.InitializeDte);*/
             }
-            SetupEvents();
+            _dteEvents = DTE.Events;
+            _documentEnvents = _dteEvents.DocumentEvents;
+            _documentEnvents.DocumentSaved += OnDocumentSave;
+            _documentEnvents.DocumentClosing += OnDocumentClose;
             CheckVersion();
-            if (PackageOperations.Instance.AllProfiles.Count == 0)
+            if (PackageBridge.Instance.AllProfiles.Count == 0)
                 LoadConfig();
         }
 
@@ -162,25 +171,17 @@ namespace CodeFlow
 
         private void InitializeDte()
         {
-            PackageOperations.Instance.DTE = GetService(typeof(SDTE)) as DTE2;
+            DTE = GetService(typeof(SDTE)) as DTE2;
         }
 
         #region CustomEvents
-        private void SetupEvents()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            _dteEvents = PackageOperations.Instance.DTE.Events;
-            _documentEnvents = _dteEvents.DocumentEvents;
-            _documentEnvents.DocumentSaved += OnDocumentSave;
-            _documentEnvents.DocumentClosing += OnDocumentClose;
-        }
 
         private void OnDocumentClose(Document document)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             string path = document.FullName;
-            if (PackageOperations.Instance.IsTempFile(path))
-                PackageOperations.Instance.RemoveTempFile(path);
+            if (PackageBridge.Instance.IsTempFile(path))
+                PackageBridge.Instance.RemoveTempFile(path);
         }
 
         private void OnDocumentSave(Document document)
@@ -190,8 +191,8 @@ namespace CodeFlow
             Project docProject = document.ProjectItem.ContainingProject;
             List<IManual> man = null;
 
-            if(PackageOperations.Instance.AutoExportSaved)
-                man = PackageOperations.Instance.GetAutoExportIManual(path);
+            if(PackageOptions.AutoExportSaved)
+                man = PackageBridge.Instance.GetAutoExportIManual(path);
 
             // Se for diferente de null quer dizer que é um ficheiro temporário que pode ser exportado automaticamente
             if(man != null)
@@ -200,12 +201,12 @@ namespace CodeFlow
                 {
                     // Check for changes, update and log operation
                     ChangeAnalyzer analyzer = new ChangeAnalyzer();
-                    analyzer.CheckForDifferences(man, PackageOperations.Instance.GetActiveProfile());
+                    analyzer.CheckForDifferences(man, PackageBridge.Instance.GetActiveProfile());
                     foreach (IChange diff in analyzer.Modifications.AsList)
                     {
                         IOperation operation = diff.GetOperation();
                         if (operation != null)
-                            PackageOperations.Instance.ExecuteOperation(operation);
+                            PackageBridge.Instance.ExecuteOperation(operation);
                     }
                 }
                 catch (Exception ex)
@@ -220,10 +221,10 @@ namespace CodeFlow
 
             try
             {
-                GenioProjectProperties proj = PackageOperations.Instance.SavedFiles.Find(x => { Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread(); return x.ProjectName == docProject.Name; });
-                GenioProjectItem item = new GenioProjectItem(document.ProjectItem, document.Name, document.FullName);
+                GenioProjectProperties proj = PackageBridge.Instance.SavedFiles.Find(x => { ThreadHelper.ThrowIfNotOnUIThread(); return x.ProjectName == docProject.Name; });
+                GenioProjectItem item = new GenioProjectItem(document.Name, document.FullName);
                 if (proj == null)
-                    PackageOperations.Instance.SavedFiles.Add(new GenioProjectProperties(docProject, new List<GenioProjectItem>() { item }));
+                    PackageBridge.Instance.SavedFiles.Add(new GenioProjectProperties(docProject.Name, new List<GenioProjectItem>() { item }, SolutionParser.GetProjectLanguage(docProject?.CodeModel?.Language)));
                 else
                 {
                     GenioProjectItem tmp = proj.ProjectFiles.Find(x => x.ItemName == item.ItemName);
@@ -242,18 +243,17 @@ namespace CodeFlow
         public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            PackageOperations.Instance.SavedFiles.Clear();
-            PackageOperations.Instance.ChangeLog.Clear();
+            PackageBridge.Instance.SavedFiles.Clear();
+            PackageBridge.Instance.ChangeLog.Clear();
             String lastActive = "";
 
-            if (PackageOperations.Instance.DTE.Solution != null
-                && PackageOperations.Instance.DTE.Solution.FullName.Length != 0)
+            if (DTE.Solution != null && DTE.Solution.FullName.Length != 0)
             {
                 _isSolution = true;
                 try
                 {
-                    string path = Path.GetDirectoryName(PackageOperations.Instance.DTE.Solution.FullName);
-                    lastActive = PackageOperations.Instance.SearchLastActiveProfile(path);
+                    string path = Path.GetDirectoryName(DTE.Solution.FullName);
+                    lastActive = PackageBridge.Instance.SearchLastActiveProfile(path);
                 }
                 catch (Exception)
                 {
@@ -264,14 +264,13 @@ namespace CodeFlow
             //Updates combo box
             if (!string.IsNullOrEmpty(lastActive))
                 SetProfile(lastActive);
-
-            if (PackageOperations.Instance.ParseSolution && _isSolution)
+            
+            if (PackageOptions.AutoVccto2008Fix && _isSolution)
             {
-                PackageOperations.Instance.SolutionProps = GenioSolutionProperties.ParseSolution(PackageOperations.Instance.DTE);
-            }
-            if (PackageOperations.Instance.AutoVccto2008Fix && _isSolution)
-            {
-                GenioSolutionProperties.ChangeToolset2008(PackageOperations.Instance.DTE);
+                ISolutionParser solution = new SolutionParser(this);
+#pragma warning disable VSTHRD110 // Observe result of async calls
+                solution.ChangeToolset2008Async();
+#pragma warning restore VSTHRD110 // Observe result of async calls
             }
             return VSConstants.S_OK;
         }
@@ -315,10 +314,10 @@ namespace CodeFlow
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (_isSolution)
-                PackageOperations.Instance.StoreLastProfile(Path.GetDirectoryName(PackageOperations.Instance.DTE.Solution.FullName));
-            PackageOperations.Instance.GetActiveProfile().GenioConfiguration.CloseConnection();
-            PackageOperations.Instance.RemoveTempFiles();
-            SaveConfig();
+                PackageBridge.Instance.StoreLastProfile(Path.GetDirectoryName(DTE.Solution.FullName));
+            PackageBridge.Instance.GetActiveProfile().GenioConfiguration.CloseConnection();
+            PackageBridge.Instance.RemoveTempFiles();
+            SaveSettings(PackageBridge.Instance.AllProfiles);
             return VSConstants.S_OK;
         }
 
@@ -345,23 +344,15 @@ namespace CodeFlow
         {
             OptionsPage.LoadSettingsFromStorage();
 
-            PackageOperations.Instance.AllProfiles = PackageOperations.Instance.LoadProfiles(Settings.Default.ConnectionStrings);
+            PackageBridge.Instance.AllProfiles = PackageBridge.Instance.LoadProfiles(Settings.Default.ConnectionStrings);
 
-            if (PackageOperations.Instance.AllProfiles.Count == 1)
-                PackageOperations.Instance.SetProfile(PackageOperations.Instance.AllProfiles[0].ProfileName);
-        }
-
-        public void UpdateOnNewSetting()
-        {
-            OptionsPage.LoadSettingsFromStorage();
-
-            OptionsPage.ExtensionsFilters = "*";
-            OptionsPage.SaveSettingsToStorage();
+            if (PackageBridge.Instance.AllProfiles.Count == 1)
+                PackageBridge.Instance.SetProfile(PackageBridge.Instance.AllProfiles[0].ProfileName);
         }
 
         private void SaveConfig()
         {
-            Settings.Default.ConnectionStrings = PackageOperations.Instance.SaveProfiles(PackageOperations.Instance.AllProfiles);
+            Settings.Default.ConnectionStrings = PackageBridge.Instance.SaveProfiles(PackageBridge.Instance.AllProfiles);
             Settings.Default.Save();
 
             OptionsPage.SaveSettingsToStorage();
@@ -374,7 +365,7 @@ namespace CodeFlow
             ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
-                Window window = PackageOperations.Instance.DTE.ItemOperations.OpenFile(fileName);
+                Window window = DTE.ItemOperations.OpenFile(fileName);
                 window.Activate();
 
                 CommandHandler.CommandHandler command = new CommandHandler.CommandHandler();
@@ -413,5 +404,94 @@ namespace CodeFlow
         }
 
         #endregion
+
+        public async System.Threading.Tasks.Task FindInCurrentFileAsync(SearchOptions searchOptions)
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            Find find = DTE.Find;
+            find.Action = vsFindAction.vsFindActionFind;
+            find.MatchWholeWord = searchOptions.WholeWord;
+            find.MatchCase = searchOptions.MatchCase;
+            find.FindWhat = searchOptions.SearchTerm;
+            find.Target = vsFindTarget.vsFindTargetCurrentDocument;
+            find.PatternSyntax = vsFindPatternSyntax.vsFindPatternSyntaxLiteral;
+            find.Backwards = false;
+            find.KeepModifiedDocumentsOpen = true;
+            find.Execute();
+        }
+        
+        public WritableSettingsStore GetWritableSettingsStore()
+        {
+            var shellSettingsManager = new ShellSettingsManager(this);
+            return shellSettingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+        }
+
+        public SettingsStore GetReadableSettingsStore()
+        {
+            var shellSettingsManager = new ShellSettingsManager(this);
+            return shellSettingsManager.GetReadOnlySettingsStore(SettingsScope.UserSettings);
+        }
+
+        public void SaveSettings(List<Profile> profiles)
+        {
+            var settings = GetWritableSettingsStore();
+            string collection = "CodeFlow";
+            bool exists = settings.CollectionExists(collection);
+            if (!exists)
+                settings.CreateCollection(collection);
+
+            settings.SetString(collection, "Profiles", SerializeProfiles(profiles));
+        }
+
+        public List<Profile> LoadSettings()
+        {
+            var settings = GetReadableSettingsStore();
+            string collection = "CodeFlow";
+            List<Profile> profiles = new List<Profile>();
+
+            if (settings.CollectionExists(collection))
+                profiles = DeSerializeProfiles(settings.GetString(collection, "Profiles"));
+
+            return profiles;
+        }
+
+        public string SerializeProfiles(List<Profile> profiles)
+        {
+            var stringwriter = new StringWriter();
+            try
+            {
+                var serializer = System.Xml.Serialization.XmlSerializer.FromTypes(new[] { profiles.GetType() })[0];
+                serializer.Serialize(stringwriter, profiles);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            return stringwriter.ToString();
+        }
+
+        public List<Profile> DeSerializeProfiles(string serializedProfiles)
+        {
+            List<Profile> profiles = null;
+            try
+            {
+                var stringReader = new System.IO.StringReader(serializedProfiles);
+                var serializer = System.Xml.Serialization.XmlSerializer.FromTypes(new[] { typeof(List<Profile>) })[0];
+                profiles = serializer.Deserialize(stringReader) as List<Profile>;
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            return profiles ?? new List<Profile>();
+        }
+        
+        public async Task<string> GetActiveFileFullNameAsync()
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            return DTE.ActiveDocument.FullName;
+        }
     }
 }

@@ -120,7 +120,7 @@ namespace CodeFlow.Commands
                     throw (new ArgumentException("Ilegal input and output parameters!"));
 
                 else if (vOut != IntPtr.Zero)
-                    Marshal.GetNativeVariantForObject(PackageOperations.Instance.GetActiveProfile() != null ? PackageOperations.Instance.GetActiveProfile().ProfileName : "", vOut);
+                    Marshal.GetNativeVariantForObject(PackageBridge.Instance.GetActiveProfile() != null ? PackageBridge.Instance.GetActiveProfile().ProfileName : "", vOut);
 
                 else if (newChoice != null)
                 {
@@ -156,7 +156,7 @@ namespace CodeFlow.Commands
             string error = "";
             try
             {
-                PackageOperations.Instance.SetProfile(profileName);
+                PackageBridge.Instance.SetProfile(profileName);
             }
             catch (Exception ex)
             {
@@ -169,13 +169,13 @@ namespace CodeFlow.Commands
         public void OnMenuGenioProfilesComboGetList(object sender, EventArgs e)
         {
             OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
-            if (PackageOperations.Instance.AllProfiles.Count == 0)
+            if (PackageBridge.Instance.AllProfiles.Count == 0)
                 return;
 
-            string[] dropChoices = new string[PackageOperations.Instance.AllProfiles.Count];
-            for (int i = 0; i < PackageOperations.Instance.AllProfiles.Count; i++)
+            string[] dropChoices = new string[PackageBridge.Instance.AllProfiles.Count];
+            for (int i = 0; i < PackageBridge.Instance.AllProfiles.Count; i++)
             {
-                dropChoices[i] = PackageOperations.Instance.AllProfiles[i].ProfileName;
+                dropChoices[i] = PackageBridge.Instance.AllProfiles[i].ProfileName;
             }
 
             if (eventArgs != null)

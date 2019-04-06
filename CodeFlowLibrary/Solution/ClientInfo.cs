@@ -1,20 +1,14 @@
-﻿using EnvDTE;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CodeFlow.SolutionOperations
+namespace CodeFlowLibrary.Solution
 {
     public class ClientInfo
     {
-        string client;
-        string version;
-        string system;
-        string genioVersion;
-
         public ClientInfo()
         {
             Client = "";
@@ -31,9 +25,9 @@ namespace CodeFlow.SolutionOperations
             GenioVersion = genioVersion;
         }
 
-        public string Client { get => client; set => client = value; }
-        public string Version { get => version; set => version = value; }
-        public string System { get => system; set => system = value; }
-        public string GenioVersion { get => genioVersion; set => genioVersion = value; }
+        public string Client { get; set; }
+        public string Version { get; set; }
+        public string System { get; set; }
+        public string GenioVersion { get; set; }
     }
 }
