@@ -3,6 +3,9 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using CodeFlow.SolutionOperations;
 using Task = System.Threading.Tasks.Task;
+using CodeFlow.SolutionAnalyzer;
+using CodeFlowLibrary.Package;
+using System.Threading.Tasks;
 
 namespace CodeFlow.Commands
 {
@@ -88,16 +91,12 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            try
-            {
-                GenioSolutionProperties.ChangeToolset2008(PackageBridge.Instance.DTE);
-            }
-            catch (Exception ex)
-            {
-                System.Windows.Forms.MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
-                    CodeFlowResources.Resources.Search, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
-            }
+            SolutionParser parser = new SolutionParser(ServiceProvider as ICodeFlowPackage);
+#pragma warning disable VSTHRD110 // Observe result of async calls
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            parser.ChangeToolset2008Async();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+#pragma warning restore VSTHRD110 // Observe result of async calls
         }
     }
 }

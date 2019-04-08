@@ -74,7 +74,7 @@ namespace CodeFlow.CodeUtils.Suggestions
                     return true;
                 }
                 return false;
-            });
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
         }
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)

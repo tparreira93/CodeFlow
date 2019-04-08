@@ -108,7 +108,7 @@ namespace CodeFlowLibrary.GenioCode
             string upperLine = "";
             var end = VsCodeSnapshot.IndexOf(endString, begin, StringComparison.Ordinal);
             int idx = begin + beginString.Length;
-            int i = VsCodeSnapshot.IndexOf(Util.Helpers.NewLine, idx, StringComparison.Ordinal);
+            int i = VsCodeSnapshot.IndexOf(Helpers.NewLine, idx, StringComparison.Ordinal);
 
             string guid = VsCodeSnapshot.Substring(idx, Math.Abs(i - idx));
             guid = guid.Substring(0, 36);
@@ -121,15 +121,15 @@ namespace CodeFlowLibrary.GenioCode
                     MatchType = matchType,
                     VsCodeSnapshot = this.VsCodeSnapshot,
                     FullFileName = FileName,
-                    CodeStart = i + Util.Helpers.NewLine.Length
+                    CodeStart = i + Helpers.NewLine.Length
                 };
 
                 // Match line above begin tag
-                var endUpperLine = VsCodeSnapshot.LastIndexOf(Util.Helpers.NewLine, begin, StringComparison.Ordinal);
+                var endUpperLine = VsCodeSnapshot.LastIndexOf(Helpers.NewLine, begin, StringComparison.Ordinal);
                 if (endUpperLine > -1)
                 {
-                    beginUpperLine = VsCodeSnapshot.LastIndexOf(Util.Helpers.NewLine, endUpperLine, StringComparison.Ordinal) +
-                                     Util.Helpers.NewLine.Length;
+                    beginUpperLine = VsCodeSnapshot.LastIndexOf(Helpers.NewLine, endUpperLine, StringComparison.Ordinal) +
+                                     Helpers.NewLine.Length;
                     if (beginUpperLine != -1 && endUpperLine - beginUpperLine > 0)
                     {
                         upperLine = VsCodeSnapshot.Substring(beginUpperLine,
@@ -142,13 +142,13 @@ namespace CodeFlowLibrary.GenioCode
                 if (end == -1)
                 {
                     anotherB = VsCodeSnapshot.IndexOf(beginString, i, StringComparison.Ordinal);
-                    code = VsCodeSnapshot.Substring(i + Util.Helpers.NewLine.Length);
+                    code = VsCodeSnapshot.Substring(i + Helpers.NewLine.Length);
                 }
                 else
                 {
                     int length = end - match.CodeStart;
                     var c = VsCodeSnapshot.Substring(match.CodeStart, length);
-                    int tmp = c.LastIndexOf(Util.Helpers.NewLine, StringComparison.Ordinal);
+                    int tmp = c.LastIndexOf(Helpers.NewLine, StringComparison.Ordinal);
                     length = tmp != -1 ? tmp : 0;
 
                     if (length > 0)
@@ -162,7 +162,7 @@ namespace CodeFlowLibrary.GenioCode
                 {
                     if (constructor?.Invoke(null) is IManual man)
                     {
-                        man.Code = ManualCodeOptions.ForceDOSLine ? Util.Helpers.ConverToDOSLineEndings(code)
+                        man.Code = ManualCodeOptions.ForceDOSLine ? Helpers.ConverToDOSLineEndings(code)
                                 : code;
                         man.CodeId = g;
                         man.Code = man.CodeTransformKeyValue();

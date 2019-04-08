@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using Microsoft.VisualStudio.Shell;
 using CodeFlowBridge;
+using CodeFlowLibrary.Settings;
 
 namespace CodeFlow
 {
