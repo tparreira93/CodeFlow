@@ -48,7 +48,6 @@
             this.txtGenioPath = new System.Windows.Forms.TextBox();
             this.lblGenioPath = new System.Windows.Forms.Label();
             this.chkProd = new System.Windows.Forms.CheckBox();
-            this.btnRules = new System.Windows.Forms.Button();
             this.btnSelectFolder = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -262,19 +261,6 @@
             this.chkProd.Text = "Production system";
             this.chkProd.UseVisualStyleBackColor = true;
             // 
-            // btnRules
-            // 
-            this.btnRules.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRules.Image = global::CodeFlow.Properties.Resources.Rule_16x;
-            this.btnRules.Location = new System.Drawing.Point(93, 310);
-            this.btnRules.Name = "btnRules";
-            this.btnRules.Size = new System.Drawing.Size(86, 24);
-            this.btnRules.TabIndex = 13;
-            this.btnRules.Text = "Rules";
-            this.btnRules.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnRules.UseVisualStyleBackColor = true;
-            this.btnRules.Click += new System.EventHandler(this.btnRules_Click);
-            // 
             // btnSelectFolder
             // 
             this.btnSelectFolder.Image = global::CodeFlow.Properties.Resources.folder_Open_16xLG;
@@ -294,7 +280,6 @@
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(527, 343);
             this.Controls.Add(this.btnSelectFolder);
-            this.Controls.Add(this.btnRules);
             this.Controls.Add(this.chkProd);
             this.Controls.Add(this.txtGenioPath);
             this.Controls.Add(this.lblGenioPath);
@@ -346,7 +331,6 @@
         private System.Windows.Forms.TextBox txtGenioPath;
         private System.Windows.Forms.Label lblGenioPath;
         private System.Windows.Forms.CheckBox chkProd;
-        private System.Windows.Forms.Button btnRules;
         private System.Windows.Forms.Button btnSelectFolder;
     }
 }

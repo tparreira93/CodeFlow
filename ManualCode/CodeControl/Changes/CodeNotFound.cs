@@ -10,7 +10,7 @@ namespace CodeFlow.CodeControl
 {
     public class CodeNotFound : ManualChange
     {
-        public CodeNotFound(IManual code) : base(code, null)
+        public CodeNotFound(IManual code, Profile profile) : base(code, null, profile)
         { }
 
         public override IOperation GetOperation()

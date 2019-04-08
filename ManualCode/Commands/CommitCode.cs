@@ -99,7 +99,7 @@ namespace CodeFlow.Commands
                 ChangeAnalyzer diffs = new ChangeAnalyzer();
                 diffs.CheckForDifferences(manual, PackageOperations.Instance.GetActiveProfile());
                 CommitForm exportForm = new CommitForm(diffs);
-                exportForm.Open();
+                exportForm.Show();
             }
             catch (Exception ex)
             {

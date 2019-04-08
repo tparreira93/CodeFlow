@@ -101,7 +101,7 @@ namespace CodeFlow.CodeUtils.Suggestions
                     ChangeAnalyzer diffs = new ChangeAnalyzer();
                     diffs.CheckForDifferences(_manual, PackageOperations.Instance.GetActiveProfile());
                     CommitForm commitForm = new CommitForm(diffs);
-                    commitForm.Open();
+                    commitForm.Show();
                 }
                 catch (Exception ex)
                 {

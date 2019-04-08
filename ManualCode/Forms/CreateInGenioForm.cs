@@ -17,7 +17,7 @@ using System.Xml;
 
 namespace CodeFlow.Forms
 {
-    public partial class CreateInGenioForm : CodeFlowForm
+    public partial class CreateInGenioForm : Form
     {
         private ManuaCode manualCode;
         private Dictionary<string, Guid> features;
@@ -38,7 +38,7 @@ namespace CodeFlow.Forms
 
             cmbPlataform.Items.Clear();
             cmbType.Items.Clear();
-            
+
             cmbPlataform.Items.AddRange(PackageOperations.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Select(x => x.ID).ToArray());
         }
 
@@ -49,7 +49,7 @@ namespace CodeFlow.Forms
 
             modules = PackageOperations.Instance.GetActiveProfile().GenioConfiguration.GetModules();
             features = PackageOperations.Instance.GetActiveProfile().GenioConfiguration.GetFeatures();
-            
+
             foreach (KeyValuePair<string, Guid> pair in modules)
                 cmbModule.Items.Add(pair.Key);
 
@@ -73,7 +73,7 @@ namespace CodeFlow.Forms
         {
             btnCreate.Enabled = true;
             lblProfile.Text = PackageOperations.Instance.GetActiveProfile().ToString();
-            lblProfile.ForeColor= Color.Green;
+            lblProfile.ForeColor = Color.Green;
             lblWarning.Visible = false;
 
             if (!String.IsNullOrEmpty(PackageOperations.Instance.SolutionProps.ClientInfo.Version)
@@ -129,16 +129,16 @@ namespace CodeFlow.Forms
             bool system = chkSystem.Checked;
             string lang = "";
 
-            if(String.IsNullOrEmpty(plataform) 
+            if (String.IsNullOrEmpty(plataform)
                 || (!system && String.IsNullOrEmpty(module))
                 || String.IsNullOrEmpty(type))
             {
                 MessageBox.Show(Properties.Resources.CreateError, Properties.Resources.Create, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            
+
             GenioPlataform plat = PackageOperations.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
-            if(plat != null)
+            if (plat != null)
             {
                 TipoRotina tipo = plat.TipoRotina.Find(x => x.Identifier.Equals(type));
                 if (tipo != null)
@@ -160,7 +160,7 @@ namespace CodeFlow.Forms
             manualCode.Codfeature = codfeature;
             manualCode.Feature = feature ?? "";
             manualCode.Codmodul = codmodul;
-            manualCode.Modulo = module != null ? (system ? PackageOperations.Instance.GetActiveProfile().GenioConfiguration.SystemInitials : module ) : ""; //Change to system of active profile
+            manualCode.Modulo = module != null ? (system ? PackageOperations.Instance.GetActiveProfile().GenioConfiguration.SystemInitials : module) : ""; //Change to system of active profile
             manualCode.Plataform = plataform;
             manualCode.TipoRotina = type;
             manualCode.Parameter = param;
@@ -172,7 +172,7 @@ namespace CodeFlow.Forms
 
             try
             {
-                IOperation operation = new CodeCreate(manualCode).GetOperation();
+                IOperation operation = new CodeCreate(manualCode, PackageOperations.Instance.GetActiveProfile()).GetOperation();
                 if (operation != null && PackageOperations.Instance.ExecuteOperation(operation))
                 {
                     MessageBox.Show(Properties.Resources.CodeCreated, Properties.Resources.Create, MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -185,7 +185,7 @@ namespace CodeFlow.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(String.Format(Properties.Resources.ErrorCreate, ex.Message), 
+                MessageBox.Show(String.Format(Properties.Resources.ErrorCreate, ex.Message),
                     Properties.Resources.CreateInGenio, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -214,7 +214,7 @@ namespace CodeFlow.Forms
 
             select.ShowDialog();
 
-            if(select.DialogResult != DialogResult.Cancel)
+            if (select.DialogResult != DialogResult.Cancel)
                 UpdateSelection(select.Plataform, select.TypeRot);
         }
 

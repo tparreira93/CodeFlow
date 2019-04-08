@@ -1,6 +1,4 @@
-﻿
-using CodeFlow.CodeControl.Rules;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -16,7 +14,6 @@ namespace CodeFlow
         private Guid profileID = Guid.NewGuid();
         private GenioCheckout genioConfiguration = new GenioCheckout();
         private String profileName = "";
-        private List<ICodeRule> profileRules = new List<ICodeRule>();
         public Profile()
         {
         }
@@ -27,7 +24,6 @@ namespace CodeFlow
             p.ProfileID = this.ProfileID;
             p.ProfileName = this.ProfileName;
             p.GenioConfiguration = this.GenioConfiguration.Clone();
-            p.profileRules.AddRange(this.ProfileRules);
             return p;
         }
 
@@ -40,8 +36,6 @@ namespace CodeFlow
         public GenioCheckout GenioConfiguration { get => genioConfiguration; set => genioConfiguration = value; }
         public string ProfileName { get => profileName; set => profileName = value; }
         public Guid ProfileID { get => profileID; set => profileID = value; }
-
-        public List<ICodeRule> ProfileRules => profileRules;
 
         public override string ToString()
         {

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace CodeFlow.Forms
 {
-    public partial class ProfilesForm : CodeFlowForm
+    public partial class ProfilesForm : Form
     {
         public ProfilesForm()
         {

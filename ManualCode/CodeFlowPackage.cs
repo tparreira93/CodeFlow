@@ -166,7 +166,7 @@ namespace CodeFlow
                 if (!Settings.Default.OldVersion.Equals(Settings.Default.ToolVersion))
                 {
                     CodeFlowChangesForm changesForm = new CodeFlowChangesForm(Versions, CurrentVersion, OldVersion);
-                    changesForm.Open();
+                    changesForm.Show();
                 }
             }
         }
@@ -190,7 +190,7 @@ namespace CodeFlow
         private void OnDocumentClose(Document document)
         {
             string path = document.FullName;
-            if (PackageOperations.Instance.IsAutoExportManual(path))
+            if (PackageOperations.Instance.IsTempFile(path))
                 PackageOperations.Instance.RemoveTempFile(path);
         }
 

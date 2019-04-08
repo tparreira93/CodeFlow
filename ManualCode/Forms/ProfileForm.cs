@@ -15,7 +15,7 @@ using System.Xml;
 
 namespace CodeFlow.Forms
 {
-    public partial class ProfileForm : CodeFlowForm
+    public partial class ProfileForm : Form
     {
         private bool _servers = false;
         private Profile _oldProfile = null;
@@ -170,12 +170,6 @@ namespace CodeFlow.Forms
         {
             if (cmbDb.DroppedDown)
                 LoadDatabases();
-        }
-
-        private void btnRules_Click(object sender, EventArgs e)
-        {
-            ProfileRules form = new ProfileRules(ProfileResult);
-            form.ShowDialog();
         }
 
         private void btnSelectFolder_Click(object sender, EventArgs e)

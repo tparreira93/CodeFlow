@@ -14,7 +14,7 @@ using CodeFlow.ManualOperations;
 
 namespace CodeFlow.Forms
 {
-    public partial class ProjectSelectionForm : CodeFlowForm
+    public partial class ProjectSelectionForm : Form
     {
         private readonly List<GenioProjectProperties> _savedFiles;
         private readonly GenioSolutionProperties _solution;

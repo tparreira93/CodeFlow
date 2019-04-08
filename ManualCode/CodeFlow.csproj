@@ -91,30 +91,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\ICodeFlowForm.cs" />
-    <Compile Include="Forms\ProfileRules.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ProfileRules.Designer.cs">
-      <DependentUpon>ProfileRules.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\RuleForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\RuleForm.Designer.cs">
-      <DependentUpon>RuleForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\SelectParametersForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\SelectParametersForm.Designer.cs">
       <DependentUpon>SelectParametersForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CodeControl\Rules\MatchPatternRule.cs" />
-    <Compile Include="CodeControl\Rules\IgnoreCodeRule.cs" />
-    <Compile Include="CodeControl\Rules\ICodeRule.cs" />
-    <Compile Include="CodeControl\Rules\CodeRule.cs" />
-    <Compile Include="CodeControl\Rules\RuleProvider.cs" />
-    <Compile Include="CodeControl\Rules\RulesValidator.cs" />
     <Compile Include="Versions\CodeFlowVersionInfo.cs" />
     <Compile Include="Versions\CodeFlowVersions.cs" />
     <Compile Include="CodeUtils\Suggestions\CompareDBSuggestion.cs" />
@@ -474,17 +456,11 @@
     <EmbeddedResource Include="Forms\CommitForm.resx">
       <DependentUpon>CommitForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ProfileRules.resx">
-      <DependentUpon>ProfileRules.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProfilesForm.resx">
       <DependentUpon>ProfilesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProjectSelectionForm.resx">
       <DependentUpon>ProjectSelectionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\RuleForm.resx">
-      <DependentUpon>RuleForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SelectParametersForm.resx">
       <DependentUpon>SelectParametersForm.cs</DependentUpon>

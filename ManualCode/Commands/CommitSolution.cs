@@ -103,7 +103,7 @@ namespace CodeFlow.Commands
             if(selectionProjectForm.Result)
             {
                 CommitForm commit = new CommitForm(selectionProjectForm.Analyzer.Analyzer);
-                commit.Open();
+                commit.Show();
             }
             // Force collection, solution analysis might be heavy..
             GC.Collect();

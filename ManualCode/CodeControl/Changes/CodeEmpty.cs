@@ -6,13 +6,13 @@ namespace CodeFlow.CodeControl
 {
     public class CodeEmpty : ManualChange
     {
-        public CodeEmpty(IManual mine, IManual theirs) : base(mine, theirs)
+        public CodeEmpty(IManual mine, IManual theirs, Profile profile) : base(mine, theirs, profile)
         {
         }
 
         public override IOperation GetOperation()
         {
-            return new DeleteOperation(this);
+            return new DeleteOperation(this, ChangeProfile);
         }
         public override string GetDescription()
         {

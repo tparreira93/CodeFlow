@@ -15,7 +15,7 @@ using CodeFlow.CodeControl.Analyzer;
 
 namespace CodeFlow.Forms
 {
-    public partial class CommitForm : CodeFlowForm
+    public partial class CommitForm : Form
     {
         private ChangeList differences;
         private ConflictList conflictCode;
@@ -64,7 +64,7 @@ namespace CodeFlow.Forms
         {
             lstCode.Items.Clear();
             foreach(IChange diff in differences.AsList)
-                AddListItem(diff, diff.IsMerged ? lblMerged.ForeColor : lblNotMerged.ForeColor, diff.FlagedRule != null ? diff.FlagedRule.CommitDefault : true);
+                AddListItem(diff, diff.IsMerged ? lblMerged.ForeColor : lblNotMerged.ForeColor, true);
 
             foreach (Conflict pair in conflictCode.AsList)
                 AddListItem(pair, lblConflict.ForeColor, false);
@@ -248,10 +248,9 @@ namespace CodeFlow.Forms
 
         private void AddListItem(IChange diff, Color c, bool chk)
         {
-            string ruleName = diff.FlagedRule != null ? diff.FlagedRule.GetRuleName() : "";
             ListViewItem item = new ListViewItem(diff.GetDescription());
             item.SubItems.Add(diff.Merged.LocalFileName);
-            item.SubItems.Add(ruleName);
+            item.SubItems.Add(diff.ChangeProfile.ProfileName);
             item.SubItems.Add(diff.Merged.ShortOneLineCode());
             item.ImageIndex = GetImageIndex(diff);
             item.Tag = diff;
@@ -264,7 +263,7 @@ namespace CodeFlow.Forms
         {
             ListViewItem item = new ListViewItem(conf.DifferenceList.AsList[0].GetDescription());
             item.SubItems.Add(conf.DifferenceList.AsList[0].Merged.LocalFileName);
-            item.SubItems.Add("");
+            item.SubItems.Add(conf.DifferenceList.AsList[0].ChangeProfile.ProfileName);
             item.SubItems.Add(conf.DifferenceList.AsList[0].Merged.ShortOneLineCode());
             item.ImageIndex = GetImageIndex(conf);
             item.Tag = conf;

@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace CodeFlow.Forms
 {
-    public partial class ConflictForm : CodeFlowForm
+    public partial class ConflictForm : Form
     {
         private Conflict conflict;
         public event EventHandler<ConflictResolveArgs> UpdateForm;

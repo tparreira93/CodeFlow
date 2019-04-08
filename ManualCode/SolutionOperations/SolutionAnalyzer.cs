@@ -120,7 +120,7 @@ namespace CodeFlow.SolutionOperations
         private Task AnalyzeFile(string file)
         {
             PackageOperations.Instance.DetectTextEncoding(file, out string text);
-            VSCodeManualMatcher matcher = new VSCodeManualMatcher(text, Path.GetFileName(file)) {ConcurrentMatching = false};
+            VSCodeManualMatcher matcher = new VSCodeManualMatcher(text, file) {ConcurrentMatching = false};
             matcher.Register(_consumerCollection);
             return Task.Factory.StartNew(() => matcher.Match());
         }
