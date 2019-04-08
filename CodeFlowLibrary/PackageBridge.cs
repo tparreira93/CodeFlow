@@ -95,8 +95,6 @@ namespace CodeFlowBridge
         #endregion
 
         #region ProfileSettings
-        public void SaveProfiles() => Flow.SaveSettings(AllProfiles);
-
         public void StoreLastProfile(string folder)
         {
             string file = $"{folder}\\LastActiveProfile.xml";
@@ -221,7 +219,7 @@ namespace CodeFlowBridge
             List<IManual> man = null;
             if (IsAutoExportManual(path))
             {
-                string code = File.ReadAllText(path, GetFileEncoding());
+                Helpers.DetectTextEncoding(path, out string code);
                 string fileName = Path.GetFileName(path);
                 try
                 {
@@ -235,29 +233,6 @@ namespace CodeFlowBridge
             return man;
         }
 
-        private static Encoding GetFileEncoding()
-        {
-            Encoding enc = null;
-            try
-            {
-                enc = Encoding.GetEncoding("Windows-1250");
-                //enc = Encoding.Unicode;
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-            return enc;
-        }
-
-        // Function to detect the encoding for UTF-7, UTF-8/16/32 (bom, no bom, little
-        // & big endian), and local default codepage, and potentially other codepages.
-        // 'taster' = number of bytes to check of the file (to save processing). Higher
-        // value is slower, but more reliable (especially UTF-8 with special characters
-        // later on may appear to be ASCII initially). If taster = 0, then taster
-        // becomes the length of the file (for maximum reliability). 'text' is simply
-        // the string with the discovered encoding applied to the file.
         #endregion
 
         #region Operations
@@ -269,10 +244,6 @@ namespace CodeFlowBridge
 
             return result;
         }
-        #endregion
-
-        #region PackageCommands
-
         #endregion
     }
 }

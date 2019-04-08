@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlow.SolutionOperations;
@@ -17,14 +18,15 @@ namespace CodeFlowUI
     public partial class ProjectSelectionForm : Form
     {
         private readonly List<GenioProjectProperties> _savedFiles;
-        private readonly GenioSolutionProperties _solution;
+        private GenioSolutionProperties _solution;
+        private readonly ISolutionParser _parser;
         public bool Result { get; private set; }
         public ProjectsAnalyzer Analyzer { get; private set; }
 
-        public ProjectSelectionForm(List<GenioProjectProperties> saved)
+        public ProjectSelectionForm(List<GenioProjectProperties> saved, ISolutionParser parser)
         {
             InitializeComponent();
-            _solution = GenioSolutionProperties.ParseSolution(PackageBridge.Instance.DTE, true);
+            _parser = parser;
             _savedFiles = saved;
         }
 
@@ -56,21 +58,27 @@ namespace CodeFlowUI
             }
         }
 
-        private void SelectionProjectForm_Load(object sender, EventArgs e)
+        private async void SelectionProjectForm_LoadAsync(object sender, EventArgs e)
         {
-            toolProgress.Enabled = false;
-            cancelAnal.Enabled = false;
-            if (_savedFiles.Count == 0)
+            _solution = await _parser.ParseAsync();
+
+            await Task.Factory.StartNew(() =>
             {
-                Refresh(_solution.GenioProjects);
-                chkSavedFiles.Checked = false;
-                chkSavedFiles.Enabled = false;
-            }
-            else
-            {
-                chkSavedFiles.Checked = true;
-                chkSavedFiles.Enabled = true;
-            }
+
+                toolProgress.Enabled = false;
+                cancelAnal.Enabled = false;
+                if (_savedFiles.Count == 0)
+                {
+                    Refresh(_solution.GenioProjects);
+                    chkSavedFiles.Checked = false;
+                    chkSavedFiles.Enabled = false;
+                }
+                else
+                {
+                    chkSavedFiles.Checked = true;
+                    chkSavedFiles.Enabled = true;
+                }
+            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void btnAnalyze_Click(object sender, EventArgs e)
@@ -93,7 +101,7 @@ namespace CodeFlowUI
                             items.Add(level2.Tag as GenioProjectItem);
 
                     if (items.Count > 0)
-                        projects.Add(new GenioProjectProperties(proj.GenioProject, items));
+                        projects.Add(new GenioProjectProperties(proj.ProjectName, items, proj.ProjectLang));
                 }
                 else if (node.Tag is GenioProjectProperties && node.Checked)
                 {

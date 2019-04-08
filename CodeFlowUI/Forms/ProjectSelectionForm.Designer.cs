@@ -138,7 +138,7 @@
             this.Name = "ProjectSelectionForm";
             this.Text = "Select project";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProjectSelectionForm_FormClosing);
-            this.Load += new System.EventHandler(this.SelectionProjectForm_Load);
+            this.Load += new System.EventHandler(this.SelectionProjectForm_LoadAsync);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.ResumeLayout(false);

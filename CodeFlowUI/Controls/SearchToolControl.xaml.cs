@@ -12,7 +12,6 @@
     using System.Windows.Media;
     using CodeFlowBridge;
     using CodeFlowLibrary.GenioCode;
-    using CodeFlowLibrary.Util;
     using CodeFlowLibrary.Settings;
 
     /// <summary>
@@ -39,11 +38,9 @@
             results.Clear();
         }
 
-        public void RefreshteList(List<IManual> lst, string currentSearch, bool wholeWord, bool caseSensitive)
+        public void RefreshteList(List<IManual> lst, SearchOptions options)
         {
-            searchOptions.SearchTerm = currentSearch;
-            searchOptions.WholeWord = wholeWord;
-            searchOptions.MatchCase = caseSensitive;
+            searchOptions = options;
 
             Clear();
             foreach (IManual m in lst)
@@ -71,6 +68,10 @@
 
                     if (String.IsNullOrEmpty(searchOptions.SearchTerm))
                         return;
+
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                    PreviewManual(m, searchOptions);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 }
                 catch (Exception ex)
                 {
@@ -80,7 +81,7 @@
             }
         }
 
-        private async Task PreviewManual(IManual manual, string search, bool wholeWord, bool matchCase)
+        private async Task PreviewManual(IManual manual, SearchOptions searchOptions)
         {
             PackageBridge.Instance.OpenManualFile(manual, true);
 

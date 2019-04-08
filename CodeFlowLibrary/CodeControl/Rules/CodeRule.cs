@@ -39,7 +39,7 @@ namespace CodeFlowLibrary.CodeControl.Rules
 
         public string GetRuleName()
         {
-            RuleProvider provider = Util.GetAttribute<RuleProvider>(this.GetType()) as RuleProvider;
+            RuleProvider provider = Helpers.GetAttribute<RuleProvider>(this.GetType()) as RuleProvider;
             if (provider != null)
                 return provider.RuleName;
             return "";

@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Package\PackageHelpers.cs" />
+    <Compile Include="Package\UserSettings.cs" />
     <Compile Include="Settings\SearchOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Package\ICodeFlowPackage.cs" />
@@ -96,6 +98,7 @@
     <Compile Include="Versions\Version.cs" />
     <Compile Include="PackageBridge.cs" />
     <Compile Include="Settings\PackageOptions.cs" />
+    <Compile Include="Versions\VersionChecker.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CodeFlowResources\CodeFlowResources.csproj">

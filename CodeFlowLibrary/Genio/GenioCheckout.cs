@@ -48,7 +48,7 @@ namespace CodeFlowLibrary.Genio
         public GenioCheckout Clone()
         {
             GenioCheckout g = new GenioCheckout();
-            Util.CopyFrom(typeof(GenioCheckout), this, g);
+            Helpers.CopyFrom(typeof(GenioCheckout), this, g);
             sqlConnection = new SqlConnection();
             obj = new object();
             return g;

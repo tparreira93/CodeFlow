@@ -6,10 +6,11 @@ using Task = System.Threading.Tasks.Task;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Threading;
-using CodeFlow.Properties;
 using Microsoft.VisualStudio.Threading;
 using System.Threading.Tasks;
 using Microsoft;
+using CodeFlowResources;
+using CodeFlowBridge;
 
 namespace CodeFlow.Commands
 {

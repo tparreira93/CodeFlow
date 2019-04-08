@@ -1,6 +1,4 @@
-﻿using CodeFlow.GenioManual;
-
-namespace CodeFlow.ToolWindow
+﻿namespace CodeFlow.ToolWindow
 {
     using System;
     using System.Runtime.InteropServices;
@@ -14,6 +12,7 @@ namespace CodeFlow.ToolWindow
     using CodeFlowUI.Controls;
     using CodeFlowLibrary.GenioCode;
     using CodeFlowLibrary.Genio;
+    using CodeFlowBridge;
 
     //using CommandHandler;
 
@@ -220,7 +219,7 @@ namespace CodeFlow.ToolWindow
                         // Update UI 
                         control.Dispatcher.BeginInvoke(new Action(() =>
                         {
-                            control.RefreshteList(res, currentSearch, wholeWord, caseSensitive);
+                            control.RefreshteList(res, new CodeFlowLibrary.Settings.SearchOptions(p, currentSearch, wholeWord, caseSensitive));
                             cmd.Enabled = true;
 
                             if (error.Length != 0)

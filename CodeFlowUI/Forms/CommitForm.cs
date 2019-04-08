@@ -28,7 +28,7 @@ namespace CodeFlowUI
             InitializeComponent();
             differences = difs.Modifications;
             conflictCode = difs.ModifiedConflict;
-            profile = this.profile;
+            this.profile = profile;
         }
 
         private void RefreshControls()
@@ -336,7 +336,7 @@ namespace CodeFlowUI
 
         private void GoToManualCodePosition(IChange change)
         {
-            PackageBridge.Flow.OpenOnPosition(change.Mine.FullFileName, change.Mine.LocalMatch.CodeStart);
+            PackageBridge.Flow.OpenOnPositionAsync(change.Mine.FullFileName, change.Mine.LocalMatch.CodeStart);
         }
 
         private void goToPositionToolStrip_Click(object sender, EventArgs e)

@@ -4,23 +4,24 @@ using System.Windows.Forms;
 using System.Linq;
 using Version = CodeFlowLibrary.Versions.Version;
 using CodeFlowLibrary.Versions;
+using System.Collections.Generic;
 
 namespace CodeFlowUI
 {
     public partial class CodeFlowChangesForm : Form
     {
-        private readonly CodeFlowUpdater _changes;
+        private readonly List<CodeFlowVersion> _changes;
         private readonly Version _currentVersion;
         private readonly Version _previousVersion;
 
-        public CodeFlowChangesForm(CodeFlowUpdater changes, Version currentVersion)
+        public CodeFlowChangesForm(List<CodeFlowVersion> changes, Version currentVersion)
         {
             InitializeComponent();
             _changes = changes;
             _currentVersion = currentVersion;
         }
 
-        public CodeFlowChangesForm(CodeFlowUpdater changes, Version currentVersion, Version previousVersion)
+        public CodeFlowChangesForm(List<CodeFlowVersion> changes, Version currentVersion, Version previousVersion)
         {
             InitializeComponent();
             _changes = changes;
@@ -31,7 +32,7 @@ namespace CodeFlowUI
         private void CodeFlowChanges_Load(object sender, EventArgs e)
         {
             lblVersion.Text = $"Current version is {_currentVersion}";
-            var codeFlowVersionInfos = _changes.Versions.OrderByDescending(x => x.Version);
+            var codeFlowVersionInfos = _changes.OrderByDescending(x => x.Version);
             foreach (CodeFlowVersion item in codeFlowVersionInfos)
             {
                 foreach (ICodeFlowChange ver in item.Changes)

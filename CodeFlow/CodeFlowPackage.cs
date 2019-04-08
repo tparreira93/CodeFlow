@@ -5,8 +5,6 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
-using CodeFlow.Properties;
-using CodeFlow.SolutionOperations;
 using System.Collections.Generic;
 using CodeFlow.Commands;
 using CodeFlow.Versions;
@@ -34,6 +32,9 @@ using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.Settings;
 using System.Threading.Tasks;
 using CodeFlowLibrary.Package;
+using CodeFlowResources;
+using Microsoft.VisualStudio.Text.Editor;
+using System.Xml.Serialization;
 
 namespace CodeFlow
 {
@@ -76,9 +77,9 @@ namespace CodeFlow
         private Events _dteEvents;
         //private DteInitializer dteInitializer;
         private bool _isSolution;
-        public Version OldVersion { get; private set; }
-        public Version CurrentVersion { get; private set; }
         public DTE2 DTE { get; set; }
+        public List<CodeFlowVersion> PackageUpdates { get; set; }
+        public UserSettings Settings { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommitCode"/> class.
@@ -103,10 +104,13 @@ namespace CodeFlow
         {
             await base.InitializeAsync(cancellationToken, progress);
 
+            PackageUpdates = VersionUpdates.LoadChangeList(this);
+
             // When initialized asynchronously, we *may* be on a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             // Otherwise, remove the switch to the UI thread if you don't need it.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+            Settings = LoadUserSettings();
 
             await ContextMenuCommand.InitializeAsync(this);
             await ChangeHistoryCommand.InitializeAsync(this);
@@ -122,7 +126,6 @@ namespace CodeFlow
             await GenioProfilesCommand.InitializeAsync(this);
             
             base.Initialize();
-
             // Try to retrieve the DTE instance at this point
             InitializeDte();
             //IVsShell shellService;
@@ -141,38 +144,32 @@ namespace CodeFlow
             _documentEnvents = _dteEvents.DocumentEvents;
             _documentEnvents.DocumentSaved += OnDocumentSave;
             _documentEnvents.DocumentClosing += OnDocumentClose;
-            CheckVersion();
-            if (PackageBridge.Instance.AllProfiles.Count == 0)
-                LoadConfig();
-        }
 
-        private void CheckVersion()
-        {
-            CodeFlowUpdater updater = new CodeFlowUpdater(VersionUpdates.LoadChangeList(this));
-            string tmp = Settings.Default.ToolVersion;
-            CurrentVersion = new Version(Settings.Default.ToolVersion);
-            OldVersion = new Version(Settings.Default.OldVersion);
-            Version newVersion = updater.Update(CurrentVersion);
-            if(CurrentVersion.CompareTo(newVersion) != 0)
+            VersionChecker checker = new VersionChecker(Settings, PackageUpdates);
+            if (checker.CheckVersion())
             {
-                Settings.Default.OldVersion = String.IsNullOrEmpty(tmp) ? newVersion.ToString() :  CurrentVersion.ToString();
-                Settings.Default.ToolVersion = newVersion.ToString();
-                Settings.Default.Save();
-                OldVersion = CurrentVersion;
-                CurrentVersion = newVersion;
-
-                if (!Settings.Default.OldVersion.Equals(Settings.Default.ToolVersion))
-                {
-                    CodeFlowChangesForm changesForm = new CodeFlowChangesForm(updater, CurrentVersion, OldVersion);
-                    CodeFlowUIManager.Open(changesForm);
-                }
+                SaveSettings();
+                CodeFlowChangesForm changesForm = new CodeFlowChangesForm(PackageUpdates, Settings.ToolVersion, Settings.OldVersion);
+                CodeFlowUIManager.Open(changesForm);
             }
         }
 
         private void InitializeDte()
         {
             DTE = GetService(typeof(SDTE)) as DTE2;
+            Assumes.Present(DTE);
         }
+
+        #region OptionsPage
+        public OptionsPageGrid OptionsPage
+        {
+            get
+            {
+                OptionsPageGrid page = (OptionsPageGrid)GetDialogPage(typeof(OptionsPageGrid));
+                return page;
+            }
+        }
+        #endregion
 
         #region CustomEvents
 
@@ -313,13 +310,16 @@ namespace CodeFlow
         public int OnBeforeCloseSolution(object pUnkReserved)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            Profile active = PackageBridge.Instance.GetActiveProfile();
+
             if (_isSolution)
-                PackageBridge.Instance.StoreLastProfile(Path.GetDirectoryName(DTE.Solution.FullName));
-            PackageBridge.Instance.GetActiveProfile().GenioConfiguration.CloseConnection();
+                PackageHelpers.StoreLastProfile(Path.GetDirectoryName(DTE.Solution.FullName), active);
+            active.GenioConfiguration.CloseConnection();
             PackageBridge.Instance.RemoveTempFiles();
-            SaveSettings(PackageBridge.Instance.AllProfiles);
+            SaveSettings();
             return VSConstants.S_OK;
         }
+
 
         public int OnAfterCloseSolution(object pUnkReserved)
         {
@@ -327,61 +327,6 @@ namespace CodeFlow
         }
         #endregion
 
-        #region OptionsPage
-        public OptionsPageGrid OptionsPage
-        {
-            get
-            {
-                OptionsPageGrid page = (OptionsPageGrid)GetDialogPage(typeof(OptionsPageGrid));
-                return page;
-            }
-        }
-        #endregion
-
-        #region OptionsPageSave
-
-        public void LoadConfig()
-        {
-            OptionsPage.LoadSettingsFromStorage();
-
-            PackageBridge.Instance.AllProfiles = PackageBridge.Instance.LoadProfiles(Settings.Default.ConnectionStrings);
-
-            if (PackageBridge.Instance.AllProfiles.Count == 1)
-                PackageBridge.Instance.SetProfile(PackageBridge.Instance.AllProfiles[0].ProfileName);
-        }
-
-        private void SaveConfig()
-        {
-            Settings.Default.ConnectionStrings = PackageBridge.Instance.SaveProfiles(PackageBridge.Instance.AllProfiles);
-            Settings.Default.Save();
-
-            OptionsPage.SaveSettingsToStorage();
-        }
-
-        #endregion
-
-        public bool OpenOnPosition(string fileName, int position)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            try
-            {
-                Window window = DTE.ItemOperations.OpenFile(fileName);
-                window.Activate();
-
-                CommandHandler.CommandHandler command = new CommandHandler.CommandHandler();
-                command.GetCurrentViewText(out int pos, out Microsoft.VisualStudio.Text.Editor.IWpfTextView textView);
-                int linePos = textView.TextSnapshot.GetLineNumberFromPosition(position);
-
-                TextSelection textSelection = window.Document.Selection as TextSelection;
-                textSelection.MoveToLineAndOffset(linePos, 1);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            return true;
-        }
 
         public void SetProfile(string profileName)
         {
@@ -389,10 +334,81 @@ namespace CodeFlow
         }
 
 
-        public async System.Threading.Tasks.Task<bool> OpenFileAsync(string fileName)
+
+        #endregion
+
+        
+        public WritableSettingsStore GetWritableSettingsStore()
+        {
+            var shellSettingsManager = new ShellSettingsManager(this);
+            return shellSettingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+        }
+
+        public SettingsStore GetReadableSettingsStore()
+        {
+            var shellSettingsManager = new ShellSettingsManager(this);
+            return shellSettingsManager.GetReadOnlySettingsStore(SettingsScope.UserSettings);
+        }
+
+        #region ICodeFlowPackage
+
+        public void SaveSettings()
+        {
+            var settings = GetWritableSettingsStore();
+            string collection = "CodeFlow";
+            bool exists = settings.CollectionExists(collection);
+            if (!exists)
+                settings.CreateCollection(collection);
+
+            settings.SetString(collection, "Profiles", PackageHelpers.SerializeProfiles(Settings.Profiles));
+            settings.SetString(collection, "ToolVersion", Settings.ToolVersion.ToString());
+            settings.SetString(collection, "OldVersion", Settings.OldVersion.ToString());
+        }
+
+        public UserSettings LoadUserSettings()
+        {
+            var settings = GetReadableSettingsStore();
+            string collection = "CodeFlow";
+            List<Profile> profiles = new List<Profile>();
+            UserSettings user = new UserSettings();
+
+            if (settings.CollectionExists(collection))
+            {
+                user.Profiles = PackageHelpers.DeSerializeProfiles(settings.GetString(collection, "Profiles"));
+                user.ToolVersion = new Version(settings.GetString(collection, "ToolVersion"));
+                user.OldVersion = new Version(settings.GetString(collection, "OldVersion"));
+            }
+
+            return user;
+        }
+        
+        public async Task<string> GetActiveFileFullNameAsync()
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync();
-            
+
+            return DTE.ActiveDocument.FullName;
+        }
+
+        public async System.Threading.Tasks.Task FindCodeAsync(SearchOptions searchOptions)
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            Find find = DTE.Find;
+            find.Action = vsFindAction.vsFindActionFind;
+            find.MatchWholeWord = searchOptions.WholeWord;
+            find.MatchCase = searchOptions.MatchCase;
+            find.FindWhat = searchOptions.SearchTerm;
+            find.Target = vsFindTarget.vsFindTargetCurrentDocument;
+            find.PatternSyntax = vsFindPatternSyntax.vsFindPatternSyntaxLiteral;
+            find.Backwards = false;
+            find.KeepModifiedDocumentsOpen = true;
+            find.Execute();
+        }
+
+        public async Task<bool> OpenFileAsync(string fileName)
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+
             try
             {
                 DTE.ItemOperations.OpenFile(fileName);
@@ -402,8 +418,6 @@ namespace CodeFlow
             catch
             { return false; }
         }
-
-        #endregion
 
         public async System.Threading.Tasks.Task FindInCurrentFileAsync(SearchOptions searchOptions)
         {
@@ -420,78 +434,31 @@ namespace CodeFlow
             find.KeepModifiedDocumentsOpen = true;
             find.Execute();
         }
-        
-        public WritableSettingsStore GetWritableSettingsStore()
-        {
-            var shellSettingsManager = new ShellSettingsManager(this);
-            return shellSettingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
-        }
 
-        public SettingsStore GetReadableSettingsStore()
-        {
-            var shellSettingsManager = new ShellSettingsManager(this);
-            return shellSettingsManager.GetReadOnlySettingsStore(SettingsScope.UserSettings);
-        }
-
-        public void SaveSettings(List<Profile> profiles)
-        {
-            var settings = GetWritableSettingsStore();
-            string collection = "CodeFlow";
-            bool exists = settings.CollectionExists(collection);
-            if (!exists)
-                settings.CreateCollection(collection);
-
-            settings.SetString(collection, "Profiles", SerializeProfiles(profiles));
-        }
-
-        public List<Profile> LoadSettings()
-        {
-            var settings = GetReadableSettingsStore();
-            string collection = "CodeFlow";
-            List<Profile> profiles = new List<Profile>();
-
-            if (settings.CollectionExists(collection))
-                profiles = DeSerializeProfiles(settings.GetString(collection, "Profiles"));
-
-            return profiles;
-        }
-
-        public string SerializeProfiles(List<Profile> profiles)
-        {
-            var stringwriter = new StringWriter();
-            try
-            {
-                var serializer = System.Xml.Serialization.XmlSerializer.FromTypes(new[] { profiles.GetType() })[0];
-                serializer.Serialize(stringwriter, profiles);
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-            return stringwriter.ToString();
-        }
-
-        public List<Profile> DeSerializeProfiles(string serializedProfiles)
-        {
-            List<Profile> profiles = null;
-            try
-            {
-                var stringReader = new System.IO.StringReader(serializedProfiles);
-                var serializer = System.Xml.Serialization.XmlSerializer.FromTypes(new[] { typeof(List<Profile>) })[0];
-                profiles = serializer.Deserialize(stringReader) as List<Profile>;
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-            return profiles ?? new List<Profile>();
-        }
-        
-        public async Task<string> GetActiveFileFullNameAsync()
+        public async Task<bool> OpenOnPositionAsync(string fileName, int position)
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            return DTE.ActiveDocument.FullName;
+            try
+            {
+                Window window = DTE.ItemOperations.OpenFile(fileName);
+                window.Activate();
+
+                CommandHandler.CommandHandler command = new CommandHandler.CommandHandler();
+                command.GetCurrentViewText(out int pos, out IWpfTextView textView);
+                int linePos = textView.TextSnapshot.GetLineNumberFromPosition(position);
+
+                TextSelection textSelection = window.Document.Selection as TextSelection;
+                textSelection.MoveToLineAndOffset(linePos, 1);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
         }
+
+        #endregion
     }
 }

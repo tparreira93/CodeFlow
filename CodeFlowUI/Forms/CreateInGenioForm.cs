@@ -23,13 +23,15 @@ namespace CodeFlowUI
         private ManuaCode manualCode;
         private Dictionary<string, Guid> features;
         private Dictionary<string, Guid> modules;
+        private Profile profile;
 
-        public CreateInGenioForm(ManuaCode manual)
+        public CreateInGenioForm(Profile profile, ManuaCode manual)
         {
             InitializeComponent();
             manualCode = manual;
             features = new Dictionary<string, Guid>();
             modules = new Dictionary<string, Guid>();
+            this.profile = profile;
             DialogResult = DialogResult.Cancel;
         }
 
@@ -40,7 +42,7 @@ namespace CodeFlowUI
             cmbPlataform.Items.Clear();
             cmbType.Items.Clear();
             
-            cmbPlataform.Items.AddRange(PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Select(x => x.ID).ToArray());
+            cmbPlataform.Items.AddRange(profile.GenioConfiguration.Plataforms.Select(x => x.ID).ToArray());
         }
 
         private void LoadDBInfo()
@@ -48,8 +50,8 @@ namespace CodeFlowUI
             cmbModule.Items.Clear();
             cmbFeature.Items.Clear();
 
-            modules = PackageBridge.Instance.GetActiveProfile().GenioConfiguration.GetModules();
-            features = PackageBridge.Instance.GetActiveProfile().GenioConfiguration.GetFeatures();
+            modules = profile.GenioConfiguration.GetModules();
+            features = profile.GenioConfiguration.GetFeatures();
             
             foreach (KeyValuePair<string, Guid> pair in modules)
                 cmbModule.Items.Add(pair.Key);
@@ -73,25 +75,25 @@ namespace CodeFlowUI
         private void RefreshForm()
         {
             btnCreate.Enabled = true;
-            lblProfile.Text = PackageBridge.Instance.GetActiveProfile().ToString();
+            lblProfile.Text = profile.ToString();
             lblProfile.ForeColor= Color.Green;
             lblWarning.Visible = false;
 
             if (!String.IsNullOrEmpty(PackageBridge.Instance.SolutionProps.ClientInfo.Version)
-                && !String.IsNullOrEmpty(PackageBridge.Instance.GetActiveProfile().GenioConfiguration.BDVersion))
+                && !String.IsNullOrEmpty(profile.GenioConfiguration.BDVersion))
                 lblSolutionVersion.Text = String.Format(CodeFlowResources.Resources.SolutionVersion,
-                    PackageBridge.Instance.SolutionProps.ClientInfo.Version, PackageBridge.Instance.GetActiveProfile().GenioConfiguration.BDVersion);
+                    PackageBridge.Instance.SolutionProps.ClientInfo.Version, profile.GenioConfiguration.BDVersion);
             else
-                lblSolutionVersion.Text = String.Format(CodeFlowResources.Resources.ProfileVersion, PackageBridge.Instance.GetActiveProfile().GenioConfiguration.BDVersion);
+                lblSolutionVersion.Text = String.Format(CodeFlowResources.Resources.ProfileVersion, profile.GenioConfiguration.BDVersion);
 
-            if (PackageBridge.Instance.GetActiveProfile().GenioConfiguration.ProductionSystem)
+            if (profile.GenioConfiguration.ProductionSystem)
             {
-                lblProd.Text = String.Format(CodeFlowResources.Resources.ProfileProd, PackageBridge.Instance.GetActiveProfile().GenioConfiguration.GenioVersion);
+                lblProd.Text = String.Format(CodeFlowResources.Resources.ProfileProd, profile.GenioConfiguration.GenioVersion);
                 lblProd.ForeColor = Color.DarkRed;
 
                 if (!String.IsNullOrEmpty(PackageBridge.Instance.SolutionProps.ClientInfo.Version)
-                    && !String.IsNullOrEmpty(PackageBridge.Instance.GetActiveProfile().GenioConfiguration.BDVersion)
-                    && !PackageBridge.Instance.SolutionProps.ClientInfo.Version.Equals(PackageBridge.Instance.GetActiveProfile().GenioConfiguration.BDVersion))
+                    && !String.IsNullOrEmpty(profile.GenioConfiguration.BDVersion)
+                    && !PackageBridge.Instance.SolutionProps.ClientInfo.Version.Equals(profile.GenioConfiguration.BDVersion))
                 {
                     lblWarning.Text = String.Format(CodeFlowResources.Resources.WarningProfile);
                     lblWarning.Visible = true;
@@ -99,7 +101,7 @@ namespace CodeFlowUI
             }
             else
             {
-                lblProd.Text = String.Format(CodeFlowResources.Resources.ProfileDev, PackageBridge.Instance.GetActiveProfile().GenioConfiguration.GenioVersion);
+                lblProd.Text = String.Format(CodeFlowResources.Resources.ProfileDev, profile.GenioConfiguration.GenioVersion);
                 lblProd.ForeColor = Color.DarkGreen;
             }
         }
@@ -138,7 +140,7 @@ namespace CodeFlowUI
                 return;
             }
             
-            GenioPlataform plat = PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
+            GenioPlataform plat = profile.GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
             if(plat != null)
             {
                 TipoRotina tipo = plat.TipoRotina.Find(x => x.Identifier.Equals(type));
@@ -161,7 +163,7 @@ namespace CodeFlowUI
             manualCode.Codfeature = codfeature;
             manualCode.Feature = feature ?? "";
             manualCode.Codmodul = codmodul;
-            manualCode.Modulo = module != null ? (system ? PackageBridge.Instance.GetActiveProfile().GenioConfiguration.SystemInitials : module ) : ""; //Change to system of active profile
+            manualCode.Modulo = module != null ? (system ? profile.GenioConfiguration.SystemInitials : module ) : ""; //Change to system of active profile
             manualCode.Plataform = plataform;
             manualCode.TipoRotina = type;
             manualCode.Parameter = param;
@@ -199,7 +201,7 @@ namespace CodeFlowUI
         {
             cmbType.Items.Clear();
             string plataform = cmbPlataform.SelectedItem?.ToString() ?? "";
-            GenioPlataform plat = PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
+            GenioPlataform plat = profile.GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
             if (plat != null)
                 cmbType.Items.AddRange(plat.TipoRotina.Select(x => x.Identifier).ToArray());
         }
@@ -236,7 +238,7 @@ namespace CodeFlowUI
                 cmbPlataform.SelectedIndex = foundIDX;
 
             cmbType.Items.Clear();
-            GenioPlataform plat = PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
+            GenioPlataform plat = profile.GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
             if (plat != null)
                 cmbType.Items.AddRange(plat.TipoRotina.Select(x => x.Identifier).ToArray());
 

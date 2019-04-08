@@ -3,10 +3,11 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
 using System.IO;
-using CodeFlow.ManualOperations;
-using CodeFlow.Forms;
 using Task = System.Threading.Tasks.Task;
 using CodeFlowLibrary.GenioCode;
+using CodeFlowBridge;
+using CodeFlowUI;
+using CodeFlowLibrary.Genio;
 
 namespace CodeFlow.Commands
 {
@@ -98,11 +99,13 @@ namespace CodeFlow.Commands
             
             if (!string.IsNullOrEmpty(code))
             {
+                Profile profile = PackageBridge.Instance.GetActiveProfile();
                 ManuaCode man = new ManuaCode(code);
                 ManualMatch manualMatch = new ManualMatch();
                 manualMatch.FullFileName = PackageBridge.Instance.DTE.ActiveDocument.FullName;
                 man.LocalMatch = manualMatch;
-                CreateInGenioForm genioForm = new CreateInGenioForm(man);
+                CreateInGenioForm genioForm = new CreateInGenioForm(profile, man);
+
                 genioForm.ShowDialog();
                 if(genioForm.DialogResult == System.Windows.Forms.DialogResult.OK)
                     handler.InsertCreatedCode(man);

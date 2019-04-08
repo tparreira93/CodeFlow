@@ -3,6 +3,7 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using CodeFlow.SolutionOperations;
 using Task = System.Threading.Tasks.Task;
+using CodeFlowBridge;
 
 namespace CodeFlow.Commands
 {

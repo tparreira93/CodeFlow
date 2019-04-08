@@ -1,7 +1,11 @@
 ﻿using System;
 using System.ComponentModel.Design;
+using CodeFlow.SolutionAnalyzer;
+using CodeFlowBridge;
+using CodeFlowLibrary.Genio;
+using CodeFlowUI;
+using CodeFlowUI.Manager;
 using Microsoft.VisualStudio.Shell;
-using CodeFlow.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace CodeFlow.Commands
@@ -89,18 +93,19 @@ namespace CodeFlow.Commands
         private void MenuItemCallback(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            Profile profile = PackageBridge.Instance.GetActiveProfile();
             if (PackageBridge.Instance.DTE.Solution is null
                 || PackageBridge.Instance.DTE.Solution.Projects.Count == 0
                 || !PackageBridge.Instance.DTE.Solution.IsOpen)
                 return;
 
-            ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(PackageBridge.Instance.SavedFiles);
+            ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(PackageBridge.Instance.SavedFiles, new SolutionParser(PackageBridge.Flow));
             selectionProjectForm.ShowDialog();
 
             if(selectionProjectForm.Result)
             {
-                CommitForm commit = new CommitForm(selectionProjectForm.Analyzer.Analyzer);
-                CodeFlowFormManager.Open(commit);
+                CommitForm commit = new CommitForm(profile, selectionProjectForm.Analyzer.Analyzer);
+                CodeFlowUIManager.Open(commit);
             }
             // Force collection, solution analysis might be heavy..
             GC.Collect();

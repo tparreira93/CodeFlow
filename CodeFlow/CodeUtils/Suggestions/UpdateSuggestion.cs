@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.GenioCode;
+using CodeFlowBridge;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using System.Globalization;
-using CodeFlow.Forms;
+using CodeFlowBridge;
+using CodeFlowUI;
+using CodeFlowUI.Manager;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
@@ -90,10 +92,8 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            CodeFlowChangesForm changesForm = new CodeFlowChangesForm(PackageOperations.Flow.Versions, PackageOperations.Flow.CurrentVersion, PackageOperations.Flow.OldVersion);
-            CodeFlowFormManager.Open(changesForm);
+            CodeFlowChangesForm changesForm = new CodeFlowChangesForm(PackageBridge.Flow.PackageUpdates, PackageBridge.Flow.Settings.ToolVersion, PackageBridge.Flow.Settings.OldVersion);
+            CodeFlowUIManager.Open(changesForm);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using System.Globalization;
-using CodeFlow.Forms;
+using CodeFlowUI;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
@@ -85,7 +85,6 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             ProfilesForm form = new ProfilesForm();
             form.ShowDialog();
         }

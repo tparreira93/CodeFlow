@@ -91,7 +91,7 @@ namespace CodeFlowUI
 
         private void ProfilesForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            PackageBridge.Instance.SaveProfiles();
+            PackageBridge.Flow.SaveSettings();
         }
 
         private Profile GetSelectedItem()

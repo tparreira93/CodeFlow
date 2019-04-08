@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.Util;
+using CodeFlowBridge;
 
 namespace CodeFlow.CommandHandler
 {
@@ -33,7 +34,7 @@ namespace CodeFlow.CommandHandler
         }
         public string GetCurrentSelection()
         {
-            var dte = PackageBridge.Instance.DTE;
+            var dte = PackageBridge.Flow.DTE;
             string code = "";
 
             if (dte != null && dte.ActiveDocument != null)

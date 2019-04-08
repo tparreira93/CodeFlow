@@ -2,13 +2,14 @@
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
-using CodeFlow.CodeControl.Analyzer;
-using CodeFlow.GenioManual;
 using System.Windows.Forms;
-using CodeFlow.Forms;
 using Task = System.Threading.Tasks.Task;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.CodeControl.Analyzer;
+using CodeFlowBridge;
+using CodeFlowUI;
+using CodeFlowLibrary.Genio;
+using CodeFlowUI.Manager;
 
 namespace CodeFlow.Commands
 {
@@ -100,12 +101,13 @@ namespace CodeFlow.Commands
             ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
+                Profile profile = PackageBridge.Instance.GetActiveProfile();
                 CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
                 List<IManual> manual = handler.SearchForTags();
                 ChangeAnalyzer diffs = new ChangeAnalyzer();
-                diffs.CheckForDifferences(manual, PackageBridge.Instance.GetActiveProfile());
-                CommitForm exportForm = new CommitForm(diffs);
-                CodeFlowFormManager.Open(exportForm);
+                diffs.CheckForDifferences(manual, profile);
+                CommitForm exportForm = new CommitForm(profile, diffs);
+                CodeFlowUIManager.Open(exportForm);
             }
             catch (Exception ex)
             {
