@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.GenioCode;
-using CodeFlowBridge;
+using CodeFlowLibrary.Bridge;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {
@@ -19,15 +19,17 @@ namespace CodeFlow.CodeUtils.Suggestions
         private readonly string display;
         private readonly ITextBuffer textBuffer;
         private readonly ITextView textView;
+        private readonly CodeFlowPackage package;
         private readonly int begin;
         private readonly int end;
         private readonly Profile _profile;
 
-        public UpdateSuggestion(int begin, int end, ITextView textView, ITextBuffer textBuffer, Guid codmanua, Profile profile)
+        public UpdateSuggestion(CodeFlowPackage package, int begin, int end, ITextView textView, ITextBuffer textBuffer, Guid codmanua, Profile profile)
         {
             this.textBuffer = textBuffer;
             this.textView = textView;
             this.codmanua = codmanua;
+            this.package = package;
             this.begin = begin;
             this.end = end;
             this.display = string.Format("Update manual code.");
@@ -108,7 +110,7 @@ namespace CodeFlow.CodeUtils.Suggestions
                 ManuaCode bd = ManuaCode.GetManual(_profile, codmanua);
                 if (bd == null)
                     return;
-                CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
+                Handlers.CommandHandler handler = new Handlers.CommandHandler(package);
                 handler.EditCodeSegment(textView.TextBuffer, begin, end, bd.Code);
             }
             catch (Exception ex)

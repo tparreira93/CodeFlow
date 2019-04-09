@@ -7,17 +7,20 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using System.Windows.Forms;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.Package;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {
     internal class CompareDBSuggestion : ISuggestedAction
     {
+        private readonly CodeFlowPackage package;
         private readonly IManual _manual;
         private readonly string _display;
         private readonly Profile _profile;
 
-        public CompareDBSuggestion(IManual manual, Profile profile)
+        public CompareDBSuggestion(CodeFlowPackage package, IManual manual, Profile profile)
         {
+            this.package = package;
             _manual = manual;
             _display = string.Format("Compare manual code");
             _profile = profile;

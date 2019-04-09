@@ -1,7 +1,8 @@
 ﻿namespace CodeFlowUI.Controls
 {
-    using CodeFlowBridge;
+    using CodeFlowLibrary.Bridge;
     using CodeFlowLibrary.CodeControl.Operations;
+    using CodeFlowLibrary.Package;
     using System;
     using System.ComponentModel;
     using System.Windows;
@@ -15,6 +16,7 @@
     {
         private GridViewColumnHeader listViewSortCol = null;
         private SortAdorner listViewSortAdorner = null;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangeHistoryControl"/> class.
         /// </summary>

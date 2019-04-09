@@ -1,5 +1,5 @@
 ﻿using CodeFlow.Utils;
-using CodeFlowBridge;
+using CodeFlowLibrary.Bridge;
 using CodeFlowLibrary.CodeControl.Analyzer;
 using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.GenioCode;
@@ -12,11 +12,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CodeFlow.CommandHandler
+namespace CodeFlow.Handlers
 {
     public class VsCommander
     {
-        public static void Create()
+        public static void Create(CodeFlowPackage package)
         {
 #pragma warning disable VSTHRD110 // Observe result of async calls
             Utils.AsyncHelper.RunSyncUI(async delegate
@@ -24,12 +24,12 @@ namespace CodeFlow.CommandHandler
             {
                 try
                 {
-                    CommandHandler handler = new CommandHandler();
+                    CommandHandler handler = new CommandHandler(package);
                     string code = await handler.GetCurrentSelectionAsync();
 
                     if (!string.IsNullOrEmpty(code))
                     {
-                        Profile profile = PackageBridge.Instance.GetActiveProfile();
+                        Profile profile = package.Active;
                         ManuaCode man = new ManuaCode(code);
                         ManualMatch manualMatch = new ManualMatch();
                         manualMatch.FullFileName = await handler.GetActiveDocumentNameAsync();
@@ -48,11 +48,11 @@ namespace CodeFlow.CommandHandler
             });
         }
 
-        public static void Update()
+        public static void Update(CodeFlowPackage package)
         {
             try
             {
-                CommandHandler handler = new CommandHandler();
+                CommandHandler handler = new CommandHandler(package);
                 if (!AsyncHelper.RunSync(() => handler.ImportAndEditCurrentTagAsync()))
                 {
                     MessageBox.Show(CodeFlowResources.Resources.VerifyProfile, CodeFlowResources.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -66,16 +66,16 @@ namespace CodeFlow.CommandHandler
             }
         }
 
-        public static void Commit()
+        public static void Commit(CodeFlowPackage package)
         {
             try
             {
-                CommandHandler handler = new CommandHandler();
+                CommandHandler handler = new CommandHandler(package);
                 List<IManual> manual = AsyncHelper.RunSync(() => handler.SearchForTagsAsync());
-                Profile profile = PackageBridge.Instance.GetActiveProfile();
+                Profile profile = package.Active;
                 ChangeAnalyzer diffs = new ChangeAnalyzer();
                 diffs.CheckForDifferences(manual, profile);
-                CommitForm commitForm = new CommitForm(profile, diffs);
+                CommitForm commitForm = new CommitForm(package, profile, diffs);
                 CodeFlowUIManager.Open(commitForm);
             }
             catch (Exception ex)
@@ -85,15 +85,15 @@ namespace CodeFlow.CommandHandler
             }
         }
 
-        public static void ViewVersions()
+        public static void ViewVersions(CodeFlowPackage package)
         {
             CodeFlowChangesForm changesForm = new CodeFlowChangesForm(PackageBridge.Flow.PackageUpdates, PackageBridge.Flow.Settings.ToolVersion, PackageBridge.Flow.Settings.OldVersion);
             CodeFlowUIManager.Open(changesForm);
         }
 
-        public static void ManageProfiles()
+        public static void ManageProfiles(CodeFlowPackage package)
         {
-            ProfilesForm form = new ProfilesForm();
+            ProfilesForm form = new ProfilesForm(package, package.Active);
             form.ShowDialog();
         }
     }

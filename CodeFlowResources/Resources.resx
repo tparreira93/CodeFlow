@@ -260,4 +260,14 @@ Verify your profile</value>
   <data name="ManwinInfoData" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\ManwinInfoData.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="ErrorMerge" xml:space="preserve">
+    <value>An error occurred when trying to merge code.
+Please very that TortoiseMerge is installed or that another merge tool is specified in the extension options.
+{0}</value>
+  </data>
+  <data name="ErrorSVN" xml:space="preserve">
+    <value>An error occurred when trying to merge code.
+Please very that TortoiseSVN is installed or that another merge tool is specified in the extension options.
+{0}</value>
+  </data>
 </root>

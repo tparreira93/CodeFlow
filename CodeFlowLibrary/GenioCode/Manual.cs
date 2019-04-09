@@ -196,7 +196,7 @@ namespace CodeFlowLibrary.GenioCode
             }
             catch(Exception e)
             {
-                throw e;
+                throw new Exception(string.Format(CodeFlowResources.Resources.ErrorMerge, e.Message));
             }
         }
         public static List<IManual> SearchDatabase(Profile profile, string texto, bool caseSensitive = false, bool wholeWord = false, string plataform = "")
@@ -243,7 +243,7 @@ namespace CodeFlowLibrary.GenioCode
             }
             catch (Exception e)
             {
-                throw e;
+                throw new Exception(string.Format(CodeFlowResources.Resources.ErrorSVN, e.Message));
             }
         }
         public void Blame(Profile profile)
@@ -257,10 +257,10 @@ namespace CodeFlowLibrary.GenioCode
             }
             catch (Exception e)
             {
-                throw e;
+                throw new Exception(string.Format(CodeFlowResources.Resources.ErrorSVN, e.Message));
             }
         }
-        protected string FormatComment(string extension, string str)
+       protected string FormatComment(string extension, string str)
         {
             switch (extension)
             {

@@ -1,4 +1,4 @@
-﻿using CodeFlowBridge;
+﻿using CodeFlowLibrary.Bridge;
 using CodeFlowLibrary.CodeControl.Changes;
 using CodeFlowLibrary.CodeControl.Operations;
 using CodeFlowLibrary.Genio;
@@ -77,41 +77,18 @@ namespace CodeFlowUI
             btnCreate.Enabled = true;
             lblProfile.Text = profile.ToString();
             lblProfile.ForeColor= Color.Green;
-            lblWarning.Visible = false;
-
-            if (!String.IsNullOrEmpty(PackageBridge.Instance.SolutionProps.ClientInfo.Version)
-                && !String.IsNullOrEmpty(profile.GenioConfiguration.BDVersion))
-                lblSolutionVersion.Text = String.Format(CodeFlowResources.Resources.SolutionVersion,
-                    PackageBridge.Instance.SolutionProps.ClientInfo.Version, profile.GenioConfiguration.BDVersion);
-            else
-                lblSolutionVersion.Text = String.Format(CodeFlowResources.Resources.ProfileVersion, profile.GenioConfiguration.BDVersion);
+            lblSolutionVersion.Text = String.Format(CodeFlowResources.Resources.ProfileVersion, profile.GenioConfiguration.BDVersion);
 
             if (profile.GenioConfiguration.ProductionSystem)
             {
                 lblProd.Text = String.Format(CodeFlowResources.Resources.ProfileProd, profile.GenioConfiguration.GenioVersion);
                 lblProd.ForeColor = Color.DarkRed;
-
-                if (!String.IsNullOrEmpty(PackageBridge.Instance.SolutionProps.ClientInfo.Version)
-                    && !String.IsNullOrEmpty(profile.GenioConfiguration.BDVersion)
-                    && !PackageBridge.Instance.SolutionProps.ClientInfo.Version.Equals(profile.GenioConfiguration.BDVersion))
-                {
-                    lblWarning.Text = String.Format(CodeFlowResources.Resources.WarningProfile);
-                    lblWarning.Visible = true;
-                }
             }
             else
             {
                 lblProd.Text = String.Format(CodeFlowResources.Resources.ProfileDev, profile.GenioConfiguration.GenioVersion);
                 lblProd.ForeColor = Color.DarkGreen;
             }
-        }
-
-        private void btnSetCon_Click(object sender, EventArgs e)
-        {
-            ProfilesForm profilesForm = new ProfilesForm();
-            profilesForm.ShowDialog();
-            LoadDBInfo();
-            RefreshForm();
         }
 
         private void chkSystem_CheckedChanged(object sender, EventArgs e)
@@ -211,7 +188,7 @@ namespace CodeFlowUI
             string plataform = (string)cmbPlataform.SelectedItem ?? cmbPlataform.SelectedText;
             string type = (string)cmbType.SelectedItem ?? cmbType.SelectedText;
 
-            SelectParametersForm select = new SelectParametersForm();
+            SelectParametersForm select = new SelectParametersForm(profile);
             select.Plataform = plataform;
             select.TypeRot = type;
 

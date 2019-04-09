@@ -70,7 +70,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeUtils\Suggestions\BlameSVNSuggestion.cs" />
-    <Compile Include="CommandHandler\VsCommander.cs" />
+    <Compile Include="Handlers\VsCommander.cs" />
     <Compile Include="Commands\CreateInGenio.cs" />
     <Compile Include="Commands\GenioProfilesCommand.cs" />
     <Compile Include="Commands\ViewVersionsCommand.cs" />
@@ -80,7 +80,7 @@
     <Compile Include="CodeUtils\Suggestions\UpdateSuggestion.cs" />
     <Compile Include="CodeUtils\Suggestions\LightBulbUtils.cs" />
     <Compile Include="CodeUtils\Suggestions\OpenSVNSuggestion.cs" />
-    <Compile Include="CommandHandler\CommandHandler.cs" />
+    <Compile Include="Handlers\CommandHandler.cs" />
     <Compile Include="Commands\FixVS2008Solution.cs" />
     <Compile Include="Commands\CodeContextMenu.cs" />
     <Compile Include="Commands\RefreshSolution.cs" />
@@ -284,9 +284,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />

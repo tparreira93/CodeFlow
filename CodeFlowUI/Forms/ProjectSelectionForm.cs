@@ -9,7 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlow.SolutionOperations;
-using CodeFlowBridge;
+using CodeFlowLibrary.Bridge;
+using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.Settings;
 using CodeFlowLibrary.Solution;
 
@@ -22,11 +23,13 @@ namespace CodeFlowUI
         private readonly ISolutionParser _parser;
         public bool Result { get; private set; }
         public ProjectsAnalyzer Analyzer { get; private set; }
+        public Profile SelectedProfile { get; }
 
-        public ProjectSelectionForm(List<GenioProjectProperties> saved, ISolutionParser parser)
+        public ProjectSelectionForm(Profile active, List<GenioProjectProperties> saved, ISolutionParser parser)
         {
             InitializeComponent();
             _parser = parser;
+            SelectedProfile = active;
             _savedFiles = saved;
         }
 
@@ -109,7 +112,7 @@ namespace CodeFlowUI
                     projects.Add(project);
                 }
             }
-            Analyzer = new ProjectsAnalyzer(PackageOptions.MaxTaskSolutionCommit);
+            Analyzer = new ProjectsAnalyzer(SelectedProfile, PackageOptions.MaxTaskSolutionCommit);
             Analyzer.ProgressChanged += worker_ProgressChanged;
             Analyzer.RunWorkerCompleted += worker_end;
             Analyzer.RunWorkerAsync(projects);

@@ -11,19 +11,22 @@ using CodeFlowUI;
 using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.CodeControl.Analyzer;
-using CodeFlowBridge;
+using CodeFlowLibrary.Bridge;
 using CodeFlowUI.Manager;
+using CodeFlowLibrary.Package;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {
     internal class CommitSuggestion : ISuggestedAction
     {
+        private readonly CodeFlowPackage package;
         private readonly IManual _manual;
         private readonly string _display;
         private readonly Profile _profile;
 
-        public CommitSuggestion(IManual manual, Profile profile)
+        public CommitSuggestion(CodeFlowPackage package, IManual manual, Profile profile)
         {
+            this.package = package;
             _manual = manual;
             _display = string.Format("Commit manual code");
             _profile = profile;
@@ -103,7 +106,7 @@ namespace CodeFlow.CodeUtils.Suggestions
                 {
                     ChangeAnalyzer diffs = new ChangeAnalyzer();
                     diffs.CheckForDifferences(_manual, _profile);
-                    CodeFlowUIManager.Open(new CommitForm(_profile, diffs));
+                    CodeFlowUIManager.Open(new CommitForm(package, _profile, diffs));
                     
                 }
                 catch (Exception ex)

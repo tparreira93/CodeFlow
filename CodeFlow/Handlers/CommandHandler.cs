@@ -11,21 +11,21 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.Util;
-using CodeFlowBridge;
+using CodeFlowLibrary.Bridge;
 using System.Threading.Tasks;
 using CodeFlowLibrary.Genio;
 using CodeFlowUI;
 using System.Windows.Forms;
 
-namespace CodeFlow.CommandHandler
+namespace CodeFlow.Handlers
 {
     public class CommandHandler
     {
         CodeFlowPackage package;
 
-        public CommandHandler()
+        public CommandHandler(CodeFlowPackage package)
         {
-            package = PackageBridge.Flow as CodeFlowPackage;
+            this.package = package;
         }
 
         public async Task<(string code, int cursorPos, IWpfTextView textView, string fullDocumentName)> GetCurrentViewTextAsync()
@@ -38,11 +38,16 @@ namespace CodeFlow.CommandHandler
             Assumes.Present(componentModel);
             var editor = componentModel.GetService<IVsEditorAdaptersFactoryService>();
             textManager.GetActiveView(1, null, out IVsTextView textViewCurrent);
-            IWpfTextView textView = editor.GetWpfTextView(textViewCurrent);
-
-            SnapshotPoint caretPosition = textView.Caret.Position.BufferPosition;
-            int cursorPos = caretPosition.Position;
-            return (textView.TextBuffer.CurrentSnapshot.GetText(), cursorPos, textView, package.DTE.ActiveDocument.FullName);
+            IWpfTextView textView = null;
+            int cursorPos = -1;
+            string code = "";
+            if (textViewCurrent != null)
+            {
+                textView = editor.GetWpfTextView(textViewCurrent);
+                cursorPos = textView.Caret.Position.BufferPosition.Position;
+                code = textView.TextBuffer.CurrentSnapshot.GetText();
+            }
+            return (code, cursorPos, textView, package.DTE?.ActiveDocument?.FullName ?? "");
         }
         public async Task<string> GetCurrentSelectionAsync()
         {
@@ -85,18 +90,21 @@ namespace CodeFlow.CommandHandler
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            var view = await GetCurrentViewTextAsync();
+            var (code, cursorPos, textView, fullDocumentName) = await GetCurrentViewTextAsync();
 
-            VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(view.code, view.cursorPos, view.fullDocumentName);
+            if (code == "")
+                return false;
+
+            VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, cursorPos, fullDocumentName);
             List<IManual> codeList = vSCodeManualMatcher.Match();
             if (codeList.Count == 1)
             {
                 IManual manual = codeList[0];
-                IManual bd = Manual.GetManual(manual.GetType(), manual.CodeId, PackageBridge.Instance.GetActiveProfile());
+                IManual bd = Manual.GetManual(manual.GetType(), manual.CodeId, package.Active);
                 if (bd == null)
                     return false;
 
-                EditCodeSegment(view.textView.TextBuffer, manual.LocalMatch, bd.Code + (manual.LocalMatch.CodeLength == 0 ? Helpers.NewLine : String.Empty));
+                EditCodeSegment(textView.TextBuffer, manual.LocalMatch, bd.Code + (manual.LocalMatch.CodeLength == 0 ? Helpers.NewLine : String.Empty));
             }
 
             return true;

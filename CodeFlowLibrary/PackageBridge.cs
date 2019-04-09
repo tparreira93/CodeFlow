@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using CodeFlowLibrary.Settings;
 using CodeFlowLibrary.Package;
 
-namespace CodeFlowBridge
+namespace CodeFlowLibrary.Bridge
 {
     public sealed class PackageBridge
     {
@@ -22,28 +22,21 @@ namespace CodeFlowBridge
         private Dictionary<string, Type> AutoExportFiles { get; } = new Dictionary<string, Type>();
 
         #region Properties
-        private Profile ActiveProfile { get; set; } = new Profile();
         public readonly List<GenioProjectProperties> SavedFiles = new List<GenioProjectProperties>();
-        public List<Profile> AllProfiles { get; set; } = new List<Profile>();
-        public GenioSolutionProperties SolutionProps { get; set; }
-        public OperationLog ChangeLog { get; set; } = new OperationLog();
         public static PackageBridge Instance => _instance ?? (_instance = new PackageBridge());
+        public OperationLog ChangeLog { get; } = new OperationLog();
 
         #endregion
 
         #region ApplicationProfileManagement
-        public Profile GetActiveProfile()
-        {
-            return ActiveProfile;
-        }
         public bool AddProfile(Profile profile)
         {
-            if (AllProfiles.Find(x => x.ProfileName.Equals(profile.ProfileName) == true) == null)
+            if (Flow.Settings.Profiles.Find(x => x.ProfileName.Equals(profile.ProfileName) == true) == null)
             {
                 if (profile.GenioConfiguration.ParseGenioFiles()
                         && profile.GenioConfiguration.GetGenioInfo())
                 {
-                    AllProfiles.Add(profile);
+                    Flow.Settings.Profiles.Add(profile);
                     return true;
                 }
             }
@@ -51,7 +44,7 @@ namespace CodeFlowBridge
         }
         public bool UpdateProfile(Profile oldProfile, Profile newProfile)
         {
-            Profile p = AllProfiles.Find(x => x.ProfileName.Equals(newProfile.ProfileName) 
+            Profile p = Flow.Settings.Profiles.Find(x => x.ProfileName.Equals(newProfile.ProfileName) 
                                                     && !x.ProfileID.Equals(newProfile.ProfileID));
             if(p == null)
             {
@@ -70,101 +63,86 @@ namespace CodeFlowBridge
         }
         public Profile FindProfile(string profileName)
         {
-            return AllProfiles.Find(x => x.ProfileName.Equals(profileName));
+            return Flow.Settings.Profiles.Find(x => x.ProfileName.Equals(profileName));
         }
         public void RemoveProfile(string profileName)
         {
-            Profile p = AllProfiles.Find(x => x.ProfileName.Equals(profileName));
+            Profile p = Flow.Settings.Profiles.Find(x => x.ProfileName.Equals(profileName));
             if (p != null)
             {
-                AllProfiles.Remove(p);
-                if (AllProfiles.Count == 0)
+                Flow.Settings.Profiles.Remove(p);
+                if (Flow.Settings.Profiles.Count == 0)
                     Flow.SetProfile(String.Empty);
-            }
-        }
-        public void SetProfile(string profileName)
-        {
-            Profile p = AllProfiles.Find(x => x.ProfileName.Equals(profileName));
-            if (p != null)
-            {
-                ActiveProfile = p;
-                ActiveProfile.GenioConfiguration.GetGenioInfo();
-                ActiveProfile.GenioConfiguration.ParseGenioFiles();
             }
         }
         #endregion
 
-        #region FileOps
-
-        private void AddTempFile(string file)
+        #region Helpers
+        public void StoreLastProfile(string folder, Profile profile)
         {
-            if (!_openFiles.Contains(file))
-                _openFiles.Add(file);
-        }
-        public void RemoveTempFile(string file)
-        {
-            if (IsAutoExportManual(file))
-                AutoExportFiles.Remove(file);
-
-            if (_openFiles.Contains(file))
+            string file = $"{folder}\\LastActiveProfile.xml";
+            try
             {
-                _openFiles.Remove(file);
+                var stringwriter = new StringWriter();
+                var serializer = XmlSerializer.FromTypes(new[] { profile.ProfileName.GetType() })[0];
+                serializer.Serialize(stringwriter, profile.ProfileName);
+
+                File.WriteAllText(file, stringwriter.ToString());
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+        }
+        public string SerializeProfiles(List<Profile> profiles)
+        {
+            var stringwriter = new StringWriter();
+            try
+            {
+                var serializer = XmlSerializer.FromTypes(new[] { profiles.GetType() })[0];
+                serializer.Serialize(stringwriter, profiles);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            return stringwriter.ToString();
+        }
+        public List<Profile> DeSerializeProfiles(string serializedProfiles)
+        {
+            List<Profile> profiles = null;
+            try
+            {
+                var stringReader = new StringReader(serializedProfiles);
+                var serializer = XmlSerializer.FromTypes(new[] { typeof(List<Profile>) })[0];
+                profiles = serializer.Deserialize(stringReader) as List<Profile>;
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            return profiles ?? new List<Profile>();
+        }
+        public String SearchLastActiveProfile(string folder)
+        {
+            string file = $"{folder}\\LastActiveProfile.xml";
+            String p = "";
+            try
+            {
                 if (File.Exists(file))
-                    File.Delete(file);
-            }
-        }
-        public bool IsTempFile(string file)
-        {
-            return _openFiles.Contains(file);
-        }
-        public void RemoveTempFiles()
-        {
-            foreach (string file in _openFiles)
-            {
-                if (File.Exists(file))
-                    File.Delete(file);
-            }
-            _openFiles.Clear();
-        }
-        public void OpenManualFile(IManual man, bool autoExport)
-        {
-            var tmp = $"{Path.GetTempPath()}{man.CodeId}.{man.GetCodeExtension(ActiveProfile)}";
-            File.WriteAllText(tmp, man.ToString(), Encoding.UTF8);
-
-            if (autoExport)
-            {
-                if (!AutoExportFiles.ContainsKey(tmp))
-                    AutoExportFiles.Add(tmp, man.GetType());
-                else
-                    AutoExportFiles[tmp] = man.GetType();
-            }
-
-            if (Flow.OpenFileAsync(tmp).Result)
-                AddTempFile(tmp);
-        }
-        public bool IsAutoExportManual(string path)
-        {
-            return AutoExportFiles.TryGetValue(path, out Type _);
-        }
-        public List<IManual> GetAutoExportIManual(string path)
-        {
-            List<IManual> man = null;
-            if (IsAutoExportManual(path))
-            {
-                Helpers.DetectTextEncoding(path, out string code);
-                string fileName = Path.GetFileName(path);
-                try
                 {
-                    man = new VSCodeManualMatcher(code, fileName).Match();
-                }
-                catch (Exception)
-                {
-                    // ignored
+                    var stringReader = new StringReader(File.ReadAllText(file));
+                    var serializer = XmlSerializer.FromTypes(new[] { typeof(string) })[0];
+                    p = serializer.Deserialize(stringReader) as String;
                 }
             }
-            return man;
-        }
+            catch (Exception)
+            {
+                // ignored
+            }
 
+            return p;
+        }
         #endregion
     }
 }

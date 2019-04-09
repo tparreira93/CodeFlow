@@ -34,6 +34,7 @@
             this.btnCommit = new System.Windows.Forms.Button();
             this.lstCode = new System.Windows.Forms.ListView();
             this.clOperation = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clProfile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clFile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.chRule = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clCode = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -47,7 +48,6 @@
             this.btnConflict = new System.Windows.Forms.Button();
             this.lblSolutionVersion = new System.Windows.Forms.Label();
             this.lblProd = new System.Windows.Forms.Label();
-            this.lblWarning = new System.Windows.Forms.Label();
             this.btnMerge = new System.Windows.Forms.Button();
             this.lblMerged = new System.Windows.Forms.Label();
             this.lblConflict = new System.Windows.Forms.Label();
@@ -55,7 +55,6 @@
             this.lblColors = new System.Windows.Forms.Label();
             this.lblDivis = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.clProfile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextLstCode.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -123,6 +122,11 @@
             // 
             this.clOperation.Text = "Operation";
             this.clOperation.Width = 171;
+            // 
+            // clProfile
+            // 
+            this.clProfile.Text = "Profile";
+            this.clProfile.Width = 168;
             // 
             // clFile
             // 
@@ -236,19 +240,6 @@
             this.lblProd.TabIndex = 11;
             this.lblProd.Text = "PRODUCTION ENV.";
             // 
-            // lblWarning
-            // 
-            this.lblWarning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblWarning.ForeColor = System.Drawing.Color.Red;
-            this.lblWarning.Location = new System.Drawing.Point(1035, 700);
-            this.lblWarning.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblWarning.Name = "lblWarning";
-            this.lblWarning.Size = new System.Drawing.Size(375, 15);
-            this.lblWarning.TabIndex = 12;
-            this.lblWarning.Text = "WARNING";
-            this.lblWarning.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // btnMerge
             // 
             this.btnMerge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -338,11 +329,6 @@
             this.label1.TabIndex = 19;
             this.label1.Text = "|";
             // 
-            // clProfile
-            // 
-            this.clProfile.Text = "Profile";
-            this.clProfile.Width = 168;
-            // 
             // CommitForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -356,7 +342,6 @@
             this.Controls.Add(this.lblConflict);
             this.Controls.Add(this.lblMerged);
             this.Controls.Add(this.btnMerge);
-            this.Controls.Add(this.lblWarning);
             this.Controls.Add(this.lblProd);
             this.Controls.Add(this.lblSolutionVersion);
             this.Controls.Add(this.btnConflict);
@@ -391,7 +376,6 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Label lblSolutionVersion;
         private System.Windows.Forms.Label lblProd;
-        private System.Windows.Forms.Label lblWarning;
         private System.Windows.Forms.ColumnHeader clFile;
         private System.Windows.Forms.Button btnMerge;
         private System.Windows.Forms.Label lblMerged;

@@ -1,5 +1,6 @@
-﻿using CodeFlowBridge;
+﻿using CodeFlowLibrary.Bridge;
 using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.Package;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,9 +15,13 @@ namespace CodeFlowUI
 {
     public partial class ProfilesForm : Form
     {
-        public ProfilesForm()
+        private readonly ICodeFlowPackage package;
+        Profile active;
+        public ProfilesForm(ICodeFlowPackage package, Profile active)
         {
             InitializeComponent();
+            this.package = package;
+            this.active = active;
         }
 
         private void ProfilesForm_Load(object sender, EventArgs e)
@@ -30,7 +35,7 @@ namespace CodeFlowUI
             ProfileForm profileForm = new ProfileForm(p);
             if (profileForm.ShowDialog() == DialogResult.OK)
             {
-                if (!PackageBridge.Instance.AddProfile(profileForm.ProfileResult))
+                if (!CodeFlowLibrary.Bridge.PackageBridge.Instance.AddProfile(profileForm.ProfileResult))
                 {
                     MessageBox.Show(CodeFlowResources.Resources.ErrorAddProfile, CodeFlowResources.Resources.Configuration,
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -48,10 +53,10 @@ namespace CodeFlowUI
         private void LoadProfiles()
         {
             lstProfiles.Items.Clear();
-            foreach (Profile p in PackageBridge.Instance.AllProfiles)
+            foreach (Profile p in package.Settings.Profiles)
             {
                 ListViewItem item = new ListViewItem();
-                if (PackageBridge.Instance.GetActiveProfile().ProfileName.Equals(p.ProfileName))
+                if (active.ProfileName.Equals(p.ProfileName))
                     item.BackColor = Color.GreenYellow;
                 item.Text = p.ProfileName;
                 item.Tag = p;
@@ -91,7 +96,7 @@ namespace CodeFlowUI
 
         private void ProfilesForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            PackageBridge.Flow.SaveSettings();
+            package.SaveSettings();
         }
 
         private Profile GetSelectedItem()
@@ -100,5 +105,7 @@ namespace CodeFlowUI
                 return lstProfiles.SelectedItems[0].Tag as Profile;
             return null;
         }
+
+        
     }
 }

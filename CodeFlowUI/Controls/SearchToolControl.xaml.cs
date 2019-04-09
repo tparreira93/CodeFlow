@@ -10,8 +10,9 @@
     using System.Windows.Controls;
     using System.Windows.Documents;
     using System.Windows.Media;
-    using CodeFlowBridge;
+    using CodeFlowLibrary.Bridge;
     using CodeFlowLibrary.GenioCode;
+    using CodeFlowLibrary.Package;
     using CodeFlowLibrary.Settings;
 
     /// <summary>
@@ -57,7 +58,7 @@
                 try
                 {
                     Type t = lstCode.SelectedItem.GetType();
-                    IManual m = Manual.GetManual(t, (lstCode.SelectedItem as IManual).CodeId, PackageBridge.Instance.GetActiveProfile());
+                    IManual m = Manual.GetManual(t, (lstCode.SelectedItem as IManual).CodeId, PackageBridge.Flow.Active);
 
                     if (m == null)
                     {
@@ -83,7 +84,7 @@
 
         private async Task PreviewManual(IManual manual, SearchOptions searchOptions)
         {
-            PackageBridge.Instance.OpenManualFile(manual, true);
+            PackageBridge.Flow.FileOps.OpenTempFile(manual, PackageBridge.Flow.Active, true);
 
             await PackageBridge.Flow.FindCodeAsync(searchOptions);
         }
@@ -161,7 +162,7 @@
             if (lstCode.SelectedIndex >= 0)
             {
                 IManual man = lstCode.SelectedItem as IManual;
-                man.ShowSVNLog(PackageBridge.Instance.GetActiveProfile());
+                man.ShowSVNLog(PackageBridge.Flow.Active);
             }
         }
 
@@ -170,7 +171,7 @@
             if (lstCode.SelectedIndex >= 0)
             {
                 IManual man = lstCode.SelectedItem as IManual;
-                man.Blame(PackageBridge.Instance.GetActiveProfile());
+                man.Blame(PackageBridge.Flow.Active);
             }
         }
 

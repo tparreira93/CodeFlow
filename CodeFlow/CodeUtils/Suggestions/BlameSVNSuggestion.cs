@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.GenioCode;
+using CodeFlowLibrary.Package;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 
@@ -14,12 +15,14 @@ namespace CodeFlow.CodeUtils.Suggestions
 {
     internal class BlameSVNSuggestion : ISuggestedAction
     {
+        private readonly CodeFlowPackage package;
         private readonly IManual _manual;
         private readonly Profile _profile;
         private readonly string _display;
 
-        public BlameSVNSuggestion(IManual manual, Profile profile)
+        public BlameSVNSuggestion(CodeFlowPackage package, IManual manual, Profile profile)
         {
+            this.package = package;
             _manual = manual;
             _profile = profile;
             _display = string.Format("Open SVN and blame manual file for current code.");

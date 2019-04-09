@@ -52,7 +52,6 @@
             this.lblProfile = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblProd = new System.Windows.Forms.Label();
             this.lblSolutionVersion = new System.Windows.Forms.Label();
-            this.lblWarning = new System.Windows.Forms.Label();
             this.btnSelect = new System.Windows.Forms.Button();
             this.status.SuspendLayout();
             this.SuspendLayout();
@@ -296,19 +295,6 @@
             this.lblSolutionVersion.TabIndex = 22;
             this.lblSolutionVersion.Text = "SOLUTION_INFO";
             // 
-            // lblWarning
-            // 
-            this.lblWarning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblWarning.ForeColor = System.Drawing.Color.Red;
-            this.lblWarning.Location = new System.Drawing.Point(543, 577);
-            this.lblWarning.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblWarning.Name = "lblWarning";
-            this.lblWarning.Size = new System.Drawing.Size(464, 15);
-            this.lblWarning.TabIndex = 24;
-            this.lblWarning.Text = "WARNING";
-            this.lblWarning.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // btnSelect
             // 
             this.btnSelect.Image = global::CodeFlowUI.Properties.Resources.ArrangeSelection_16x;
@@ -327,7 +313,6 @@
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(1016, 644);
             this.Controls.Add(this.btnSelect);
-            this.Controls.Add(this.lblWarning);
             this.Controls.Add(this.lblProd);
             this.Controls.Add(this.lblSolutionVersion);
             this.Controls.Add(this.status);
@@ -387,7 +372,6 @@
         private System.Windows.Forms.ToolStripStatusLabel lblProfile;
         private System.Windows.Forms.Label lblProd;
         private System.Windows.Forms.Label lblSolutionVersion;
-        private System.Windows.Forms.Label lblWarning;
         private System.Windows.Forms.Button btnSelect;
     }
 }

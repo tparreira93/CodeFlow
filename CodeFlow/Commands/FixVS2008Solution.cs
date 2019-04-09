@@ -27,14 +27,14 @@ namespace CodeFlow.Commands
         /// <summary>
         /// VS Package that provides this command, not null.
         /// </summary>
-        private readonly AsyncPackage package;
+        private readonly CodeFlowPackage package;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FixVS2008Solution"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private FixVS2008Solution(AsyncPackage package, OleMenuCommandService commandService)
+        private FixVS2008Solution(CodeFlowPackage package, OleMenuCommandService commandService)
         {
             if (package == null)
             {
@@ -72,7 +72,7 @@ namespace CodeFlow.Commands
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        public static async Task InitializeAsync(AsyncPackage package)
+        public static async Task InitializeAsync(CodeFlowPackage package)
         {
             // Switch to the main thread - the call to AddCommand in Command1's constructor requires
             // the UI thread.

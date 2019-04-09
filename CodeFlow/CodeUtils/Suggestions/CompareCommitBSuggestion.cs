@@ -8,22 +8,25 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.Language.Intellisense;
 using CodeFlowLibrary.CodeControl.Operations;
-using CodeFlowBridge;
+using CodeFlowLibrary.Bridge;
 using CodeFlowLibrary.CodeControl.Analyzer;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.CodeControl.Changes;
 using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.Package;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {
     internal class CompareCommitBSuggestion : ISuggestedAction
     {
+        private readonly CodeFlowPackage package;
         private readonly IManual local;
         private readonly string _display;
         private readonly Profile _profile;
 
-        public CompareCommitBSuggestion(IManual manual, Profile profile)
+        public CompareCommitBSuggestion(CodeFlowPackage package, IManual manual, Profile profile)
         {
+            this.package = package;
             local = manual;
             _display = string.Format("Merge and commit manual code");
             _profile = profile;
@@ -117,7 +120,7 @@ namespace CodeFlow.CodeUtils.Suggestions
                         if (MessageBox.Show(message, CodeFlowResources.Resources.Export,
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            if (PackageBridge.Flow.ExecuteOperation(operation))
+                            if (package.ExecuteOperation(operation))
                                 MessageBox.Show(CodeFlowResources.Resources.Submited, CodeFlowResources.Resources.Export,
                                     MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
                             else

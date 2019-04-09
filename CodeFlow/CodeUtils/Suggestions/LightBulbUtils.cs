@@ -12,8 +12,10 @@ using System.Threading;
 using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.Settings;
-using CodeFlowBridge;
+using CodeFlowLibrary.Bridge;
 using CodeFlow.Utils;
+using CodeFlow.Handlers;
+using CodeFlowLibrary.Package;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {
@@ -53,8 +55,10 @@ namespace CodeFlow.CodeUtils.Suggestions
         private async Task<(bool exists, IManual code)> TryGetManualAsync()
         {
             IManual manual = null;
-            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-            if (String.IsNullOrEmpty(await handler.GetCurrentSelectionAsync()))
+
+            CodeFlowPackage package = PackageBridge.Flow as CodeFlowPackage;
+            CommandHandler handler = new CommandHandler(package);
+            if (PackageOptions.ContinuousAnalysis && package.Active.IsValid() && string.IsNullOrEmpty(await handler.GetCurrentSelectionAsync()))
             {
                 var view = await handler.GetCurrentViewTextAsync();
                 VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(view.code, view.cursorPos, view.fullDocumentName);
@@ -68,8 +72,8 @@ namespace CodeFlow.CodeUtils.Suggestions
 
         private async Task<bool> ExistsManualAsync()
         {
-            var manual = await TryGetManualAsync();
-            return manual.exists;
+            var (exists, code) = await TryGetManualAsync();
+            return exists;
         }
 
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
@@ -79,33 +83,33 @@ namespace CodeFlow.CodeUtils.Suggestions
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            if (PackageOptions.ContinuousAnalysis && !cancellationToken.IsCancellationRequested)
+            var (exists, code) = AsyncHelper.RunSync(async () => await TryGetManualAsync());
+            if (!cancellationToken.IsCancellationRequested && exists)
             {
-                var manual = AsyncHelper.RunSync(async () => await TryGetManualAsync());
-
                 List<ISuggestedAction> actions = new List<ISuggestedAction>();
-                Profile profile = PackageBridge.Instance.GetActiveProfile();
-                CompareDBSuggestion compare = new CompareDBSuggestion(manual.code, profile);
+                CodeFlowPackage package = PackageBridge.Flow as CodeFlowPackage;
+                Profile profile = package.Active;
+                CompareDBSuggestion compare = new CompareDBSuggestion(package, code, profile);
                 actions.Add(compare);
 
-                CommitSuggestion export = new CommitSuggestion(manual.code, profile);
+                CommitSuggestion export = new CommitSuggestion(package, code, profile);
                 actions.Add(export);
                 
-                CompareCommitBSuggestion compareExport = new CompareCommitBSuggestion(manual.code, profile);
+                CompareCommitBSuggestion compareExport = new CompareCommitBSuggestion(package, code, profile);
                 actions.Add(compareExport);
 
-                if (manual.code.LocalMatch.CodeStart > 0 && manual.code.LocalMatch.CodeLength > 0)
+                if (code.LocalMatch.CodeStart > 0 && code.LocalMatch.CodeLength > 0)
                 {
-                    UpdateSuggestion import = new UpdateSuggestion(manual.code.LocalMatch.CodeStart, manual.code.LocalMatch.CodeLength, textView, textBuffer, manual.code.CodeId, profile);
+                    UpdateSuggestion import = new UpdateSuggestion(package, code.LocalMatch.CodeStart, code.LocalMatch.CodeLength, textView, textBuffer, code.CodeId, profile);
                     actions.Add(import);
                 }
 
                 if (!String.IsNullOrEmpty(profile.GenioConfiguration.CheckoutPath) && !String.IsNullOrEmpty(profile.GenioConfiguration.SystemInitials))
                 {
-                    OpenSVNSuggestion openSVNSuggestion = new OpenSVNSuggestion(manual.code, profile);
+                    OpenSVNSuggestion openSVNSuggestion = new OpenSVNSuggestion(package, code, profile);
                     actions.Add(openSVNSuggestion);
 
-                    BlameSVNSuggestion blameSVNSuggestion = new BlameSVNSuggestion(manual.code, profile);
+                    BlameSVNSuggestion blameSVNSuggestion = new BlameSVNSuggestion(package, code, profile);
                     actions.Add(blameSVNSuggestion);
                 }
                 return new SuggestedActionSet[] { new SuggestedActionSet(actions.ToArray()) };

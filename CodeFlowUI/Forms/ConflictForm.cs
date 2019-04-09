@@ -1,6 +1,8 @@
-﻿using CodeFlowBridge;
+﻿using CodeFlowLibrary.Bridge;
 using CodeFlowLibrary.CodeControl.Changes;
 using CodeFlowLibrary.CodeControl.Conflicts;
+using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.Package;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,12 +18,16 @@ namespace CodeFlowUI
 {
     public partial class ConflictForm : Form
     {
+        private readonly ICodeFlowPackage package;
+        private readonly Profile profile;
         private Conflict conflict;
         public event EventHandler<ConflictResolveArgs> UpdateForm;
 
-        public ConflictForm(Conflict conf)
+        public ConflictForm(ICodeFlowPackage package, Profile profile, Conflict conf)
         {
             InitializeComponent();
+            this.package = package;
+            this.profile = profile;
             conflict = conf;
         }
 
@@ -55,7 +61,7 @@ namespace CodeFlowUI
                 ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
                 IChange m = (IChange)item.Tag;
 
-                PackageBridge.Instance.OpenManualFile(m.Merged, false);
+                package.FileOps.OpenTempFile(m.Merged, profile, false);
             }
         }
 
@@ -101,7 +107,17 @@ namespace CodeFlowUI
                 ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
                 IChange diff = (IChange)item.Tag;
 
-                IChange change = diff.Merge();
+                IChange change = null;
+                try
+                {
+                    change = diff.Merge();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
+                        CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    return;
+                }
                 lstConflicts.SelectedItems[0].ImageIndex = GetImageIndex(change);
                 lstConflicts.SelectedItems[0].Tag = change;
                 lstConflicts.SelectedItems[0].Text = change.GetDescription();
@@ -129,6 +145,13 @@ namespace CodeFlowUI
             else
                 return 0;
 
+        }
+
+        private object GetSelectedItem()
+        {
+            if (lstConflicts.SelectedItems.Count == 1)
+                return lstConflicts.Items[lstConflicts.SelectedIndices[0]].Tag;
+            return null;
         }
     }
 }

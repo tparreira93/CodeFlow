@@ -47,5 +47,12 @@ namespace CodeFlowLibrary.Genio
         {
             return String.Format(profileName + "@" + genioConfiguration.ToString());
         }
+
+        public bool IsValid()
+        {
+            return !string.IsNullOrEmpty(profileName)
+                && !string.IsNullOrEmpty(GenioConfiguration.Database)
+                && !string.IsNullOrEmpty(GenioConfiguration.Server);
+        }
     }
 }

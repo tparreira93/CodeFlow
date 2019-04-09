@@ -1,4 +1,4 @@
-﻿using CodeFlowBridge.SolutionOperations;
+﻿using CodeFlowLibrary.Bridge.SolutionOperations;
 using CodeFlowLibrary.Util;
 using CodeFlowLibrary.Solution;
 using EnvDTE;

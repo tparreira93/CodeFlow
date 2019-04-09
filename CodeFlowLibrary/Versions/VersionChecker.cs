@@ -9,10 +9,10 @@ namespace CodeFlowLibrary.Versions
 {
     public class VersionChecker
     {
-        public UserSettings Settings { get; set; }
+        public InternalSettings Settings { get; set; }
         public List<CodeFlowVersion> Updates { get; set; }
 
-        public VersionChecker(UserSettings settings, List<CodeFlowVersion> updates)
+        public VersionChecker(InternalSettings settings, List<CodeFlowVersion> updates)
         {
             Settings = settings;
             Updates = updates;

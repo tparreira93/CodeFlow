@@ -24,7 +24,7 @@ using CodeFlowLibrary.GenioCode;
 using CodeFlowUI;
 using CodeFlowUI.Manager;
 using CodeFlowLibrary.Solution;
-using CodeFlowBridge;
+using CodeFlowLibrary.Bridge;
 using CodeFlow.SolutionAnalyzer;
 using Microsoft.VisualStudio.Shell.Settings;
 using Microsoft.VisualStudio.Settings;
@@ -35,6 +35,7 @@ using CodeFlowLibrary.Package;
 using CodeFlowResources;
 using Microsoft.VisualStudio.Text.Editor;
 using System.Xml.Serialization;
+using CodeFlowLibrary.FileOps;
 
 namespace CodeFlow
 {
@@ -65,7 +66,7 @@ namespace CodeFlow
     [ProvideOptionPage(typeof(OptionsPageGrid), "Genio", "CodeFlow properties", 0, 0, true)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(SearchTool), Style = VsDockStyle.Tabbed, Orientation = ToolWindowOrientation.Bottom)]
-    [ProvideToolWindow(typeof(ChangeHistory))]
+    [ProvideToolWindow(typeof(ChangeHistory), Style = VsDockStyle.Tabbed, Orientation = ToolWindowOrientation.Bottom)]
     public sealed class CodeFlowPackage : AsyncPackage, IVsSolutionEvents, ICodeFlowPackage
     {
         /// <summary>
@@ -77,9 +78,13 @@ namespace CodeFlow
         private Events _dteEvents;
         //private DteInitializer dteInitializer;
         private bool _isSolution;
+        private uint _cookie;
+        private IVsSolution _solution;
         public DTE2 DTE { get; set; }
         public List<CodeFlowVersion> PackageUpdates { get; set; }
-        public UserSettings Settings { get; set; }
+        public InternalSettings Settings { get; set; }
+        public FilesManager FileOps { get; set; }
+        public Profile Active => Settings?.ActiveProfile ?? new Profile();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommitCode"/> class.
@@ -87,6 +92,7 @@ namespace CodeFlow
         public CodeFlowPackage()
         {
             PackageBridge.Flow = this;
+            FileOps = new FilesManager();
             // Inside this method you can place any initialization code that does not require
             // any Visual Studio service because at this point the package object is created but
             // not sited yet inside Visual Studio environment. The place to do all the other
@@ -145,6 +151,10 @@ namespace CodeFlow
             _documentEnvents.DocumentSaved += OnDocumentSave;
             _documentEnvents.DocumentClosing += OnDocumentClose;
 
+
+            _solution = await GetServiceAsync(typeof(SVsSolution)) as IVsSolution;
+            _solution?.AdviseSolutionEvents(this, out _cookie);
+
             VersionChecker checker = new VersionChecker(Settings, PackageUpdates);
             if (checker.CheckVersion())
             {
@@ -152,6 +162,17 @@ namespace CodeFlow
                 CodeFlowChangesForm changesForm = new CodeFlowChangesForm(PackageUpdates, Settings.ToolVersion, Settings.OldVersion);
                 CodeFlowUIManager.Open(changesForm);
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            Dispatcher.CurrentDispatcher.VerifyAccess();
+            if (_cookie != 0 && _solution != null)
+            {
+                _solution.UnadviseSolutionEvents(_cookie);
+                _cookie = 0;
+            }
+            base.Dispose(disposing);
         }
 
         private void InitializeDte()
@@ -169,6 +190,7 @@ namespace CodeFlow
                 return page;
             }
         }
+
         #endregion
 
         #region CustomEvents
@@ -178,8 +200,8 @@ namespace CodeFlow
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
             string path = Utils.AsyncHelper.RunSyncUI(() => document.FullName);
 #pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
-            if (PackageBridge.Instance.IsTempFile(path))
-                PackageBridge.Instance.RemoveTempFile(path);
+
+            FileOps.Remove(path);
         }
 
         private void OnDocumentSave(Document document)
@@ -196,7 +218,7 @@ namespace CodeFlow
                 List <IManual> man = null;
 
                 if (PackageOptions.AutoExportSaved)
-                    man = PackageBridge.Instance.GetAutoExportIManual(path);
+                    man = FileOps.GetAutoExportIManual(path);
 
                 // Se for diferente de null quer dizer que é um ficheiro temporário que pode ser exportado automaticamente
                 if (man != null)
@@ -205,12 +227,12 @@ namespace CodeFlow
                     {
                         // Check for changes, update and log operation
                         ChangeAnalyzer analyzer = new ChangeAnalyzer();
-                        analyzer.CheckForDifferences(man, PackageBridge.Instance.GetActiveProfile());
+                        analyzer.CheckForDifferences(man, Active);
                         foreach (IChange diff in analyzer.Modifications.AsList)
                         {
                             IOperation operation = diff.GetOperation();
                             if (operation != null)
-                                PackageBridge.Flow.ExecuteOperation(operation);
+                                ExecuteOperation(operation);
                         }
                     }
                     catch (Exception ex)
@@ -225,7 +247,7 @@ namespace CodeFlow
 
                 try
                 {
-                    GenioProjectProperties proj = PackageBridge.Instance.SavedFiles.Find(x => { ThreadHelper.ThrowIfNotOnUIThread(); return x.ProjectName == projName; });
+                    GenioProjectProperties proj = CodeFlowLibrary.Bridge.PackageBridge.Instance.SavedFiles.Find(x => { ThreadHelper.ThrowIfNotOnUIThread(); return x.ProjectName == projName; });
                     GenioProjectItem item = new GenioProjectItem(name, path);
                     if (proj == null)
                         PackageBridge.Instance.SavedFiles.Add(new GenioProjectProperties(projName, new List<GenioProjectItem>() { item }, lang));
@@ -247,36 +269,39 @@ namespace CodeFlow
         #region SolutionEvents
         public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            PackageBridge.Instance.SavedFiles.Clear();
-            PackageBridge.Instance.ChangeLog.Clear();
-            String lastActive = "";
+            Utils.AsyncHelper.RunSyncUI(() =>
+           {
+               Dispatcher.CurrentDispatcher.VerifyAccess();
+               PackageBridge.Instance.SavedFiles.Clear();
+               PackageBridge.Instance.ChangeLog.Clear();
+               String lastActive = "";
 
-            if (DTE.Solution != null && DTE.Solution.FullName.Length != 0)
-            {
-                _isSolution = true;
-                try
-                {
-                    string path = Path.GetDirectoryName(DTE.Solution.FullName);
-                    lastActive = PackageHelpers.SearchLastActiveProfile(path);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
-            }
+               if (DTE.Solution != null && DTE.Solution.FullName.Length != 0)
+               {
+                   _isSolution = true;
+                   try
+                   {
+                       string path = Path.GetDirectoryName(DTE.Solution.FullName);
+                       lastActive = PackageBridge.Instance.SearchLastActiveProfile(path);
+                   }
+                   catch (Exception)
+                   {
+                        // ignored
+                    }
+               }
 
-            //Updates combo box
-            if (!string.IsNullOrEmpty(lastActive))
-                SetProfile(lastActive);
+                //Updates combo box
+                if (!string.IsNullOrEmpty(lastActive))
+                   SetProfile(lastActive);
 
-            if (PackageOptions.AutoVccto2008Fix && _isSolution)
-            {
-                ISolutionParser solution = new SolutionParser(this);
+               if (PackageOptions.AutoVccto2008Fix && _isSolution)
+               {
+                   ISolutionParser solution = new SolutionParser(this);
 #pragma warning disable VSTHRD110 // Observe result of async calls
-                solution.ChangeToolset2008Async();
+                    solution.ChangeToolset2008Async();
 #pragma warning restore VSTHRD110 // Observe result of async calls
-            }
+                }
+           });
             return VSConstants.S_OK;
         }
 
@@ -317,14 +342,17 @@ namespace CodeFlow
 
         public int OnBeforeCloseSolution(object pUnkReserved)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            Profile active = PackageBridge.Instance.GetActiveProfile();
+            Utils.AsyncHelper.RunSyncUI(() =>
+            {
+                Dispatcher.CurrentDispatcher.VerifyAccess();
+                Profile active = Active;
 
-            if (_isSolution)
-                PackageHelpers.StoreLastProfile(Path.GetDirectoryName(DTE.Solution.FullName), active);
-            active.GenioConfiguration.CloseConnection();
-            PackageBridge.Instance.RemoveTempFiles();
-            SaveSettings();
+                if (_isSolution && active.IsValid())
+                    PackageBridge.Instance.StoreLastProfile(Path.GetDirectoryName(DTE.Solution.FullName), active);
+                active.GenioConfiguration.CloseConnection();
+                FileOps.RemoveAll();
+                SaveSettings();
+            });
             return VSConstants.S_OK;
         }
 
@@ -341,11 +369,22 @@ namespace CodeFlow
             GenioProfilesCommand.Instance.OnMenuGenioProfilesCombo(this, new OleMenuCmdEventArgs(profileName, IntPtr.Zero));
         }
 
+        public void LoadProfile(string profileName)
+        {
+            Profile p = Settings.Profiles.Find(x => x.ProfileName.Equals(profileName));
+            if (p != null)
+            {
+                Settings.ActiveProfile = p;
+                Settings.ActiveProfile.GenioConfiguration.GetGenioInfo();
+                Settings.ActiveProfile.GenioConfiguration.ParseGenioFiles();
+            }
+        }
+
 
 
         #endregion
 
-
+        #region InternalSettings
         public WritableSettingsStore GetWritableSettingsStore()
         {
             var shellSettingsManager = new ShellSettingsManager(this);
@@ -357,6 +396,7 @@ namespace CodeFlow
             var shellSettingsManager = new ShellSettingsManager(this);
             return shellSettingsManager.GetReadOnlySettingsStore(SettingsScope.UserSettings);
         }
+        #endregion
 
         #region ICodeFlowPackage
 
@@ -368,21 +408,21 @@ namespace CodeFlow
             if (!exists)
                 settings.CreateCollection(collection);
 
-            settings.SetString(collection, "Profiles", PackageHelpers.SerializeProfiles(Settings.Profiles));
+            settings.SetString(collection, "Profiles", PackageBridge.Instance.SerializeProfiles(Settings.Profiles));
             settings.SetString(collection, "ToolVersion", Settings.ToolVersion.ToString());
             settings.SetString(collection, "OldVersion", Settings.OldVersion.ToString());
         }
 
-        public UserSettings LoadUserSettings()
+        public InternalSettings LoadUserSettings()
         {
             var settings = GetReadableSettingsStore();
             string collection = "CodeFlow";
             List<Profile> profiles = new List<Profile>();
-            UserSettings user = new UserSettings();
+            InternalSettings user = new InternalSettings();
 
             if (settings.CollectionExists(collection))
             {
-                user.Profiles = PackageHelpers.DeSerializeProfiles(settings.GetString(collection, "Profiles"));
+                user.Profiles = CodeFlowLibrary.Bridge.PackageBridge.Instance.DeSerializeProfiles(settings.GetString(collection, "Profiles"));
                 user.ToolVersion = new Version(settings.GetString(collection, "ToolVersion"));
                 user.OldVersion = new Version(settings.GetString(collection, "OldVersion"));
             }
@@ -452,9 +492,9 @@ namespace CodeFlow
                 Window window = DTE.ItemOperations.OpenFile(fileName);
                 window.Activate();
 
-                CommandHandler.CommandHandler command = new CommandHandler.CommandHandler();
-                var view = await command.GetCurrentViewTextAsync();
-                int linePos = view.textView.TextSnapshot.GetLineNumberFromPosition(position);
+                Handlers.CommandHandler command = new Handlers.CommandHandler(this);
+                var (code, cursorPos, textView, fullDocumentName) = await command.GetCurrentViewTextAsync();
+                int linePos = textView.TextSnapshot.GetLineNumberFromPosition(position);
 
                 TextSelection textSelection = window.Document.Selection as TextSelection;
                 textSelection.MoveToLineAndOffset(linePos, 1);

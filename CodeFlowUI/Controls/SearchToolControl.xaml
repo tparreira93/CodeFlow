@@ -6,7 +6,7 @@
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="300" d:DesignWidth="1368"
              Name="MyToolWindow">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -20,17 +20,17 @@
         <ListView x:Name="lstCode" MouseDoubleClick="lstFindMan_MouseDoubleClick" SelectionMode="Single">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Width="100"  DisplayMemberBinding="{Binding TipoCodigo}">
+                    <GridViewColumn Width="150"  DisplayMemberBinding="{Binding TipoCodigo}">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader Tag="Type" Click="lstCodeColumnHeader_Click" SizeChanged="lstColumnSizeChanged">Type</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
-                    <GridViewColumn Width="150"  DisplayMemberBinding="{Binding Tag}">
+                    <GridViewColumn Width="200"  DisplayMemberBinding="{Binding Tag}">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader Tag="Tag" Click="lstCodeColumnHeader_Click" SizeChanged="lstColumnSizeChanged">Tag</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
-                    <GridViewColumn Width="100"  DisplayMemberBinding="{Binding Tipo}">
+                    <GridViewColumn Width="150"  DisplayMemberBinding="{Binding Tipo}">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader Tag="Tipo" Click="lstCodeColumnHeader_Click" SizeChanged="lstColumnSizeChanged">Rot.</GridViewColumnHeader>
                         </GridViewColumn.Header>

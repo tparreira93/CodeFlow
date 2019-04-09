@@ -11,7 +11,8 @@ using CodeFlowLibrary.CodeControl.Analyzer;
 using CodeFlowLibrary.Util;
 using CodeFlowLibrary.Solution;
 using CodeFlowLibrary.Settings;
-using CodeFlowBridge;
+using CodeFlowLibrary.Bridge;
+using CodeFlowLibrary.Genio;
 
 namespace CodeFlow.SolutionOperations
 {
@@ -22,7 +23,7 @@ namespace CodeFlow.SolutionOperations
     /// </summary>
     public class ProjectsAnalyzer : BackgroundWorker
     {
-        public ProjectsAnalyzer(int maxNumberOfTasks)
+        public ProjectsAnalyzer(Profile profile, int maxNumberOfTasks)
         {
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
@@ -33,8 +34,10 @@ namespace CodeFlow.SolutionOperations
             MaxNumberOfTasks = maxNumberOfTasks;
             if (MaxNumberOfTasks <= 0)
                 MaxNumberOfTasks = 8;
+            SelectedProfile = profile;
         }
 
+        public Profile SelectedProfile { get; }
         public ChangeAnalyzer Analyzer { get; }
         private readonly IProducerConsumerCollection<IManual> _consumerCollection;
         private readonly Queue<Task> _runningTasks;
@@ -112,7 +115,7 @@ namespace CodeFlow.SolutionOperations
                     max = tmp;
                 }
                 if(_consumerCollection.TryTake(out IManual item))
-                    Analyzer.CheckForDifferences(item, PackageBridge.Instance.GetActiveProfile());
+                    Analyzer.CheckForDifferences(item, SelectedProfile);
                 
             }
         }

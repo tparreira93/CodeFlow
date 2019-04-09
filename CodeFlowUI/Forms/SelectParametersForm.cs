@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlowLibrary.Util;
-using CodeFlowBridge;
+using CodeFlowLibrary.Bridge;
 
 namespace CodeFlowUI
 {
@@ -18,15 +18,17 @@ namespace CodeFlowUI
     {
         public string Plataform { get; set; }
         public string TypeRot { get; set; }
+        Profile profile { get; }
 
-        public SelectParametersForm()
+        public SelectParametersForm(Profile profile)
         {
             InitializeComponent();
+            this.profile = profile;
         }
 
         private void LoadFormInfo()
         {
-            cmbPlataform.Items.AddRange(PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Select(x => x.ID).ToArray());
+            cmbPlataform.Items.AddRange(profile.GenioConfiguration.Plataforms.Select(x => x.ID).ToArray());
             int i = 0;
             int foundIDX = -1;
             foreach (var item in cmbPlataform.Items)
@@ -65,7 +67,7 @@ namespace CodeFlowUI
         {
             cmbType.Items.Clear();
             string plataform = cmbPlataform.SelectedItem?.ToString() ?? "";
-            GenioPlataform plat = PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
+            GenioPlataform plat = profile.GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
             if (plat != null)
                 cmbType.Items.AddRange(plat.TipoRotina.Select(x => x.Identifier).ToArray());
         }
@@ -74,7 +76,7 @@ namespace CodeFlowUI
         {
             string plataform = cmbPlataform.SelectedItem?.ToString() ?? "";
             string type = cmbType.SelectedItem?.ToString() ?? "";
-            GenioPlataform plat = PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
+            GenioPlataform plat = profile.GenioConfiguration.Plataforms.Find(x => x.ID.Equals(plataform));
             TipoRotina tipoRotina = plat.TipoRotina.Find(x => x.Identifier.Equals(type));
             txtHelp.Text = (tipoRotina?.Description?.Replace("\\r\\n", Helpers.NewLine) ?? "") + Helpers.NewLine+ Helpers.NewLine
                 + (tipoRotina?.Destination?.Replace("\\r\\n", Helpers.NewLine) ?? "") + Helpers.NewLine + Helpers.NewLine

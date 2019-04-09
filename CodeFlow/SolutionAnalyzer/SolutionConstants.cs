@@ -1,4 +1,4 @@
-﻿namespace CodeFlowBridge.SolutionOperations
+﻿namespace CodeFlowLibrary.Bridge.SolutionOperations
 {
     public abstract class SolutionConstants
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using System.Globalization;
-using CodeFlow.CommandHandler;
+using CodeFlow.Handlers;
 using CodeFlowUI;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -27,14 +27,14 @@ namespace CodeFlow.Commands
         /// <summary>
         /// VS Package that provides this command, not null.
         /// </summary>
-        private readonly AsyncPackage package;
+        private readonly CodeFlowPackage package;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ManageProfiles"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private ManageProfiles(AsyncPackage package, OleMenuCommandService commandService)
+        private ManageProfiles(CodeFlowPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException("package");
 
@@ -67,7 +67,7 @@ namespace CodeFlow.Commands
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        public static async Task InitializeAsync(AsyncPackage package)
+        public static async Task InitializeAsync(CodeFlowPackage package)
         {
             // Switch to the main thread - the call to AddCommand in ManageProfiles's constructor requires
             // the UI thread.
@@ -86,7 +86,7 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            VsCommander.ManageProfiles();
+            VsCommander.ManageProfiles(package);
         }
     }
 }

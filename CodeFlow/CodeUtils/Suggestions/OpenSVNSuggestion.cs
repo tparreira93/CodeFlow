@@ -9,18 +9,21 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.GenioCode;
+using CodeFlowLibrary.Package;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {
 
     internal class OpenSVNSuggestion : ISuggestedAction
     {
+        private readonly CodeFlowPackage package;
         private readonly IManual _manual;
         private readonly Profile _profile;
         private readonly string _display;
 
-        public OpenSVNSuggestion(IManual manual, Profile profile)
+        public OpenSVNSuggestion(CodeFlowPackage package, IManual manual, Profile profile)
         {
+            this.package = package;
             _manual = manual;
             _profile = profile;
             _display = string.Format("Open SVN for this manual code");

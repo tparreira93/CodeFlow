@@ -278,6 +278,26 @@ namespace CodeFlow.Versions
             version.AddChange("First phase of the changes that will give the option to show multiple results of the search term when the term appears multiple times in the same tuple of the database.");
             changes.Add(version);
 
+            version = new CodeFlowVersion();
+            version.Version = new Version(3, 12, 0);
+            version.AddChange("Change history now saves profiles that executed operation.");
+            changes.Add(version);
+
+            version = new CodeFlowVersion();
+            version.Version = new Version(3, 12, 1);
+            version.AddChange("Removed solution parsing for Client and Genio information.");
+            version.AddChange("Validations to text view window before executing operations.");
+            version.AddChange("New fields in Change history tool window.");
+            changes.Add(version);
+
+            version = new CodeFlowVersion();
+            version.Version = new Version(4, 0, 0);
+            version.AddChange("Support for Visual Studio 2019.");
+            version.AddChange("Improved UI responsiveness of all commands.");
+            version.AddChange("Reworked internals.");
+            version.AddChange(".");
+            changes.Add(version);
+
             return changes;
         }
     }

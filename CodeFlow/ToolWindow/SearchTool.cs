@@ -12,7 +12,7 @@
     using CodeFlowUI.Controls;
     using CodeFlowLibrary.GenioCode;
     using CodeFlowLibrary.Genio;
-    using CodeFlowBridge;
+    using CodeFlowLibrary.Bridge;
 
     //using CommandHandler;
 
@@ -40,7 +40,6 @@
         private const int cmdIdCaseSensitive = 0x2005;
         private const int cmdIdPlataformCombo = 0x2006;
         private const int cmdIdPlataformComboGetList = 0x2007;
-
 
         private SearchToolControl control = null;
         public static bool WindowInitialized = false;
@@ -150,12 +149,13 @@
         }
         private void GetPlataformList(object sender, EventArgs e)
         {
-            string[] dropChoices = new string[PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Count + 1];
+            Profile p = PackageBridge.Flow.Active;
+            string[] dropChoices = new string[p.GenioConfiguration.Plataforms.Count + 1];
             dropChoices[0] = "All";
 
-            for (int i = 1; i < PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Count; i++)
+            for (int i = 1; i < p.GenioConfiguration.Plataforms.Count; i++)
             {
-                dropChoices[i] = PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms[i].ID;
+                dropChoices[i] = p.GenioConfiguration.Plataforms[i].ID;
             }
 
             if (e is OleMenuCmdEventArgs eventArgs)
@@ -176,7 +176,8 @@
         private void SearchManualCode(object sender, EventArgs e)
         {
             // Only one search at time
-            if (Monitor.TryEnter(searchLock, 2000))
+            Profile p = PackageBridge.Flow.Active;
+            if (p.IsValid() && Monitor.TryEnter(searchLock, 2000))
             {
                 control.Clear();
                 OleMenuCommand cmd = null;
@@ -209,7 +210,6 @@
                     {
                         string error = "";
                         List<IManual> res = new List<IManual>();
-                        Profile p = PackageBridge.Instance.GetActiveProfile();
                         try
                         {
                             res.AddRange(Manual.SearchDatabase(p, currentSearch, caseSensitive, wholeWord, searchPlat));

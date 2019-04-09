@@ -9,12 +9,13 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CodeFlowBridge;
+using CodeFlowLibrary.Bridge;
 using CodeFlowLibrary.CodeControl.Analyzer;
 using CodeFlowLibrary.CodeControl.Changes;
 using CodeFlowLibrary.CodeControl.Conflicts;
 using CodeFlowLibrary.CodeControl.Operations;
 using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.Package;
 
 namespace CodeFlowUI
 {
@@ -23,39 +24,26 @@ namespace CodeFlowUI
         private ChangeList differences;
         private ConflictList conflictCode;
         private Profile profile;
-        public CommitForm(Profile profile, ChangeAnalyzer difs)
+        ICodeFlowPackage package;
+        public CommitForm(ICodeFlowPackage package, Profile profile, ChangeAnalyzer difs)
         {
             InitializeComponent();
             differences = difs.Modifications;
             conflictCode = difs.ModifiedConflict;
             this.profile = profile;
+            this.package = package;
         }
 
         private void RefreshControls()
         {
-            lblWarning.Visible = false;
             lblManual.Text = String.Format(CodeFlowResources.Resources.CommitEntries, differences.AsList.Count, conflictCode.AsList.Count);
             lblServer.Text = profile.ToString();
-
-            if (!String.IsNullOrEmpty(PackageBridge.Instance.SolutionProps.ClientInfo.Version)
-                && !String.IsNullOrEmpty(profile.GenioConfiguration.BDVersion))
-                lblSolutionVersion.Text = String.Format(CodeFlowResources.Resources.SolutionVersion,
-                    PackageBridge.Instance.SolutionProps.ClientInfo.Version, profile.GenioConfiguration.BDVersion);
-            else
-                lblSolutionVersion.Text = String.Format(CodeFlowResources.Resources.ProfileVersion, profile.GenioConfiguration.BDVersion);
+            lblSolutionVersion.Text = String.Format(CodeFlowResources.Resources.ProfileVersion, profile.GenioConfiguration.BDVersion);
 
             if (profile.GenioConfiguration.ProductionSystem)
             {
                 lblProd.Text = String.Format(CodeFlowResources.Resources.ProfileProd, profile.GenioConfiguration.GenioVersion);
                 lblProd.ForeColor = Color.DarkRed;
-
-                if (!String.IsNullOrEmpty(PackageBridge.Instance.SolutionProps.ClientInfo.Version)
-                    && !String.IsNullOrEmpty(profile.GenioConfiguration.BDVersion)
-                    && !PackageBridge.Instance.SolutionProps.ClientInfo.Version.Equals(profile.GenioConfiguration.BDVersion))
-                {
-                    lblWarning.Text = String.Format(CodeFlowResources.Resources.WarningProfile);
-                    lblWarning.Visible = true;
-                }
             }
             else
             {
@@ -104,7 +92,7 @@ namespace CodeFlowUI
                 try
                 {
                     IOperation operation = diff.GetOperation();
-                    if (operation != null && PackageBridge.Flow.ExecuteOperation(operation))
+                    if (operation != null && CodeFlowLibrary.Bridge.PackageBridge.Flow.ExecuteOperation(operation))
                     {
                         differences.AsList.Remove(diff);
                         itemsToRemove.Add(items[i]);
@@ -190,7 +178,7 @@ namespace CodeFlowUI
             {
                 if (lstCode.Items[lstCode.SelectedIndices[0]].Tag is Conflict conflict)
                 {
-                    ConflictForm conflictHandler = new ConflictForm(conflict);
+                    ConflictForm conflictHandler = new ConflictForm(package, profile, conflict);
                     conflictHandler.UpdateForm += OnConflictResolve;
                     conflictHandler.ShowDialog(this);
                     RefreshControls();
@@ -222,6 +210,7 @@ namespace CodeFlowUI
                     {
                         AddListItem(args.Keep, args.Keep.IsMerged ? lblMerged.ForeColor : lblNotMerged.ForeColor, true);
                         differences.AsList.Add(args.Keep);
+                        conflictCode.AsList.Remove(args.Conflict);
                     }
                     RefreshControls();
                 }
@@ -236,17 +225,30 @@ namespace CodeFlowUI
                 if (diff is CodeNotFound)
                     return;
 
-                IChange change = diff.Merge();
+                IChange change = null;
+                try
+                {
+                    change = diff.Merge();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
+                        CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    return;
+                }
                 if (change.HasDifference())
                 {
                     lstCode.SelectedItems[0].Text = change.GetDescription();
-                    lstCode.SelectedItems[0].SubItems[3].Text = change.Merged.ShortOneLineCode();
+                    lstCode.SelectedItems[0].SubItems[4].Text = change.Merged.ShortOneLineCode();
                     lstCode.SelectedItems[0].ForeColor = lblMerged.ForeColor;
                     lstCode.SelectedItems[0].ImageIndex = GetImageIndex(change);
                     lstCode.SelectedItems[0].Tag = change;
                 }
                 else
+                {
                     lstCode.Items.Remove(lstCode.SelectedItems[0]);
+                    differences.AsList.Remove(diff);
+                }
             }
             RefreshControls();
         }
@@ -310,7 +312,8 @@ namespace CodeFlowUI
                     lstCode_MouseDoubleClick(this, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
                 else if (e.KeyCode == Keys.Delete)
                 {
-                    if(lstCode.SelectedItems[0].Tag is IChange change)
+                    int index = lstCode.SelectedIndices[0];
+                    if (lstCode.SelectedItems[0].Tag is IChange change)
                         differences.AsList.Remove(change);
                     else if(lstCode.SelectedItems[0].Tag is Conflict conflict)
                         conflictCode.AsList.Remove(conflict);
@@ -318,6 +321,13 @@ namespace CodeFlowUI
                         return;
 
                     lstCode.Items.Remove(lstCode.SelectedItems[0]);
+
+                    if (lstCode.Items.Count > 0)
+                    {
+                        index = index >= 1 ? index - 1 : 0;
+                        lstCode.Items[index].Selected = true;
+                    }
+
                     RefreshControls();
                 }
             }

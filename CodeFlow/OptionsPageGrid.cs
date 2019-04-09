@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Microsoft.VisualStudio.Shell;
-using CodeFlowBridge;
+using CodeFlowLibrary.Bridge;
 using CodeFlowLibrary.Settings;
 
 namespace CodeFlow
@@ -12,7 +12,7 @@ namespace CodeFlow
         private string _extFilters;
         private string _useCustomTool;
         private bool _lightbulbSuggestions;
-        private bool _parseSolutionOnStartup;
+        //private bool _parseSolutionOnStartup;
         private bool _autoVccto2008Fix;
         private bool _autoExportSaved;
         private bool _forceDosLine;
@@ -20,18 +20,18 @@ namespace CodeFlow
         private bool _fixIndexes;
         private int _maxTaskSolutionCommit;
 
-        [Category("Solution")]
-        [DefaultValue(true)]
-        [DisplayName("Solution parsing")]
-        [Description("Parses solution for client, version and system. This allows more lightbulb suggestions.")]
-        public bool ParseSolutionOnStartup
-        {
-            get => _parseSolutionOnStartup; set
-            {
-                _parseSolutionOnStartup = value;
-                PackageOptions.ParseSolution = value;
-            }
-        }
+        //[Category("Solution")]
+        //[DefaultValue(true)]
+        //[DisplayName("Solution parsing")]
+        //[Description("Parses solution for client, version and system. This allows more lightbulb suggestions.")]
+        //public bool ParseSolutionOnStartup
+        //{
+        //    get => _parseSolutionOnStartup; set
+        //    {
+        //        _parseSolutionOnStartup = value;
+        //        PackageOptions.ParseSolution = value;
+        //    }
+        //}
 
         [Category("Solution")]
         [DefaultValue(false)]

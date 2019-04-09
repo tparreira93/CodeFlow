@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using CodeFlow.SolutionAnalyzer;
-using CodeFlowBridge;
+using CodeFlowLibrary.Bridge;
 using CodeFlowLibrary.Genio;
 using CodeFlowUI;
 using CodeFlowUI.Manager;
@@ -28,14 +28,14 @@ namespace CodeFlow.Commands
         /// <summary>
         /// VS Package that provides this command, not null.
         /// </summary>
-        private readonly AsyncPackage package;
+        private readonly CodeFlowPackage package;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommitSolution"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private CommitSolution(AsyncPackage package, OleMenuCommandService commandService)
+        private CommitSolution(CodeFlowPackage package, OleMenuCommandService commandService)
         {
             if (package == null)
             {
@@ -73,7 +73,7 @@ namespace CodeFlow.Commands
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        public static async Task InitializeAsync(AsyncPackage package)
+        public static async Task InitializeAsync(CodeFlowPackage package)
         {
             // Switch to the main thread - the call to AddCommand in Command1's constructor requires
             // the UI thread.
@@ -92,13 +92,12 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            Profile profile = PackageBridge.Instance.GetActiveProfile();
-            ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(PackageBridge.Instance.SavedFiles, new SolutionParser(PackageBridge.Flow));
+            ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(package.Active, PackageBridge.Instance.SavedFiles, new SolutionParser(package));
             selectionProjectForm.ShowDialog();
 
             if(selectionProjectForm.Result)
             {
-                CommitForm commit = new CommitForm(profile, selectionProjectForm.Analyzer.Analyzer);
+                CommitForm commit = new CommitForm(package, package.Active, selectionProjectForm.Analyzer.Analyzer);
                 CodeFlowUIManager.Open(commit);
             }
             // Force collection, solution analysis might be heavy..

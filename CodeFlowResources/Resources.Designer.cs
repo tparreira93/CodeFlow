@@ -253,6 +253,17 @@ namespace CodeFlowResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred when trying to merge code.
+        ///Please very that TortoiseMerge is installed or that another merge tool is specified in the extension options.
+        ///{0}.
+        /// </summary>
+        public static string ErrorMerge {
+            get {
+                return ResourceManager.GetString("ErrorMerge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to complete your request!
         ///{0}.
         /// </summary>
@@ -288,6 +299,17 @@ namespace CodeFlowResources {
         public static string ErrorSelectDB {
             get {
                 return ResourceManager.GetString("ErrorSelectDB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred when trying to merge code.
+        ///Please very that TortoiseSVN is installed or that another merge tool is specified in the extension options.
+        ///{0}.
+        /// </summary>
+        public static string ErrorSVN {
+            get {
+                return ResourceManager.GetString("ErrorSVN", resourceCulture);
             }
         }
         

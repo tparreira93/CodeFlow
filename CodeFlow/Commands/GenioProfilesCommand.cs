@@ -10,7 +10,9 @@ using Microsoft.VisualStudio.Threading;
 using System.Threading.Tasks;
 using Microsoft;
 using CodeFlowResources;
-using CodeFlowBridge;
+using CodeFlowLibrary.Bridge;
+using CodeFlowLibrary.Genio;
+using System.Collections.Generic;
 
 namespace CodeFlow.Commands
 {
@@ -32,7 +34,7 @@ namespace CodeFlow.Commands
         /// <summary>
         /// VS Package that provides this command, not null.
         /// </summary>
-        private readonly AsyncPackage package;
+        private readonly CodeFlowPackage package;
 
         private readonly OleMenuCommandService commandService;
 
@@ -41,7 +43,7 @@ namespace CodeFlow.Commands
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private GenioProfilesCommand(AsyncPackage package, OleMenuCommandService commandService)
+        private GenioProfilesCommand(CodeFlowPackage package, OleMenuCommandService commandService)
         {
             if (package == null)
             {
@@ -87,7 +89,7 @@ namespace CodeFlow.Commands
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        public static async Task InitializeAsync(AsyncPackage package)
+        public static async Task InitializeAsync(CodeFlowPackage package)
         {
             // Switch to the main thread - the call to AddCommand in GenioProfilesCommand's constructor requires
             // the UI thread.
@@ -107,12 +109,12 @@ namespace CodeFlow.Commands
         public void OnMenuGenioProfilesCombo(object sender, EventArgs e)
         {
             Assumes.Present(commandService);
+            Profile active = package.Active;
             if (e == EventArgs.Empty)
             {
                 throw (new ArgumentException("No event args"));
             }
-            OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
-            if (eventArgs != null)
+            if (e is OleMenuCmdEventArgs eventArgs)
             {
                 string newChoice = eventArgs.InValue as string;
                 IntPtr vOut = eventArgs.OutValue;
@@ -120,7 +122,7 @@ namespace CodeFlow.Commands
                     throw (new ArgumentException("Ilegal input and output parameters!"));
 
                 else if (vOut != IntPtr.Zero)
-                    Marshal.GetNativeVariantForObject(PackageBridge.Instance.GetActiveProfile() != null ? PackageBridge.Instance.GetActiveProfile().ProfileName : "", vOut);
+                    Marshal.GetNativeVariantForObject(active != null ? active.ProfileName : "", vOut);
 
                 else if (newChoice != null)
                 {
@@ -128,7 +130,7 @@ namespace CodeFlow.Commands
                     OleMenuCommand cmd = commandService.FindCommand(new CommandID(PackageGuidList.guidComboBoxCmdSet, (int)PackageCommandList.cmdGenioProfilesCombo)) as OleMenuCommand;
                     TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 #pragma warning disable VSTHRD105 // Avoid method overloads that assume TaskScheduler.Current
-                    Task.Factory.StartNew(() => error = SetProfile(newChoice))
+                    Task.Factory.StartNew(() => error = LoadProfile(newChoice))
 #pragma warning restore VSTHRD105 // Avoid method overloads that assume TaskScheduler.Current
 #pragma warning disable VSTHRD110 // Observe result of async calls
                        .ContinueWith((t2) => UpdateUI(cmd, t2.Result), uiScheduler);
@@ -151,12 +153,12 @@ namespace CodeFlow.Commands
                     Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
         }
 
-        private string SetProfile(string profileName)
+        private string LoadProfile(string profileName)
         {
             string error = "";
             try
             {
-                PackageBridge.Instance.SetProfile(profileName);
+                package.LoadProfile(profileName);
             }
             catch (Exception ex)
             {
@@ -168,17 +170,17 @@ namespace CodeFlow.Commands
 
         public void OnMenuGenioProfilesComboGetList(object sender, EventArgs e)
         {
-            OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
-            if (PackageBridge.Instance.AllProfiles.Count == 0)
+            List<Profile> profiles = package.Settings.Profiles;
+            if (profiles.Count == 0)
                 return;
 
-            string[] dropChoices = new string[PackageBridge.Instance.AllProfiles.Count];
-            for (int i = 0; i < PackageBridge.Instance.AllProfiles.Count; i++)
+            string[] dropChoices = new string[profiles.Count];
+            for (int i = 0; i < profiles.Count; i++)
             {
-                dropChoices[i] = PackageBridge.Instance.AllProfiles[i].ProfileName;
+                dropChoices[i] = profiles[i].ProfileName;
             }
 
-            if (eventArgs != null)
+            if (e is OleMenuCmdEventArgs eventArgs)
             {
                 object inParam = eventArgs.InValue;
                 IntPtr vOut = eventArgs.OutValue;
