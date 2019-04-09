@@ -34,7 +34,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>CodeFlowLibrary.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\CodeFlow\Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -112,9 +112,6 @@
       <Project>{4cbd51d0-7cdb-49ee-9932-5a4f55b4db4b}</Project>
       <Name>CodeFlowResources</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="CodeFlowLibrary.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
