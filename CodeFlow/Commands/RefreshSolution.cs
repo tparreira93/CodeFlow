@@ -4,6 +4,8 @@ using Microsoft.VisualStudio.Shell;
 using CodeFlow.SolutionOperations;
 using Task = System.Threading.Tasks.Task;
 using CodeFlowBridge;
+using CodeFlow.SolutionAnalyzer;
+using CodeFlowLibrary.Package;
 
 namespace CodeFlow.Commands
 {
@@ -89,8 +91,12 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            PackageBridge.Instance.SolutionProps = GenioSolutionProperties.ParseSolution(PackageBridge.Instance.DTE);
+            SolutionParser parser = new SolutionParser(package as ICodeFlowPackage);
+#pragma warning disable VSTHRD110 // Observe result of async calls
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            parser.ParseAsync();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+#pragma warning restore VSTHRD110 // Observe result of async calls
         }
     }
 }

@@ -21,8 +21,9 @@ namespace CodeFlow.CodeUtils.Suggestions
         private readonly ITextView textView;
         private readonly int begin;
         private readonly int end;
+        private readonly Profile _profile;
 
-        public UpdateSuggestion(int begin, int end, ITextView textView, ITextBuffer textBuffer, Guid codmanua)
+        public UpdateSuggestion(int begin, int end, ITextView textView, ITextBuffer textBuffer, Guid codmanua, Profile profile)
         {
             this.textBuffer = textBuffer;
             this.textView = textView;
@@ -30,6 +31,7 @@ namespace CodeFlow.CodeUtils.Suggestions
             this.begin = begin;
             this.end = end;
             this.display = string.Format("Update manual code.");
+            _profile = profile;
         }
 
         public string DisplayText
@@ -103,7 +105,7 @@ namespace CodeFlow.CodeUtils.Suggestions
 
             try
             {
-                ManuaCode bd = ManuaCode.GetManual(PackageBridge.Instance.GetActiveProfile(), codmanua);
+                ManuaCode bd = ManuaCode.GetManual(_profile, codmanua);
                 if (bd == null)
                     return;
                 CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();

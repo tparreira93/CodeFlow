@@ -88,18 +88,22 @@ namespace CodeFlow.Commands
         /// <param name="e">The event args.</param>
         private void ShowToolWindow(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            // Get the instance number 0 of this tool window. This window is single instance so this instance
-            // is actually the only one.
-            // The last flag is set to true so that if the tool window does not exists it will be created.
-            ToolWindowPane window = this.package.FindToolWindow(typeof(SearchTool), 0, true);
-            if ((null == window) || (null == window.Frame))
-            {
-                throw new NotSupportedException("Cannot create tool window");
-            }
+            Utils.AsyncHelper.RunSyncUI(() =>
+           {
+                // Get the instance number 0 of this tool window. This window is single instance so this instance
+                // is actually the only one.
+                // The last flag is set to true so that if the tool window does not exists it will be created.
+                ToolWindowPane window = this.package.FindToolWindow(typeof(SearchTool), 0, true);
+               if ((null == window) || (null == window.Frame))
+               {
+                   throw new NotSupportedException("Cannot create tool window");
+               }
 
-            IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
+               IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+               Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
+           });
         }
     }
 }

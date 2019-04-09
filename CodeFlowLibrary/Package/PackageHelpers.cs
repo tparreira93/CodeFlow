@@ -56,5 +56,25 @@ namespace CodeFlowLibrary.Package
             }
             return profiles ?? new List<Profile>();
         }
+        public static String SearchLastActiveProfile(string folder)
+        {
+            string file = $"{folder}\\LastActiveProfile.xml";
+            String p = null;
+            try
+            {
+                if (File.Exists(file))
+                {
+                    var stringReader = new System.IO.StringReader(File.ReadAllText(file));
+                    var serializer = XmlSerializer.FromTypes(new[] { typeof(Profile) })[0];
+                    p = serializer.Deserialize(stringReader) as String;
+                }
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return p;
+        }
     }
 }

@@ -63,7 +63,7 @@
                 try
                 {
                     IOperation op = lstHistory.SelectedItem as IOperation;
-                    if(op.Undo(PackageBridge.Instance.GetActiveProfile()))
+                    if(op.Undo())
                         System.Windows.Forms.MessageBox.Show(CodeFlowResources.Resources.OperationComplete,
                             CodeFlowResources.Resources.History, System.Windows.Forms.MessageBoxButtons.OK, 
                             System.Windows.Forms.MessageBoxIcon.Information);
@@ -82,7 +82,7 @@
                 try
                 {
                     IOperation op = lstHistory.SelectedItem as IOperation;
-                    if (op.Redo(PackageBridge.Instance.GetActiveProfile()))
+                    if (op.Redo())
                         System.Windows.Forms.MessageBox.Show(CodeFlowResources.Resources.OperationComplete,
                             CodeFlowResources.Resources.History, System.Windows.Forms.MessageBoxButtons.OK,
                             System.Windows.Forms.MessageBoxIcon.Information);

@@ -12,29 +12,43 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.Util;
 using CodeFlowBridge;
+using System.Threading.Tasks;
+using CodeFlowLibrary.Genio;
+using CodeFlowUI;
+using System.Windows.Forms;
 
 namespace CodeFlow.CommandHandler
 {
     public class CommandHandler
     {
-        public string GetCurrentViewText(out int cursorPos, out IWpfTextView textView)
+        CodeFlowPackage package;
+
+        public CommandHandler()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            package = PackageBridge.Flow as CodeFlowPackage;
+        }
+
+        public async Task<(string code, int cursorPos, IWpfTextView textView, string fullDocumentName)> GetCurrentViewTextAsync()
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
             var textManager = (IVsTextManager)ServiceProvider.GlobalProvider.GetService(typeof(SVsTextManager));
             Assumes.Present(textManager);
             var componentModel = (IComponentModel)ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel));
             Assumes.Present(componentModel);
             var editor = componentModel.GetService<IVsEditorAdaptersFactoryService>();
             textManager.GetActiveView(1, null, out IVsTextView textViewCurrent);
-            textView = editor.GetWpfTextView(textViewCurrent);
+            IWpfTextView textView = editor.GetWpfTextView(textViewCurrent);
 
             SnapshotPoint caretPosition = textView.Caret.Position.BufferPosition;
-            cursorPos = caretPosition.Position;
-            return textView.TextBuffer.CurrentSnapshot.GetText();
+            int cursorPos = caretPosition.Position;
+            return (textView.TextBuffer.CurrentSnapshot.GetText(), cursorPos, textView, package.DTE.ActiveDocument.FullName);
         }
-        public string GetCurrentSelection()
+        public async Task<string> GetCurrentSelectionAsync()
         {
-            var dte = PackageBridge.Flow.DTE;
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var dte = package.DTE;
             string code = "";
 
             if (dte != null && dte.ActiveDocument != null)
@@ -44,21 +58,21 @@ namespace CodeFlow.CommandHandler
             }
             return code;
         }
-        public List<IManual> SearchForTags()
+        public async Task<List<IManual>> SearchForTagsAsync()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            var dte = PackageBridge.Instance.DTE;
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var dte = package.DTE;
             List<IManual> manual = new List<IManual>();
             if (dte?.ActiveDocument == null)
                 return manual;
 
-            var code = GetCurrentSelection();
+            var code = await GetCurrentSelectionAsync();
             VSCodeManualMatcher vSCodeManualMatcher = null;
             if (string.IsNullOrEmpty(code))
             {
-                var pos = -1;
-                code = GetCurrentViewText(out pos, out IWpfTextView _);
-                vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, dte.ActiveDocument.FullName);
+                var view = await GetCurrentViewTextAsync();
+                vSCodeManualMatcher = new VSCodeManualMatcher(view.code, view.cursorPos, view.fullDocumentName);
             }
             else
                 vSCodeManualMatcher = new VSCodeManualMatcher(code, dte.ActiveDocument.FullName);
@@ -67,11 +81,13 @@ namespace CodeFlow.CommandHandler
 
             return manual;
         }
-        public bool ImportAndEditCurrentTag()
+        public async Task<bool> ImportAndEditCurrentTagAsync()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            string code = GetCurrentViewText(out int pos, out IWpfTextView textView);
-            VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageBridge.Instance.DTE.ActiveDocument.FullName);
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var view = await GetCurrentViewTextAsync();
+
+            VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(view.code, view.cursorPos, view.fullDocumentName);
             List<IManual> codeList = vSCodeManualMatcher.Match();
             if (codeList.Count == 1)
             {
@@ -80,7 +96,7 @@ namespace CodeFlow.CommandHandler
                 if (bd == null)
                     return false;
 
-                EditCodeSegment(textView.TextBuffer, manual.LocalMatch, bd.Code + (manual.LocalMatch.CodeLength == 0 ? Helpers.NewLine : String.Empty));
+                EditCodeSegment(view.textView.TextBuffer, manual.LocalMatch, bd.Code + (manual.LocalMatch.CodeLength == 0 ? Helpers.NewLine : String.Empty));
             }
 
             return true;
@@ -99,10 +115,19 @@ namespace CodeFlow.CommandHandler
         }
         public void InsertCreatedCode(IManual man)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            string ext = Path.GetExtension(PackageBridge.Instance.DTE.ActiveDocument.ProjectItem.Name);
-            var selection = (TextSelection)PackageBridge.Instance.DTE.ActiveDocument.Selection;
-            selection.Insert(man.FormatCode(ext));
+           Utils.AsyncHelper.RunSyncUI(() =>
+           {
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
+               string ext = Path.GetExtension(package.DTE.ActiveDocument.ProjectItem.Name);
+               var selection = (TextSelection)package.DTE.ActiveDocument.Selection;
+               selection.Insert(man.FormatCode(ext));
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
+           });
+        }
+        public async Task<string> GetActiveDocumentNameAsync()
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            return package.DTE.ActiveDocument.FullName;
         }
     }
 }

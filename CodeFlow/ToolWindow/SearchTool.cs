@@ -48,7 +48,7 @@
         private string currentSearch = "";
         private bool caseSensitive = false;
         private bool wholeWord = false;
-        private object searchLock = new object();
+        private readonly object searchLock = new object();
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchTool"/> class.
         /// </summary>
@@ -81,16 +81,17 @@
             // we could do this in the consturctor.
             this.Caption = CodeFlowResources.Resources.CodeSearch;
 
-            OleMenuCommandService commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (commandService != null)
+            if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
             {
                 var menuCommandID = new CommandID(new Guid(toolWindowSet), cmdidSearchManualCode);
                 var command = new MenuCommand(this.SearchManualCode, menuCommandID);
                 commandService.AddCommand(command);
 
                 menuCommandID = new CommandID(new Guid(toolWindowSet), cmdIdSearchBox);
-                OleMenuCommand searchBoxCommand = new OleMenuCommand(new EventHandler(SearchTerm), menuCommandID);
-                searchBoxCommand.ParametersDescription = "$"; // accept any argument string
+                OleMenuCommand searchBoxCommand = new OleMenuCommand(new EventHandler(SearchTerm), menuCommandID)
+                {
+                    ParametersDescription = "$" // accept any argument string
+                };
                 searchBoxCommand.CommandChanged += SearchTerm;
                 commandService.AddCommand(searchBoxCommand);
 
@@ -127,8 +128,7 @@
                 plataform = String.Empty;
                 return;
             }
-            OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
-            if (eventArgs != null)
+            if (e is OleMenuCmdEventArgs eventArgs)
             {
                 string newChoice = eventArgs.InValue as string;
                 IntPtr vOut = eventArgs.OutValue;
@@ -150,7 +150,6 @@
         }
         private void GetPlataformList(object sender, EventArgs e)
         {
-            OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
             string[] dropChoices = new string[PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms.Count + 1];
             dropChoices[0] = "All";
 
@@ -159,7 +158,7 @@
                 dropChoices[i] = PackageBridge.Instance.GetActiveProfile().GenioConfiguration.Plataforms[i].ID;
             }
 
-            if (eventArgs != null)
+            if (e is OleMenuCmdEventArgs eventArgs)
             {
                 object inParam = eventArgs.InValue;
                 IntPtr vOut = eventArgs.OutValue;
@@ -181,8 +180,7 @@
             {
                 control.Clear();
                 OleMenuCommand cmd = null;
-                OleMenuCommandService commandService = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-                if (commandService != null)
+                if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
                 {
                     cmd = commandService?.FindCommand(new CommandID(new Guid(toolWindowSet), cmdIdSearchBox)) as OleMenuCommand;
                     //var cmdSearch = commandService.FindCommand(new CommandID(new Guid(toolWindowSet), cmdidSearchManualCode));
@@ -202,7 +200,12 @@
                     if (plataform.Equals("All"))
                         searchPlat = "";
                     cmd.Enabled = false;
+
+#pragma warning disable VSTHRD110 // Observe result of async calls
+#pragma warning disable VSTHRD105 // Avoid method overloads that assume TaskScheduler.Current
                     System.Threading.Tasks.Task.Factory.StartNew(() =>
+#pragma warning restore VSTHRD105 // Avoid method overloads that assume TaskScheduler.Current
+#pragma warning restore VSTHRD110 // Observe result of async calls
                     {
                         string error = "";
                         List<IManual> res = new List<IManual>();
@@ -217,7 +220,7 @@
                         }
 
                         // Update UI 
-                        control.Dispatcher.BeginInvoke(new Action(() =>
+                        Utils.AsyncHelper.RunSyncUI(() =>
                         {
                             control.RefreshteList(res, new CodeFlowLibrary.Settings.SearchOptions(p, currentSearch, wholeWord, caseSensitive));
                             cmd.Enabled = true;
@@ -227,7 +230,7 @@
                                 MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, error), CodeFlowResources.Resources.Search,
                                     MessageBoxButton.OK, MessageBoxImage.Error);
                             }
-                        }), DispatcherPriority.Background);
+                        });
                     });
                 }
                 finally
@@ -242,9 +245,8 @@
             if (e == EventArgs.Empty)
                 return;
 
-            OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
 
-            if (eventArgs != null)
+            if (e is OleMenuCmdEventArgs eventArgs)
             {
                 object input = eventArgs.InValue;
                 IntPtr vOut = eventArgs.OutValue;

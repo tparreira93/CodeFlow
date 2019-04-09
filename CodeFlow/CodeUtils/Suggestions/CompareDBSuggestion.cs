@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 using System.Windows.Forms;
 using CodeFlowLibrary.GenioCode;
+using CodeFlowLibrary.Genio;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {
@@ -13,11 +14,13 @@ namespace CodeFlow.CodeUtils.Suggestions
     {
         private readonly IManual _manual;
         private readonly string _display;
+        private readonly Profile _profile;
 
-        public CompareDBSuggestion(IManual manual)
+        public CompareDBSuggestion(IManual manual, Profile profile)
         {
             _manual = manual;
             _display = string.Format("Compare manual code");
+            _profile = profile;
         }
 
         public string DisplayText
@@ -91,7 +94,7 @@ namespace CodeFlow.CodeUtils.Suggestions
 
             try
             {
-                _manual.CompareDB(PackageBridge.Instance.GetActiveProfile());
+                _manual.CompareDB(_profile);
             }
             catch(Exception ex)
             {

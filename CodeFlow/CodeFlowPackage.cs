@@ -99,7 +99,7 @@ namespace CodeFlow
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
         /// </summary>
-        
+
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await base.InitializeAsync(cancellationToken, progress);
@@ -124,7 +124,7 @@ namespace CodeFlow
             await SearchToolCommand.InitializeAsync(this);
             await ViewVersionsCommand.InitializeAsync(this);
             await GenioProfilesCommand.InitializeAsync(this);
-            
+
             base.Initialize();
             // Try to retrieve the DTE instance at this point
             InitializeDte();
@@ -175,64 +175,72 @@ namespace CodeFlow
 
         private void OnDocumentClose(Document document)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            string path = document.FullName;
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
+            string path = Utils.AsyncHelper.RunSyncUI(() => document.FullName);
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
             if (PackageBridge.Instance.IsTempFile(path))
                 PackageBridge.Instance.RemoveTempFile(path);
         }
 
         private void OnDocumentSave(Document document)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            string path = document.FullName;
-            Project docProject = document.ProjectItem.ContainingProject;
-            List<IManual> man = null;
-
-            if(PackageOptions.AutoExportSaved)
-                man = PackageBridge.Instance.GetAutoExportIManual(path);
-
-            // Se for diferente de null quer dizer que é um ficheiro temporário que pode ser exportado automaticamente
-            if(man != null)
+            Utils.AsyncHelper.RunSyncUI(() =>
             {
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
+                string path = document.FullName;
+                string name = document.Name;
+                Project docProject = document.ProjectItem.ContainingProject;
+                string projName = docProject?.Name ?? "";
+                ProjectLanguage lang = SolutionParser.GetProjectLanguage(docProject?.CodeModel?.Language);
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
+                List <IManual> man = null;
+
+                if (PackageOptions.AutoExportSaved)
+                    man = PackageBridge.Instance.GetAutoExportIManual(path);
+
+                // Se for diferente de null quer dizer que é um ficheiro temporário que pode ser exportado automaticamente
+                if (man != null)
+                {
+                    try
+                    {
+                        // Check for changes, update and log operation
+                        ChangeAnalyzer analyzer = new ChangeAnalyzer();
+                        analyzer.CheckForDifferences(man, PackageBridge.Instance.GetActiveProfile());
+                        foreach (IChange diff in analyzer.Modifications.AsList)
+                        {
+                            IOperation operation = diff.GetOperation();
+                            if (operation != null)
+                                PackageBridge.Flow.ExecuteOperation(operation);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(String.Format(Resources.UnableToExecuteOperation, ex.Message),
+                            Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    }
+                    return;
+                }
+                else if (docProject == null)
+                    return;
+
                 try
                 {
-                    // Check for changes, update and log operation
-                    ChangeAnalyzer analyzer = new ChangeAnalyzer();
-                    analyzer.CheckForDifferences(man, PackageBridge.Instance.GetActiveProfile());
-                    foreach (IChange diff in analyzer.Modifications.AsList)
+                    GenioProjectProperties proj = PackageBridge.Instance.SavedFiles.Find(x => { ThreadHelper.ThrowIfNotOnUIThread(); return x.ProjectName == projName; });
+                    GenioProjectItem item = new GenioProjectItem(name, path);
+                    if (proj == null)
+                        PackageBridge.Instance.SavedFiles.Add(new GenioProjectProperties(projName, new List<GenioProjectItem>() { item }, lang));
+                    else
                     {
-                        IOperation operation = diff.GetOperation();
-                        if (operation != null)
-                            PackageBridge.Instance.ExecuteOperation(operation);
+                        GenioProjectItem tmp = proj.ProjectFiles.Find(x => x.ItemName == item.ItemName);
+                        if (tmp == null)
+                            proj.ProjectFiles.Add(item);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    MessageBox.Show(String.Format(Resources.UnableToExecuteOperation, ex.Message),
-                        Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    // ignored
                 }
-                return;
-            }
-            else if (docProject == null)
-                return;
-
-            try
-            {
-                GenioProjectProperties proj = PackageBridge.Instance.SavedFiles.Find(x => { ThreadHelper.ThrowIfNotOnUIThread(); return x.ProjectName == docProject.Name; });
-                GenioProjectItem item = new GenioProjectItem(document.Name, document.FullName);
-                if (proj == null)
-                    PackageBridge.Instance.SavedFiles.Add(new GenioProjectProperties(docProject.Name, new List<GenioProjectItem>() { item }, SolutionParser.GetProjectLanguage(docProject?.CodeModel?.Language)));
-                else
-                {
-                    GenioProjectItem tmp = proj.ProjectFiles.Find(x => x.ItemName == item.ItemName);
-                    if (tmp == null)
-                        proj.ProjectFiles.Add(item);
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
+            });
         }
         #endregion
 
@@ -250,7 +258,7 @@ namespace CodeFlow
                 try
                 {
                     string path = Path.GetDirectoryName(DTE.Solution.FullName);
-                    lastActive = PackageBridge.Instance.SearchLastActiveProfile(path);
+                    lastActive = PackageHelpers.SearchLastActiveProfile(path);
                 }
                 catch (Exception)
                 {
@@ -261,7 +269,7 @@ namespace CodeFlow
             //Updates combo box
             if (!string.IsNullOrEmpty(lastActive))
                 SetProfile(lastActive);
-            
+
             if (PackageOptions.AutoVccto2008Fix && _isSolution)
             {
                 ISolutionParser solution = new SolutionParser(this);
@@ -337,7 +345,7 @@ namespace CodeFlow
 
         #endregion
 
-        
+
         public WritableSettingsStore GetWritableSettingsStore()
         {
             var shellSettingsManager = new ShellSettingsManager(this);
@@ -381,7 +389,7 @@ namespace CodeFlow
 
             return user;
         }
-        
+
         public async Task<string> GetActiveFileFullNameAsync()
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -445,8 +453,8 @@ namespace CodeFlow
                 window.Activate();
 
                 CommandHandler.CommandHandler command = new CommandHandler.CommandHandler();
-                command.GetCurrentViewText(out int pos, out IWpfTextView textView);
-                int linePos = textView.TextSnapshot.GetLineNumberFromPosition(position);
+                var view = await command.GetCurrentViewTextAsync();
+                int linePos = view.textView.TextSnapshot.GetLineNumberFromPosition(position);
 
                 TextSelection textSelection = window.Document.Selection as TextSelection;
                 textSelection.MoveToLineAndOffset(linePos, 1);
@@ -459,6 +467,17 @@ namespace CodeFlow
             return true;
         }
 
+        #endregion
+
+        #region Operations
+        public bool ExecuteOperation(IOperation operation)
+        {
+            bool result = operation.Execute();
+            if (result && PackageOptions.LogOperations)
+                PackageBridge.Instance.ChangeLog.LogOperation(operation);
+
+            return result;
+        }
         #endregion
     }
 }

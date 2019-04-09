@@ -106,7 +106,6 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         public void OnMenuGenioProfilesCombo(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             Assumes.Present(commandService);
             if (e == EventArgs.Empty)
             {

@@ -8,6 +8,7 @@ using CodeFlowLibrary.GenioCode;
 using CodeFlowBridge;
 using CodeFlowUI;
 using CodeFlowLibrary.Genio;
+using CodeFlow.CommandHandler;
 
 namespace CodeFlow.Commands
 {
@@ -93,23 +94,7 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-            string code = handler.GetCurrentSelection();
-            
-            if (!string.IsNullOrEmpty(code))
-            {
-                Profile profile = PackageBridge.Instance.GetActiveProfile();
-                ManuaCode man = new ManuaCode(code);
-                ManualMatch manualMatch = new ManualMatch();
-                manualMatch.FullFileName = PackageBridge.Instance.DTE.ActiveDocument.FullName;
-                man.LocalMatch = manualMatch;
-                CreateInGenioForm genioForm = new CreateInGenioForm(profile, man);
-
-                genioForm.ShowDialog();
-                if(genioForm.DialogResult == System.Windows.Forms.DialogResult.OK)
-                    handler.InsertCreatedCode(man);
-            }
+            VsCommander.Create();
         }
     }
 }

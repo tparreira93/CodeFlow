@@ -13,6 +13,7 @@ using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.Settings;
 using CodeFlowBridge;
+using CodeFlow.Utils;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {
@@ -49,64 +50,62 @@ namespace CodeFlow.CodeUtils.Suggestions
             this.textView = textView;
         }
 
-        private bool TryGetManual(out IManual manua)
+        private async Task<(bool exists, IManual code)> TryGetManualAsync()
         {
-            manua = null;
+            IManual manual = null;
             CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-            if (String.IsNullOrEmpty(handler.GetCurrentSelection()))
+            if (String.IsNullOrEmpty(await handler.GetCurrentSelectionAsync()))
             {
-                string code = handler.GetCurrentViewText(out int pos, out IWpfTextView _);
-                VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageBridge.Instance.DTE.ActiveDocument.FullName);
+                var view = await handler.GetCurrentViewTextAsync();
+                VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(view.code, view.cursorPos, view.fullDocumentName);
                 List<IManual> codeList = vSCodeManualMatcher.Match();
 
                 if (codeList.Count == 1)
-                    manua = codeList[0];
+                    manual = codeList[0];
             }
-            return manua != null;
+            return (manual != null, manual);
+        }
+
+        private async Task<bool> ExistsManualAsync()
+        {
+            var manual = await TryGetManualAsync();
+            return manual.exists;
         }
 
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                if (PackageOptions.ContinuousAnalysis && TryGetManual(out IManual _))
-                {
-                    return true;
-                }
-                return false;
-            }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
+            return ExistsManualAsync();
         }
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            if (PackageOptions.ContinuousAnalysis 
-                && !cancellationToken.IsCancellationRequested 
-                && TryGetManual(out IManual man))
+            if (PackageOptions.ContinuousAnalysis && !cancellationToken.IsCancellationRequested)
             {
-                List<ISuggestedAction> actions = new List<ISuggestedAction>();
+                var manual = AsyncHelper.RunSync(async () => await TryGetManualAsync());
 
-                CompareDBSuggestion compare = new CompareDBSuggestion(man);
+                List<ISuggestedAction> actions = new List<ISuggestedAction>();
+                Profile profile = PackageBridge.Instance.GetActiveProfile();
+                CompareDBSuggestion compare = new CompareDBSuggestion(manual.code, profile);
                 actions.Add(compare);
 
-                CommitSuggestion export = new CommitSuggestion(man);
+                CommitSuggestion export = new CommitSuggestion(manual.code, profile);
                 actions.Add(export);
                 
-                CompareCommitBSuggestion compareExport = new CompareCommitBSuggestion(man);
+                CompareCommitBSuggestion compareExport = new CompareCommitBSuggestion(manual.code, profile);
                 actions.Add(compareExport);
 
-                if (man.LocalMatch.CodeStart > 0 && man.LocalMatch.CodeLength > 0)
+                if (manual.code.LocalMatch.CodeStart > 0 && manual.code.LocalMatch.CodeLength > 0)
                 {
-                    UpdateSuggestion import = new UpdateSuggestion(man.LocalMatch.CodeStart, man.LocalMatch.CodeLength, textView, textBuffer, man.CodeId);
+                    UpdateSuggestion import = new UpdateSuggestion(manual.code.LocalMatch.CodeStart, manual.code.LocalMatch.CodeLength, textView, textBuffer, manual.code.CodeId, profile);
                     actions.Add(import);
                 }
 
-                if (!String.IsNullOrEmpty(PackageBridge.Instance.GetActiveProfile().GenioConfiguration.CheckoutPath)
-                    && !String.IsNullOrEmpty(PackageBridge.Instance.GetActiveProfile().GenioConfiguration.SystemInitials))
+                if (!String.IsNullOrEmpty(profile.GenioConfiguration.CheckoutPath) && !String.IsNullOrEmpty(profile.GenioConfiguration.SystemInitials))
                 {
-                    OpenSVNSuggestion openSVNSuggestion = new OpenSVNSuggestion(man, PackageBridge.Instance.GetActiveProfile());
+                    OpenSVNSuggestion openSVNSuggestion = new OpenSVNSuggestion(manual.code, profile);
                     actions.Add(openSVNSuggestion);
 
-                    BlameSVNSuggestion blameSVNSuggestion = new BlameSVNSuggestion(man, PackageBridge.Instance.GetActiveProfile());
+                    BlameSVNSuggestion blameSVNSuggestion = new BlameSVNSuggestion(manual.code, profile);
                     actions.Add(blameSVNSuggestion);
                 }
                 return new SuggestedActionSet[] { new SuggestedActionSet(actions.ToArray()) };

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using System.Globalization;
+using CodeFlow.CommandHandler;
 using CodeFlowUI;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -85,8 +86,7 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            ProfilesForm form = new ProfilesForm();
-            form.ShowDialog();
+            VsCommander.ManageProfiles();
         }
     }
 }

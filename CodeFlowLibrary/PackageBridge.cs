@@ -94,74 +94,6 @@ namespace CodeFlowBridge
         }
         #endregion
 
-        #region ProfileSettings
-        public void StoreLastProfile(string folder)
-        {
-            string file = $"{folder}\\LastActiveProfile.xml";
-            try
-            {
-                var stringwriter = new StringWriter();
-                var serializer = XmlSerializer.FromTypes(new[] { ActiveProfile.ProfileName.GetType() })[0];
-                serializer.Serialize(stringwriter, ActiveProfile.ProfileName);
-
-                File.WriteAllText(file, stringwriter.ToString());
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-        }
-        public String SearchLastActiveProfile(string folder)
-        {
-            string file = $"{folder}\\LastActiveProfile.xml";
-            String p = null;
-            try
-            {
-                if (File.Exists(file))
-                {
-                    var stringReader = new System.IO.StringReader(File.ReadAllText(file));
-                    var serializer = XmlSerializer.FromTypes(new[] { ActiveProfile.ProfileName.GetType() })[0];
-                    p = serializer.Deserialize(stringReader) as String;
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-            return p;
-        }
-        public string SaveProfiles(List<Profile> configs)
-        {
-            var stringwriter = new StringWriter();
-            try
-            {
-                var serializer = XmlSerializer.FromTypes(new[] { configs.GetType() })[0];
-                serializer.Serialize(stringwriter, configs);
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-            return stringwriter.ToString();
-        }
-        public List<Profile> LoadProfiles(string conn)
-        {
-            List<Profile> profiles = null;
-            try
-            {
-                var stringReader = new System.IO.StringReader(conn);
-                var serializer = XmlSerializer.FromTypes(new[] { typeof(List<Profile>) })[0];
-                profiles = serializer.Deserialize(stringReader) as List<Profile>;
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-            return profiles ?? new List<Profile>();
-        }
-        #endregion
-
         #region FileOps
 
         private void AddTempFile(string file)
@@ -233,17 +165,6 @@ namespace CodeFlowBridge
             return man;
         }
 
-        #endregion
-
-        #region Operations
-        public bool ExecuteOperation(IOperation operation)
-        {
-            bool result = operation.Execute(GetActiveProfile());
-            if (result && PackageOptions.LogOperations)
-                ChangeLog.LogOperation(operation);
-
-            return result;
-        }
         #endregion
     }
 }

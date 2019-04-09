@@ -10,12 +10,14 @@ namespace CodeFlowLibrary.CodeControl.Operations
 {
     public interface IOperation
     {
-        bool Undo(Profile profile);
-        bool Redo(Profile profile);
-        bool Execute(Profile profile);
-        IChange OperationChanges { get; set; }
-        DateTime OperationTime { get; set; }
+        bool Undo();
+        bool Redo();
+        bool Execute();
+        IChange OperationChanges { get; }
+        DateTime OperationTime { get; }
+        string FullFileName { get; }
         string LocalFileName { get; }
-        string OperationType { get;  }
+        string OperationType { get; }
+        Profile OperationProfile { get; }
     }
 }

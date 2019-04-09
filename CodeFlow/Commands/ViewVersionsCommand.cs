@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using System.Globalization;
+using CodeFlow.CommandHandler;
 using CodeFlowBridge;
 using CodeFlowUI;
 using CodeFlowUI.Manager;
@@ -92,8 +93,7 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            CodeFlowChangesForm changesForm = new CodeFlowChangesForm(PackageBridge.Flow.PackageUpdates, PackageBridge.Flow.Settings.ToolVersion, PackageBridge.Flow.Settings.OldVersion);
-            CodeFlowUIManager.Open(changesForm);
+            VsCommander.ViewVersions();
         }
     }
 }

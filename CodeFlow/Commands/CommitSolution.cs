@@ -92,13 +92,7 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             Profile profile = PackageBridge.Instance.GetActiveProfile();
-            if (PackageBridge.Instance.DTE.Solution is null
-                || PackageBridge.Instance.DTE.Solution.Projects.Count == 0
-                || !PackageBridge.Instance.DTE.Solution.IsOpen)
-                return;
-
             ProjectSelectionForm selectionProjectForm = new ProjectSelectionForm(PackageBridge.Instance.SavedFiles, new SolutionParser(PackageBridge.Flow));
             selectionProjectForm.ShowDialog();
 

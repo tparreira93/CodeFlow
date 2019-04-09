@@ -175,8 +175,8 @@ namespace CodeFlowUI
 
             try
             {
-                IOperation operation = new CodeCreate(manualCode).GetOperation();
-                if (operation != null && PackageBridge.Instance.ExecuteOperation(operation))
+                IOperation operation = new CodeCreate(manualCode, profile).GetOperation();
+                if (operation != null && PackageBridge.Flow.ExecuteOperation(operation))
                 {
                     MessageBox.Show(CodeFlowResources.Resources.CodeCreated, CodeFlowResources.Resources.Create, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     DialogResult = DialogResult.OK;

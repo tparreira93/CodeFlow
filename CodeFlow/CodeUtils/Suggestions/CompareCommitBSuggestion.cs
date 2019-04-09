@@ -12,6 +12,7 @@ using CodeFlowBridge;
 using CodeFlowLibrary.CodeControl.Analyzer;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.CodeControl.Changes;
+using CodeFlowLibrary.Genio;
 
 namespace CodeFlow.CodeUtils.Suggestions
 {
@@ -19,11 +20,13 @@ namespace CodeFlow.CodeUtils.Suggestions
     {
         private readonly IManual local;
         private readonly string _display;
+        private readonly Profile _profile;
 
-        public CompareCommitBSuggestion(IManual manual)
+        public CompareCommitBSuggestion(IManual manual, Profile profile)
         {
             local = manual;
             _display = string.Format("Merge and commit manual code");
+            _profile = profile;
         }
 
         public string DisplayText
@@ -98,7 +101,7 @@ namespace CodeFlow.CodeUtils.Suggestions
             try
             {
                 ChangeAnalyzer analyzer = new ChangeAnalyzer();
-                analyzer.CheckForDifferences(local, PackageBridge.Instance.GetActiveProfile());
+                analyzer.CheckForDifferences(local, _profile);
                 if (analyzer.Modifications.AsList.Count == 1)
                 {
                     IChange change = analyzer.Modifications.AsList[0];
@@ -114,7 +117,7 @@ namespace CodeFlow.CodeUtils.Suggestions
                         if (MessageBox.Show(message, CodeFlowResources.Resources.Export,
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
-                            if (PackageBridge.Instance.ExecuteOperation(operation))
+                            if (PackageBridge.Flow.ExecuteOperation(operation))
                                 MessageBox.Show(CodeFlowResources.Resources.Submited, CodeFlowResources.Resources.Export,
                                     MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
                             else

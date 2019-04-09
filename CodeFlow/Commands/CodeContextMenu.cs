@@ -10,6 +10,9 @@ using CodeFlowUI;
 using CodeFlowLibrary.CodeControl.Analyzer;
 using CodeFlowBridge;
 using CodeFlowLibrary.Genio;
+using System.Threading.Tasks;
+using CodeFlow.Utils;
+using CodeFlow.CommandHandler;
 
 namespace CodeFlow.Commands
 {
@@ -116,68 +119,17 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void SubmitGenio(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            try
-            {
-                CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-                List<IManual> manual = handler.SearchForTags();
-                Profile profile = PackageBridge.Instance.GetActiveProfile();
-                ChangeAnalyzer diffs = new ChangeAnalyzer();
-                diffs.CheckForDifferences(manual, profile);
-                CommitForm commitForm = new CommitForm(profile, diffs);
-                CodeFlowUIManager.Open(commitForm);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
-                    CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-            }
+            VsCommander.Commit();
         }
 
         private void ImportGenio(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            try
-            {
-                CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-                if (!handler.ImportAndEditCurrentTag())
-                {
-                    MessageBox.Show(CodeFlowResources.Resources.VerifyProfile, CodeFlowResources.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
-                    CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-            }
+            VsCommander.Update();
         }
 
         private void CreateGenio(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            try
-            {
-                CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-                string code = handler.GetCurrentSelection();
-
-                if (!string.IsNullOrEmpty(code))
-                {
-                    ManuaCode man = new ManuaCode(code);
-                    ManualMatch manualMatch = new ManualMatch();
-                    manualMatch.FullFileName = PackageBridge.Instance.DTE.ActiveDocument.FullName;
-                    man.LocalMatch = manualMatch;
-                    CreateInGenioForm genioForm = new CreateInGenioForm(man);
-                    genioForm.ShowDialog();
-                    if (genioForm.DialogResult == DialogResult.OK)
-                        handler.InsertCreatedCode(man);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
-                    CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-            }
+            VsCommander.Create();
         }
     }
 }

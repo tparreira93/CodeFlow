@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.CodeControl.Rules;
 using CodeFlowLibrary.CodeControl.Operations;
+using CodeFlowLibrary.Genio;
 
 namespace CodeFlowLibrary.CodeControl.Changes
 {
@@ -21,5 +22,6 @@ namespace CodeFlowLibrary.CodeControl.Changes
         void Compare();
         string GetDescription();
         CodeRule FlagedRule { get; set; }
+        Profile ChangeProfile { get; set; }
     }
 }

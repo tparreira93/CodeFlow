@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.CodeControl.Rules;
 using CodeFlowLibrary.CodeControl.Operations;
+using CodeFlowLibrary.Genio;
 
 namespace CodeFlowLibrary.CodeControl.Changes
 {
@@ -16,16 +17,18 @@ namespace CodeFlowLibrary.CodeControl.Changes
         IManual merged;
         bool isMerged = false;
         CodeRule rule;
+        Profile changedProfile;
 
         /*
         * Merged defaults to mine
         */
-        public ManualChange(IManual mine, IManual theirs)
+        public ManualChange(IManual mine, IManual theirs, Profile profile)
         {
             Mine = mine ?? throw new ArgumentNullException(nameof(mine));
             Theirs = theirs;
             Merged = Mine;
             rule = null;
+            changedProfile = profile;
         }
         public virtual IChange Merge()
         {
@@ -33,10 +36,10 @@ namespace CodeFlowLibrary.CodeControl.Changes
             Merged = Manual.Merge(Theirs, Merged);
 
             if (!String.IsNullOrWhiteSpace(Mine.Code) && String.IsNullOrWhiteSpace(Merged.Code))
-                change = new CodeEmpty(Merged, Theirs);
+                change = new CodeEmpty(Merged, Theirs, ChangeProfile);
 
             else if (String.IsNullOrWhiteSpace(Mine.Code) && !String.IsNullOrWhiteSpace(Merged.Code))
-                change = new CodeChange(Merged, Theirs);
+                change = new CodeChange(Merged, Theirs, ChangeProfile);
 
             change.IsMerged = true;
 
@@ -59,5 +62,6 @@ namespace CodeFlowLibrary.CodeControl.Changes
         public bool IsMerged { get => isMerged; set => isMerged = value; }
         public IManual Merged { get => merged; set => merged = value; }
         CodeRule IChange.FlagedRule { get => rule; set => rule = value; }
+        public Profile ChangeProfile { get => changedProfile; set => changedProfile = value; }
     }
 }

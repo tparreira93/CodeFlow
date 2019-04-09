@@ -10,6 +10,7 @@ using CodeFlowBridge;
 using CodeFlowUI;
 using CodeFlowLibrary.Genio;
 using CodeFlowUI.Manager;
+using CodeFlow.CommandHandler;
 
 namespace CodeFlow.Commands
 {
@@ -98,22 +99,7 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            try
-            {
-                Profile profile = PackageBridge.Instance.GetActiveProfile();
-                CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-                List<IManual> manual = handler.SearchForTags();
-                ChangeAnalyzer diffs = new ChangeAnalyzer();
-                diffs.CheckForDifferences(manual, profile);
-                CommitForm exportForm = new CommitForm(profile, diffs);
-                CodeFlowUIManager.Open(exportForm);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
-                    CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-            }
+            VsCommander.Commit();
         }
     }
 }

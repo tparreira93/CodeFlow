@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CodeFlowLibrary.CodeControl.Operations;
 using CodeFlowLibrary.Genio;
 using CodeFlowLibrary.Settings;
 using CodeFlowLibrary.Versions;
@@ -19,5 +20,6 @@ namespace CodeFlowLibrary.Package
         Task<bool> OpenFileAsync(string fileName);
         Task FindCodeAsync(SearchOptions searchOptions);
         void SaveSettings();
+        bool ExecuteOperation(IOperation operation);
     }
 }

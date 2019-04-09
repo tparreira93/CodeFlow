@@ -104,7 +104,7 @@ namespace CodeFlowUI
                 try
                 {
                     IOperation operation = diff.GetOperation();
-                    if (operation != null && PackageBridge.Instance.ExecuteOperation(operation))
+                    if (operation != null && PackageBridge.Flow.ExecuteOperation(operation))
                     {
                         differences.AsList.Remove(diff);
                         itemsToRemove.Add(items[i]);
@@ -255,6 +255,7 @@ namespace CodeFlowUI
         {
             string ruleName = diff.FlagedRule != null ? diff.FlagedRule.GetRuleName() : "";
             ListViewItem item = new ListViewItem(diff.GetDescription());
+            item.SubItems.Add(diff.ChangeProfile.ProfileName);
             item.SubItems.Add(diff.Merged.LocalFileName);
             item.SubItems.Add(ruleName);
             item.SubItems.Add(diff.Merged.ShortOneLineCode());
@@ -268,6 +269,7 @@ namespace CodeFlowUI
         private void AddListItem(Conflict conf, Color c, bool chk)
         {
             ListViewItem item = new ListViewItem(conf.DifferenceList.AsList[0].GetDescription());
+            item.SubItems.Add(conf.DifferenceList.AsList[0].ChangeProfile.ProfileName);
             item.SubItems.Add(conf.DifferenceList.AsList[0].Merged.LocalFileName);
             item.SubItems.Add("");
             item.SubItems.Add(conf.DifferenceList.AsList[0].Merged.ShortOneLineCode());

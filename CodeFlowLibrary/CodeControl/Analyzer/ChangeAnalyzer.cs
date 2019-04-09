@@ -29,7 +29,7 @@ namespace CodeFlowLibrary.CodeControl.Analyzer
             if (bd == null)
             {
                 // Codigo foi apagado por isso criamos um vazio
-                IChange diff = new CodeNotFound(toCheck);
+                IChange diff = new CodeNotFound(toCheck, profile);
                 CodeRule rule = validator.ValidateRules(profile, diff);
                 Modifications.AsList.Add(diff);
             }
@@ -37,10 +37,10 @@ namespace CodeFlowLibrary.CodeControl.Analyzer
             {
                 IChange change = null;
                 if (String.IsNullOrWhiteSpace(toCheck.Code))
-                    change = new CodeEmpty(toCheck, bd);
+                    change = new CodeEmpty(toCheck, bd, profile);
 
                 else if (!bd.Code.Equals(toCheck.Code))
-                    change = new CodeChange(toCheck, bd);
+                    change = new CodeChange(toCheck, bd, profile);
                 else
                     return;
 

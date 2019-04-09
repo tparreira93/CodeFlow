@@ -3,6 +3,7 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
+using CodeFlow.CommandHandler;
 
 namespace CodeFlow.Commands
 {
@@ -83,21 +84,7 @@ namespace CodeFlow.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            try
-            {
-                CommandHandler.CommandHandler handler = new CommandHandler.CommandHandler();
-                if (!handler.ImportAndEditCurrentTag())
-                {
-                    MessageBox.Show(CodeFlowResources.Resources.VerifyProfile, CodeFlowResources.Resources.Import, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(String.Format(CodeFlowResources.Resources.UnableToExecuteOperation, ex.Message),
-                    CodeFlowResources.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-            }
+            VsCommander.Update();            
         }
     }
 }

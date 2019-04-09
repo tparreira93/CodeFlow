@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.CodeControl.Operations;
+using CodeFlowLibrary.Genio;
 
 namespace CodeFlowLibrary.CodeControl.Changes
 {
     public class CodeChange : ManualChange
     {
-        public CodeChange(IManual mine, IManual theirs) : base(mine, theirs)
+        public CodeChange(IManual mine, IManual theirs, Profile profile) : base(mine, theirs, profile)
         {
 
         }
@@ -22,7 +23,7 @@ namespace CodeFlowLibrary.CodeControl.Changes
 
         public override IOperation GetOperation()
         {
-            return new ChangeOperation(this);
+            return new ChangeOperation(this, ChangeProfile);
         }
     }
 }

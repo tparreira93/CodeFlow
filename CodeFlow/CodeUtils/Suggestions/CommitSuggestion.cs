@@ -20,11 +20,13 @@ namespace CodeFlow.CodeUtils.Suggestions
     {
         private readonly IManual _manual;
         private readonly string _display;
+        private readonly Profile _profile;
 
-        public CommitSuggestion(IManual manual)
+        public CommitSuggestion(IManual manual, Profile profile)
         {
             _manual = manual;
             _display = string.Format("Commit manual code");
+            _profile = profile;
         }
 
         public string DisplayText
@@ -99,10 +101,9 @@ namespace CodeFlow.CodeUtils.Suggestions
             {
                 try
                 {
-                    Profile profile = PackageBridge.Instance.GetActiveProfile();
                     ChangeAnalyzer diffs = new ChangeAnalyzer();
-                    diffs.CheckForDifferences(_manual, profile);
-                    CodeFlowUIManager.Open(new CommitForm(profile, diffs));
+                    diffs.CheckForDifferences(_manual, _profile);
+                    CodeFlowUIManager.Open(new CommitForm(_profile, diffs));
                     
                 }
                 catch (Exception ex)
