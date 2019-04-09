@@ -21,11 +21,17 @@ namespace CodeFlow.CommandHandler
             var componentModel = (IComponentModel)ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel));
             var editor = componentModel.GetService<IVsEditorAdaptersFactoryService>();
             textManager.GetActiveView(1, null, out IVsTextView textViewCurrent);
-            textView = editor.GetWpfTextView(textViewCurrent);
+            cursorPos = -1;
+            textView = null;
+            if (textViewCurrent != null)
+            {
+                textView = editor.GetWpfTextView(textViewCurrent);
 
-            SnapshotPoint caretPosition = textView.Caret.Position.BufferPosition;
-            cursorPos = caretPosition.Position;
-            return textView.TextBuffer.CurrentSnapshot.GetText();
+                SnapshotPoint caretPosition = textView.Caret.Position.BufferPosition;
+                cursorPos = caretPosition.Position;
+                return textView.TextBuffer.CurrentSnapshot.GetText();
+            }
+            return "";
         }
         public string GetCurrentSelection()
         {
@@ -64,6 +70,9 @@ namespace CodeFlow.CommandHandler
         public bool ImportAndEditCurrentTag()
         {
             string code = GetCurrentViewText(out int pos, out IWpfTextView textView);
+            if (pos == -1 || textView == null)
+                return false;
+
             VSCodeManualMatcher vSCodeManualMatcher = new VSCodeManualMatcher(code, pos, PackageOperations.Instance.DTE.ActiveDocument.FullName);
             List<IManual> codeList = vSCodeManualMatcher.Match();
             if (codeList.Count == 1)

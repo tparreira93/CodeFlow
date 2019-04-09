@@ -231,11 +231,21 @@ namespace CodeFlow.Forms
                 if (diff is CodeNotFound)
                     return;
 
-                IChange change = diff.Merge();
+                IChange change = null;
+                try
+                {
+                    change = diff.Merge();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
+                        Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    return;
+                }
                 if (change.HasDifference())
                 {
                     lstCode.SelectedItems[0].Text = change.GetDescription();
-                    lstCode.SelectedItems[0].SubItems[2].Text = change.Merged.ShortOneLineCode();
+                    lstCode.SelectedItems[0].SubItems[3].Text = change.Merged.ShortOneLineCode();
                     lstCode.SelectedItems[0].ForeColor = lblMerged.ForeColor;
                     lstCode.SelectedItems[0].ImageIndex = GetImageIndex(change);
                     lstCode.SelectedItems[0].Tag = change;

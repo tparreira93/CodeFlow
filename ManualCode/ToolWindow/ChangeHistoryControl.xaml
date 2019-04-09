@@ -24,12 +24,17 @@
                             <GridViewColumnHeader Tag="ChangeType" Click="lstHistoryColumnHeader_Click">Operation</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
-                    <GridViewColumn Width="120"  DisplayMemberBinding="{Binding OperationTime}">
+                    <GridViewColumn Width="150"  DisplayMemberBinding="{Binding OperationTime}">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader Tag="OperationTime" Click="lstHistoryColumnHeader_Click">Date</GridViewColumnHeader>
                         </GridViewColumn.Header>
                     </GridViewColumn>
-                    <GridViewColumn Width="200"  DisplayMemberBinding="{Binding OperationProfile}">
+                    <GridViewColumn Width="100"  DisplayMemberBinding="{Binding OperationProfile.ProfileName}">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="OperationProfile.ProfileName" Click="lstHistoryColumnHeader_Click">Profile</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                    </GridViewColumn>
+                    <GridViewColumn Width="500"  DisplayMemberBinding="{Binding OperationProfile}">
                         <GridViewColumn.Header>
                             <GridViewColumnHeader Tag="OperationProfile" Click="lstHistoryColumnHeader_Click">Profile</GridViewColumnHeader>
                         </GridViewColumn.Header>

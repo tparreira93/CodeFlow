@@ -377,4 +377,14 @@ Verify your profile</value>
   <data name="folder_Open_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\folder_Open_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ErrorMerge" xml:space="preserve">
+    <value>An error occurred when trying to merge code.
+Please very that TortoiseMerge is installed or that another merge tool is specified in the extension options.
+{0}</value>
+  </data>
+  <data name="ErrorSVN" xml:space="preserve">
+    <value>An error occurred when trying to merge code.
+Please very that TortoiseSVN is installed or that another merge tool is specified in the extension options.
+{0}</value>
+  </data>
 </root>

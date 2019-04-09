@@ -260,13 +260,13 @@
           <ButtonText>Change to VS2008 Plataform Toolset</ButtonText>
         </Strings>
       </Button>
-      <Button guid="CodeFlowCommandSet" id="cmdidRefreshSolution" priority="0x0100" type="Button">
+      <!--<Button guid="CodeFlowCommandSet" id="cmdidRefreshSolution" priority="0x0100" type="Button">
         <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" />
         <Icon guid="refreshSolutionImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Refresh solution</ButtonText>
         </Strings>
-      </Button>
+      </Button>-->
       <Button guid="CodeFlowCommandSet" id="cmdidViewVersionsCommand" priority="0x0100" type="Button">
         <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" />
         <Icon guid="codeFlowVersionHistoryImage" id="bmpPic1" />

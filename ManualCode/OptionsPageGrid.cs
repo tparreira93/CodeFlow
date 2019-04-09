@@ -23,18 +23,18 @@ namespace CodeFlow
         private bool _fixIndexes;
         private int _maxTaskSolutionCommit;
 
-        [Category("Solution")]
-        [DefaultValue(true)]
-        [DisplayName("Solution parsing")]
-        [Description("Parses solution for client, version and system. This allows more lightbulb suggestions.")]
-        public bool ParseSolutionOnStartup
-        {
-            get => _parseSolutionOnStartup; set
-            {
-                _parseSolutionOnStartup = value;
-                PackageOperations.Instance.ParseSolution = value;
-            }
-        }
+        //[Category("Solution")]
+        //[DefaultValue(true)]
+        //[DisplayName("Solution parsing")]
+        //[Description("Parses solution for client, version and system. This allows more lightbulb suggestions.")]
+        //public bool ParseSolutionOnStartup
+        //{
+        //    get => _parseSolutionOnStartup; set
+        //    {
+        //        _parseSolutionOnStartup = value;
+        //        PackageOperations.Instance.ParseSolution = value;
+        //    }
+        //}
 
         [Category("Solution")]
         [DefaultValue(false)]

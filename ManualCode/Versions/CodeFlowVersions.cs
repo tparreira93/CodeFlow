@@ -282,6 +282,13 @@ namespace CodeFlow.Versions
             version.Version = new Version(3, 12, 0);
             version.AddChange("Change history now saves profiles that executed operation.");
             _allVersions.Add(version);
+
+            version = new CodeFlowVersionInfo();
+            version.Version = new Version(3, 12, 1);
+            version.AddChange("Removed solution parsing for Client and Genio information.");
+            version.AddChange("Validations to text view window before executing operations.");
+            version.AddChange("New fields in Change history tool window.");
+            _allVersions.Add(version);
         }
 
         public Version Execute(Version startingVersion, OptionsPageGrid options)

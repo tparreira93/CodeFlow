@@ -99,7 +99,18 @@ namespace CodeFlow.Forms
                 ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
                 IChange diff = (IChange)item.Tag;
 
-                IChange change = diff.Merge();
+
+                IChange change = null;
+                try
+                {
+                    change = diff.Merge();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(String.Format(Properties.Resources.UnableToExecuteOperation, ex.Message),
+                        Properties.Resources.Export, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    return;
+                }
                 lstConflicts.SelectedItems[0].ImageIndex = GetImageIndex(change);
                 lstConflicts.SelectedItems[0].Tag = change;
                 lstConflicts.SelectedItems[0].Text = change.GetDescription();

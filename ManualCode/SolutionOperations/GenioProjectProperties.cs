@@ -46,7 +46,7 @@ namespace CodeFlow.SolutionOperations
         public static ProjectLanguage GetProjectLanguage(Project proj)
         {
             ProjectLanguage lang;
-            CodeModel model = proj.CodeModel;
+            CodeModel model = proj?.CodeModel;
             if (model == null)
                 return ProjectLanguage.Unknown;
             switch (model.Language)
