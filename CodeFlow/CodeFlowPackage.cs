@@ -92,7 +92,7 @@ namespace CodeFlow
         public CodeFlowPackage()
         {
             PackageBridge.Flow = this;
-            FileOps = new FilesManager();
+            FileOps = new FilesManager(this);
             // Inside this method you can place any initialization code that does not require
             // any Visual Studio service because at this point the package object is created but
             // not sited yet inside Visual Studio environment. The place to do all the other

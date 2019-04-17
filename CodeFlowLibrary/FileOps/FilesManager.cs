@@ -13,11 +13,15 @@ namespace CodeFlowLibrary.FileOps
 {
     public class FilesManager
     {
-        public static ICodeFlowPackage Flow { get; set; }
+        public ICodeFlowPackage Package { get; set; }
         private readonly List<string> _openFiles = new List<string>();
         private Dictionary<string, Type> AutoExportFiles { get; } = new Dictionary<string, Type>();
         private readonly List<TempFile> openFiles = new List<TempFile>();
 
+        public FilesManager(ICodeFlowPackage flow)
+        {
+            Package = flow;
+        }
 
         private void AddTempFile(string file)
         {
@@ -61,14 +65,14 @@ namespace CodeFlowLibrary.FileOps
             openFiles.Clear();
         }
 
-        public void OpenTempFile(IManual man, Profile profile, bool autoExport)
+        public async Task OpenTempFileAsync(IManual man, Profile profile, bool autoExport)
         {
             var fileName = man.CodeId.ToString();
             var tmp = $"{Path.GetTempPath()}{man.CodeId}.{man.GetCodeExtension(profile)}";
             File.WriteAllText(tmp, man.ToString(), Encoding.UTF8);
 
             TempFile tempFile = new TempFile(tmp, fileName, autoExport);
-            if (Flow.OpenFileAsync(tmp).Result)
+            if (await Package.OpenFileAsync(tmp))
                 AddTempFile(tempFile);
         }
         public bool IsAutoExportManual(string path)

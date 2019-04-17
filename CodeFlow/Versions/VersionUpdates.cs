@@ -295,7 +295,12 @@ namespace CodeFlow.Versions
             version.AddChange("Support for Visual Studio 2019.");
             version.AddChange("Improved UI responsiveness of all commands.");
             version.AddChange("Reworked internals.");
-            version.AddChange(".");
+            changes.Add(version);
+
+            version = new CodeFlowVersion();
+            version.Version = new Version(4, 0, 1);
+            version.AddChange("Typo in version change log.");
+            version.AddChange("Fix in Code search functionality, it was not opening files.");
             changes.Add(version);
 
             return changes;

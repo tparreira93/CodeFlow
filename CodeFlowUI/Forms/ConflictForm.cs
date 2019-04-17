@@ -61,7 +61,7 @@ namespace CodeFlowUI
                 ListViewItem item = lstConflicts.Items[lstConflicts.SelectedIndices[0]];
                 IChange m = (IChange)item.Tag;
 
-                package.FileOps.OpenTempFile(m.Merged, profile, false);
+                Task.Factory.StartNew( () => package.FileOps.OpenTempFileAsync(m.Merged, profile, false));
             }
         }
 

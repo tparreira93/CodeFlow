@@ -84,7 +84,7 @@
 
         private async Task PreviewManual(IManual manual, SearchOptions searchOptions)
         {
-            PackageBridge.Flow.FileOps.OpenTempFile(manual, PackageBridge.Flow.Active, true);
+            await PackageBridge.Flow.FileOps.OpenTempFileAsync(manual, PackageBridge.Flow.Active, true);
 
             await PackageBridge.Flow.FindCodeAsync(searchOptions);
         }
