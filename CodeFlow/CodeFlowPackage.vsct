@@ -390,11 +390,18 @@
   </CommandPlacements>
 
   <KeyBindings>
-    <KeyBinding guid="guidCodeFlowPackageCmdSet" id="cmdidSearchToolCommand" key1="VK_F5" mod1="Control Shift" editor="guidVSStd97" />
-    <KeyBinding guid="CodeFlowCommandSet" id="cmdCommitCode" mod1="Control Shift" key1="C" mod2="Control Shift" key2="C" editor="guidVSStd97" />
+    <KeyBinding guid="CodeFlowCommandSet" id="cmdCommitCode" mod1="Control Shift" key1="C" mod2="Control Shift" key2="C" editor="guidSourceCodeTextEditor" />
+    <KeyBinding guid="CodeFlowCommandSet" id="cmdUpdateCode" mod1="Control Shift" key1="C" mod2="Control Shift" key2="D" editor="guidSourceCodeTextEditor" />
+    <KeyBinding guid="CodeFlowCommandSet" id="cmdCreateInGenio" mod1="Control Shift" key1="C" mod2="Control Shift" key2="A" editor="guidSourceCodeTextEditor" />
+    <KeyBinding guid="CodeFlowCommandSet" id="cmdCommitSolution" mod1="Control Shift" key1="C" mod2="Control Shift" key2="S" editor="guidSourceCodeTextEditor" />
+    <KeyBinding guid="CodeFlowCommandSet" id="cmdManageProfiles" mod1="Control Shift" key1="C" mod2="Control Shift" key2="P" editor="guidSourceCodeTextEditor" />
+    <KeyBinding guid="guidCodeFlowPackageCmdSet" id="cmdidSearchToolCommand" mod1="Control Shift" key1="C" mod2="Control Shift" key2="F" editor="guidSourceCodeTextEditor" />
   </KeyBindings>
 
   <Symbols>
+    
+    <GuidSymbol name ="guidSourceCodeTextEditor" value="{8b382828-6202-11d1-8870-0000f87579d2}" />
+    
     <!-- This is the package guid. -->
     <GuidSymbol name="CodeFlowPackage" value="{23ac2f2d-5778-45dd-b5b2-5186260c958c}" />
 

@@ -77,6 +77,7 @@ namespace CodeFlow
         private DocumentEvents _documentEnvents;
         private Events _dteEvents;
         //private DteInitializer dteInitializer;
+        private string settingsCollection;
         private bool _isSolution;
         private uint _cookie;
         private IVsSolution _solution;
@@ -116,6 +117,7 @@ namespace CodeFlow
             // Do any initialization that requires the UI thread after switching to the UI thread.
             // Otherwise, remove the switch to the UI thread if you don't need it.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+            settingsCollection = $"CodeFlow.v{Utils.VSVersion.FullVersion.Major}";
             Settings = LoadUserSettings();
 
             await ContextMenuCommand.InitializeAsync(this);
@@ -403,28 +405,26 @@ namespace CodeFlow
         public void SaveSettings()
         {
             var settings = GetWritableSettingsStore();
-            string collection = "CodeFlow";
-            bool exists = settings.CollectionExists(collection);
+            bool exists = settings.CollectionExists(settingsCollection);
             if (!exists)
-                settings.CreateCollection(collection);
+                settings.CreateCollection(settingsCollection);
 
-            settings.SetString(collection, "Profiles", PackageBridge.Instance.SerializeProfiles(Settings.Profiles));
-            settings.SetString(collection, "ToolVersion", Settings.ToolVersion.ToString());
-            settings.SetString(collection, "OldVersion", Settings.OldVersion.ToString());
+            settings.SetString(settingsCollection, "Profiles", PackageBridge.Instance.SerializeProfiles(Settings.Profiles));
+            settings.SetString(settingsCollection, "ToolVersion", Settings.ToolVersion.ToString());
+            settings.SetString(settingsCollection, "OldVersion", Settings.OldVersion.ToString());
         }
 
         public InternalSettings LoadUserSettings()
         {
             var settings = GetReadableSettingsStore();
-            string collection = "CodeFlow";
             List<Profile> profiles = new List<Profile>();
             InternalSettings user = new InternalSettings();
 
-            if (settings.CollectionExists(collection))
+            if (settings.CollectionExists(settingsCollection))
             {
-                user.Profiles = CodeFlowLibrary.Bridge.PackageBridge.Instance.DeSerializeProfiles(settings.GetString(collection, "Profiles"));
-                user.ToolVersion = new Version(settings.GetString(collection, "ToolVersion"));
-                user.OldVersion = new Version(settings.GetString(collection, "OldVersion"));
+                user.Profiles = CodeFlowLibrary.Bridge.PackageBridge.Instance.DeSerializeProfiles(settings.GetString(settingsCollection, "Profiles"));
+                user.ToolVersion = new Version(settings.GetString(settingsCollection, "ToolVersion"));
+                user.OldVersion = new Version(settings.GetString(settingsCollection, "OldVersion"));
             }
 
             return user;

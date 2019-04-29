@@ -303,6 +303,12 @@ namespace CodeFlow.Versions
             version.AddChange("Fix in Code search functionality, it was not opening files.");
             changes.Add(version);
 
+            version = new CodeFlowVersion();
+            version.Version = new Version(4, 0, 2);
+            version.AddChange("Fix in default CodeFlow options values.");
+            version.AddChange("Fix in keyboard commands of extension.");
+            changes.Add(version);
+
             return changes;
         }
     }
