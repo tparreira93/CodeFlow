@@ -84,19 +84,22 @@ namespace CodeFlowLibrary.Genio
         public string Database { get => database; set => database = value; }
         public string Username { get => username; set => username = value; }
         public string Password { get => password; set => password = value; }
+        public string GenioUser { get => geniouser; set => geniouser = value; }
+        public bool ProductionSystem { get => productionSystem; set => productionSystem = value; }
 
         [XmlIgnore]
         public SqlConnection SqlConnection { get => sqlConnection; set => sqlConnection = value; }
-        public string GenioUser { get => geniouser; set => geniouser = value; }
         public string GenioPath { get => genioPath; set => genioPath = value; }
+        [XmlIgnore]
         public string CheckoutPath { get => checkoutPath; set => checkoutPath = value; }
+        [XmlIgnore]
         public double GenioVersion { get => genioVersion; set => genioVersion = value; }
-
         [XmlIgnore]
         public List<GenioPlataform> Plataforms { get => plataforms; set => plataforms = value; }
+        [XmlIgnore]
         public string SystemInitials { get => systemInitials; set => systemInitials = value; }
+        [XmlIgnore]
         public string BDVersion { get => bdVersion; set => bdVersion = value; }
-        public bool ProductionSystem { get => productionSystem; set => productionSystem = value; }
 
         public bool GetGenioInfo()
         {

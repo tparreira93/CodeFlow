@@ -119,6 +119,8 @@ namespace CodeFlow
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             settingsCollection = $"CodeFlow.v{Utils.VSVersion.FullVersion.Major}";
             Settings = LoadUserSettings();
+            if (Utils.VSVersion.VS2017)
+                ReadOldSettings();
 
             await ContextMenuCommand.InitializeAsync(this);
             await ChangeHistoryCommand.InitializeAsync(this);
@@ -163,6 +165,27 @@ namespace CodeFlow
                 SaveSettings();
                 CodeFlowChangesForm changesForm = new CodeFlowChangesForm(PackageUpdates, Settings.ToolVersion, Settings.OldVersion);
                 CodeFlowUIManager.Open(changesForm);
+            }
+        }
+
+        private void ReadOldSettings()
+        {
+            var oldSettings = Properties.Settings.Default;
+            Version oldSettingsVersion = new Version(oldSettings.ToolVersion);
+            Version newSettingsVersion = new Version("4.0.0");
+            if (oldSettingsVersion != new Version("0.0.0") && oldSettingsVersion.IsBefore(newSettingsVersion))
+            {
+                if (Settings.Profiles.Count == 0)
+                {
+                    Settings.Profiles = PackageBridge.Instance.DeSerializeProfiles(oldSettings.ConnectionStrings);
+                    Settings.OldVersion = new Version(oldSettings.OldVersion);
+                    Settings.ToolVersion = oldSettingsVersion;
+                }
+                
+                oldSettings.ToolVersion = newSettingsVersion.ToString();
+                oldSettings.OldVersion = newSettingsVersion.ToString();
+
+                oldSettings.Save();
             }
         }
 
@@ -422,7 +445,7 @@ namespace CodeFlow
 
             if (settings.CollectionExists(settingsCollection))
             {
-                user.Profiles = CodeFlowLibrary.Bridge.PackageBridge.Instance.DeSerializeProfiles(settings.GetString(settingsCollection, "Profiles"));
+                user.Profiles = PackageBridge.Instance.DeSerializeProfiles(settings.GetString(settingsCollection, "Profiles"));
                 user.ToolVersion = new Version(settings.GetString(settingsCollection, "ToolVersion"));
                 user.OldVersion = new Version(settings.GetString(settingsCollection, "OldVersion"));
             }

@@ -223,6 +223,8 @@
         <Icon guid="commitCodeImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Commit</ButtonText>
+          <CanonicalName>Commit</CanonicalName>
+          <LocCanonicalName>Commit</LocCanonicalName>
         </Strings>
       </Button>
       <Button guid="CodeFlowCommandSet" id="cmdCommitSolution" priority="0x0100" type="Button">
@@ -230,6 +232,8 @@
         <Icon guid="commitSolutionImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Commit solution</ButtonText>
+          <CanonicalName>Commit solution</CanonicalName>
+          <LocCanonicalName>Commit solution</LocCanonicalName>
         </Strings>
       </Button>
       <Button guid="CodeFlowCommandSet" id="cmdUpdateCode" priority="0x0100" type="Button">
@@ -237,6 +241,8 @@
         <Icon guid="updateCodeImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Update</ButtonText>
+          <CanonicalName>Update</CanonicalName>
+          <LocCanonicalName>Update</LocCanonicalName>
         </Strings>
       </Button>
       <Button guid="CodeFlowCommandSet" id="cmdCreateInGenio" priority="0x0100" type="Button">
@@ -244,6 +250,8 @@
         <Icon guid="createGenioImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Create</ButtonText>
+          <CanonicalName>Create</CanonicalName>
+          <LocCanonicalName>Create</LocCanonicalName>
         </Strings>
       </Button>
       <Button guid="CodeFlowCommandSet" id="cmdManageProfiles" priority="0x0100" type="Button">
@@ -251,13 +259,17 @@
         <Icon guid="manageGenioProfilesImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Manage Genio profiles</ButtonText>
+          <CanonicalName>Manage Genio profiles</CanonicalName>
+          <LocCanonicalName>Manage Genio profiles</LocCanonicalName>
         </Strings>
       </Button>
       <Button guid="CodeFlowCommandSet" id="cmdidFixVS2008Solution" priority="0x0100" type="Button">
         <Parent guid="CodeFlowCommandSet" id="CodeFlowToolbarGroup" />
         <Icon guid="fixPlataformImage" id="bmpPic1" />
         <Strings>
-          <ButtonText>Change to VS2008 Plataform Toolset</ButtonText>
+          <ButtonText>Change to VS2008</ButtonText>
+          <CanonicalName>Change to VS2008</CanonicalName>
+          <LocCanonicalName>Change to VS2008</LocCanonicalName>
         </Strings>
       </Button>
       <!--<Button guid="CodeFlowCommandSet" id="cmdidRefreshSolution" priority="0x0100" type="Button">
@@ -272,6 +284,8 @@
         <Icon guid="codeFlowVersionHistoryImage" id="bmpPic1" />
         <Strings>
           <ButtonText>Code Flow version history</ButtonText>
+          <CanonicalName>Code Flow version history</CanonicalName>
+          <LocCanonicalName>Code Flow version history</LocCanonicalName>
         </Strings>
       </Button>
 
@@ -303,6 +317,8 @@
         <Icon guid="buttonSearchToolwindow" id="bmpPic1" />
         <Strings>
           <ButtonText>Code search</ButtonText>
+          <CanonicalName>Code search</CanonicalName>
+          <LocCanonicalName>Code search</LocCanonicalName>
         </Strings>
       </Button>
       <Button guid="guidCodeFlowPackageCmdSet" id="cmdidWholeWord" priority="0x100" type="Button">
