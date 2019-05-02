@@ -87,7 +87,7 @@
                 commandService.AddCommand(command);
 
                 menuCommandID = new CommandID(new Guid(toolWindowSet), cmdIdSearchBox);
-                OleMenuCommand searchBoxCommand = new OleMenuCommand(new EventHandler(SearchTerm), menuCommandID)
+                var searchBoxCommand = new OleMenuCommand(new EventHandler(SearchTerm), new EventHandler(ChangeSearchTerm), new EventHandler(BeforeSearchTerm), menuCommandID)
                 {
                     ParametersDescription = "$" // accept any argument string
                 };
@@ -120,6 +120,60 @@
             SetPlataform(this, new OleMenuCmdEventArgs("All", new IntPtr()));
         }
 
+        private void BeforeSearchTerm(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void ChangeSearchTerm(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SearchTerm(object sender, EventArgs e)
+        {
+            if (e == EventArgs.Empty)
+                return;
+
+
+            if (e is OleMenuCmdEventArgs eventArgs)
+            {
+                object input = eventArgs.InValue;
+                IntPtr vOut = eventArgs.OutValue;
+
+                if (vOut != IntPtr.Zero && input != null)
+                    throw (new ArgumentException("Ilegal input and output parameters!"));
+
+                else if (vOut != IntPtr.Zero)
+                    Marshal.GetNativeVariantForObject(currentSearch, vOut);
+
+                else if (input != null)
+                {
+                    string newChoice = input.ToString();
+
+                    if (!string.IsNullOrEmpty(newChoice))
+                    {
+                        currentSearch = newChoice;
+                        SearchManualCode(sender, e);
+                    }
+                }
+                else
+                    throw (new ArgumentException("Invalid input and output!"));
+            }
+            else
+                throw (new ArgumentException("Invalid combo box call!"));
+        }
+
+        internal void Search(string searchTerms)
+        {
+            OleMenuCommand cmd = null;
+            if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+            {
+                cmd = commandService?.FindCommand(new CommandID(new Guid(toolWindowSet), cmdIdSearchBox)) as OleMenuCommand;
+                cmd?.Invoke(searchTerms, new IntPtr(), Microsoft.VisualStudio.OLE.Interop.OLECMDEXECOPT.OLECMDEXECOPT_PROMPTUSER);
+            }
+        }
+
         private void SetPlataform(object sender, EventArgs e)
         {
             if (e == EventArgs.Empty)
@@ -138,9 +192,7 @@
                     Marshal.GetNativeVariantForObject(plataform, vOut);
 
                 else if (newChoice != null)
-                {
                     plataform = newChoice;
-                }
                 else
                     throw (new ArgumentException("Invalid input and output!"));
             }
@@ -238,40 +290,6 @@
                     Monitor.Exit(searchLock);
                 }
             }
-        }
-
-        private void SearchTerm(object sender, EventArgs e)
-        {
-            if (e == EventArgs.Empty)
-                return;
-
-
-            if (e is OleMenuCmdEventArgs eventArgs)
-            {
-                object input = eventArgs.InValue;
-                IntPtr vOut = eventArgs.OutValue;
-
-                if (vOut != IntPtr.Zero && input != null)
-                    throw (new ArgumentException("Ilegal input and output parameters!"));
-
-                else if (vOut != IntPtr.Zero)
-                    Marshal.GetNativeVariantForObject(currentSearch, vOut);
-
-                else if (input != null)
-                {
-                    string newChoice = input.ToString();
-
-                    if (!string.IsNullOrEmpty(newChoice))
-                    {
-                        currentSearch = newChoice;
-                        SearchManualCode(sender, e);
-                    }
-                }
-                else
-                    throw (new ArgumentException("Invalid input and output!"));
-            }
-            else
-                throw (new ArgumentException("Invalid combo box call!"));
         }
 
         private void CheckWholeWord(object sender, EventArgs e)

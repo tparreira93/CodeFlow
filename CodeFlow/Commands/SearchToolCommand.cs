@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using CodeFlow.ToolWindow;
 using Task = System.Threading.Tasks.Task;
+using CodeFlow.Handlers;
 
 namespace CodeFlow.Commands
 {
@@ -88,21 +89,26 @@ namespace CodeFlow.Commands
         /// <param name="e">The event args.</param>
         private void ShowToolWindow(object sender, EventArgs e)
         {
-            Utils.AsyncHelper.RunSyncUI(() =>
-           {
+#pragma warning disable VSTHRD110 // Observe result of async calls
+            Utils.AsyncHelper.RunSyncUI(async () =>
+#pragma warning restore VSTHRD110 // Observe result of async calls
+            {
                 // Get the instance number 0 of this tool window. This window is single instance so this instance
                 // is actually the only one.
                 // The last flag is set to true so that if the tool window does not exists it will be created.
                 ToolWindowPane window = this.package.FindToolWindow(typeof(SearchTool), 0, true);
-               if ((null == window) || (null == window.Frame))
-               {
-                   throw new NotSupportedException("Cannot create tool window");
-               }
+                if ((null == window) || (null == window.Frame))
+                    throw new NotSupportedException("Cannot create tool window");
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
-               IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-               Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+                IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
 #pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
+
+                CommandHandler handler = new CommandHandler(package);
+                string currentSelection = await handler.GetCurrentSelectionAsync();
+                if (!string.IsNullOrEmpty(currentSelection))
+                    (window as SearchTool)?.Search(currentSelection);
            });
         }
     }

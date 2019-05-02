@@ -309,6 +309,16 @@ namespace CodeFlow.Versions
             version.AddChange("Fix in keyboard commands of extension.");
             changes.Add(version);
 
+            version = new CodeFlowVersion();
+            version.Version = new Version(4, 0, 3);
+            version.AddChange($"Fixed version upgrade from versions before {new Version(4, 0, 0).ToString()}.");
+            changes.Add(version);
+
+            version = new CodeFlowVersion();
+            version.Version = new Version(4, 0, 4);
+            version.AddChange($"Keyboard shortcut for search now automacally executes search.");
+            changes.Add(version);
+
             return changes;
         }
     }
