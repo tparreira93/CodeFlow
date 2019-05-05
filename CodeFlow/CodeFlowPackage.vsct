@@ -321,6 +321,13 @@
           <LocCanonicalName>Code search</LocCanonicalName>
         </Strings>
       </Button>
+      <Button guid="guidCodeFlowPackageCmdSet" id="cmdExecuteSearch" priority="0x100" type="Button">
+        <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbarGroup" />
+        <Icon guid="buttonExecuteSerch" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Search</ButtonText>
+        </Strings>
+      </Button>
       <Button guid="guidCodeFlowPackageCmdSet" id="cmdidWholeWord" priority="0x100" type="Button">
         <Parent guid="guidCodeFlowPackageCmdSet" id="SearchWindowToolbarGroup" />
         <Icon guid="buttonWholeWord" id="bmpPic1" />
@@ -372,6 +379,7 @@
       <Bitmap guid="buttonCaseSensitive" href="..\CodeFlowUI\Resources\CaseSensitive_16x.png" usedList="bmpPic1" />
       <Bitmap guid="changeHistory" href="..\CodeFlowUI\Resources\History_16xLG.png" usedList="bmpPic1" />
       <Bitmap guid="codeFlowVersionHistoryImage" href="..\CodeFlowUI\Resources\VSO_History_16x.png" usedList="bmpPic1" />
+      <Bitmap guid="buttonExecuteSerch" href="..\CodeFlowUI\Resources\VSO_Search_16x.png" usedList="bmpPic1" />
     </Bitmaps>
   </Commands>
 
@@ -460,6 +468,7 @@
       <IDSymbol name="cmdidCaseSensitive" value="0x2005" />
       <IDSymbol name="cmdIdPlataformCombo" value="0x2006" />
       <IDSymbol name="cmdIdPlataformComboGetList" value="0x2007" />
+      <IDSymbol name="cmdExecuteSearch" value="0x2008" />
     </GuidSymbol>
 
     <GuidSymbol value="{fb7e123d-6799-411e-ac2f-0cc621636931}" name="commitCodeImage">
@@ -515,6 +524,10 @@
     </GuidSymbol>
   
     <GuidSymbol value="{4b54de07-9093-44e0-9987-6fd2e495c3db}" name="codeFlowVersionHistoryImage">
+      <IDSymbol name="bmpPic1" value="1" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{8A38F5DB-24E1-4A51-9138-D1D6ACD34224}" name="buttonExecuteSerch">
       <IDSymbol name="bmpPic1" value="1" />
     </GuidSymbol>
   </Symbols>

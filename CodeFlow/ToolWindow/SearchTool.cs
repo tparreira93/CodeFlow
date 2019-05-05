@@ -49,6 +49,7 @@
         private const int cmdIdCaseSensitive = 0x2005;
         private const int cmdIdPlataformCombo = 0x2006;
         private const int cmdIdPlataformComboGetList = 0x2007;
+        private const int cmdExecuteSearch = 0x2008;
 
         private SearchToolControl control = null;
         public static bool WindowInitialized = false;
@@ -85,6 +86,7 @@
             _invisibleEditorManager = (IVsInvisibleEditorManager)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsInvisibleEditorManager));
             _editorAdapter = _componentModel.GetService<IVsEditorAdaptersFactoryService>();
             _editorFactoryService = _componentModel.GetService<ITextEditorFactoryService>();
+            PackageBridge.Flow.OpenFileAsync(previewFile);
         }
 
 
@@ -299,6 +301,10 @@
                 };
                 searchBoxCommand.CommandChanged += SearchTerm;
                 commandService.AddCommand(searchBoxCommand);
+
+                menuCommandID = new CommandID(new Guid(toolWindowSet), cmdExecuteSearch);
+                command = new MenuCommand(this.SearchManualCode, menuCommandID);
+                commandService.AddCommand(command);
 
                 menuCommandID = new CommandID(new Guid(toolWindowSet), cmdIdCaseSensitive);
                 command = new MenuCommand(this.CheckCaseSensitive, menuCommandID);

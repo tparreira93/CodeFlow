@@ -190,7 +190,7 @@ namespace CodeFlow
                     Settings.OldVersion = new Version(oldSettings.OldVersion);
                     Settings.ToolVersion = oldSettingsVersion;
                 }
-                
+
                 oldSettings.ToolVersion = newSettingsVersion.ToString();
                 oldSettings.OldVersion = newSettingsVersion.ToString();
 
@@ -249,7 +249,7 @@ namespace CodeFlow
                 string projName = docProject?.Name ?? "";
                 ProjectLanguage lang = SolutionParser.GetProjectLanguage(docProject?.CodeModel?.Language);
 #pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
-                List <IManual> man = null;
+                List<IManual> man = null;
 
                 if (PackageOptions.AutoExportSaved)
                     man = FileOps.GetAutoExportIManual(path);
@@ -320,21 +320,21 @@ namespace CodeFlow
                    }
                    catch (Exception)
                    {
-                        // ignored
-                    }
+                       // ignored
+                   }
                }
 
-                //Updates combo box
-                if (!string.IsNullOrEmpty(lastActive))
+               //Updates combo box
+               if (!string.IsNullOrEmpty(lastActive))
                    SetProfile(lastActive);
 
                if (PackageOptions.AutoVccto2008Fix && _isSolution)
                {
                    ISolutionParser solution = new SolutionParser(this);
 #pragma warning disable VSTHRD110 // Observe result of async calls
-                    solution.ChangeToolset2008Async();
+                   solution.ChangeToolset2008Async();
 #pragma warning restore VSTHRD110 // Observe result of async calls
-                }
+               }
            });
             return VSConstants.S_OK;
         }
@@ -485,10 +485,8 @@ namespace CodeFlow
             find.Execute();
         }
 
-        public async Task<bool> OpenFileAsync(string fileName)
+        public bool OpenFile(string fileName)
         {
-            await JoinableTaskFactory.SwitchToMainThreadAsync();
-
             try
             {
                 DTE?.ItemOperations?.OpenFile(fileName);
@@ -497,6 +495,12 @@ namespace CodeFlow
             }
             catch
             { return false; }
+        }
+
+        public async Task<bool> OpenFileAsync(string fileName)
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+            return OpenFile(fileName);
         }
 
         public async System.Threading.Tasks.Task FindInCurrentFileAsync(SearchOptions searchOptions)

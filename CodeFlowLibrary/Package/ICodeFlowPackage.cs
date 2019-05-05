@@ -23,6 +23,7 @@ namespace CodeFlowLibrary.Package
         Task<bool> OpenOnPositionAsync(string fileName, int position);
         void SetProfile(string profileName);
         void LoadProfile(string profileName);
+        bool OpenFile(string fileName);
         Task<bool> OpenFileAsync(string fileName);
         Task FindCodeAsync(SearchOptions searchOptions);
         void SaveSettings();
