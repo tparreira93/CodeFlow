@@ -50,6 +50,11 @@
             FindListViewItem(lstCode);
         }
 
+        public void HookPreview(object viewHost)
+        {
+            Preview.Content = viewHost;
+        }
+
         private void lstFindMan_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Dispatcher.VerifyAccess();
@@ -201,6 +206,15 @@
 
                 Properties.Settings.Default.Save();
             }*/
+        }
+
+        private void LstCode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lstCode.SelectedIndex >= 0)
+            {
+                IManual man = lstCode.SelectedItem as IManual;
+                PackageBridge.Flow.UpdateSearchPreview(man, searchOptions);
+            }
         }
     }
 }

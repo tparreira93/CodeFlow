@@ -36,6 +36,7 @@ using CodeFlowResources;
 using Microsoft.VisualStudio.Text.Editor;
 using System.Xml.Serialization;
 using CodeFlowLibrary.FileOps;
+using System.Linq;
 
 namespace CodeFlow
 {
@@ -81,11 +82,15 @@ namespace CodeFlow
         private bool _isSolution;
         private uint _cookie;
         private IVsSolution _solution;
+        public string searchPreview;
+        public Microsoft.VisualStudio.OLE.Interop.IServiceProvider OleServiceProvider;
         public DTE2 DTE { get; set; }
         public List<CodeFlowVersion> PackageUpdates { get; set; }
         public InternalSettings Settings { get; set; }
         public FilesManager FileOps { get; set; }
         public Profile Active => Settings?.ActiveProfile ?? new Profile();
+        public string SearchPreviewFile { get => searchPreview; }
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommitCode"/> class.
@@ -94,6 +99,7 @@ namespace CodeFlow
         {
             PackageBridge.Flow = this;
             FileOps = new FilesManager(this);
+            searchPreview = FileOps.GetTempFile();
             // Inside this method you can place any initialization code that does not require
             // any Visual Studio service because at this point the package object is created but
             // not sited yet inside Visual Studio environment. The place to do all the other
@@ -166,6 +172,9 @@ namespace CodeFlow
                 CodeFlowChangesForm changesForm = new CodeFlowChangesForm(PackageUpdates, Settings.ToolVersion, Settings.OldVersion);
                 CodeFlowUIManager.Open(changesForm);
             }
+            OleServiceProvider = (Microsoft.VisualStudio.OLE.Interop.IServiceProvider)await GetServiceAsync(typeof(Microsoft.VisualStudio.OLE.Interop.IServiceProvider));
+
+            await OpenFileAsync(SearchPreviewFile);
         }
 
         private void ReadOldSettings()
@@ -482,7 +491,7 @@ namespace CodeFlow
 
             try
             {
-                DTE.ItemOperations.OpenFile(fileName);
+                DTE?.ItemOperations?.OpenFile(fileName);
 
                 return true;
             }
@@ -528,6 +537,24 @@ namespace CodeFlow
             }
 
             return true;
+        }
+
+        public void UpdateSearchPreview(IManual code, SearchOptions options)
+        {
+#pragma warning disable VSTHRD110 // Observe result of async calls
+            Utils.AsyncHelper.RunSyncUI(async () =>
+#pragma warning restore VSTHRD110 // Observe result of async calls
+            {
+                // Get the instance number 0 of this tool window. This window is single instance so this instance
+                // is actually the only one.
+                // The last flag is set to true so that if the tool window does not exists it will be created.
+                ToolWindowPane window = this.FindToolWindow(typeof(SearchTool), 0, true);
+                if ((null == window) || (null == window.Frame))
+                    throw new NotSupportedException("Cannot create tool window");
+
+                SearchTool tool = window as SearchTool;
+                tool?.UpdateSearchPreview(code, options);
+            });
         }
 
         #endregion

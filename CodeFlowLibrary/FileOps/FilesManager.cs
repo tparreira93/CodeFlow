@@ -97,5 +97,16 @@ namespace CodeFlowLibrary.FileOps
             }
             return man;
         }
+
+        public void WriteToTempFile(string fileName, IManual manual)
+        {
+            var tmp = $"{Path.Combine(Path.GetTempPath(), fileName)}";
+            File.WriteAllText(tmp, manual.ToString(), Encoding.UTF8);
+        }
+
+        public string GetTempFile()
+        {
+            return Path.GetTempFileName();
+        }
     }
 }

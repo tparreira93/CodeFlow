@@ -13,6 +13,15 @@
     using CodeFlowLibrary.GenioCode;
     using CodeFlowLibrary.Genio;
     using CodeFlowLibrary.Bridge;
+    using CodeFlowLibrary.Settings;
+    using System.Linq;
+    using Microsoft.VisualStudio.ComponentModelHost;
+    using Microsoft.VisualStudio.Editor;
+    using Microsoft.VisualStudio.Text.Editor;
+    using Microsoft.VisualStudio.TextManager.Interop;
+    using Microsoft.VisualStudio;
+    using Microsoft.VisualStudio.OLE.Interop;
+    using System.Windows.Forms;
 
     //using CommandHandler;
 
@@ -28,7 +37,7 @@
     /// </para>
     /// </remarks>
     [Guid("92310e84-1d2c-4801-b3e5-63ba1f5f2d5c")]
-    public class SearchTool : ToolWindowPane//, IVsWindowFrameNotify3
+    public class SearchTool : ToolWindowPane, IOleCommandTarget//, IVsWindowFrameNotify3
     {
         private const string toolWindowSet = "4f609967-bec4-4036-9038-1a779d23cc7e";
         private const int cmdidSearchToolbar = 0x101;
@@ -48,6 +57,17 @@
         private bool caseSensitive = false;
         private bool wholeWord = false;
         private readonly object searchLock = new object();
+
+        // Hook preview Window
+        private string previewFile;
+        IComponentModel _componentModel;
+        IVsInvisibleEditorManager _invisibleEditorManager;
+        //This adapter allows us to convert between Visual Studio 2010 editor components and
+        //the legacy components from Visual Studio 2008 and earlier.
+        IVsEditorAdaptersFactoryService _editorAdapter;
+        ITextEditorFactoryService _editorFactoryService;
+        IVsTextView _currentlyFocusedTextView;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchTool"/> class.
         /// </summary>
@@ -59,10 +79,190 @@
             ToolBar = new CommandID(new Guid(toolWindowSet), cmdidSearchToolbar);
             // Specify that we want the toolbar at the top of the window
             ToolBarLocation = (int)VSTWT_LOCATION.VSTWT_TOP;
+            previewFile = PackageBridge.Flow.SearchPreviewFile;
 
-            this.control = new SearchToolControl();
-            Content = control;
+            _componentModel = (IComponentModel)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SComponentModel));
+            _invisibleEditorManager = (IVsInvisibleEditorManager)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsInvisibleEditorManager));
+            _editorAdapter = _componentModel.GetService<IVsEditorAdaptersFactoryService>();
+            _editorFactoryService = _componentModel.GetService<ITextEditorFactoryService>();
         }
+
+
+        #region SidePreview
+
+
+        /// <summary>
+        /// Creates an invisible editor for a given filePath. 
+        /// If you're frequently creating projection buffers, it may be worth caching
+        /// these editors as they're somewhat expensive to create.
+        /// </summary>
+        private IVsInvisibleEditor GetInvisibleEditor(string filePath)
+        {
+            IVsInvisibleEditor invisibleEditor;
+            ErrorHandler.ThrowOnFailure(this._invisibleEditorManager.RegisterInvisibleEditor(
+                filePath
+                , pProject: null
+                , dwFlags: (uint)_EDITORREGFLAGS.RIEF_ENABLECACHING
+                , pFactory: null
+                , ppEditor: out invisibleEditor));
+            RegisterDocument(filePath);
+            return invisibleEditor;
+        }
+
+        uint RegisterDocument(string targetFile)
+        {
+            //Then when creating the IVsInvisibleEditor, find and lock the document 
+            uint itemID;
+            IntPtr docData;
+            uint docCookie;
+            IVsHierarchy hierarchy;
+            var runningDocTable = (IVsRunningDocumentTable)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsRunningDocumentTable)); 
+            
+
+            ErrorHandler.ThrowOnFailure(runningDocTable.FindAndLockDocument(
+                dwRDTLockType: (uint)_VSRDTFLAGS.RDT_EditLock,
+                pszMkDocument: targetFile,
+                ppHier: out hierarchy,
+                pitemid: out itemID,
+                ppunkDocData: out docData,
+                pdwCookie: out docCookie));
+
+            return docCookie;
+        }
+
+        public IWpfTextViewHost CreateEditor(string filePath, int start = 0, int end = 0, bool createProjectedEditor = false)
+        {
+            //IVsInvisibleEditors are in-memory represenations of typical Visual Studio editors.
+            //Language services, highlighting and error squiggles are hooked up to these editors
+            //for us once we convert them to WpfTextViews. 
+            var invisibleEditor = GetInvisibleEditor(filePath);
+
+            var docDataPointer = IntPtr.Zero;
+            Guid guidIVsTextLines = typeof(IVsTextLines).GUID;
+
+            ErrorHandler.ThrowOnFailure(invisibleEditor.GetDocData(
+                fEnsureWritable: 1
+                , riid: ref guidIVsTextLines
+                , ppDocData: out docDataPointer));
+
+            IVsTextLines docData = (IVsTextLines)Marshal.GetObjectForIUnknown(docDataPointer);
+
+            // This will actually be defined as _codewindowbehaviorflags2.CWB_DISABLEDIFF once the latest version of
+            // Microsoft.VisualStudio.TextManager.Interop.16.0.DesignTime is published. Setting the flag will have no effect
+            // on releases prior to d16.0.
+            const _codewindowbehaviorflags CWB_DISABLEDIFF = (_codewindowbehaviorflags)0x04;
+
+            //var serviceProvider = (PackageBridge.Flow as CodeFlowPackage).OleServiceProvider;
+            var serviceProvider = (Microsoft.VisualStudio.OLE.Interop.IServiceProvider)GetService(typeof(Microsoft.VisualStudio.OLE.Interop.IServiceProvider));
+            //Create a code window adapter
+            var codeWindow = _editorAdapter.CreateVsCodeWindowAdapter(serviceProvider);
+
+            // You need to disable the dropdown, splitter and -- for d16.0 -- diff since you are extracting the code window's TextViewHost and using it.
+            ((IVsCodeWindowEx)codeWindow).Initialize((uint)_codewindowbehaviorflags.CWB_DISABLESPLITTER | (uint)_codewindowbehaviorflags.CWB_DISABLEDROPDOWNBAR | (uint)CWB_DISABLEDIFF,
+                                                     VSUSERCONTEXTATTRIBUTEUSAGE.VSUC_Usage_Filter,
+                                                     string.Empty,
+                                                     string.Empty,
+                                                     0,
+                                                     new INITVIEW[1]);
+
+            ErrorHandler.ThrowOnFailure(codeWindow.SetBuffer(docData));
+
+            //Get a text view for our editor which we will then use to get the WPF control for that editor.
+            IVsTextView textView;
+            ErrorHandler.ThrowOnFailure(codeWindow.GetPrimaryView(out textView));
+
+            if (createProjectedEditor)
+            {
+                //We add our own role to this text view. Later this will allow us to selectively modify
+                //this editor without getting in the way of Visual Studio's normal editors.
+                var roles = _editorFactoryService.DefaultRoles.Concat(new string[] { "CustomProjectionRole" });
+
+                var vsTextBuffer = docData as IVsTextBuffer;
+                var textBuffer = _editorAdapter.GetDataBuffer(vsTextBuffer);
+
+                textBuffer.Properties.AddProperty("StartPosition", start);
+                textBuffer.Properties.AddProperty("EndPosition", end);
+                var guid = VSConstants.VsTextBufferUserDataGuid.VsTextViewRoles_guid;
+                ((IVsUserData)codeWindow).SetData(ref guid, _editorFactoryService.CreateTextViewRoleSet(roles).ToString());
+            }
+
+            _currentlyFocusedTextView = textView;
+            var textViewHost = _editorAdapter.GetWpfTextViewHost(textView);
+            return textViewHost;
+        }
+        
+        protected override bool PreProcessMessage(ref Message m)
+        {
+            if (_currentlyFocusedTextView != null)
+            {
+                // copy the Message into a MSG[] array, so we can pass
+                // it along to the active core editor's IVsWindowPane.TranslateAccelerator
+                var pMsg = new MSG[1];
+                pMsg[0].hwnd = m.HWnd;
+                pMsg[0].message = (uint)m.Msg;
+                pMsg[0].wParam = m.WParam;
+                pMsg[0].lParam = m.LParam;
+
+                var vsWindowPane = (IVsWindowPane)_currentlyFocusedTextView;
+                return vsWindowPane.TranslateAccelerator(pMsg) == 0;
+            }
+            return base.PreProcessMessage(ref m);
+        }
+
+        int IOleCommandTarget.Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
+        {
+            var hr =
+              (int)Microsoft.VisualStudio.OLE.Interop.Constants.OLECMDERR_E_NOTSUPPORTED;
+
+            if (_currentlyFocusedTextView != null)
+            {
+                var cmdTarget = (IOleCommandTarget)_currentlyFocusedTextView;
+                hr = cmdTarget.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            }
+            return hr;
+        }
+
+        int IOleCommandTarget.QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
+        {
+            var hr =
+              (int)Microsoft.VisualStudio.OLE.Interop.Constants.OLECMDERR_E_NOTSUPPORTED;
+
+            if (_currentlyFocusedTextView != null)
+            {
+                var cmdTarget = (IOleCommandTarget)_currentlyFocusedTextView;
+                hr = cmdTarget.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
+            }
+            return hr;
+        }
+
+
+        private IWpfTextViewHost _completeTextViewHost;
+        public IWpfTextViewHost CompleteTextViewHost
+        {
+            get
+            {
+                if (_completeTextViewHost == null)
+                {
+                    _completeTextViewHost = CreateEditor(previewFile);
+                }
+                return _completeTextViewHost;
+            }
+        }
+
+        public override object Content
+        {
+            get
+            {
+                if (control == null)
+                {
+                    control = new SearchToolControl();
+                    control.HookPreview(CompleteTextViewHost?.HostControl); // Don't rely on the IWpfTextViewHost implementation being a FrameworkElement
+                }
+                return control;
+            }
+        }
+
+        #endregion
 
 
         /// <summary>
@@ -72,6 +272,12 @@
         /// </summary>
         public override void OnToolWindowCreated()
         {
+            //We need to set up the tool window to respond to key bindings
+            //They're passed to the tool window and its buffers via Query() and Exec()
+            var windowFrame = (IVsWindowFrame)Frame;
+            var cmdUi = VSConstants.GUID_TextEditorFactory;
+            windowFrame.SetGuidProperty((int)__VSFPROPID.VSFPROPID_InheritKeyBindings, ref cmdUi);
+
             base.OnToolWindowCreated();
 
             // Set the text that will appear in the title bar of the tool window.
@@ -87,7 +293,7 @@
                 commandService.AddCommand(command);
 
                 menuCommandID = new CommandID(new Guid(toolWindowSet), cmdIdSearchBox);
-                var searchBoxCommand = new OleMenuCommand(new EventHandler(SearchTerm), new EventHandler(ChangeSearchTerm), new EventHandler(BeforeSearchTerm), menuCommandID)
+                var searchBoxCommand = new OleMenuCommand(new EventHandler(SearchTerm), menuCommandID)
                 {
                     ParametersDescription = "$" // accept any argument string
                 };
@@ -120,14 +326,14 @@
             SetPlataform(this, new OleMenuCmdEventArgs("All", new IntPtr()));
         }
 
-        private void BeforeSearchTerm(object sender, EventArgs e)
+        public void UpdateSearchPreview(IManual code, SearchOptions options)
         {
-            
-        }
-
-        private void ChangeSearchTerm(object sender, EventArgs e)
-        {
-
+            Profile p = PackageBridge.Flow.Active;
+            string ext = code.GetCodeExtension(p);
+            var extensionList = p.GenioConfiguration.Plataforms.SelectMany(x => x.TipoRotina.Select(t => t.ProgrammingLanguage)).Distinct();
+            int size = CompleteTextViewHost.TextView.TextSnapshot.Length;
+            var edit = CompleteTextViewHost.TextView.TextBuffer.CreateEdit();
+            edit.Replace(0, size, code.ToString());
         }
 
         private void SearchTerm(object sender, EventArgs e)
@@ -274,12 +480,12 @@
                         // Update UI 
                         Utils.AsyncHelper.RunSyncUI(() =>
                         {
-                            control.RefreshteList(res, new CodeFlowLibrary.Settings.SearchOptions(p, currentSearch, wholeWord, caseSensitive));
+                            control.RefreshteList(res, new SearchOptions(p, currentSearch, wholeWord, caseSensitive));
                             cmd.Enabled = true;
 
                             if (error.Length != 0)
                             {
-                                MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, error), CodeFlowResources.Resources.Search,
+                                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, error), CodeFlowResources.Resources.Search,
                                     MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         });

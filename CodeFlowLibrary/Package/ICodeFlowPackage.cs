@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CodeFlowLibrary.CodeControl.Operations;
 using CodeFlowLibrary.FileOps;
 using CodeFlowLibrary.Genio;
+using CodeFlowLibrary.GenioCode;
 using CodeFlowLibrary.Settings;
 using CodeFlowLibrary.Versions;
 
@@ -17,6 +18,7 @@ namespace CodeFlowLibrary.Package
         InternalSettings Settings { get; set; }
         FilesManager FileOps { get; set; }
         Profile Active { get; }
+        string SearchPreviewFile { get; }
 
         Task<bool> OpenOnPositionAsync(string fileName, int position);
         void SetProfile(string profileName);
@@ -25,5 +27,6 @@ namespace CodeFlowLibrary.Package
         Task FindCodeAsync(SearchOptions searchOptions);
         void SaveSettings();
         bool ExecuteOperation(IOperation operation);
+        void UpdateSearchPreview(IManual code, SearchOptions options);
     }
 }
