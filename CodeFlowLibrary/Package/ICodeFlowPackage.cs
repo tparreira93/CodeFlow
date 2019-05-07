@@ -19,7 +19,6 @@ namespace CodeFlowLibrary.Package
         FilesManager FileOps { get; set; }
         Profile Active { get; }
         string SearchPreviewFile { get; }
-
         Task<bool> OpenOnPositionAsync(string fileName, int position);
         void SetProfile(string profileName);
         void LoadProfile(string profileName);
@@ -28,6 +27,6 @@ namespace CodeFlowLibrary.Package
         Task FindCodeAsync(SearchOptions searchOptions);
         void SaveSettings();
         bool ExecuteOperation(IOperation operation);
-        void UpdateSearchPreview(IManual code, SearchOptions options);
+        object GetService(Type t);
     }
 }

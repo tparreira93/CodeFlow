@@ -64,6 +64,7 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="Resources\ManwinInfoData.xml" />
+    <None Include="Resources\sqlmode.xshd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

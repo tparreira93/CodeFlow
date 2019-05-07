@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CodeFlowLibrary.Solution;
 using CodeFlowLibrary.Versions;
 using Version = CodeFlowLibrary.Versions.Version;
 
@@ -258,7 +259,7 @@ namespace CodeFlow.Versions
 
             version = new CodeFlowVersion();
             version.Version = new Version(3, 10, 0);
-            //version.AddChange("It is now possible to go to change position from commit form.");
+            version.AddChange("It is now possible to go to change position from commit form.");
             version.AddChange("Tags are now ordered in creation form.");
             changes.Add(version);
 
@@ -319,6 +320,15 @@ namespace CodeFlow.Versions
             version.AddChange($"Keyboard shortcut for search now automacally executes search.");
             changes.Add(version);
 
+            version = new CodeFlowVersion();
+            version.Version = new Version(4, 0, 5);
+            version.AddChange(new CodeFlowOptionsCommand($"Added a preview window to the search results.", () => 
+            {
+                grid.ShowPreview = true;
+                grid.PreviewOption = PreviewOption.Simple;
+                return true;
+            }));
+            changes.Add(version);
             return changes;
         }
     }

@@ -70,6 +70,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeUtils\Suggestions\BlameSVNSuggestion.cs" />
+    <Compile Include="Editor\VisualStudioCodeAdapter.cs" />
+    <Compile Include="Editor\VisualStudioCodeEditor.cs" />
+    <Compile Include="Editor\VS2019HostControl.cs" />
     <Compile Include="Handlers\VsCommander.cs" />
     <Compile Include="Commands\CreateInGenio.cs" />
     <Compile Include="Commands\GenioProfilesCommand.cs" />
@@ -164,6 +167,7 @@
     <Reference Include="EnvDTE90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -342,6 +346,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="OptionsPageGrid.resx">
+      <DependentUpon>OptionsPageGrid.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
     </EmbeddedResource>

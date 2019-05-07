@@ -174,7 +174,7 @@ namespace CodeFlow
             }
             OleServiceProvider = (Microsoft.VisualStudio.OLE.Interop.IServiceProvider)await GetServiceAsync(typeof(Microsoft.VisualStudio.OLE.Interop.IServiceProvider));
 
-            await OpenFileAsync(SearchPreviewFile);
+            // await OpenFileAsync(SearchPreviewFile);
         }
 
         private void ReadOldSettings()
@@ -487,6 +487,7 @@ namespace CodeFlow
 
         public bool OpenFile(string fileName)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 DTE?.ItemOperations?.OpenFile(fileName);
@@ -543,24 +544,6 @@ namespace CodeFlow
             return true;
         }
 
-        public void UpdateSearchPreview(IManual code, SearchOptions options)
-        {
-#pragma warning disable VSTHRD110 // Observe result of async calls
-            Utils.AsyncHelper.RunSyncUI(async () =>
-#pragma warning restore VSTHRD110 // Observe result of async calls
-            {
-                // Get the instance number 0 of this tool window. This window is single instance so this instance
-                // is actually the only one.
-                // The last flag is set to true so that if the tool window does not exists it will be created.
-                ToolWindowPane window = this.FindToolWindow(typeof(SearchTool), 0, true);
-                if ((null == window) || (null == window.Frame))
-                    throw new NotSupportedException("Cannot create tool window");
-
-                SearchTool tool = window as SearchTool;
-                tool?.UpdateSearchPreview(code, options);
-            });
-        }
-
         #endregion
 
         #region Operations
@@ -571,6 +554,11 @@ namespace CodeFlow
                 PackageBridge.Instance.ChangeLog.LogOperation(operation);
 
             return result;
+        }
+
+        object ICodeFlowPackage.GetService(Type t)
+        {
+            return GetService(t);
         }
         #endregion
     }

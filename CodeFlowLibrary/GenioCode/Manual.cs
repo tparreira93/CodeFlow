@@ -260,7 +260,7 @@ namespace CodeFlowLibrary.GenioCode
                 throw new Exception(string.Format(CodeFlowResources.Resources.ErrorSVN, e.Message));
             }
         }
-       protected string FormatComment(string extension, string str)
+        protected string FormatComment(string extension, string str)
         {
             switch (extension)
             {

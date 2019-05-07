@@ -3,6 +3,8 @@ using System.ComponentModel;
 using Microsoft.VisualStudio.Shell;
 using CodeFlowLibrary.Bridge;
 using CodeFlowLibrary.Settings;
+using CodeFlow.Editor;
+using CodeFlowLibrary.Solution;
 
 namespace CodeFlow
 {
@@ -15,10 +17,12 @@ namespace CodeFlow
         //private bool _parseSolutionOnStartup;
         private bool _autoVccto2008Fix;
         private bool _autoExportSaved;
+        private PreviewOption _searchPreviewOption;
         private bool _forceDosLine;
         private bool _logOperations;
         private bool _fixIndexes;
         private int _maxTaskSolutionCommit;
+        private bool _showPreview;
 
         //[Category("Solution")]
         //[DefaultValue(true)]
@@ -56,6 +60,32 @@ namespace CodeFlow
             {
                 _autoExportSaved = value;
                 PackageOptions.AutoExportSaved = value;
+            }
+        }
+
+        [Category("Code search")]
+        [DefaultValue(true)]
+        [DisplayName("Preview window")]
+        [Description("Previews are shown next to the results list.")]
+        public bool ShowPreview
+        {
+            get => _showPreview; set
+            {
+                _showPreview = value;
+                PackageOptions.ShowPreview = value;
+            }
+        }
+
+        [Category("Code search")]
+        [DefaultValue(PreviewOption.Simple)]
+        [DisplayName("Editor")]
+        [Description("Editor used to display preview of search results.")]
+        public PreviewOption PreviewOption
+        {
+            get => _searchPreviewOption; set
+            {
+                _searchPreviewOption = value;
+                PackageOptions.SearchPreviewOption = value;
             }
         }
 
@@ -171,6 +201,11 @@ namespace CodeFlow
                 _fixIndexes = value;
                 ManualCodeOptions.FixIndexes = value;
             }
+        }
+
+        private void InitializeComponent()
+        {
+
         }
     }
 }

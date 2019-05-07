@@ -4,16 +4,19 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Globalization;
+    using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Data;
     using System.Windows.Documents;
     using System.Windows.Media;
     using CodeFlowLibrary.Bridge;
     using CodeFlowLibrary.GenioCode;
-    using CodeFlowLibrary.Package;
     using CodeFlowLibrary.Settings;
+    using CodeFlowUI.Controls.Editor;
 
     /// <summary>
     /// Interaction logic for SearchToolControl.
@@ -24,14 +27,17 @@
         private SortAdorner listViewSortAdorner = null;
         private ObservableCollection<IManual> results = new ObservableCollection<IManual>();
         public SearchOptions searchOptions = new SearchOptions();
+        public ICodeEditor CodeEditor { get; private set; }
+        public bool ShowPreview { get; private set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchToolControl"/> class.
         /// </summary>
-        public SearchToolControl()
+        public SearchToolControl(bool showPreview, ICodeEditor editor = null)
         {
             this.InitializeComponent();
             lstCode.ItemsSource = results;
             lstCode.DataContext = this;
+            UpdateOptions(showPreview, editor);
         }
 
         public void Clear()
@@ -48,11 +54,6 @@
                 results.Add(m);
 
             FindListViewItem(lstCode);
-        }
-
-        public void HookPreview(object viewHost)
-        {
-            Preview.Content = viewHost;
         }
 
         private void lstFindMan_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -112,6 +113,15 @@
             listViewSortAdorner = new SortAdorner(listViewSortCol, newDir);
             AdornerLayer.GetAdornerLayer(listViewSortCol).Add(listViewSortAdorner);
             lstCode.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
+        }
+
+        public void UpdateOptions(bool showPreview, ICodeEditor editor)
+        {
+            ShowPreview = showPreview;
+            CodeEditor = editor;
+
+            if (showPreview)
+                Preview.Content = CodeEditor.GetUIControl();
         }
 
         public void FindListViewItem(DependencyObject obj)
@@ -185,35 +195,15 @@
             results.Clear();
         }
 
-        private void lstColumnSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            /*if(e.Source is GridViewColumnHeader column)
-            {
-                if (column.Tag.Equals("Type"))
-                    Properties.Settings.Default.ColTypeSize = column.ActualWidth;
-
-                else if (column.Tag.Equals("Tag"))
-                    Properties.Settings.Default.ColTagSize = column.ActualWidth;
-
-                else if (column.Tag.Equals("Tipo"))
-                    Properties.Settings.Default.ColTipoSize = column.ActualWidth;
-
-                else if (column.Tag.Equals("Plataform"))
-                    Properties.Settings.Default.ColPlatSize = column.ActualWidth;
-
-                else if (column.Tag.Equals("OneLineCode"))
-                    Properties.Settings.Default.ColCodeSize = column.ActualWidth;
-
-                Properties.Settings.Default.Save();
-            }*/
-        }
-
         private void LstCode_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (lstCode.SelectedIndex >= 0)
+            if (lstCode.SelectedIndex >= 0 && ShowPreview && CodeEditor != null)
             {
+                Type t = lstCode.SelectedItem.GetType();
                 IManual man = lstCode.SelectedItem as IManual;
-                PackageBridge.Flow.UpdateSearchPreview(man, searchOptions);
+                man = Manual.GetManual(t, man.CodeId, PackageBridge.Flow.Active);
+                
+                Preview.Content = CodeEditor.GetUIControl(PackageBridge.Flow.Active, man, searchOptions);
             }
         }
     }
