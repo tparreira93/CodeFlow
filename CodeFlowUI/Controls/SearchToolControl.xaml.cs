@@ -202,8 +202,11 @@
                 Type t = lstCode.SelectedItem.GetType();
                 IManual man = lstCode.SelectedItem as IManual;
                 man = Manual.GetManual(t, man.CodeId, PackageBridge.Flow.Active);
-                
-                Preview.Content = CodeEditor.GetUIControl(PackageBridge.Flow.Active, man, searchOptions);
+                var previewer = Preview.Content;
+                var newPreviewer = CodeEditor.GetUIControl(PackageBridge.Flow.Active, man, searchOptions);
+
+                if (previewer != newPreviewer)
+                    Preview.Content = newPreviewer;
             }
         }
     }

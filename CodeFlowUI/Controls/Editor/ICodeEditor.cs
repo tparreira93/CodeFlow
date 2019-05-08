@@ -12,6 +12,7 @@ namespace CodeFlowUI.Controls.Editor
 {
     public interface ICodeEditor
     {
+        ICodeEditorAdapter CodeAdapter { get; }
         ICodeFlowPackage Package { get; }
         string GetText();
         object GetUIControl(Profile profile = null, IManual code = null, SearchOptions options = null);

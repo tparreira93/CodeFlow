@@ -26,7 +26,9 @@ namespace CodeFlowUI.Controls.Editor
         public Dictionary<string, IHighlightingDefinition> HighlightDefinitions { get; private set; }
         public List<string> Highlighters { get; private set; }
         public SearchPanel EditorSearch { get; private set; }
-        public ICodeFlowPackage Package => throw new NotImplementedException();
+        public ICodeFlowPackage Package { get; private set; }
+        public ICodeEditorAdapter CodeAdapter => null;
+        private UIElement element { get; set; }
 
         public AvalonCodeEditor(ICodeFlowPackage package)
         {
@@ -48,6 +50,7 @@ namespace CodeFlowUI.Controls.Editor
             HighlightDefinitions["SQL"] = LoadHighlightingDefinition("sqlmode.xshd");
             Highlighters.Sort();
             Highlighters.Insert(0, "None");
+            Package = package;
         }
 
         private IHighlightingDefinition LoadHighlightingDefinition(string resourceName)
@@ -109,10 +112,15 @@ namespace CodeFlowUI.Controls.Editor
 
         public object GetUIControl(Profile profile, IManual code, SearchOptions options = null)
         {
-            Border border = new Border();
-            border.BorderBrush = (Brush)new SolidColorBrush(Color.FromRgb((byte)160, (byte)160, (byte)160));
-            border.BorderThickness = new Thickness(1.0);
-            border.Child = Editor;
+            if (element == null)
+            {
+                Border border = new Border();
+                border.BorderBrush = new SolidColorBrush(Color.FromRgb(160, 160, 160));
+                border.BorderThickness = new Thickness(1.0);
+                border.Child = Editor;
+
+                element = border;
+            }
 
             return Editor;
         }

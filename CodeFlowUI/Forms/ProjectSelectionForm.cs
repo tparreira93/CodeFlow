@@ -56,7 +56,8 @@ namespace CodeFlowUI
                     TreeNode itemNode = new TreeNode(item.ItemName);
                     itemNode.Tag = item;
                     itemNode.Checked = true;
-                    node.Nodes.Add(itemNode);
+                    if (!node.Nodes.Cast<TreeNode>().Any(x => x.Tag is GenioProjectItem p && p.ItemPath == item.ItemPath))
+                        node.Nodes.Add(itemNode);
                 }
             }
         }

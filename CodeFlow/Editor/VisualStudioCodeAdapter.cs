@@ -23,14 +23,13 @@ namespace CodeFlow.Editor
 {
     public class VisualStudioCodeAdapter : ICodeEditorAdapter
     {
-        private ICodeFlowPackage _package;
-        public ICodeFlowPackage Package => _package;
+        public ICodeFlowPackage Package { get; private set; }
 
         IComponentModel _componentModel;
         private IVsInvisibleEditor invisibleEditor;
         private IVsCodeWindow codeWindow;
         private IVsTextView textView;
-        private Microsoft.VisualStudio.OLE.Interop.IOleCommandTarget editorCommandTarget;
+        private IOleCommandTarget editorCommandTarget;
         private UIElement textViewHostControl;
         private IVsTextLines textLines;
 
@@ -38,7 +37,7 @@ namespace CodeFlow.Editor
 
         public VisualStudioCodeAdapter(ICodeFlowPackage package)
         {
-            _package = package;
+            Package = package;
         }
 
 
@@ -143,7 +142,7 @@ namespace CodeFlow.Editor
 
         public bool Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut, out int result)
         {
-            if (textViewHostControl.IsKeyboardFocusWithin && this.editorCommandTarget != null)
+            if (textViewHostControl != null && textViewHostControl.IsKeyboardFocusWithin && this.editorCommandTarget != null)
             {
                 result = editorCommandTarget.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
                 return true;
@@ -164,7 +163,7 @@ namespace CodeFlow.Editor
 
         public bool PreProcessMessage(ref Message m)
         {
-            if (m.Msg < 256 || m.Msg > 265 || !textViewHostControl.IsKeyboardFocusWithin)
+            if (m.Msg < 256 || m.Msg > 265 || textViewHostControl == null || !textViewHostControl.IsKeyboardFocusWithin)
                 return false;
             Guid pguidCmd;
             uint pdwCmd;
@@ -179,7 +178,8 @@ namespace CodeFlow.Editor
 
         public bool QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText, out int result)
         {
-            if (textViewHostControl.IsKeyboardFocusWithin && this.editorCommandTarget != null)
+            if (textViewHostControl != null
+                && textViewHostControl.IsKeyboardFocusWithin && editorCommandTarget != null)
             {
                 result = editorCommandTarget.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
                 return true;
@@ -194,8 +194,11 @@ namespace CodeFlow.Editor
 
         public string GetText()
         {
+            if (textView == null)
+                return string.Empty;
+
             IVsTextLines ppBuffer;
-            ErrorHandler.ThrowOnFailure(this.textView.GetBuffer(out ppBuffer));
+            ErrorHandler.ThrowOnFailure(textView.GetBuffer(out ppBuffer));
             int piLine;
             int piIndex;
             ErrorHandler.ThrowOnFailure(ppBuffer.GetLastLineIndex(out piLine, out piIndex));

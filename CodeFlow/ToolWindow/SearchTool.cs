@@ -40,7 +40,8 @@
     /// </para>
     /// </remarks>
     [Guid("92310e84-1d2c-4801-b3e5-63ba1f5f2d5c")]
-    public class SearchTool : ToolWindowPane//, IOleCommandTarget//, IVsWindowFrameNotify3
+    public class SearchTool : ToolWindowPane, IVsWindowFrameNotify3, Microsoft.VisualStudio.OLE.Interop.IOleCommandTarget, IVsFindTarget, IVsFindTarget2
+        //ToolWindowPane//, IOleCommandTarget//, IVsWindowFrameNotify3
     {
         private const string toolWindowSet = "4f609967-bec4-4036-9038-1a779d23cc7e";
         private const int cmdidSearchToolbar = 0x101;
@@ -54,6 +55,8 @@
         private const int cmdIdPlataformComboGetList = 0x2007;
         private const int cmdExecuteSearch = 0x2008;
 
+
+        private bool closed = true;
         private SearchToolControl control = null;
         public static bool WindowInitialized = false;
         private string plataform = "";
@@ -61,6 +64,7 @@
         private bool caseSensitive = false;
         private bool wholeWord = false;
         private readonly object searchLock = new object();
+        private ICodeEditor editor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchTool"/> class.
@@ -73,11 +77,12 @@
             ToolBar = new CommandID(new Guid(toolWindowSet), cmdidSearchToolbar);
             // Specify that we want the toolbar at the top of the window
             ToolBarLocation = (int)VSTWT_LOCATION.VSTWT_TOP;
-            var editor = GetCodeEditor(PackageOptions.ShowPreview, PackageOptions.SearchPreviewOption);
+            editor = GetCodeEditor(PackageOptions.ShowPreview, PackageOptions.SearchPreviewOption);
             control = new SearchToolControl(PackageOptions.ShowPreview, editor);
             Content = control;
 
             PackageOptions.OnPreviewOptionChanged += OnPreviewChanged;
+            closed = editor == null;
         }
 
         private ICodeEditor GetCodeEditor(bool searchPreview, PreviewOption option)
@@ -96,7 +101,8 @@
 
         private void OnPreviewChanged(bool searchPreview, PreviewOption option)
         {
-            var editor = GetCodeEditor(searchPreview, option);
+            editor = GetCodeEditor(searchPreview, option);
+            closed = editor == null;
             control.UpdateOptions(searchPreview, editor);
         }
 
@@ -341,5 +347,366 @@
             command.Checked = !command.Checked;
             caseSensitive = command.Checked;
         }
+
+        #region Test
+
+
+        public int OnShow(int fShow)
+        {
+            if (fShow == 7 && !closed)
+                closed = true;
+            return 0;
+        }
+
+        public int OnClose(ref uint pgrfSaveOptions)
+        {
+            return 0;
+        }
+
+        public int OnDockableChange(int fDockable, int x, int y, int w, int h)
+        {
+            return 0;
+        }
+
+        public int OnMove(int x, int y, int w, int h)
+        {
+            return 0;
+        }
+
+        public int OnSize(int x, int y, int w, int h)
+        {
+            return 0;
+        }
+
+        public int Find(
+          string pszSearch,
+          uint grfOptions,
+          int fResetStartPoint,
+          IVsFindHelper pHelper,
+          out uint pResult)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    IVsFindTarget findTarget = editor.CodeAdapter.GetFindTarget();
+                    if (findTarget != null)
+                        return findTarget.Find(pszSearch, grfOptions, fResetStartPoint, pHelper, out pResult);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            pResult = 7U;
+            return 1;
+        }
+
+        public int GetCapabilities(bool[] pfImage, uint[] pgrfOptions)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    IVsFindTarget findTarget = editor.CodeAdapter.GetFindTarget();
+                    if (findTarget != null)
+                        return findTarget.GetCapabilities(pfImage, pgrfOptions);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return 1;
+        }
+
+        public int GetCurrentSpan(TextSpan[] pts)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    IVsFindTarget findTarget = editor.CodeAdapter.GetFindTarget();
+                    if (findTarget != null)
+                        return findTarget.GetCurrentSpan(pts);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return 1;
+        }
+
+        public int GetFindState(out object ppunk)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    IVsFindTarget findTarget = editor.CodeAdapter.GetFindTarget();
+                    if (findTarget != null)
+                        return findTarget.GetFindState(out ppunk);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            ppunk = (object)null;
+            return 1;
+        }
+
+        public int GetMatchRect(RECT[] prc)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    IVsFindTarget findTarget = editor.CodeAdapter.GetFindTarget();
+                    if (findTarget != null)
+                        return findTarget.GetMatchRect(prc);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return 1;
+        }
+
+        public int GetProperty(uint propid, out object pvar)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    IVsFindTarget findTarget = editor.CodeAdapter.GetFindTarget();
+                    if (findTarget != null)
+                        return findTarget.GetProperty(propid, out pvar);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            pvar = (object)null;
+            return 1;
+        }
+
+        public int GetSearchImage(
+          uint grfOptions,
+          IVsTextSpanSet[] ppSpans,
+          out IVsTextImage ppTextImage)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    IVsFindTarget findTarget = editor.CodeAdapter.GetFindTarget();
+                    if (findTarget != null)
+                        return findTarget.GetSearchImage(grfOptions, ppSpans, out ppTextImage);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            ppTextImage = (IVsTextImage)null;
+            return 1;
+        }
+
+        public int MarkSpan(TextSpan[] pts)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    IVsFindTarget findTarget = editor.CodeAdapter.GetFindTarget();
+                    if (findTarget != null)
+                        return findTarget.MarkSpan(pts);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return 1;
+        }
+
+        public int NavigateTo(TextSpan[] pts)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    IVsFindTarget findTarget = editor.CodeAdapter.GetFindTarget();
+                    if (findTarget != null)
+                        return findTarget.NavigateTo(pts);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return 1;
+        }
+
+        public int NotifyFindTarget(uint notification)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    IVsFindTarget findTarget = editor.CodeAdapter.GetFindTarget();
+                    if (findTarget != null)
+                        return findTarget.NotifyFindTarget(notification);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return 1;
+        }
+
+        public int Replace(
+          string pszSearch,
+          string pszReplace,
+          uint grfOptions,
+          int fResetStartPoint,
+          IVsFindHelper pHelper,
+          out int pfReplaced)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    IVsFindTarget findTarget = editor.CodeAdapter.GetFindTarget();
+                    if (findTarget != null)
+                        return findTarget.Replace(pszSearch, pszReplace, grfOptions, fResetStartPoint, pHelper, out pfReplaced);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            pfReplaced = 0;
+            return 1;
+        }
+
+        public int SetFindState(object pUnk)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    IVsFindTarget findTarget = editor.CodeAdapter.GetFindTarget();
+                    if (findTarget != null)
+                        return findTarget.SetFindState(pUnk);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return 1;
+        }
+
+        public int NavigateTo2(IVsTextSpanSet pSpans, TextSelMode iSelMode)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    IVsFindTarget2 findTarget2 = editor.CodeAdapter.GetFindTarget2();
+                    if (findTarget2 != null)
+                        return findTarget2.NavigateTo2(pSpans, iSelMode);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return 1;
+        }
+
+        protected override bool PreProcessMessage(ref Message m)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    if (editor.CodeAdapter.PreProcessMessage(ref m))
+                        return true;
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return base.PreProcessMessage(ref m);
+        }
+
+        int IOleCommandTarget.Exec(
+          ref Guid pguidCmdGroup,
+          uint nCmdID,
+          uint nCmdexecopt,
+          IntPtr pvaIn,
+          IntPtr pvaOut)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    if (editor.CodeAdapter.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut, out int result))
+                        return result;
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return -2147221248;
+        }
+
+        int IOleCommandTarget.QueryStatus(
+          ref Guid pguidCmdGroup,
+          uint cCmds,
+          OLECMD[] prgCmds,
+          IntPtr pCmdText)
+        {
+            try
+            {
+                if (!this.closed && editor.CodeAdapter != null)
+                {
+                    if (editor.CodeAdapter.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText, out int result))
+                        return result;
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, e.Message), CodeFlowResources.Resources.Search,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return -2147221248;
+        }
+
+        #endregion
     }
 }

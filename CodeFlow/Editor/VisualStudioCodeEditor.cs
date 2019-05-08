@@ -17,7 +17,7 @@ namespace CodeFlow.Editor
     {
         private ICodeFlowPackage _package;
         public ICodeFlowPackage Package => _package;
-        public VisualStudioCodeAdapter CodeAdapter { get; private set; }
+        public ICodeEditorAdapter CodeAdapter { get; private set; }
         public Dictionary<string, string> LanguageFiles { get; private set; }
 
         public VisualStudioCodeEditor(ICodeFlowPackage package)
