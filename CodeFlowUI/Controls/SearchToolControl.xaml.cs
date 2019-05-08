@@ -120,8 +120,14 @@
             ShowPreview = showPreview;
             CodeEditor = editor;
 
+            Visibility vis = Visibility.Collapsed;
             if (showPreview)
+            {
                 Preview.Content = CodeEditor.GetUIControl();
+                vis = Visibility.Visible;
+            }
+            Preview.Visibility = vis;
+            Splitter.Visibility = vis;
         }
 
         public void FindListViewItem(DependencyObject obj)
