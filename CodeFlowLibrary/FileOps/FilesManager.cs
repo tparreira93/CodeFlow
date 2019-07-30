@@ -25,12 +25,11 @@ namespace CodeFlowLibrary.FileOps
 
         private void AddTempFile(string file)
         {
-            if (FindTempFile(file) != null)
-                openFiles.Add(new TempFile(Path.GetFileName(file), file, false));
+            AddTempFile(new TempFile(Path.GetFileName(file), file, false));
         }
         private void AddTempFile(TempFile file)
         {
-            if (FindTempFile(file.FullFilePath) != null)
+            if (FindTempFile(file.FullFilePath) == null)
                 openFiles.Add(file);
         }
 

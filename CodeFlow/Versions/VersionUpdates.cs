@@ -319,6 +319,11 @@ namespace CodeFlow.Versions
             version.AddChange($"Keyboard shortcut for search now automacally executes search.");
             changes.Add(version);
 
+            version = new CodeFlowVersion();
+            version.Version = new Version(4, 0, 5);
+            version.AddChange($"Fix in Code search functionality, it was not auto commiting files.");
+            changes.Add(version);
+
             return changes;
         }
     }
