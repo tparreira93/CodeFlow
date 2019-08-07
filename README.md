@@ -6,7 +6,7 @@
 
 # What is CodeFlow?
 
-CodeFlow is an Microsoft Visual Studio 2017 extension that integrates developement with Quidgest Genio.
+CodeFlow is an Microsoft Visual Studio 2017 extension that integrates developement with Quidgest Genio. It is currently being used the main bridge between software in Genio and Visual Studio at Quidgest.
 
 # Features
  - Multiple checkouts
