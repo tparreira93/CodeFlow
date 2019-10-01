@@ -25,6 +25,7 @@
     using CodeFlowUI.Controls.Editor;
     using CodeFlow.Editor;
     using CodeFlowLibrary.Solution;
+    using Constants = Microsoft.VisualStudio.OLE.Interop.Constants;
 
     //using CommandHandler;
 
@@ -40,14 +41,14 @@
     /// </para>
     /// </remarks>
     [Guid("92310e84-1d2c-4801-b3e5-63ba1f5f2d5c")]
-    public class SearchTool : ToolWindowPane, IVsWindowFrameNotify3, Microsoft.VisualStudio.OLE.Interop.IOleCommandTarget, IVsFindTarget, IVsFindTarget2
-        //ToolWindowPane//, IOleCommandTarget//, IVsWindowFrameNotify3
+    public class SearchTool : ToolWindowPane, IVsWindowFrameNotify3, IVsFindTarget, IVsFindTarget2, IOleCommandTarget
+    //ToolWindowPane//, IOleCommandTarget//, IVsWindowFrameNotify3
     {
         private const string toolWindowSet = "4f609967-bec4-4036-9038-1a779d23cc7e";
         private const int cmdidSearchToolbar = 0x101;
         private const int cmdidSearchToolbarGroup = 0x1001;
         private const int cmdidSearchToolbarGroup2 = 0x1002;
-        private const int cmdidSearchManualCode = 0x2003;
+        private const int cmdidButtonSearchManualCode = 0x2003;
         private const int cmdIdSearchBox = 0x105;
         private const int cmdIdWholeWord = 0x2004;
         private const int cmdIdCaseSensitive = 0x2005;
@@ -63,8 +64,16 @@
         private string currentSearch = "";
         private bool caseSensitive = false;
         private bool wholeWord = false;
-        private readonly object searchLock = new object();
+        private static readonly object searchLock = new object();
         private ICodeEditor editor;
+        private MenuCommand buttonCommand;
+        private OleMenuCommand searchBoxCommand;
+        private MenuCommand searchManualCodeCommand;
+        private MenuCommand caseSensitiveCommand;
+        private MenuCommand wholeWordCommand;
+        private OleMenuCommand plataformDropdownComboCommand;
+        private OleMenuCommand plataformDropdownListCommand;
+        private List<MenuCommand> commands = new List<MenuCommand>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchTool"/> class.
@@ -130,12 +139,12 @@
 
             if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
             {
-                var menuCommandID = new CommandID(new Guid(toolWindowSet), cmdidSearchManualCode);
-                var command = new MenuCommand(this.SearchManualCode, menuCommandID);
-                commandService.AddCommand(command);
+                var menuCommandID = new CommandID(new Guid(toolWindowSet), cmdidButtonSearchManualCode);
+                buttonCommand = new MenuCommand(this.SearchManualCode, menuCommandID);
+                commandService.AddCommand(buttonCommand);
 
                 menuCommandID = new CommandID(new Guid(toolWindowSet), cmdIdSearchBox);
-                var searchBoxCommand = new OleMenuCommand(new EventHandler(SearchTerm), menuCommandID)
+                searchBoxCommand = new OleMenuCommand(new EventHandler(SearchTerm), menuCommandID)
                 {
                     ParametersDescription = "$" // accept any argument string
                 };
@@ -143,24 +152,32 @@
                 commandService.AddCommand(searchBoxCommand);
 
                 menuCommandID = new CommandID(new Guid(toolWindowSet), cmdExecuteSearch);
-                command = new MenuCommand(this.SearchManualCode, menuCommandID);
-                commandService.AddCommand(command);
+                searchManualCodeCommand = new MenuCommand(this.SearchManualCode, menuCommandID);
+                commandService.AddCommand(searchManualCodeCommand);
 
                 menuCommandID = new CommandID(new Guid(toolWindowSet), cmdIdCaseSensitive);
-                command = new MenuCommand(this.CheckCaseSensitive, menuCommandID);
-                commandService.AddCommand(command);
+                caseSensitiveCommand = new MenuCommand(this.CheckCaseSensitive, menuCommandID);
+                commandService.AddCommand(caseSensitiveCommand);
 
                 menuCommandID = new CommandID(new Guid(toolWindowSet), cmdIdWholeWord);
-                command = new MenuCommand(this.CheckWholeWord, menuCommandID);
-                commandService.AddCommand(command);
+                wholeWordCommand = new MenuCommand(this.CheckWholeWord, menuCommandID);
+                commandService.AddCommand(wholeWordCommand);
 
                 menuCommandID = new CommandID(new Guid(toolWindowSet), cmdIdPlataformCombo);
-                OleMenuCommand menuMyDropDownComboCommand = new OleMenuCommand(new EventHandler(SetPlataform), menuCommandID);
-                commandService.AddCommand(menuMyDropDownComboCommand);
+                plataformDropdownComboCommand = new OleMenuCommand(new EventHandler(SetPlataform), menuCommandID);
+                commandService.AddCommand(plataformDropdownComboCommand);
 
                 menuCommandID = new CommandID(new Guid(toolWindowSet), cmdIdPlataformComboGetList);
-                MenuCommand menuMyDropDownComboGetListCommand = new OleMenuCommand(new EventHandler(GetPlataformList), menuCommandID);
-                commandService.AddCommand(menuMyDropDownComboGetListCommand);
+                plataformDropdownListCommand = new OleMenuCommand(new EventHandler(GetPlataformList), menuCommandID);
+                commandService.AddCommand(plataformDropdownListCommand);
+
+                commands.Add(buttonCommand);
+                commands.Add(searchBoxCommand);
+                commands.Add(searchManualCodeCommand);
+                commands.Add(caseSensitiveCommand);
+                commands.Add(wholeWordCommand);
+                commands.Add(plataformDropdownComboCommand);
+                commands.Add(plataformDropdownListCommand);
             }
 
             // Ensure the control's handle has been created; otherwise, BeginInvoke cannot be called.
@@ -257,7 +274,7 @@
                 object inParam = eventArgs.InValue;
                 IntPtr vOut = eventArgs.OutValue;
 
-                if (inParam != null)
+                if (inParam != null || (inParam is IntPtr && ((IntPtr)inParam) != IntPtr.Zero))
                     throw (new ArgumentException("Ilegal input parameter!"));
 
                 else if (vOut != IntPtr.Zero)
@@ -267,24 +284,28 @@
                     throw (new ArgumentException("Output parameter required!"));
             }
         }
+        private static readonly object lockSearch = new object();
+        private static readonly object lockSearchExecute = new object();
+        private static readonly object lockUpdateUI = new object();
         private void SearchManualCode(object sender, EventArgs e)
         {
             // Only one search at time
             Profile p = PackageBridge.Flow.Active;
-            if (p.IsValid() && Monitor.TryEnter(searchLock, 2000))
+            bool acquiredLock = false;
+            Monitor.TryEnter(searchLock, 2000, ref acquiredLock);
+            if (p.IsValid() && acquiredLock)
             {
-                control.Clear();
-                OleMenuCommand cmd = null;
-                if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+                lock(lockSearch)
                 {
-                    cmd = commandService?.FindCommand(new CommandID(new Guid(toolWindowSet), cmdIdSearchBox)) as OleMenuCommand;
-                    //var cmdSearch = commandService.FindCommand(new CommandID(new Guid(toolWindowSet), cmdidSearchManualCode));
-                }
-                if (cmd == null /*|| cmdSearch == null*/)
-                    return;
-
-                try
-                {
+                    control.Clear();
+                    OleMenuCommand cmd = null;
+                    if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+                    {
+                        cmd = commandService?.FindCommand(new CommandID(new Guid(toolWindowSet), cmdIdSearchBox)) as OleMenuCommand;
+                        //var cmdSearch = commandService.FindCommand(new CommandID(new Guid(toolWindowSet), cmdidSearchManualCode));
+                    }
+                    if (cmd == null /*|| cmdSearch == null*/)
+                        return;
                     if (String.IsNullOrEmpty(currentSearch))
                     {
                         currentSearch = cmd.Text;
@@ -303,33 +324,35 @@
 #pragma warning restore VSTHRD110 // Observe result of async calls
                     {
                         string error = "";
-                        List<IManual> res = new List<IManual>();
-                        try
+                        lock (lockSearchExecute)
                         {
-                            res.AddRange(Manual.SearchDatabase(p, currentSearch, caseSensitive, wholeWord, searchPlat));
-                        }
-                        catch (Exception ex)
-                        {
-                            error = ex.Message;
-                        }
-
-                        // Update UI 
-                        Utils.AsyncHelper.RunSyncUI(() =>
-                        {
-                            control.RefreshteList(res, new SearchOptions(p, currentSearch, wholeWord, caseSensitive));
-                            cmd.Enabled = true;
-
-                            if (error.Length != 0)
+                            List<IManual> res = new List<IManual>();
+                            try
                             {
-                                System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, error), CodeFlowResources.Resources.Search,
-                                    MessageBoxButton.OK, MessageBoxImage.Error);
+                                res.AddRange(Manual.SearchDatabase(p, currentSearch, caseSensitive, wholeWord, searchPlat));
                             }
-                        });
+                            catch (Exception ex)
+                            {
+                                error = ex.Message;
+                            }
+
+                            lock (lockUpdateUI)
+                            {
+                                // Update UI 
+                                Utils.AsyncHelper.RunSyncUI(() =>
+                                {
+                                    control.RefreshteList(res, new SearchOptions(p, currentSearch, wholeWord, caseSensitive));
+                                    cmd.Enabled = true;
+
+                                    if (error.Length != 0)
+                                    {
+                                        System.Windows.MessageBox.Show(String.Format(CodeFlowResources.Resources.ErrorSearch, error), CodeFlowResources.Resources.Search,
+                                            MessageBoxButton.OK, MessageBoxImage.Error);
+                                    }
+                                });
+                            }
+                        }
                     });
-                }
-                finally
-                {
-                    Monitor.Exit(searchLock);
                 }
             }
         }
@@ -661,6 +684,18 @@
             }
             return base.PreProcessMessage(ref m);
         }
+        /*
+         *      private const int cmdidSearchToolbar = 0x101;
+                private const int cmdidSearchToolbarGroup = 0x1001;
+                private const int cmdidSearchToolbarGroup2 = 0x1002;
+                private const int cmdidSearchManualCode = 0x2003;
+                private const int cmdIdSearchBox = 0x105;
+                private const int cmdIdWholeWord = 0x2004;
+                private const int cmdIdCaseSensitive = 0x2005;
+                private const int cmdIdPlataformCombo = 0x2006;
+                private const int cmdIdPlataformComboGetList = 0x2007;
+                private const int cmdExecuteSearch = 0x2008; 
+         */
 
         int IOleCommandTarget.Exec(
           ref Guid pguidCmdGroup,
@@ -671,10 +706,28 @@
         {
             try
             {
+                int result = (int)Constants.OLECMDERR_E_NOTSUPPORTED;
+                //foreach (var c in commands)
+                //{
+                //    if (c.CommandID.Guid == pguidCmdGroup && c.CommandID.ID == nCmdID)
+                //    {
+                //        if (c is OleMenuCommand ole)
+                //        {
+                //            ole.Invoke(pvaIn, pvaOut, (OLECMDEXECOPT)nCmdexecopt);
+                //        }
+                //        else
+                //            c.Invoke(pvaIn);
+                //    }
+                //}
+                bool res = false;
                 if (!this.closed && editor.CodeAdapter != null)
+                    res = editor.CodeAdapter.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut, out result);
+
+                if (result == (int)Constants.OLECMDERR_E_NOTSUPPORTED || !res)
                 {
-                    if (editor.CodeAdapter.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut, out int result))
-                        return result;
+                    IOleCommandTarget target = GetService(typeof(IOleCommandTarget)) as IOleCommandTarget;
+                    if (target != null)
+                        result = target.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
                 }
             }
             catch (Exception e)
@@ -693,10 +746,22 @@
         {
             try
             {
+                bool res = false;
                 if (!this.closed && editor.CodeAdapter != null)
                 {
-                    if (editor.CodeAdapter.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText, out int result))
+                    res = editor.CodeAdapter.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText, out int result);
+                    if (res)
                         return result;
+                }
+
+                if (!res)
+                {
+                    IOleCommandTarget target = GetService(typeof(IOleCommandTarget)) as IOleCommandTarget;
+                    if (target != null)
+                    {
+                        int result = target.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
+                        return result;
+                    }
                 }
             }
             catch (Exception e)

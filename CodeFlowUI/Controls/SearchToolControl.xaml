@@ -23,7 +23,7 @@
             <ColumnDefinition Name="Grid2Control" Width="5" />
             <ColumnDefinition Name="Grid3Control" Width="*" />
         </Grid.ColumnDefinitions>
-        <ListView x:Name="lstCode" MouseDoubleClick="lstFindMan_MouseDoubleClick" SelectionMode="Single" SelectionChanged="LstCode_SelectionChanged" HorizontalAlignment="Stretch">
+        <ListView x:Name="lstCode" Grid.Column="0" MouseDoubleClick="lstFindMan_MouseDoubleClick" SelectionMode="Single" SelectionChanged="LstCode_SelectionChanged" HorizontalAlignment="Stretch">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="100"  DisplayMemberBinding="{Binding TipoCodigo}">

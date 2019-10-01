@@ -177,6 +177,7 @@ namespace CodeFlow
             // await OpenFileAsync(SearchPreviewFile);
         }
 
+
         private void ReadOldSettings()
         {
             var oldSettings = Properties.Settings.Default;

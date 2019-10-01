@@ -19,12 +19,14 @@ namespace CodeFlow.Editor
         public ICodeFlowPackage Package => _package;
         public ICodeEditorAdapter CodeAdapter { get; private set; }
         public Dictionary<string, string> LanguageFiles { get; private set; }
+        private IManual _current;
 
         public VisualStudioCodeEditor(ICodeFlowPackage package)
         {
             CodeAdapter = new VisualStudioCodeAdapter(package);
             LanguageFiles = new Dictionary<string, string>();
             _package = package;
+            _current = null;
         }
 
         public void Open(Profile profile, IManual code, SearchOptions options = null)
@@ -40,11 +42,14 @@ namespace CodeFlow.Editor
             File.WriteAllText(filePath, code.FormatCode(extension), Encoding.UTF8);
 
             CodeAdapter.Open(filePath, code);
+            Find(options);
         }
 
         public void Find(SearchOptions options)
         {
-            
+            var findTarget = CodeAdapter.GetFindTarget();
+            findTarget.Find(options.SearchTerm, 
+                (uint)Microsoft.VisualStudio.TextManager.Interop.__VSFINDOPTIONS.FR_Find |  (uint)Microsoft.VisualStudio.TextManager.Interop.__VSFINDOPTIONS.FR_FromStart, 0, null, out uint pResult);
         }
 
         public string GetText()
@@ -63,7 +68,8 @@ namespace CodeFlow.Editor
                 element = new AvalonCodeEditor(Package).Editor;
             else
             {
-                Open(profile, code, options);
+                if (_current != code)
+                    Open(profile, code, options);
                 element = CodeAdapter.GetUIControl();
             }
             border.Child = element;

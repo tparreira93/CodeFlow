@@ -85,13 +85,13 @@ namespace CodeFlow.Editor
                 IVsHierarchy hierarchy;
                 var runningDocTable = (IVsRunningDocumentTable)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsRunningDocumentTable));
 
-                ErrorHandler.ThrowOnFailure(runningDocTable.FindAndLockDocument(
-                    dwRDTLockType: (uint)_VSRDTFLAGS.RDT_EditLock,
-                    pszMkDocument: fileName,
-                    ppHier: out hierarchy,
-                    pitemid: out itemID,
-                    ppunkDocData: out _,
-                    pdwCookie: out docCookie));
+                //ErrorHandler.ThrowOnFailure(runningDocTable.FindAndLockDocument(
+                //    dwRDTLockType: (uint)_VSRDTFLAGS.RDT_EditLock,
+                //    pszMkDocument: fileName,
+                //    ppHier: out hierarchy,
+                //    pitemid: out itemID,
+                //    ppunkDocData: out _,
+                //    pdwCookie: out docCookie));
                 
                 ErrorHandler.ThrowOnFailure(this.invisibleEditor.GetDocData(1, ref guid, out docData));
 

@@ -29,6 +29,7 @@ namespace CodeFlowUI.Controls.Editor
         public ICodeFlowPackage Package { get; private set; }
         public ICodeEditorAdapter CodeAdapter => null;
         private UIElement element { get; set; }
+        private IManual _current;
 
         public AvalonCodeEditor(ICodeFlowPackage package)
         {
@@ -37,6 +38,7 @@ namespace CodeFlowUI.Controls.Editor
             Editor.FontFamily = new FontFamily("Consolas");
             Editor.ShowLineNumbers = true;
             EditorSearch = SearchPanel.Install(Editor.TextArea);
+            _current = null;
 
             HighlightDefinitions = new Dictionary<string, IHighlightingDefinition>();
             Highlighters = new List<string>();
@@ -121,8 +123,10 @@ namespace CodeFlowUI.Controls.Editor
 
                 element = border;
             }
+            if (_current != code)
+                Open(profile, code, options);
 
-            return Editor;
+            return element;
         }
     }
 }

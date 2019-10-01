@@ -29,6 +29,7 @@
         public SearchOptions searchOptions = new SearchOptions();
         public ICodeEditor CodeEditor { get; private set; }
         public bool ShowPreview { get; private set; }
+        private double OldWidth { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchToolControl"/> class.
         /// </summary>
@@ -38,6 +39,7 @@
             lstCode.ItemsSource = results;
             lstCode.DataContext = this;
             UpdateOptions(showPreview, editor);
+            OldWidth = Grid1Control.Width.Value;
         }
 
         public void Clear()
@@ -124,7 +126,13 @@
             if (showPreview)
             {
                 Preview.Content = CodeEditor.GetUIControl();
+                Grid1Control.Width = new GridLength(OldWidth, GridUnitType.Star);
                 vis = Visibility.Visible;
+            }
+            else
+            {
+                OldWidth = Grid1Control.Width.Value;
+                Grid1Control.Width = new GridLength(1, GridUnitType.Auto);
             }
             Preview.Visibility = vis;
             Splitter.Visibility = vis;
