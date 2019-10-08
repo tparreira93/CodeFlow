@@ -29,7 +29,6 @@
         public SearchOptions searchOptions = new SearchOptions();
         public ICodeEditor CodeEditor { get; private set; }
         public bool ShowPreview { get; private set; }
-        private double OldWidth { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchToolControl"/> class.
         /// </summary>
@@ -39,7 +38,6 @@
             lstCode.ItemsSource = results;
             lstCode.DataContext = this;
             UpdateOptions(showPreview, editor);
-            OldWidth = Grid1Control.Width.Value;
         }
 
         public void Clear()
@@ -119,6 +117,9 @@
 
         public void UpdateOptions(bool showPreview, ICodeEditor editor)
         {
+            if (CodeEditor == editor)
+                return;
+            
             ShowPreview = showPreview;
             CodeEditor = editor;
 
@@ -126,13 +127,16 @@
             if (showPreview)
             {
                 Preview.Content = CodeEditor.GetUIControl();
-                Grid1Control.Width = new GridLength(OldWidth, GridUnitType.Star);
                 vis = Visibility.Visible;
+                Grid1Control.Width = new GridLength(1, GridUnitType.Star);
+                Grid2Control.Width = new GridLength(5);
+                Grid3Control.Width = new GridLength(1, GridUnitType.Star);
             }
             else
             {
-                OldWidth = Grid1Control.Width.Value;
-                Grid1Control.Width = new GridLength(1, GridUnitType.Auto);
+                Grid1Control.Width = new GridLength(1, GridUnitType.Star);
+                Grid2Control.Width = new GridLength(0);
+                Grid3Control.Width = new GridLength(0);
             }
             Preview.Visibility = vis;
             Splitter.Visibility = vis;

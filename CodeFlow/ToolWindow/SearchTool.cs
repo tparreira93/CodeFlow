@@ -707,28 +707,29 @@
             try
             {
                 int result = (int)Constants.OLECMDERR_E_NOTSUPPORTED;
-                //foreach (var c in commands)
-                //{
-                //    if (c.CommandID.Guid == pguidCmdGroup && c.CommandID.ID == nCmdID)
-                //    {
-                //        if (c is OleMenuCommand ole)
-                //        {
-                //            ole.Invoke(pvaIn, pvaOut, (OLECMDEXECOPT)nCmdexecopt);
-                //        }
-                //        else
-                //            c.Invoke(pvaIn);
-                //    }
-                //}
-                bool res = false;
-                if (!this.closed && editor.CodeAdapter != null)
-                    res = editor.CodeAdapter.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut, out result);
-
-                if (result == (int)Constants.OLECMDERR_E_NOTSUPPORTED || !res)
+                IOleCommandTarget target = GetService(typeof(IOleCommandTarget)) as IOleCommandTarget;
+                if (target != null)
                 {
-                    IOleCommandTarget target = GetService(typeof(IOleCommandTarget)) as IOleCommandTarget;
-                    if (target != null)
-                        result = target.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+                    //foreach (var c in commands)
+                    //{
+                    //    if (c.CommandID.Guid == pguidCmdGroup && c.CommandID.ID == nCmdID)
+                    //    {
+                    //        if (c is OleMenuCommand ole)
+                    //        {
+                    //            string input = Marshal.PtrToStringAuto(pvaIn);
+                    //            ole.Invoke(pvaIn, pvaOut, (OLECMDEXECOPT)nCmdexecopt);
+                    //        }
+                    //        else
+                    //            c.Invoke(pvaIn);
+                    //        break;
+                    //    }
+                    //}
+
+                    result = target.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
                 }
+
+                if (result == (int)Constants.OLECMDERR_E_NOTSUPPORTED && !this.closed && editor.CodeAdapter != null)
+                    result = editor.CodeAdapter.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
             }
             catch (Exception e)
             {

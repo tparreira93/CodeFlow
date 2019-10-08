@@ -65,7 +65,21 @@ namespace CodeFlow.Editor
 
         private static void InitWindow(IVsCodeWindow codeWindow)
         {
-            ((IVsCodeWindowEx)codeWindow).Initialize(2U, VSUSERCONTEXTATTRIBUTEUSAGE.VSUC_Usage_Filter, "", "", 0U, new INITVIEW[1]);
+            INITVIEW[] initView = new INITVIEW[1];
+            initView[0].fSelectionMargin = 0;
+            initView[0].fWidgetMargin = 0;
+            initView[0].fVirtualSpace = 0;
+            initView[0].fDragDropMove = 1;
+            initView[0].fVirtualSpace = 0;
+            ((IVsCodeWindowEx)codeWindow).Initialize((uint)_codewindowbehaviorflags.CWB_DISABLEDROPDOWNBAR | (uint)_codewindowbehaviorflags.CWB_DISABLESPLITTER, 
+                VSUSERCONTEXTATTRIBUTEUSAGE.VSUC_Usage_Filter, 
+                "", 
+                "",
+                //(uint)TextViewInitFlags.VIF_DEFAULT
+                (uint)TextViewInitFlags.VIF_SET_WIDGET_MARGIN | (uint)TextViewInitFlags.VIF_SET_SELECTION_MARGIN | (uint)TextViewInitFlags.VIF_SET_VIRTUAL_SPACE
+                | (uint)TextViewInitFlags.VIF_SET_DRAGDROPMOVE | (uint)TextViewInitFlags2.VIF_SUPPRESS_STATUS_BAR_UPDATE | (uint)TextViewInitFlags2.VIF_READONLY 
+                | (uint)TextViewInitFlags2.VIF_SUPPRESSBORDER | (uint)TextViewInitFlags2.VIF_SUPPRESSTRACKCHANGES | (uint)TextViewInitFlags2.VIF_SUPPRESSTRACKGOBACK
+                , /*new INITVIEW[1]*/ initView);
         }
 
 
@@ -118,6 +132,7 @@ namespace CodeFlow.Editor
 
                     textViewHostControl = VS2019HostControl.GetTopParent((UIElement)wpfTextViewHost.HostControl);
                     BackgroundInvoke((Action)(() => VS2019HostControl.HideNavigationBar(this.textViewHostControl)));
+                    
                 }
                 catch (Exception)
                 {
@@ -153,15 +168,13 @@ namespace CodeFlow.Editor
             }
         }
 
-        public bool Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut, out int result)
+        public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
+            var result = (int) Microsoft.VisualStudio.OLE.Interop.Constants.OLECMDERR_E_NOTSUPPORTED;
             if (textViewHostControl != null && textViewHostControl.IsKeyboardFocusWithin && this.editorCommandTarget != null)
-            {
                 result = editorCommandTarget.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
-                return true;
-            }
-            result = 0;
-            return false;
+
+            return result;
         }
 
         public IVsFindTarget GetFindTarget()
